@@ -49,6 +49,30 @@
         max-width: 720px;
         margin: 0 auto;
         padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px);
+        position: relative;
+      }
+
+      /* Header */
+      header.site-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 24px;
+      }
+      .wordmark {
+        font-family: "Fraunces", Georgia, serif;
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .topnav a {
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--ink-soft);
+        text-decoration: none;
+      }
+      .topnav a:hover { color: var(--rust); }
+
       /* Hero */
       .hero {
         margin-top: clamp(48px, 9vw, 96px);
@@ -151,6 +175,29 @@
         background: var(--ink);
         color: var(--cream);
         transform: rotate(-1.2deg);
+        overflow: hidden;
+        padding: 13px 0;
+        box-shadow: 0 10px 30px rgba(28, 22, 17, 0.18);
+      }
+      .marquee-track {
+        display: inline-flex;
+        white-space: nowrap;
+        animation: marquee-scroll 26s linear infinite;
+        will-change: transform;
+      }
+      .marquee-track span {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 13px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        padding: 0 26px;
+      }
+      .marquee-track .dot { color: var(--rust); padding: 0; }
+      @keyframes marquee-scroll {
+        from { transform: translateX(0); }
+        to   { transform: translateX(-50%); }
+      }
+
       /* Sections */
       section.block {
         margin-top: clamp(56px, 10vw, 92px);
@@ -207,6 +254,29 @@
         background: var(--cream-deep);
         padding: 2px 7px;
         border-radius: 6px;
+      }
+
+      /* Steps */
+      .steps { list-style: none; margin: 0; padding: 0; }
+      .steps li {
+        display: grid;
+        grid-template-columns: 2.4em 1fr;
+        gap: 10px;
+        padding: 18px 0;
+      }
+      .steps li + li { border-top: 1px solid var(--line); }
+      .steps .num {
+        font-family: "Fraunces", Georgia, serif;
+        font-style: italic;
+        font-size: 20px;
+        color: var(--rust);
+        padding-top: 1px;
+      }
+      .steps p {
+        margin: 0;
+        font-size: 17px;
+        line-height: 1.6;
+        max-width: 32em;
       }
 
       /* Proof panel */
@@ -292,6 +362,29 @@
         border: 1px solid var(--line);
         border-radius: 18px;
         padding: 24px;
+      }
+      .change .card.good {
+        background: var(--green);
+        border-color: var(--green);
+      }
+      .change .label {
+        display: block;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 12px;
+      }
+      .change .card.good .label { color: #a9c8b8; }
+      .change p {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink-soft);
+      }
+      .change .card.good p { color: #e4efe8; }
+
       /* Updates */
       .updates { list-style: none; margin: 0; padding: 0; }
       .updates li { padding: 16px 0; }
@@ -359,6 +452,28 @@
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
         </nav>
       </header>
+
+      <main>
+        <div class="hero">
+          <span class="sticker">ACCEPT or REJECT, with a reason</span>
+          <h1>Synthe is the bouncer for your AI agents. Every handoff gets <span class="rotator" aria-label="checked"><span class="rotator-inner" aria-hidden="true"><span>checked</span><span>verified</span><span>screened</span><span>checked</span></span></span> at the door.</h1>
+          <p class="lede">When one AI agent hands work to another, Synthe validates the handoff as a typed packet before the receiver acts. Every accepted handoff is recorded, so the same one cannot be claimed twice.</p>
+          <div class="cta-row">
+            <a class="btn" href="#tryit">Try it in two minutes</a>
+            <a class="textlink" href="https://github.com/rohansiddam/Synthe">Read the repo</a>
+          </div>
+        </div>
+
+        <div class="marquee" aria-hidden="true">
+          <div class="marquee-track" id="marquee-track">
+            <span>Duplicates</span><span class="dot">|</span>
+            <span>Expired handoffs</span><span class="dot">|</span>
+            <span>Stale artifacts</span><span class="dot">|</span>
+            <span>Missing fields</span><span class="dot">|</span>
+            <span>Unauthorized actions</span><span class="dot">|</span>
+          </div>
+        </div>
+
         <section class="block" id="tryit" aria-labelledby="tryit-h">
           <h2 id="tryit-h">Try it in <em>two minutes</em></h2>
           <div class="terminal" role="img" aria-label="Quickstart: clone the repo, run the checker on a valid handoff to get ACCEPT, then on a bad handoff to get REJECT.">
@@ -380,6 +495,28 @@
               <p>The sender ships a typed packet, not a blob of text.</p>
             </li>
             <li>
+              <span class="num" aria-hidden="true">2.</span>
+              <p>Synthe checks it against a registry and the actual artifacts it references.</p>
+            </li>
+            <li>
+              <span class="num" aria-hidden="true">3.</span>
+              <p>ACCEPT records the claim. REJECT comes back with the reason, and replays of an accepted handoff are rejected as duplicates.</p>
+            </li>
+          </ol>
+        </section>
+
+        <section class="block" aria-labelledby="proof-h">
+          <div class="proof-panel">
+            <h2 id="proof-h">Proven on <em>real runners</em></h2>
+            <p>Three runs were dispatched back to back on real GitHub runners on October 1, 2026. Exactly one got ACCEPT and flipped to COMPLETED. The other two were both rejected as duplicates, with code <code>duplicate_idempotency_key</code>, checked against the completed entry rather than the claim-time snapshot.</p>
+            <div class="runlinks">
+              <a href="https://github.com/rohansiddam/Synthe/actions/runs/36913336715">Run #12: the ACCEPT run</a>
+              <a href="https://github.com/rohansiddam/Synthe/actions/runs/36913571379">Run #13: the duplicate REJECT run</a>
+              <a href="https://github.com/rohansiddam/Synthe/actions/runs/36913698021">Run #14: the duplicate REJECT run</a>
+            </div>
+          </div>
+        </section>
+
         <section class="block" aria-labelledby="seeit-h">
           <h2 id="seeit-h">See it <em>run</em></h2>
           <div class="terminal" id="live-terminal" aria-live="polite" aria-label="Live demo: the same handoff submitted three times. First ACCEPT, then REJECT as duplicate twice."></div>
@@ -538,140 +675,3 @@
     </script>
   </body>
 </html>
-
-              <span class="num" aria-hidden="true">2.</span>
-              <p>Synthe checks it against a registry and the actual artifacts it references.</p>
-            </li>
-            <li>
-              <span class="num" aria-hidden="true">3.</span>
-              <p>ACCEPT records the claim. REJECT comes back with the reason, and replays of an accepted handoff are rejected as duplicates.</p>
-            </li>
-          </ol>
-        </section>
-
-        <section class="block" aria-labelledby="proof-h">
-          <div class="proof-panel">
-            <h2 id="proof-h">Proven on <em>real runners</em></h2>
-            <p>Three runs were dispatched back to back on real GitHub runners on October 1, 2026. Exactly one got ACCEPT and flipped to COMPLETED. The other two were both rejected as duplicates, with code <code>duplicate_idempotency_key</code>, checked against the completed entry rather than the claim-time snapshot.</p>
-            <div class="runlinks">
-              <a href="https://github.com/rohansiddam/Synthe/actions/runs/36913336715">Run #12: the ACCEPT run</a>
-              <a href="https://github.com/rohansiddam/Synthe/actions/runs/36913571379">Run #13: the duplicate REJECT run</a>
-              <a href="https://github.com/rohansiddam/Synthe/actions/runs/36913698021">Run #14: the duplicate REJECT run</a>
-            </div>
-          </div>
-        </section>
-
-
-      <main>
-        <div class="hero">
-          <span class="sticker">ACCEPT or REJECT, with a reason</span>
-          <h1>Synthe is the bouncer for your AI agents. Every handoff gets <span class="rotator" aria-label="checked"><span class="rotator-inner" aria-hidden="true"><span>checked</span><span>verified</span><span>screened</span><span>checked</span></span></span> at the door.</h1>
-          <p class="lede">When one AI agent hands work to another, Synthe validates the handoff as a typed packet before the receiver acts. Every accepted handoff is recorded, so the same one cannot be claimed twice.</p>
-          <div class="cta-row">
-            <a class="btn" href="#tryit">Try it in two minutes</a>
-            <a class="textlink" href="https://github.com/rohansiddam/Synthe">Read the repo</a>
-          </div>
-        </div>
-
-        <div class="marquee" aria-hidden="true">
-          <div class="marquee-track" id="marquee-track">
-            <span>Duplicates</span><span class="dot">|</span>
-            <span>Expired handoffs</span><span class="dot">|</span>
-            <span>Stale artifacts</span><span class="dot">|</span>
-            <span>Missing fields</span><span class="dot">|</span>
-            <span>Unauthorized actions</span><span class="dot">|</span>
-          </div>
-        </div>
-
-      }
-      .change .card.good {
-        background: var(--green);
-        border-color: var(--green);
-      }
-      .change .label {
-        display: block;
-        font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: 12px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--muted);
-        margin-bottom: 12px;
-      }
-      .change .card.good .label { color: #a9c8b8; }
-      .change p {
-        margin: 0;
-        font-size: 16px;
-        line-height: 1.6;
-        color: var(--ink-soft);
-      }
-      .change .card.good p { color: #e4efe8; }
-
-      /* Steps */
-      .steps { list-style: none; margin: 0; padding: 0; }
-      .steps li {
-        display: grid;
-        grid-template-columns: 2.4em 1fr;
-        gap: 10px;
-        padding: 18px 0;
-      }
-      .steps li + li { border-top: 1px solid var(--line); }
-      .steps .num {
-        font-family: "Fraunces", Georgia, serif;
-        font-style: italic;
-        font-size: 20px;
-        color: var(--rust);
-        padding-top: 1px;
-      }
-      .steps p {
-        margin: 0;
-        font-size: 17px;
-        line-height: 1.6;
-        max-width: 32em;
-      }
-
-        overflow: hidden;
-        padding: 13px 0;
-        box-shadow: 0 10px 30px rgba(28, 22, 17, 0.18);
-      }
-      .marquee-track {
-        display: inline-flex;
-        white-space: nowrap;
-        animation: marquee-scroll 26s linear infinite;
-        will-change: transform;
-      }
-      .marquee-track span {
-        font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: 13px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        padding: 0 26px;
-      }
-      .marquee-track .dot { color: var(--rust); padding: 0; }
-      @keyframes marquee-scroll {
-        from { transform: translateX(0); }
-        to   { transform: translateX(-50%); }
-      }
-
-        position: relative;
-      }
-
-      /* Header */
-      header.site-head {
-        display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        gap: 24px;
-      }
-      .wordmark {
-        font-family: "Fraunces", Georgia, serif;
-        font-size: 22px;
-        font-weight: 600;
-        letter-spacing: -0.01em;
-      }
-      .topnav a {
-        font-size: 15px;
-        font-weight: 500;
-        color: var(--ink-soft);
-        text-decoration: none;
-      }
-      .topnav a:hover { color: var(--rust); }
