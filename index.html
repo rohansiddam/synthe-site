@@ -209,6 +209,13 @@
       }
       .runlinks a:hover { opacity: 0.75; }
 
+      /* Try it */
+      .trynote {
+        margin: 20px 0 0;
+        font-size: 16px;
+        color: var(--ink-soft);
+        max-width: 34em;
+      }
       /* What this catches */
       .catchlist { list-style: none; margin: 0; padding: 0; }
       .catchlist li { padding: 13px 0; }
@@ -318,6 +325,19 @@
           <p>When one AI agent hands work to another, Synthe validates the handoff as a typed packet before the receiver acts. ACCEPT or REJECT, with a reason. Every accepted handoff is recorded, so the same one cannot be claimed twice.</p>
           <p class="cta"><a href="https://github.com/rohansiddam/Synthe">Read the repo</a></p>
         </div>
+
+        <section aria-labelledby="tryit">
+          <h2 id="tryit">Try it in two minutes</h2>
+          <div class="terminal" role="img" aria-label="Quickstart: clone the repo, run the checker on a valid handoff to get ACCEPT, then on a bad handoff to get REJECT.">
+            <p><span class="cmd">$ git clone https://github.com/rohansiddam/Synthe.git</span><br />
+            <span class="cmd">$ cd Synthe</span></p>
+            <p><span class="cmd">$ python3 src/handoff_check.py examples/valid.json --registry examples/registry.json --workspace . --ledger ledger.json</span><br />
+            <span class="verdict"><span class="decision">ACCEPT</span></span> Run the same command again and it is rejected as a duplicate.</p>
+            <p><span class="cmd">$ python3 src/handoff_check.py examples/bad-paraphrase-evidence.json --registry examples/registry.json --workspace . --dry-run</span><br />
+            <span class="verdict"><span class="decision">REJECT</span></span> invalid: evidence_not_verbatim</p>
+          </div>
+          <p class="trynote">Python 3 only, no install step. Exit code 0 means ACCEPT, 2 means REJECT.</p>
+        </section>
 
         <section aria-labelledby="how">
           <h2 id="how">How it works</h2>
