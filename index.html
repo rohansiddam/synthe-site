@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Synthe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f7f6f3;
+        --ink: #141311;
+        --ink-soft: #3d3c38;
+        --muted: #6f6d66;
+        --line: #ddd9d1;
+        --accent: #a24a1d;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #131311;
+          --ink: #eceae4;
+          --ink-soft: #c6c3ba;
+          --muted: #96938a;
+          --line: #2c2b27;
+          --accent: #d0824f;
+        }
+      }
+
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .page {
+        max-width: 680px;
+        margin: 0 auto;
+        padding: clamp(28px, 6vw, 56px) 24px clamp(40px, 8vw, 72px);
+      }
+
+      /* Top row */
+      header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 24px;
+      }
+      .wordmark {
+        font-size: 17px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .topnav a {
+        font-size: 15px;
+        color: var(--ink-soft);
+        text-decoration: none;
+      }
+      .topnav a:hover { color: var(--accent); }
+
+      /* Hero */
+      .hero {
+        margin-top: clamp(56px, 12vw, 110px);
+      }
+      .hero h1 {
+        margin: 0;
+        font-size: clamp(42px, 8.4vw, 76px);
+        font-weight: 500;
+        line-height: 1.04;
+        letter-spacing: -0.025em;
+        text-wrap: balance;
+      }
+      .hero p {
+        margin: clamp(28px, 5vw, 40px) 0 0;
+        max-width: 34em;
+        font-size: clamp(17px, 2.4vw, 19px);
+        line-height: 1.65;
+        color: var(--ink-soft);
+      }
+      .cta {
+        margin-top: clamp(24px, 4vw, 34px);
+        font-size: 17px;
+      }
+      .cta a {
+        color: var(--accent);
+        text-decoration: none;
+        border-bottom: 1px solid currentColor;
+        padding-bottom: 2px;
+      }
+      .cta a:hover { opacity: 0.75; }
+
+      /* Sections */
+      section {
+        margin-top: clamp(56px, 10vw, 88px);
+        padding-top: clamp(28px, 5vw, 40px);
+        border-top: 1px solid var(--line);
+      }
+      h2 {
+        margin: 0 0 28px;
+        font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      /* How it works */
+      .steps { list-style: none; margin: 0; padding: 0; }
+      .steps li {
+        display: grid;
+        grid-template-columns: 2.2em 1fr;
+        gap: 8px;
+        padding: 16px 0;
+      }
+      .steps li + li { border-top: 1px solid var(--line); }
+      .steps .num {
+        font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 15px;
+        color: var(--muted);
+        padding-top: 3px;
+      }
+      .steps p {
+        margin: 0;
+        font-size: 17px;
+        line-height: 1.6;
+        color: var(--ink);
+        max-width: 32em;
+      }
+
+      /* What it catches */
+      .catches { list-style: none; margin: 0; padding: 0; }
+      .catches li {
+        padding: 11px 0;
+        font-size: 17px;
+        color: var(--ink);
+      }
+      .catches li + li { border-top: 1px solid var(--line); }
+
+      /* Proof */
+      .proof p {
+        margin: 0;
+        max-width: 34em;
+        font-size: 17px;
+        line-height: 1.65;
+        color: var(--ink);
+      }
+
+      /* See it run */
+      .seeit p {
+        margin: 0 0 20px;
+        max-width: 34em;
+        font-size: 17px;
+        line-height: 1.65;
+        color: var(--ink);
+      }
+      .seeit h3 {
+        margin: 40px 0 20px;
+        font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .terminal {
+        border: 1px solid var(--line);
+        padding: 20px 22px;
+        font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 14px;
+        line-height: 1.75;
+        overflow-x: auto;
+      }
+      .terminal p { margin: 0; font-size: 14px; line-height: 1.75; color: var(--ink-soft); }
+      .terminal p + p { margin-top: 18px; }
+      .terminal .cmd { color: var(--ink); }
+      .terminal .verdict { color: var(--ink); font-weight: 500; }
+      .terminal .decision { color: var(--accent); }
+      .terminal pre {
+        margin: 10px 0 0;
+        font: inherit;
+        color: var(--ink-soft);
+        white-space: pre;
+      }
+      .runlinks {
+        margin-top: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 28px;
+        font-size: 15px;
+      }
+      .runlinks a {
+        color: var(--accent);
+        text-decoration: none;
+        border-bottom: 1px solid currentColor;
+        padding-bottom: 2px;
+      }
+      .runlinks a:hover { opacity: 0.75; }
+
+      /* What this catches */
+      .catchlist { list-style: none; margin: 0; padding: 0; }
+      .catchlist li { padding: 13px 0; }
+      .catchlist li + li { border-top: 1px solid var(--line); }
+      .catchlist .name {
+        display: block;
+        font-size: 17px;
+        font-weight: 500;
+        color: var(--ink);
+      }
+      .catchlist .desc {
+        display: block;
+        margin-top: 2px;
+        font-size: 16px;
+        line-height: 1.55;
+        color: var(--ink-soft);
+        max-width: 32em;
+      }
+
+      /* What changes */
+      .change {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px 40px;
+      }
+      .change .label {
+        display: block;
+        font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+      .change p {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink-soft);
+      }
+
+      /* Updates */
+      .updates { list-style: none; margin: 0; padding: 0; }
+      .updates li { padding: 14px 0; }
+      .updates li + li { border-top: 1px solid var(--line); }
+      .updates .date {
+        display: block;
+        font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .updates p {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--ink-soft);
+        max-width: 34em;
+      }
+
+      /* Footer */
+      footer {
+        margin-top: clamp(56px, 10vw, 88px);
+        padding-top: 24px;
+        border-top: 1px solid var(--line);
+        font-size: 14px;
+        color: var(--muted);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 20px;
+        align-items: baseline;
+      }
+      footer p { margin: 0; }
+      footer nav { display: flex; gap: 20px; }
+      footer a {
+        color: var(--ink-soft);
+        text-decoration: none;
+      }
+      footer a:hover { color: var(--accent); }
+
+      a:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+      }
+
+      @media (max-width: 560px) {
+        body { font-size: 16px; }
+        .steps li { grid-template-columns: 1.8em 1fr; }
+        .change { grid-template-columns: 1fr; }
+        .terminal { padding: 16px; }
+        .terminal pre { white-space: pre-wrap; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <span class="wordmark">Synthe</span>
+        <nav class="topnav">
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+        </nav>
+      </header>
+
+      <main>
+        <div class="hero">
+          <h1>Synthe is the bouncer for your AI agents: every handoff gets checked at the door, and the bad ones don't get in.</h1>
+          <p>When one AI agent hands work to another, Synthe validates the handoff as a typed packet before the receiver acts. ACCEPT or REJECT, with a reason. Every accepted handoff is recorded, so the same one cannot be claimed twice.</p>
+          <p class="cta"><a href="https://github.com/rohansiddam/Synthe">Read the repo</a></p>
+        </div>
+
+        <section aria-labelledby="how">
+          <h2 id="how">How it works</h2>
+          <ol class="steps">
+            <li>
+              <span class="num" aria-hidden="true">1.</span>
+              <p>The sender ships a typed packet, not a blob of text.</p>
+            </li>
+            <li>
+              <span class="num" aria-hidden="true">2.</span>
+              <p>Synthe checks it against a registry and the actual artifacts it references.</p>
+            </li>
+            <li>
+              <span class="num" aria-hidden="true">3.</span>
+              <p>ACCEPT records the claim. REJECT comes back with the reason, and replays of an accepted handoff are rejected as duplicates.</p>
+            </li>
+          </ol>
+        </section>
+
+        <section aria-labelledby="catches">
+          <h2 id="catches">What it catches</h2>
+          <ul class="catches">
+            <li>Duplicates</li>
+            <li>Expired handoffs</li>
+            <li>Stale artifacts</li>
+            <li>Missing fields</li>
+            <li>Actions the receiver is not allowed to take</li>
+          </ul>
+        </section>
+
+        <section class="proof" aria-labelledby="proof">
+          <h2 id="proof">Proof</h2>
+          <p>Three runs were dispatched back to back on real GitHub runners on October 1, 2026. Exactly one got ACCEPT and flipped to COMPLETED. The other two were both rejected as duplicates, with code <span style="font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em;">duplicate_idempotency_key</span>, checked against the completed entry rather than the claim-time snapshot.</p>
+        </section>
+
+        <section class="seeit" aria-labelledby="seeit">
+          <h2 id="seeit">See it run</h2>
+          <p>The same handoff was submitted three times, in three runs back to back on real GitHub runners. The first run got ACCEPT and was recorded as COMPLETED. The second and third runs got REJECT, checked against the completed entry. The receiver never starts the same work twice.</p>
+          <div class="terminal" role="img" aria-label="Replay of three GitHub runs. Run 1 accepts the handoff and completes it. Runs 2 and 3 reject it as a duplicate with reason duplicate_idempotency_key.">
+            <p><span class="cmd">$ run 1: submit handoff</span><br />
+            <span class="verdict"><span class="decision">ACCEPT</span></span> Handoff recorded and completed.</p>
+            <p><span class="cmd">$ run 2: submit the same handoff again</span><br />
+            <span class="verdict"><span class="decision">REJECT</span></span> The work does not start a second time.</p>
+            <p><span class="cmd">$ run 3: submit the same handoff once more</span><br />
+            <span class="verdict"><span class="decision">REJECT</span></span> Rejected again, against the completed entry.</p>
+            <pre>{
+  "decision": "REJECT",
+  "state": "duplicate",
+  "reason": "duplicate_idempotency_key"
+}</pre>
+          </div>
+          <div class="runlinks">
+            <a href="https://github.com/rohansiddam/Synthe/actions/runs/36868717273">Run #8: the ACCEPT run</a>
+            <a href="https://github.com/rohansiddam/Synthe/actions/runs/36868748981">Run #9: the duplicate REJECT run</a>
+            <a href="https://github.com/rohansiddam/Synthe/actions/runs/36868785561">Run #10: the duplicate REJECT run</a>
+          </div>
+
+          <h3>What this catches</h3>
+          <ul class="catchlist">
+            <li>
+              <span class="name">Duplicate handoffs</span>
+              <span class="desc">The same handoff arrives twice. The second copy is rejected, so the work runs once.</span>
+            </li>
+            <li>
+              <span class="name">Expired handoffs</span>
+              <span class="desc">The handoff sat too long before it arrived. It is rejected instead of acted on late.</span>
+            </li>
+            <li>
+              <span class="name">Stale artifacts</span>
+              <span class="desc">The artifact changed after the handoff was made. Its hash no longer matches, so the handoff is rejected.</span>
+            </li>
+            <li>
+              <span class="name">Missing required fields</span>
+              <span class="desc">A field the receiver needs is absent. The handoff is rejected with the gap named.</span>
+            </li>
+            <li>
+              <span class="name">Actions the receiver is not allowed to take</span>
+              <span class="desc">The handoff asks for an action outside the receiver's permissions. It is stopped before anything runs.</span>
+            </li>
+          </ul>
+
+          <h3>What changes with Synthe</h3>
+          <div class="change">
+            <div>
+              <span class="label">Without Synthe</span>
+              <p>The receiving agent gets a blob of text and takes it on trust. It can redo work another agent already did. It can act on artifacts that changed since the handoff. It can run actions nobody approved.</p>
+            </div>
+            <div>
+              <span class="label">With Synthe</span>
+              <p>The handoff is checked at the door, before any work starts. A bad one is stopped with a reason. A good one is recorded, so it cannot be claimed twice.</p>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="updates">
+          <h2 id="updates">Updates</h2>
+          <ul class="updates">
+            <li>
+              <span class="date">September 30, 2026</span>
+              <p>Two-runner verification passed on real GitHub runners. Exactly one ACCEPT across two runs; the second was rejected as a duplicate.</p>
+            </li>
+            <li>
+              <span class="date">September 30, 2026</span>
+              <p>Public repo is live. Spec, checker, GitHub Action, and tests are all in the open.</p>
+            </li>
+          </ul>
+        </section>
+      </main>
+
+      <footer>
+        <p>Synthe is an early, open project.</p>
+        <nav>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/README.md">README</a>
+        </nav>
+      </footer>
+    </div>
+  </body>
+</html>
