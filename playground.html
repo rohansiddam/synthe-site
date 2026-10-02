@@ -1,0 +1,1054 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content="Draft a typed handoff contract, sign it with real Ed25519 keys, and watch the checker validate it, all in your browser." />
+    <link rel="icon" href="data:," />
+    <title>Contract playground · Synthe</title>
+    <meta property="og:title" content="Contract playground · Synthe" />
+    <meta property="og:description" content="Draft a typed handoff contract, sign it, and watch the checker validate it. All in your browser." />
+    <meta property="og:image" content="https://synthe.live/og-image.png" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..650;1,9..144,400..650&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --cream: #ece4d1;
+        --cream-deep: #e3d7bd;
+        --ink: #1c1611;
+        --ink-soft: #4c4433;
+        --muted: #8b7d64;
+        --line: #e0d4b8;
+        --rust: #b8490f;
+        --rust-deep: #93380a;
+        --green: #0b4b41;
+        --green-soft: #e6f0e8;
+        --red-soft: #f6e3d5;
+        --term-bg: #1c1611;
+        --term-cream: #f3ecdb;
+        --term-green: #8fd694;
+        --term-amber: #f0a35e;
+        --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+      html { scrollbar-width: thin; scrollbar-color: rgba(36, 29, 20, 0.35) transparent; }
+      ::-webkit-scrollbar { width: 10px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(36, 29, 20, 0.28); border-radius: 8px; border: 2px solid var(--cream); }
+      body {
+        overflow-x: clip; margin: 0; color: var(--ink);
+        font-family: "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+        background-color: var(--cream);
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23241d14'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+        background-size: 480px 480px;
+      }
+      .page { max-width: 1240px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
+      header.site-head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; border-bottom: 1px solid rgba(36, 29, 20, 0.14); padding-bottom: 18px; }
+      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 22px; font-weight: 600; color: var(--ink); text-decoration: none; }
+      .topnav { display: flex; gap: 22px; align-items: baseline; }
+      .topnav a { font-size: 15px; font-weight: 500; color: var(--ink-soft); text-decoration: none; }
+      .topnav a:hover { color: var(--rust); }
+      .hero { margin-top: clamp(40px, 7vw, 72px); max-width: 760px; }
+      .hero h1 { margin: 0; font-family: "Fraunces", Georgia, serif; font-size: clamp(36px, 6vw, 56px); font-weight: 500; letter-spacing: -0.02em; }
+      .hero h1 em { font-style: italic; color: var(--rust); }
+      .lede { color: var(--ink-soft); max-width: 38em; font-size: 18px; }
+      .presets { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+      .chip { font-family: var(--mono); font-size: 13px; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,0.5); color: var(--ink-soft); cursor: pointer; }
+      .chip:hover { border-color: var(--rust); color: var(--rust); }
+      .grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 28px; margin-top: 36px; align-items: start; }
+      .card { background: rgba(255, 255, 255, 0.5); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 28px); margin-bottom: 20px; }
+      .card h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 22px; margin: 0 0 4px; }
+      .card > p.sub { font-size: 14.5px; color: var(--muted); margin: 0 0 18px; }
+      .field { margin-bottom: 14px; }
+      .field label { display: block; font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+      .field input[type="text"], .field input[type="number"], .field select, .field textarea {
+        width: 100%; font: inherit; font-size: 15px; color: var(--ink);
+        background: rgba(255,255,255,0.7); border: 1px solid var(--line); border-radius: 10px;
+        padding: 10px 12px;
+      }
+      .field textarea { font-family: var(--mono); font-size: 13.5px; min-height: 74px; resize: vertical; }
+      .field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid var(--rust); outline-offset: 1px; border-color: var(--rust); }
+      .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+      .listitem { border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin-bottom: 10px; background: rgba(255,255,255,0.4); }
+      .listitem .row2 { margin-bottom: 8px; }
+      .listitem .row2:last-child { margin-bottom: 0; }
+      .mini-btn { font-family: var(--mono); font-size: 12.5px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--ink-soft); cursor: pointer; }
+      .mini-btn:hover { border-color: var(--rust); color: var(--rust); }
+      .mini-btn.danger:hover { border-color: var(--rust-deep); color: var(--rust-deep); }
+      .add-row { margin-top: 4px; }
+      .registry-agent { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); font-size: 15px; }
+      .registry-agent code { font-family: var(--mono); font-size: 12px; color: var(--muted); word-break: break-all; }
+      .preview { position: sticky; top: 24px; }
+      .verdict { border-radius: 18px; padding: clamp(20px, 3vw, 28px); border: 1px solid var(--line); background: rgba(255,255,255,0.55); margin-bottom: 20px; }
+      .verdict-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 6px; }
+      .verdict-status { font-family: var(--mono); font-weight: 600; font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; }
+      .verdict-status.accept { color: var(--green); }
+      .verdict-status.reject { color: var(--rust); }
+      .verdict-status.idle { color: var(--muted); }
+      .checks { list-style: none; margin: 14px 0 0; padding: 0; font-size: 14.5px; }
+      .checks li { display: flex; gap: 10px; padding: 7px 0; border-top: 1px solid var(--line); color: var(--ink-soft); }
+      .checks li .dot { font-family: var(--mono); font-weight: 600; flex: 0 0 22px; }
+      .checks li.pass .dot { color: var(--green); }
+      .checks li.fail .dot { color: var(--rust); }
+      .checks li.fail { color: var(--ink); }
+      .checks li code { font-family: var(--mono); font-size: 12px; background: var(--red-soft); padding: 1px 6px; border-radius: 5px; }
+      .checks li.pass code { background: var(--green-soft); }
+      .verdict-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+      .btn { display: inline-block; background: var(--ink); color: var(--cream); font-size: 16px; font-weight: 600; padding: 12px 24px; border-radius: 999px; border: none; cursor: pointer; font-family: inherit; transition: background 0.2s ease, transform 0.2s ease; }
+      .btn:hover { background: var(--rust); transform: translateY(-1px); }
+      .btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+      .btn.secondary:hover { border-color: var(--rust); color: var(--rust); background: transparent; }
+      .tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+      .tab { font-family: var(--mono); font-size: 13px; padding: 8px 18px; border-radius: 10px 10px 0 0; border: 1px solid var(--line); border-bottom: none; background: rgba(255,255,255,0.4); color: var(--muted); cursor: pointer; }
+      .tab[aria-selected="true"] { background: var(--term-bg); color: var(--term-cream); border-color: var(--term-bg); }
+      .terminal { background: var(--term-bg); color: var(--term-cream); border-radius: 0 14px 14px 14px; padding: 20px 22px; font-family: var(--mono); font-size: 13px; line-height: 1.65; overflow: auto; max-height: 520px; }
+      .terminal .prompt { color: #8a8071; }
+      .terminal .accept { color: var(--term-green); font-weight: 600; }
+      .terminal .reject { color: var(--term-amber); font-weight: 600; }
+      .terminal .dim { color: #8a8071; }
+      .terminal pre { margin: 0; white-space: pre; }
+      .copybar { display: flex; justify-content: flex-end; margin-top: 10px; }
+      .honest { font-size: 14px; color: var(--muted); margin-top: 22px; max-width: 40em; }
+      .honest code { font-family: var(--mono); font-size: 0.88em; background: var(--cream-deep); padding: 1px 6px; border-radius: 5px; }
+      .textlink { font-size: 16px; font-weight: 500; color: var(--rust); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+      footer { margin-top: clamp(56px, 10vw, 92px); padding-top: 26px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: baseline; }
+      footer p { margin: 0; }
+      footer .colophon { font-family: "Fraunces", Georgia, serif; font-style: italic; }
+      footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+      footer a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
+      footer a:hover { color: var(--rust); }
+      a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
+      [hidden] { display: none !important; }
+      @media (max-width: 960px) { .grid { grid-template-columns: 1fr; } .preview { position: static; } }
+      @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-head">
+        <a class="wordmark" href="/">Synthe</a>
+        <nav class="topnav">
+          <a href="forge.html">Forge</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+        </nav>
+      </header>
+      <main>
+        <div class="hero">
+          <h1>Draft a <em>contract</em></h1>
+          <p class="lede">Fill in the form. The packet is assembled live, signed with real Ed25519 keys, and checked against the same rules the command-line checker enforces. Everything runs in this tab.</p>
+          <div class="presets" role="group" aria-label="Load a preset scenario">
+            <button class="chip" type="button" data-preset="valid">Preset: valid handoff</button>
+            <button class="chip" type="button" data-preset="noapproval">Preset: missing approval</button>
+            <button class="chip" type="button" data-preset="unknown">Preset: unknown sender</button>
+          </div>
+        </div>
+        <div class="grid">
+          <div class="formcol">
+            <section class="card" aria-labelledby="parties-h">
+              <h2 id="parties-h">Parties &amp; keys</h2>
+              <p class="sub">Demo keys are minted in your browser. They are labeled demo and never leave this tab.</p>
+              <div class="field">
+                <label for="f-from">From (sender)</label>
+                <select id="f-from"></select>
+              </div>
+              <div class="field">
+                <label for="f-to">To (receiver)</label>
+                <select id="f-to"></select>
+              </div>
+              <div id="registry-list"></div>
+              <div class="row2" style="margin-top:12px">
+                <div class="field"><label for="f-newagent">New agent id</label><input type="text" id="f-newagent" placeholder="e.g. atlas" /></div>
+                <div class="field"><label for="f-newrole">Role</label><input type="text" id="f-newrole" placeholder="e.g. reviewer" /></div>
+              </div>
+              <div class="verdict-actions">
+                <button class="btn secondary" type="button" id="btn-add-agent">Add agent + key</button>
+                <button class="btn secondary" type="button" id="btn-rekey">Regenerate demo keys</button>
+              </div>
+            </section>
+            <section class="card" aria-labelledby="handoff-h">
+              <h2 id="handoff-h">The handoff</h2>
+              <p class="sub">Required fields the checker enforces first.</p>
+              <div class="field"><label for="f-purpose">Purpose</label><input type="text" id="f-purpose" /></div>
+              <div class="row2">
+                <div class="field"><label for="f-id">Handoff id</label><input type="text" id="f-id" /></div>
+                <div class="field"><label for="f-trace">Trace id</label><input type="text" id="f-trace" /></div>
+              </div>
+              <div class="field"><label for="f-idem">Idempotency key</label><input type="text" id="f-idem" /></div>
+              <div class="row2">
+                <div class="field"><label for="f-onfail">On failure</label>
+                  <select id="f-onfail">
+                    <option value="reject">reject</option>
+                    <option value="retry_with_budget">retry_with_budget</option>
+                    <option value="escalate">escalate</option>
+                    <option value="request_human">request_human</option>
+                  </select>
+                </div>
+                <div class="field"><label for="f-expires">Expires at (UTC)</label><input type="text" id="f-expires" /></div>
+              </div>
+            </section>
+            <section class="card" aria-labelledby="artifacts-h">
+              <h2 id="artifacts-h">Input artifacts</h2>
+              <p class="sub">Files the handoff depends on. Their hashes are pinned at signing, like evidence.</p>
+              <div id="artifacts-list"></div>
+              <button class="mini-btn add-row" type="button" id="btn-add-artifact">+ Add artifact</button>
+            </section>
+            <section class="card" aria-labelledby="plan-h">
+              <h2 id="plan-h">Plan &amp; authority</h2>
+              <p class="sub">Planned actions are checked against tools, forbidden lists, and approvals.</p>
+              <div id="actions-list"></div>
+              <button class="mini-btn add-row" type="button" id="btn-add-action">+ Add planned action</button>
+              <div class="row2" style="margin-top:14px">
+                <div class="field"><label for="f-tools">Allowed tools (one per line)</label><textarea id="f-tools"></textarea></div>
+                <div class="field"><label for="f-reqappr">Approval required for (one per line)</label><textarea id="f-reqappr"></textarea></div>
+              </div>
+              <div class="field"><label for="f-forbidden">Forbidden (one per line)</label><textarea id="f-forbidden"></textarea></div>
+              <div class="field"><label for="f-paths">Scope: owned paths (one per line)</label><textarea id="f-paths"></textarea></div>
+              <h2 style="font-size:19px;margin-top:20px">Approvals</h2>
+              <p class="sub">Signed by an approver, bound to this handoff's idempotency key.</p>
+              <div id="approvals-list"></div>
+              <button class="mini-btn add-row" type="button" id="btn-add-approval">+ Add signed approval</button>
+              <h2 style="font-size:19px;margin-top:20px">Budget</h2>
+              <div class="row3">
+                <div class="field"><label for="f-tokens">Tokens</label><input type="number" id="f-tokens" /></div>
+                <div class="field"><label for="f-usd">USD</label><input type="number" id="f-usd" step="0.01" /></div>
+                <div class="field"><label for="f-minutes">Minutes</label><input type="number" id="f-minutes" /></div>
+              </div>
+            </section>
+            <section class="card" aria-labelledby="evidence-h">
+              <h2 id="evidence-h">Evidence</h2>
+              <p class="sub">Content you paste is hashed live. The hash is pinned at signing; change the content after signing and the check fails.</p>
+              <div id="evidence-list"></div>
+              <button class="mini-btn add-row" type="button" id="btn-add-evidence">+ Add evidence</button>
+              <div class="row2" style="margin-top:14px">
+                <div class="field"><label for="f-reqev">Required evidence kinds (one per line)</label><textarea id="f-reqev"></textarea></div>
+                <div class="field"><label for="f-schema">Output schema</label><input type="text" id="f-schema" /></div>
+              </div>
+              <div class="field"><label for="f-staterev">Inputs: state revision</label><input type="text" id="f-staterev" /></div>
+            </section>
+          </div>
+          <div class="preview">
+            <div class="verdict" aria-live="polite">
+              <div class="verdict-head">
+                <span class="verdict-status idle" id="verdict-status">Not validated yet</span>
+                <button class="mini-btn" type="button" id="btn-reset-ledger" title="Clear the session idempotency ledger">Reset ledger</button>
+              </div>
+              <ul class="checks" id="checks"></ul>
+              <div class="verdict-actions">
+                <button class="btn" type="button" id="btn-sign">Sign packet</button>
+                <button class="btn secondary" type="button" id="btn-validate">Validate</button>
+              </div>
+            </div>
+            <div class="tabs" role="tablist" aria-label="Packet output formats">
+              <button class="tab" role="tab" aria-selected="true" data-tab="json" type="button">JSON packet</button>
+              <button class="tab" role="tab" aria-selected="false" data-tab="python" type="button">Python</button>
+              <button class="tab" role="tab" aria-selected="false" data-tab="cli" type="button">CLI</button>
+            </div>
+            <div class="terminal" id="terminal"><pre id="term-pre"></pre></div>
+            <div class="copybar"><button class="mini-btn" type="button" id="btn-copy">Copy</button></div>
+            <p class="honest">Validation here is a faithful subset of <code>handoff_check.py</code>: same field rules, same check order, same reason codes, real Ed25519 signatures. Receiver policy, workspace evidence files, and the full authority ceiling are checked only by the real tool. Run <code>python3 src/handoff_check.py</code> on the copied JSON for the complete verdict.</p>
+          </div>
+        </div>
+        <p style="margin-top:8px"><a class="textlink" href="forge.html">Next: try to forge a signed handoff</a></p>
+      </main>
+      <footer>
+        <p>Synthe is an early project, shared under an evaluation license.</p>
+        <nav>
+          <a href="/">Home</a>
+          <a href="forge.html">Forge this handoff</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="log.html">Changelog</a>
+          <a href="status.html">Status &amp; trust</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+        </nav>
+        <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
+      </footer>
+    </div>
+    <script>
+      /* ---------- core (pure; also exercised by Node tests) ---------- */
+      var te = new TextEncoder();
+      var PACKET_DOMAIN = "synthe/handoff-signature/v1";
+      var APPROVAL_DOMAIN = "synthe/approval-signature/v1";
+
+      function canonical(v) {
+        if (v === null || typeof v !== "object") return JSON.stringify(v);
+        if (Array.isArray(v)) return "[" + v.map(canonical).join(",") + "]";
+        return "{" + Object.keys(v).sort().map(function (k) {
+          return JSON.stringify(k) + ":" + canonical(v[k]);
+        }).join(",") + "}";
+      }
+      function hex(buf) {
+        return Array.prototype.map.call(new Uint8Array(buf), function (b) {
+          return b.toString(16).padStart(2, "0");
+        }).join("");
+      }
+      function b64u(bytes) {
+        var bin = "";
+        var u8 = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+        for (var i = 0; i < u8.length; i++) bin += String.fromCharCode(u8[i]);
+        return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+      }
+      function unb64u(s) {
+        s = String(s).replace(/-/g, "+").replace(/_/g, "/");
+        while (s.length % 4) s += "=";
+        var bin = atob(s);
+        var u8 = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+        return u8;
+      }
+      function sha256hex(s) { return crypto.subtle.digest("SHA-256", te.encode(s)).then(hex); }
+      function signingInput(handoff) {
+        var c = te.encode(canonical(handoff));
+        var d = te.encode(PACKET_DOMAIN + "\n");
+        var out = new Uint8Array(d.length + c.length);
+        out.set(d, 0); out.set(c, d.length);
+        return out;
+      }
+      function approvalInput(appr, handoff) {
+        var payload = {
+          action: appr.action, approver: appr.approver, expires_at: appr.expires_at,
+          idempotency_key: handoff.idempotency_key, from: handoff.from, to: handoff.to
+        };
+        var c = te.encode(canonical(payload));
+        var d = te.encode(APPROVAL_DOMAIN + "\n");
+        var out = new Uint8Array(d.length + c.length);
+        out.set(d, 0); out.set(c, d.length);
+        return out;
+      }
+
+      function check(code, label) { return { code: code, label: label, pass: true, detail: "" }; }
+      function failCheck(code, label, detail) { return { code: code, label: label, pass: false, detail: detail || "" }; }
+      // Live file contents travel alongside the packet for the demo's evidence
+      // check, but they are never part of the signed bytes (as in the real
+      // checker, where evidence lives in workspace files).
+      function stripContent(v) {
+        if (Array.isArray(v)) return v.map(stripContent);
+        if (v && typeof v === "object") {
+          var o = {};
+          Object.keys(v).forEach(function (k) { if (k !== "_content") o[k] = stripContent(v[k]); });
+          return o;
+        }
+        return v;
+      }
+
+      // Faithful subset of handoff_check.validate(): same field rules, same
+      // check order, same reason codes. Receiver policy, workspace files and
+      // the full authority ceiling live only in the real checker.
+      function validateHandoff(packet, registry, ledger, nowMs) {
+        var checks = [];
+        var h = packet && packet.handoff;
+        if (!h || typeof h !== "object") return { accept: false, checks: [failCheck("missing_handoff", "Packet structure", "packet must contain a 'handoff' object")], reasons: ["missing_handoff"] };
+
+        // 1. required fields
+        var c = check(null, "Required fields present");
+        var REQUIRED = ["id", "idempotency_key", "trace_id", "from", "to", "purpose", "schema_version", "on_failure", "scope", "authority", "acceptance", "inputs"];
+        var missing = REQUIRED.filter(function (f) { return !(f in h) || h[f] === null || h[f] === ""; });
+        checks.push(missing.length ? failCheck("missing_field:" + missing[0], c.label, "required field missing: " + missing[0]) : c);
+        if (missing.length) return done(checks);
+
+        // 2. schema version + enums + string shapes
+        c = check(null, "Schema version and enums");
+        if (h.schema_version !== "0.1") checks.push(failCheck("bad_schema_version", c.label, "unsupported schema_version: " + h.schema_version));
+        else if (["reject", "retry_with_budget", "escalate", "request_human"].indexOf(h.on_failure) === -1) checks.push(failCheck("bad_on_failure", c.label, "unknown on_failure: " + h.on_failure));
+        else {
+          var badStr = ["id", "idempotency_key", "trace_id", "from", "to", "purpose"].filter(function (n) { return typeof h[n] !== "string"; });
+          checks.push(badStr.length ? failCheck("malformed:" + badStr[0], c.label, badStr[0] + " must be a string") : c);
+        }
+        if (!checks[checks.length - 1].pass) return done(checks);
+
+        // 3. nested required fields
+        c = check(null, "Nested required fields");
+        var scope = h.scope, auth = h.authority, acc = h.acceptance, inputs = h.inputs;
+        var nestedOk = scope && auth && acc && inputs && typeof scope === "object" && typeof auth === "object" && typeof acc === "object" && typeof inputs === "object";
+        var nested = nestedOk ? [
+          ["inputs.state_revision", inputs.state_revision], ["inputs.artifact_refs", inputs.artifact_refs],
+          ["scope.owned_paths", scope.owned_paths], ["authority.allowed_tools", auth.allowed_tools],
+          ["authority.approval_required_for", auth.approval_required_for],
+          ["acceptance.output_schema", acc.output_schema], ["acceptance.required_evidence", acc.required_evidence],
+          ["acceptance.expires_at", acc.expires_at]
+        ] : [];
+        var allowEmpty = { "scope.owned_paths": 1, "authority.approval_required_for": 1 };
+        var badNested = nested.filter(function (p) { return p[1] === null || p[1] === undefined || p[1] === "" || (Array.isArray(p[1]) && !p[1].length && !allowEmpty[p[0]]); });
+        var budget = auth && auth.budget;
+        var budgetOk = budget && typeof budget === "object" && ["tokens", "usd", "minutes"].every(function (k) {
+          return typeof budget[k] === "number" && !isNaN(budget[k]);
+        });
+        if (!nestedOk) checks.push(failCheck("malformed:scope", c.label, "scope, authority, acceptance and inputs must be objects"));
+        else if (badNested.length) checks.push(failCheck("missing_field:" + badNested[0][0], c.label, "required field missing: " + badNested[0][0]));
+        else if (!budgetOk) checks.push(failCheck("missing_field:authority.budget", c.label, "authority.budget must define numeric tokens, usd, and minutes"));
+        else checks.push(c);
+        if (!checks[checks.length - 1].pass) return done(checks);
+
+        // 4. identity
+        c = check(null, "Sender and receiver known");
+        var agents = (registry && registry.agents) || {};
+        if (!agents[h.from]) checks.push(failCheck("unknown_agent:from", c.label, "from '" + h.from + "' is not in the agent registry"));
+        else if (!agents[h.to]) checks.push(failCheck("unknown_agent:to", c.label, "to '" + h.to + "' is not in the agent registry"));
+        else checks.push(c);
+        if (!checks[checks.length - 1].pass) return done(checks);
+
+        // 5. signature (this playground's receiver policy requires signatures)
+        var sig = packet.signature;
+        var sc = check(null, "Signature valid");
+        var sigChain = Promise.resolve(null);
+        if (!sig || typeof sig !== "object" || typeof sig.sig !== "string") {
+          checks.push(failCheck("signature_missing", sc.label, "receiver policy requires a signed packet; none present"));
+        } else if (sig.signer !== h.from) {
+          checks.push(failCheck("signature_signer_mismatch", sc.label, "packet signed by '" + sig.signer + "' but claims to be from '" + h.from + "'"));
+        } else {
+          var keyB64 = null;
+          ((agents[h.from] && agents[h.from].keys) || []).forEach(function (k) {
+            if (!keyB64 && k.alg !== "Ed448" && (!sig.kid || k.kid === sig.kid)) keyB64 = k.public_key;
+          });
+          if (!keyB64) {
+            checks.push(failCheck("signature_key_unknown", sc.label, "no Ed25519 key on record for '" + h.from + "'"));
+          } else {
+            sigChain = sigChain.then(function () {
+              var pub = unb64u(keyB64);
+              return crypto.subtle.importKey("raw", pub, { name: "Ed25519" }, false, ["verify"]).then(function (pubKey) {
+                return crypto.subtle.verify({ name: "Ed25519" }, pubKey, unb64u(sig.sig), signingInput(stripContent(h))).then(function (ok) {
+                  checks.push(ok ? sc : failCheck("signature_invalid", sc.label, "packet signature does not verify (packet altered after signing, or wrong key)"));
+                }, function () {
+                  checks.push(failCheck("signature_invalid", sc.label, "packet signature does not verify"));
+                });
+              }, function () {
+                checks.push(failCheck("signature_key_unknown", sc.label, "stored key is not a valid Ed25519 public key"));
+              });
+            });
+          }
+        }
+        return sigChain.then(function () {
+          if (!checks[checks.length - 1].pass) return done(checks);
+          // 6. idempotency
+          c = check(null, "Idempotency key fresh");
+          checks.push(ledger.has(h.idempotency_key)
+            ? failCheck("duplicate_idempotency_key", c.label, "idempotency_key already completed by an earlier handoff")
+            : c);
+          if (!checks[checks.length - 1].pass) return done(checks);
+          // 7. freshness
+          c = check(null, "Not expired");
+          var exp = Date.parse(acc.expires_at);
+          if (isNaN(exp)) checks.push(failCheck("bad_expires_at", c.label, "acceptance.expires_at is not a valid timestamp"));
+          else if (exp <= nowMs) checks.push(failCheck("handoff_expired", c.label, "handoff expired at " + acc.expires_at));
+          else checks.push(c);
+          if (!checks[checks.length - 1].pass) return done(checks);
+          // 8. authority: tools, forbidden, approvals, budget
+          c = check(null, "Authority: tools, approvals, budget");
+          var acts = h.planned_actions || [];
+          var problems = [];
+          acts.forEach(function (a) {
+            if ((auth.allowed_tools || []).indexOf(a.tool) === -1) problems.push(["tool_not_allowed", "action '" + a.name + "' uses tool '" + a.tool + "' not in allowed_tools"]);
+            else if ((scope.forbidden || []).indexOf(a.tool) !== -1 || (scope.forbidden || []).indexOf(a.name) !== -1) problems.push(["forbidden_action", "action '" + a.name + "' is forbidden by scope"]);
+            else if ((auth.approval_required_for || []).indexOf(a.tool) !== -1) {
+              var covering = (auth.approvals || []).filter(function (ap) { return ap.action === a.name || ap.action === a.tool; });
+              if (!covering.length) problems.push(["approval_missing", "action '" + a.name + "' needs approval; none recorded"]);
+            }
+          });
+          var est = { tokens: 0, usd: 0, minutes: 0 };
+          acts.forEach(function (a) { est.tokens += a.est_tokens || 0; est.usd += a.est_usd || 0; est.minutes += a.est_minutes || 0; });
+          ["tokens", "usd", "minutes"].forEach(function (k) {
+            if (est[k] > budget[k]) problems.push(["budget_exceeded", "estimated " + k + " " + est[k] + " exceeds budget " + budget[k]]);
+          });
+          // approvals that carry a signature must verify against the approver's key
+          var apChain = Promise.resolve(null);
+          (auth.approvals || []).forEach(function (ap) {
+            apChain = apChain.then(function (p) {
+              if (p || !ap.sig) return p;
+              var aexp = Date.parse(ap.expires_at);
+              if (!isNaN(aexp) && aexp <= nowMs) return failCheck("approval_expired", c.label, "approval for '" + ap.action + "' expired at " + ap.expires_at);
+              var akeyB64 = null;
+              ((agents[ap.approver] && agents[ap.approver].keys) || []).forEach(function (k) {
+                if (!akeyB64 && (!ap.kid || k.kid === ap.kid)) akeyB64 = k.public_key;
+              });
+              if (!akeyB64) return failCheck("approval_signature_invalid", c.label, "no key on record for approver '" + ap.approver + "'");
+              return crypto.subtle.importKey("raw", unb64u(akeyB64), { name: "Ed25519" }, false, ["verify"]).then(function (pubKey) {
+                return crypto.subtle.verify({ name: "Ed25519" }, pubKey, unb64u(ap.sig), approvalInput(ap, h)).then(function (ok) {
+                  if (!ok) return failCheck("approval_signature_invalid", c.label, "approval for '" + ap.action + "' carries a signature that does not verify for approver '" + ap.approver + "'");
+                  return null;
+                }, function () { return failCheck("approval_signature_invalid", c.label, "approval for '" + ap.action + "' carries a signature that does not verify"); });
+              }, function () { return failCheck("approval_signature_invalid", c.label, "stored key for approver '" + ap.approver + "' is not valid"); });
+            });
+          });
+          return apChain.then(function (apFail) {
+            if (apFail) { checks.push(apFail); return done(checks); }
+            checks.push(problems.length ? failCheck(problems[0][0], c.label, problems[0][1]) : c);
+            if (!checks[checks.length - 1].pass) return done(checks);
+          // 9. evidence pins (verbatim quotes pinned at signing)
+          c = check(null, "Evidence pins match");
+          var evChain = Promise.resolve(null);
+          (acc.evidence || []).forEach(function (ev) {
+            evChain = evChain.then(function (p) {
+              if (p) return p;
+              if (ev.kind !== "verbatim_quote") return null;
+              if (!ev.sha256) return failCheck("verbatim_evidence_unpinned", c.label, "verbatim evidence '" + ev.ref + "' has no pinned hash");
+              return sha256hex(ev._content || "").then(function (hh) {
+                if (hh !== ev.sha256) return failCheck("evidence_not_verbatim", c.label, "evidence '" + ev.ref + "' does not match its pinned hash");
+                return null;
+              });
+            });
+          });
+          return evChain.then(function (p) {
+            checks.push(p || c);
+            if (!checks[checks.length - 1].pass) return done(checks);
+            // 10. input artifact pins
+            c = check(null, "Input artifact pins match");
+            var artChain = Promise.resolve(null);
+            (inputs.artifact_refs || []).forEach(function (ref) {
+              artChain = artChain.then(function (q) {
+                if (q) return q;
+                if (!ref.sha256) return null;
+                return sha256hex(ref._content || "").then(function (hh) {
+                  if (hh !== ref.sha256) return failCheck("artifact_hash_mismatch", c.label, "artifact changed since handoff: " + ref.path);
+                  return null;
+                });
+              });
+            });
+            return artChain.then(function (q) {
+              checks.push(q || c);
+              return done(checks);
+            });
+          });
+          });
+        });
+
+        function done(list) {
+          var bad = list.filter(function (x) { return !x.pass; });
+          return { accept: !bad.length, checks: list, reasons: bad.map(function (x) { return x.code; }) };
+        }
+      }
+      /* ---------- UI ---------- */
+      (function () {
+        "use strict";
+        if (!window.crypto || !crypto.subtle) {
+          document.getElementById("term-pre").textContent = "WebCrypto is unavailable in this browser, so signing cannot run here.";
+          return;
+        }
+        var edOK = true;
+        try { crypto.subtle.generateKey({ name: "Ed25519" }, false, ["sign"]); }
+        catch (e) { edOK = false; }
+
+        var state = null;
+        var ledger = new Set();
+        var signedPacket = null;   // last signed packet
+        var signedHash = null;     // sha256 of canonical handoff at sign time
+        var activeTab = "json";
+
+        function defaultState() {
+          return {
+            agents: {}, agentOrder: [],
+            from: "alice", to: "bob",
+            purpose: "Verify the M-1 verdict pack before it enters the rules store",
+            id: "h-0001", trace: "trace-demo-001", idem: "demo:verdict-pack:rev-7",
+            onfail: "reject", expires: "2999-01-01T00:00:00Z",
+            actions: [{ name: "read_rules", tool: "read_repo", est_minutes: 10, est_tokens: 5000, est_usd: 0.2 }],
+            tools: ["read_repo", "run_tests"], reqappr: ["send_email"], forbidden: ["send_email", "publish", "delete"],
+            paths: ["rules/**"],
+            approvals: [],
+            tokens: 50000, usd: 2, minutes: 30,
+            artifacts: [{ path: "context/brief.md", content: "Client brief for the M-1 verdict pack review.", sha256: null }],
+            evidence: [{ kind: "verbatim_quote", ref: "rules/M-1.md#m1-u-12", content: "M-1 light industrial: retail is a conditional use.", sha256: null }],
+            reqev: ["verbatim_quote"], schema: "verdict_pack.v1", staterev: "rev-42"
+          };
+        }
+
+        function genAgentKeys(id, role) {
+          return crypto.subtle.generateKey({ name: "Ed25519" }, true, ["sign", "verify"]).then(function (kp) {
+            return crypto.subtle.exportKey("raw", kp.publicKey).then(function (raw) {
+              state.agents[id] = { role: role, kid: "demo-1", priv: kp.privateKey, pub: kp.publicKey, pubB64: b64u(raw) };
+              if (state.agentOrder.indexOf(id) === -1) state.agentOrder.push(id);
+            });
+          });
+        }
+        function freshKeys() {
+          var ids = state.agentOrder.length ? state.agentOrder.slice() : ["alice", "bob", "supervisor"];
+          var roles = { alice: "drafter", bob: "receiver", supervisor: "approver" };
+          state.agents = {}; state.agentOrder = [];
+          var chain = Promise.resolve();
+          ids.forEach(function (id) {
+            chain = chain.then(function () { return genAgentKeys(id, (state.agents[id] && state.agents[id].role) || roles[id] || "agent"); });
+          });
+          return chain.then(renderAll);
+        }
+
+        function buildHandoff() {
+          var ev = state.evidence.map(function (e) {
+            var o = { kind: e.kind, ref: e.ref };
+            if (e.kind === "verbatim_quote") o.verbatim = true;
+            if (e.sha256) o.sha256 = e.sha256;
+            return o;
+          });
+          return {
+            acceptance: {
+              evidence: ev,
+              expires_at: state.expires,
+              output_schema: state.schema,
+              required_evidence: state.reqev.slice()
+            },
+            authority: {
+              allowed_tools: state.tools.slice(),
+              approval_required_for: state.reqappr.slice(),
+              approvals: state.approvals.map(function (a) {
+                return { action: a.action, approver: a.approver, expires_at: a.expires_at, sig: a.sig, kid: a.kid };
+              }),
+              budget: { minutes: state.minutes, tokens: state.tokens, usd: state.usd }
+            },
+            from: state.from,
+            id: state.id,
+            idempotency_key: state.idem,
+            inputs: { artifact_refs: state.artifacts.map(function (a) { return { path: a.path, sha256: a.sha256 }; }), state_revision: state.staterev },
+            on_failure: state.onfail,
+            planned_actions: state.actions.map(function (a) {
+              return { name: a.name, tool: a.tool, est_minutes: a.est_minutes, est_tokens: a.est_tokens, est_usd: a.est_usd };
+            }),
+            purpose: state.purpose,
+            schema_version: "0.1",
+            scope: { forbidden: state.forbidden.slice(), owned_paths: state.paths.slice() },
+            to: state.to,
+            trace_id: state.trace
+          };
+        }
+        function buildRegistry() {
+          var agents = {};
+          state.agentOrder.forEach(function (id) {
+            var a = state.agents[id];
+            agents[id] = { role: a.role, keys: [{ alg: "Ed25519", kid: a.kid, public_key: a.pubB64 }] };
+          });
+          return { agents: agents };
+        }
+        function currentPacket() {
+          var h = buildHandoff();
+          if (!signedPacket) return { handoff: h };
+          return signedPacket;
+        }
+
+        function esc(s) {
+          return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        /* ----- rendering ----- */
+        function renderParties() {
+          var fs = document.getElementById("f-from"), ts = document.getElementById("f-to");
+          fs.innerHTML = ""; ts.innerHTML = "";
+          state.agentOrder.forEach(function (id) {
+            var o1 = document.createElement("option"); o1.value = id; o1.textContent = id;
+            var o2 = document.createElement("option"); o2.value = id; o2.textContent = id;
+            if (id === state.from) o1.selected = true;
+            if (id === state.to) o2.selected = true;
+            fs.appendChild(o1); ts.appendChild(o2);
+          });
+          var rl = document.getElementById("registry-list");
+          rl.innerHTML = "";
+          state.agentOrder.forEach(function (id) {
+            var a = state.agents[id];
+            var div = document.createElement("div");
+            div.className = "registry-agent";
+            div.innerHTML = "<div><strong>" + esc(id) + "</strong> <span style='color:var(--muted)'>· " + esc(a.role) + "</span><br><code>" + esc(a.pubB64.slice(0, 44)) + "…</code></div>";
+            var del = document.createElement("button");
+            del.className = "mini-btn danger"; del.type = "button"; del.textContent = "Remove";
+            del.addEventListener("click", function () {
+              delete state.agents[id];
+              state.agentOrder = state.agentOrder.filter(function (x) { return x !== id; });
+              if (state.from === id) state.from = state.agentOrder[0] || "";
+              if (state.to === id) state.to = state.agentOrder[0] || "";
+              renderAll();
+            });
+            div.appendChild(del);
+            rl.appendChild(div);
+          });
+        }
+        function renderActions() {
+          var box = document.getElementById("actions-list");
+          box.innerHTML = "";
+          state.actions.forEach(function (a, i) {
+            var div = document.createElement("div");
+            div.className = "listitem";
+            div.innerHTML =
+              '<div class="row2"><div class="field"><label>Action name</label><input type="text" data-a="name" value="' + esc(a.name) + '"></div>' +
+              '<div class="field"><label>Tool</label><input type="text" data-a="tool" value="' + esc(a.tool) + '"></div></div>' +
+              '<div class="row3"><div class="field"><label>Est. min</label><input type="number" data-a="est_minutes" value="' + esc(a.est_minutes) + '"></div>' +
+              '<div class="field"><label>Est. tokens</label><input type="number" data-a="est_tokens" value="' + esc(a.est_tokens) + '"></div>' +
+              '<div class="field"><label>Est. USD</label><input type="number" step="0.01" data-a="est_usd" value="' + esc(a.est_usd) + '"></div></div>';
+            var del = document.createElement("button");
+            del.className = "mini-btn danger"; del.type = "button"; del.textContent = "Remove action";
+            del.addEventListener("click", function () { state.actions.splice(i, 1); markDirty(); renderActions(); });
+            div.appendChild(del);
+            div.querySelectorAll("input").forEach(function (inp) {
+              inp.addEventListener("input", function () {
+                var k = inp.getAttribute("data-a");
+                a[k] = (k === "name" || k === "tool") ? inp.value : parseFloat(inp.value) || 0;
+                markDirty();
+              });
+            });
+            box.appendChild(div);
+          });
+        }
+        function renderApprovals() {
+          var box = document.getElementById("approvals-list");
+          box.innerHTML = "";
+          if (!state.approvals.length) {
+            box.innerHTML = "<p style='font-size:14px;color:var(--muted)'>No approvals yet.</p>";
+          }
+          state.approvals.forEach(function (a, i) {
+            var div = document.createElement("div");
+            div.className = "listitem";
+            div.innerHTML = "<div style='font-size:14.5px'><strong>" + esc(a.approver) + "</strong> approved <code style='font-family:var(--mono);font-size:12.5px'>" + esc(a.action) + "</code><br><span style='color:var(--muted);font-size:13px'>sig " + esc(String(a.sig).slice(0, 24)) + "… · bound to this idempotency key</span></div>";
+            var del = document.createElement("button");
+            del.className = "mini-btn danger"; del.type = "button"; del.textContent = "Remove";
+            del.style.marginTop = "8px";
+            del.addEventListener("click", function () { state.approvals.splice(i, 1); markDirty(); renderApprovals(); });
+            div.appendChild(del);
+            box.appendChild(div);
+          });
+        }
+        function renderArtifacts() {
+          var box = document.getElementById("artifacts-list");
+          box.innerHTML = "";
+          state.artifacts.forEach(function (a, i) {
+            var div = document.createElement("div");
+            div.className = "listitem";
+            div.innerHTML =
+              '<div class="field"><label>Path</label><input type="text" data-x="path" value="' + esc(a.path) + '"></div>' +
+              '<div class="field"><label>Content (hashed live)</label><textarea data-x="content">' + esc(a.content) + '</textarea></div>' +
+              '<div style="font-family:var(--mono);font-size:12px;color:var(--muted)">sha256: <span data-x="hash">' + (a._live || "…") + '</span>' + (a.sha256 ? ' · pinned at signing' : '') + '</div>';
+            var del = document.createElement("button");
+            del.className = "mini-btn danger"; del.type = "button"; del.textContent = "Remove artifact";
+            del.style.marginTop = "8px";
+            del.addEventListener("click", function () { state.artifacts.splice(i, 1); markDirty(); renderArtifacts(); });
+            div.appendChild(del);
+            div.querySelectorAll("[data-x]").forEach(function (inp) {
+              inp.addEventListener("input", function () {
+                var k = inp.getAttribute("data-x");
+                if (k === "hash") return;
+                a[k] = inp.value;
+                markDirty();
+                if (k === "content") {
+                  sha256hex(a.content).then(function (hh) {
+                    a._live = hh;
+                    var s = div.querySelector('[data-x="hash"]');
+                    if (s) s.textContent = hh;
+                  });
+                }
+              });
+            });
+            sha256hex(a.content).then(function (hh) {
+              a._live = hh;
+              var s = div.querySelector('[data-x="hash"]');
+              if (s) s.textContent = hh;
+            });
+            box.appendChild(div);
+          });
+        }
+        function renderEvidence() {
+          var box = document.getElementById("evidence-list");
+          box.innerHTML = "";
+          state.evidence.forEach(function (e, i) {
+            var div = document.createElement("div");
+            div.className = "listitem";
+            div.innerHTML =
+              '<div class="row2"><div class="field"><label>Kind</label><select data-e="kind">' +
+              '<option value="verbatim_quote"' + (e.kind === "verbatim_quote" ? " selected" : "") + '>verbatim_quote</option>' +
+              '<option value="test_output"' + (e.kind === "test_output" ? " selected" : "") + '>test_output</option></select></div>' +
+              '<div class="field"><label>Ref</label><input type="text" data-e="ref" value="' + esc(e.ref) + '"></div></div>' +
+              '<div class="field"><label>Content (hashed live)</label><textarea data-e="content">' + esc(e.content) + '</textarea></div>' +
+              '<div style="font-family:var(--mono);font-size:12px;color:var(--muted)">sha256: <span data-e="hash">' + (e._live || "…") + '</span>' + (e.sha256 ? ' · pinned at signing' : '') + '</div>';
+            var del = document.createElement("button");
+            del.className = "mini-btn danger"; del.type = "button"; del.textContent = "Remove evidence";
+            del.style.marginTop = "8px";
+            del.addEventListener("click", function () { state.evidence.splice(i, 1); markDirty(); renderEvidence(); });
+            div.appendChild(del);
+            div.querySelectorAll("[data-e]").forEach(function (inp) {
+              inp.addEventListener("input", function () {
+                var k = inp.getAttribute("data-e");
+                if (k === "hash") return;
+                e[k] = inp.value;
+                markDirty();
+                if (k === "content") {
+                  sha256hex(e.content).then(function (hh) {
+                    e._live = hh;
+                    var s = div.querySelector('[data-e="hash"]');
+                    if (s) s.textContent = hh;
+                  });
+                }
+              });
+            });
+            sha256hex(e.content).then(function (hh) {
+              e._live = hh;
+              var s = div.querySelector('[data-e="hash"]');
+              if (s) s.textContent = hh;
+            });
+            box.appendChild(div);
+          });
+        }
+        function linesTo(id) {
+          return document.getElementById(id).value.split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
+        }
+        function syncFromForm() {
+          state.from = document.getElementById("f-from").value;
+          state.to = document.getElementById("f-to").value;
+          state.purpose = document.getElementById("f-purpose").value;
+          state.id = document.getElementById("f-id").value;
+          state.trace = document.getElementById("f-trace").value;
+          state.idem = document.getElementById("f-idem").value;
+          state.onfail = document.getElementById("f-onfail").value;
+          state.expires = document.getElementById("f-expires").value;
+          state.tools = linesTo("f-tools"); state.reqappr = linesTo("f-reqappr");
+          state.forbidden = linesTo("f-forbidden"); state.paths = linesTo("f-paths");
+          state.reqev = linesTo("f-reqev"); state.schema = document.getElementById("f-schema").value;
+          state.staterev = document.getElementById("f-staterev").value;
+          state.tokens = parseFloat(document.getElementById("f-tokens").value) || 0;
+          state.usd = parseFloat(document.getElementById("f-usd").value) || 0;
+          state.minutes = parseFloat(document.getElementById("f-minutes").value) || 0;
+        }
+        function fillForm() {
+          document.getElementById("f-purpose").value = state.purpose;
+          document.getElementById("f-id").value = state.id;
+          document.getElementById("f-trace").value = state.trace;
+          document.getElementById("f-idem").value = state.idem;
+          document.getElementById("f-onfail").value = state.onfail;
+          document.getElementById("f-expires").value = state.expires;
+          document.getElementById("f-tools").value = state.tools.join("\n");
+          document.getElementById("f-reqappr").value = state.reqappr.join("\n");
+          document.getElementById("f-forbidden").value = state.forbidden.join("\n");
+          document.getElementById("f-paths").value = state.paths.join("\n");
+          document.getElementById("f-reqev").value = state.reqev.join("\n");
+          document.getElementById("f-schema").value = state.schema;
+          document.getElementById("f-staterev").value = state.staterev;
+          document.getElementById("f-tokens").value = state.tokens;
+          document.getElementById("f-usd").value = state.usd;
+          document.getElementById("f-minutes").value = state.minutes;
+        }
+        function markDirty() { syncFromForm(); renderTerminal(); }
+
+        /* ----- terminal tabs ----- */
+        function packetJSON() {
+          return JSON.stringify(currentPacket(), null, 2);
+        }
+        function pythonCode() {
+          var h = buildHandoff();
+          var a = state.agents[state.from];
+          var pubB64 = a ? a.pubB64 : "PASTE_PUBLIC_KEY";
+          var blob = JSON.stringify(h);
+          return [
+            "import json, sys",
+            "sys.path.insert(0, \"src\")  # from a clone of github.com/rohansiddam/Synthe",
+            "import synthe_crypto as sc",
+            "",
+            "handoff = json.loads(" + JSON.stringify(blob) + ")",
+            "",
+            "# sender: sign the canonical bytes (domain-separated, Ed25519)",
+            "secret = sc.unb64u(\"<demo private key: base64url, 32 bytes>\")",
+            "sig = sc.b64u(sc.sign_bytes(secret, sc.packet_signing_input(handoff)))",
+            "packet = {\"handoff\": handoff,",
+            "          \"signature\": {\"alg\": \"Ed25519\", \"signer\": " + JSON.stringify(state.from) + ",",
+            "                          \"kid\": \"demo-1\", \"sig\": sig}}",
+            "",
+            "# receiver: verify against the registry key",
+            "public = sc.unb64u(" + JSON.stringify(pubB64) + ")",
+            "ok = sc.verify_bytes(public, sc.packet_signing_input(handoff), sc.unb64u(sig))",
+            "print(\"signature ok:\", ok)",
+            "",
+            "# full verdict (structure, authority, evidence, idempotency):",
+            "# python3 src/handoff_check.py packet.json --registry registry.json --workspace . --ledger ledger.json"
+          ].join("\n");
+        }
+        function cliCode() {
+          return [
+            "$ git clone https://github.com/rohansiddam/Synthe.git && cd Synthe",
+            "$ python3 src/synthe_sign.py keygen --agent " + state.from + " --out keys/" + state.from + ".json",
+            "  # paste the printed public entry under agents." + state.from + ".keys in registry.json",
+            "$ python3 src/synthe_sign.py sign packet.json --key keys/" + state.from + ".json --out signed.json",
+            "$ python3 src/handoff_check.py signed.json --registry registry.json --workspace . --ledger ledger.json",
+            "ACCEPT"
+          ].join("\n");
+        }
+        function renderTerminal() {
+          var pre = document.getElementById("term-pre");
+          var txt = activeTab === "json" ? packetJSON() : activeTab === "python" ? pythonCode() : cliCode();
+          pre.textContent = txt;
+        }
+
+        /* ----- verdict ----- */
+        function renderVerdict(res) {
+          var st = document.getElementById("verdict-status");
+          var ul = document.getElementById("checks");
+          ul.innerHTML = "";
+          if (!res) {
+            st.className = "verdict-status idle";
+            st.textContent = signedPacket ? "Signed · not yet validated" : "Not validated yet";
+            return;
+          }
+          st.className = "verdict-status " + (res.accept ? "accept" : "reject");
+          st.textContent = res.accept ? "ACCEPT" : "REJECT · " + (res.reasons[0] || "invalid");
+          res.checks.forEach(function (chk) {
+            var li = document.createElement("li");
+            li.className = chk.pass ? "pass" : "fail";
+            var detail = chk.pass ? "" : " <code>" + esc(chk.code) + "</code> " + esc(chk.detail);
+            li.innerHTML = '<span class="dot">' + (chk.pass ? "✓" : "✕") + "</span><span>" + esc(chk.label) + detail + "</span>";
+            ul.appendChild(li);
+          });
+        }
+        function runValidation() {
+          syncFromForm();
+          var pkt = currentPacket();
+          // attach live evidence content for the evidence check
+          var h = JSON.parse(JSON.stringify(pkt.handoff));
+          h.acceptance.evidence.forEach(function (ev, i) {
+            if (state.evidence[i]) ev._content = state.evidence[i].content;
+          });
+          h.inputs.artifact_refs.forEach(function (ref, i) {
+            if (state.artifacts[i]) ref._content = state.artifacts[i].content;
+          });
+          return validateHandoff({ handoff: h, signature: pkt.signature }, buildRegistry(), ledger, Date.now()).then(function (res) {
+            if (res.accept) ledger.add(h.idempotency_key);
+            renderVerdict(res);
+            return res;
+          });
+        }
+
+        function signPacket() {
+          syncFromForm();
+          var a = state.agents[state.from];
+          if (!a) { renderVerdict({ accept: false, checks: [failCheck("unknown_agent:from", "Sender known", "no key for '" + state.from + "'")], reasons: ["unknown_agent:from"] }); return; }
+          // pin evidence and artifact hashes at signing time
+          var chain = Promise.resolve();
+          state.evidence.forEach(function (e) {
+            chain = chain.then(function () {
+              if (e.kind === "verbatim_quote") return sha256hex(e.content).then(function (hh) { e.sha256 = hh; });
+            });
+          });
+          state.artifacts.forEach(function (a) {
+            chain = chain.then(function () {
+              return sha256hex(a.content).then(function (hh) { a.sha256 = hh; });
+            });
+          });
+          chain.then(function () {
+            var h = buildHandoff();
+            return crypto.subtle.sign({ name: "Ed25519" }, a.priv, signingInput(h)).then(function (sigBuf) {
+              signedPacket = {
+                handoff: h,
+                signature: { alg: "Ed25519", signer: state.from, kid: a.kid, sig: b64u(sigBuf) }
+              };
+              renderEvidence();
+              renderArtifacts();
+              renderTerminal();
+              return runValidation();
+            });
+          });
+        }
+
+        function renderAll() {
+          renderParties(); renderActions(); renderApprovals(); renderEvidence(); renderArtifacts();
+          renderTerminal(); renderVerdict(null);
+        }
+
+        /* ----- events ----- */
+        document.querySelectorAll(".tab").forEach(function (t) {
+          t.addEventListener("click", function () {
+            activeTab = t.getAttribute("data-tab");
+            document.querySelectorAll(".tab").forEach(function (x) { x.setAttribute("aria-selected", x === t ? "true" : "false"); });
+            renderTerminal();
+          });
+        });
+        ["f-from", "f-to", "f-purpose", "f-id", "f-trace", "f-idem", "f-onfail", "f-expires",
+         "f-tools", "f-reqappr", "f-forbidden", "f-paths", "f-reqev", "f-schema", "f-staterev",
+         "f-tokens", "f-usd", "f-minutes"].forEach(function (id) {
+          document.getElementById(id).addEventListener("input", markDirty);
+        });
+        document.getElementById("btn-sign").addEventListener("click", signPacket);
+        document.getElementById("btn-validate").addEventListener("click", runValidation);
+        document.getElementById("btn-reset-ledger").addEventListener("click", function () {
+          ledger = new Set(); renderVerdict(null);
+        });
+        document.getElementById("btn-copy").addEventListener("click", function () {
+          var txt = document.getElementById("term-pre").textContent;
+          var btn = this;
+          function done() { btn.textContent = "Copied"; setTimeout(function () { btn.textContent = "Copy"; }, 1500); }
+          if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, done);
+          else done();
+        });
+        document.getElementById("btn-add-action").addEventListener("click", function () {
+          state.actions.push({ name: "new_action", tool: state.tools[0] || "read_repo", est_minutes: 5, est_tokens: 1000, est_usd: 0.05 });
+          markDirty(); renderActions();
+        });
+        document.getElementById("btn-add-artifact").addEventListener("click", function () {
+          state.artifacts.push({ path: "context/notes.md", content: "Paste the artifact content here.", sha256: null });
+          markDirty(); renderArtifacts();
+        });
+        document.getElementById("btn-add-evidence").addEventListener("click", function () {
+          state.evidence.push({ kind: "verbatim_quote", ref: "notes.md#l1", content: "Paste the exact quoted text here.", sha256: null });
+          markDirty(); renderEvidence();
+        });
+        document.getElementById("btn-add-approval").addEventListener("click", function () {
+          var approver = state.to === state.from ? state.agentOrder[0] : state.to;
+          var key = state.agents[approver];
+          if (!key) return;
+          var action = state.actions[0] ? state.actions[0].name : "read_rules";
+          var appr = { action: action, approver: approver, expires_at: "2999-01-01T00:00:00Z", kid: key.kid };
+          var h = buildHandoff();
+          crypto.subtle.sign({ name: "Ed25519" }, key.priv, approvalInput(appr, h)).then(function (buf) {
+            appr.sig = b64u(buf);
+            state.approvals.push(appr);
+            markDirty(); renderApprovals();
+          });
+        });
+        document.getElementById("btn-add-agent").addEventListener("click", function () {
+          var id = document.getElementById("f-newagent").value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, "");
+          var role = document.getElementById("f-newrole").value.trim() || "agent";
+          if (!id || state.agents[id]) return;
+          genAgentKeys(id, role).then(function () {
+            document.getElementById("f-newagent").value = "";
+            document.getElementById("f-newrole").value = "";
+            renderAll();
+          });
+        });
+        document.getElementById("btn-rekey").addEventListener("click", function () {
+          signedPacket = null;
+          freshKeys();
+        });
+        document.querySelectorAll("[data-preset]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var p = b.getAttribute("data-preset");
+            if (p === "noapproval") {
+              state.reqappr = ["read_repo"];
+              state.approvals = [];
+            } else if (p === "unknown") {
+              state.from = "mallory";
+              state.agentOrder = state.agentOrder.filter(function (x) { return x !== "mallory"; });
+            } else {
+              state.reqappr = ["send_email"];
+              state.from = "alice";
+            }
+            signedPacket = null;
+            fillForm(); renderAll();
+          });
+        });
+
+        /* ----- init ----- */
+        state = defaultState();
+        fillForm();
+        if (!edOK) {
+          document.getElementById("term-pre").textContent = "This browser does not support Ed25519 in WebCrypto, so signing cannot run here. Try a recent Chrome, Edge, Safari, or Firefox.";
+          renderParties();
+          return;
+        }
+        freshKeys();
+      })();
+    </script>
+  </body>
+</html>
