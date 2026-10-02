@@ -830,6 +830,14 @@
       .sim-terminal { margin-top: 0; }
       .sim-terminal .term-body { min-height: 110px; }
 
+      /* Live demo: invisible full-size sizer reserves the space so the
+         looping animation never moves the rest of the page */
+      .term-stage { position: relative; }
+      .term-sizer { visibility: hidden; }
+      #live-terminal { position: absolute; inset: 0; overflow: hidden; }
+      .term-stage.is-static #live-terminal { display: none; }
+      .term-stage.is-static .term-sizer { visibility: visible; }
+
       @media (max-width: 600px) {
         .change.versus { grid-template-columns: 1fr; }
         .stats { grid-template-columns: repeat(2, 1fr); gap: 20px 12px; }
@@ -958,7 +966,10 @@
           <h2 id="seeit-h">See it <em>run</em></h2>
           <div class="terminal">
             <div class="term-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><button class="copybtn" type="button" data-copy="live">Copy</button></div>
-            <div id="live-terminal" aria-live="polite" aria-label="Live demo: the same handoff submitted three times. First ACCEPT, then REJECT as duplicate twice."></div>
+            <div class="term-stage" id="term-stage">
+              <div class="term-sizer" aria-hidden="true"></div>
+              <div id="live-terminal" aria-live="polite" aria-label="Live demo: the same handoff submitted three times. First ACCEPT, then REJECT as duplicate twice."></div>
+            </div>
           </div>
 
           <h3 class="seeit-sub">What this catches</h3>
@@ -1242,8 +1253,12 @@
           track.innerHTML += track.innerHTML;
         }
 
-        /* Live terminal: plays the three-submission demo on a loop */
+        /* Live terminal: plays the three-submission demo on a loop.
+           A hidden full-size sizer reserves the terminal's final height,
+           so the looping animation never shifts the page layout. */
         var term = document.getElementById("live-terminal");
+        var termStage = document.getElementById("term-stage");
+        var termSizer = termStage.querySelector(".term-sizer");
         var script = [
           { type: "cmd", text: "submit handoff" },
           { type: "out", cls: "accept", text: "ACCEPT" },
@@ -1263,17 +1278,18 @@
           return new Promise(function (resolve) { setTimeout(resolve, ms); });
         }
 
-        function renderStatic() {
+        function buildStatic() {
           var html = "";
+          var firstInGroup = true;
           script.forEach(function (step) {
             if (step.type === "cmd") {
-              if (html) html += "<br />";
-              html += '<p><span class="prompt">$ </span><span class="cmd">' + step.text + "</span></p>";
+              html += '<p' + (firstInGroup ? "" : ' style="margin-top:16px"') + '><span class="prompt">$ </span><span class="cmd">' + step.text + "</span></p>";
+              firstInGroup = false;
             } else if (step.type === "out") {
               html += '<p><span class="' + step.cls + '">' + step.text + "</span></p>";
             }
           });
-          term.innerHTML = html;
+          return html;
         }
 
         async function play() {
@@ -1313,8 +1329,9 @@
         }
 
         if (!term) return;
+        termSizer.innerHTML = buildStatic();
         if (reduceMotion) {
-          renderStatic();
+          termStage.classList.add("is-static");
         } else {
           play();
         }
