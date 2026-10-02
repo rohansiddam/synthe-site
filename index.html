@@ -409,60 +409,6 @@
       }
       .catchcard .snippet .rej { color: var(--term-amber); font-weight: 600; }
 
-      /* Attack dropdowns */
-      .attack {
-        border: 1px solid var(--line);
-        border-radius: 14px;
-        background: rgba(255, 255, 255, 0.5);
-        margin-top: 12px;
-        overflow: hidden;
-      }
-      .attack summary {
-        list-style: none;
-        cursor: pointer;
-        padding: 18px 22px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        font-family: "Fraunces", Georgia, serif;
-        font-size: 19px;
-        font-weight: 500;
-        letter-spacing: -0.01em;
-      }
-      .attack summary::-webkit-details-marker { display: none; }
-      .attack summary:hover { color: var(--rust); }
-      .attack summary .plus {
-        flex: none;
-        font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: 20px;
-        color: var(--rust);
-        transition: transform 0.2s ease;
-      }
-      .attack[open] summary .plus { transform: rotate(45deg); }
-      .attack-body { padding: 0 22px 22px; }
-      .attack-body .desc {
-        margin: 0 0 14px;
-        font-size: 15px;
-        line-height: 1.6;
-        color: var(--ink-soft);
-        max-width: 36em;
-      }
-      .mini-term {
-        background: var(--term-bg);
-        color: var(--term-cream);
-        border-radius: 12px;
-        padding: 16px 18px;
-        font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: 13px;
-        line-height: 1.7;
-      }
-      .mini-term p { margin: 0; }
-      .mini-term p + p { margin-top: 8px; }
-      .mini-term .cmd { word-break: break-all; }
-      .mini-term .prompt { color: var(--muted); }
-      .mini-term .rej { color: var(--term-amber); font-weight: 600; }
-
       /* Steps */
       .steps { list-style: none; margin: 0; padding: 0; }
       .steps li {
@@ -1035,7 +981,7 @@
 
         <section class="block" aria-labelledby="breakit-h">
           <h2 id="breakit-h">Try to <em>break it</em></h2>
-          <p class="blockintro">The repo ships one valid signed packet and eight attacks. Step through them with the arrows and watch each verdict land, or open any attack for the exact command.</p>
+          <p class="blockintro">The repo ships one valid signed packet and eight attacks. Step through them with the arrows and watch each verdict land.</p>
           <div class="terminal" role="group" aria-label="Shell loop running the checker over every v03 example packet.">
             <div class="term-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><button class="copybtn" type="button">Copy</button></div>
             <p><span class="prompt">$ </span><span class="cmd">for f in examples/v03/packets/*.json; do</span><br />
@@ -1059,86 +1005,6 @@
               <div class="term-body" id="sim-output" aria-live="polite"><p><span class="dim">Use the arrows to step through the attacks.</span></p></div>
             </div>
           </div>
-          <details class="attack">
-            <summary><span>Tampered after signing</span><span class="plus" aria-hidden="true">+</span></summary>
-            <div class="attack-body">
-              <p class="desc">The packet was altered after the signature was made, so the signature no longer matches.</p>
-              <div class="mini-term">
-                <p><span class="prompt">$ </span><span class="cmd">python3 src/handoff_check.py examples/v03/packets/attack-tampered-after-signing.json --registry examples/v03/registry.json --workspace examples/v03/workspace --dry-run</span></p>
-                <p><span class="rej">REJECT</span> signature_invalid</p>
-              </div>
-            </div>
-          </details>
-          <details class="attack">
-            <summary><span>Spoofed sender</span><span class="plus" aria-hidden="true">+</span></summary>
-            <div class="attack-body">
-              <p class="desc">The packet claims to come from an agent it isn't. The signature check fails.</p>
-              <div class="mini-term">
-                <p><span class="prompt">$ </span><span class="cmd">python3 src/handoff_check.py examples/v03/packets/attack-spoofed-sender.json --registry examples/v03/registry.json --workspace examples/v03/workspace --dry-run</span></p>
-                <p><span class="rej">REJECT</span> signature_invalid</p>
-              </div>
-            </div>
-          </details>
-          <details class="attack">
-            <summary><span>Self-granted authority</span><span class="plus" aria-hidden="true">+</span></summary>
-            <div class="attack-body">
-              <p class="desc">The sender granted itself authority that no approval covers.</p>
-              <div class="mini-term">
-                <p><span class="prompt">$ </span><span class="cmd">python3 src/handoff_check.py examples/v03/packets/attack-self-granted-authority.json --registry examples/v03/registry.json --workspace examples/v03/workspace --dry-run</span></p>
-                <p><span class="rej">REJECT</span> approval_missing</p>
-              </div>
-            </div>
-          </details>
-          <details class="attack">
-            <summary><span>Forged approval</span><span class="plus" aria-hidden="true">+</span></summary>
-            <div class="attack-body">
-              <p class="desc">The attached approval was never actually issued.</p>
-              <div class="mini-term">
-                <p><span class="prompt">$ </span><span class="cmd">python3 src/handoff_check.py examples/v03/packets/attack-forged-approval.json --registry examples/v03/registry.json --workspace examples/v03/workspace --dry-run</span></p>
-                <p><span class="rej">REJECT</span> approval_unsigned</p>
-              </div>
-            </div>
-          </details>
-          <details class="attack">
-            <summary><span>Replayed approval</span><span class="plus" aria-hidden="true">+</span></summary>
-            <div class="attack-body">
-              <p class="desc">An approval lifted from a different handoff and reused here.</p>
-              <div class="mini-term">
-                <p><span class="prompt">$ </span><span class="cmd">python3 src/handoff_check.py examples/v03/packets/attack-replayed-approval.json --registry examples/v03/registry.json --workspace examples/v03/workspace --dry-run</span></p>
-                <p><span class="rej">REJECT</span> approval_signature_invalid</p>
-              </div>
-            </div>
-          </details>
-          <details class="attack">
-            <summary><span>Exceeds receiver policy</span><span class="plus" aria-hidden="true">+</span></summary>
-            <div class="attack-body">
-              <p class="desc">The handoff asks for more authority than the receiver's policy allows.</p>
-              <div class="mini-term">
-                <p><span class="prompt">$ </span><span class="cmd">python3 src/handoff_check.py examples/v03/packets/attack-exceeds-receiver-policy.json --registry examples/v03/registry.json --workspace examples/v03/workspace --dry-run</span></p>
-                <p><span class="rej">REJECT</span> authority_exceeds_receiver_policy</p>
-              </div>
-            </div>
-          </details>
-          <details class="attack">
-            <summary><span>Paraphrased "verbatim" evidence</span><span class="plus" aria-hidden="true">+</span></summary>
-            <div class="attack-body">
-              <p class="desc">Evidence quoted loosely where the receiver required it word for word, so the hash doesn't match.</p>
-              <div class="mini-term">
-                <p><span class="prompt">$ </span><span class="cmd">python3 src/handoff_check.py examples/v03/packets/attack-paraphrased-verbatim.json --registry examples/v03/registry.json --workspace examples/v03/workspace --dry-run</span></p>
-                <p><span class="rej">REJECT</span> evidence_hash_mismatch</p>
-              </div>
-            </div>
-          </details>
-          <details class="attack">
-            <summary><span>Undeclared actions</span><span class="plus" aria-hidden="true">+</span></summary>
-            <div class="attack-body">
-              <p class="desc">The packet takes actions it never declared up front.</p>
-              <div class="mini-term">
-                <p><span class="prompt">$ </span><span class="cmd">python3 src/handoff_check.py examples/v03/packets/attack-undeclared-actions.json --registry examples/v03/registry.json --workspace examples/v03/workspace --dry-run</span></p>
-                <p><span class="rej">REJECT</span> planned_actions_missing</p>
-              </div>
-            </div>
-          </details>
           <p class="trynote">The keys in <code>examples/v03/test-keys/</code> are public test keys. Bring your own keys for real use.</p>
         </section>
 
