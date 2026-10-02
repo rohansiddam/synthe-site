@@ -301,11 +301,12 @@
         color: var(--muted);
       }
       .ecosystem .logos {
-        margin: 14px 0 0;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px 26px;
-        font-size: 17px;
+        margin: 18px 0 0;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px 12px;
+        justify-items: center;
+        font-size: 16px;
         font-weight: 600;
         color: var(--ink-soft);
       }
@@ -625,6 +626,7 @@
         body { font-size: 16px; }
         .change { grid-template-columns: 1fr; }
         .catchgrid { grid-template-columns: 1fr; }
+        .ecosystem .logos { grid-template-columns: repeat(2, 1fr); }
         .terminal { padding: 18px 16px; }
         .terminal pre { white-space: pre-wrap; }
         .sticker { font-size: 11px; }
@@ -661,7 +663,7 @@
           </div>
           <div class="ecosystem">
             <p class="kicker">Works with any stack that emits JSON</p>
-            <p class="logos"><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/langchain.svg" alt="" width="20" height="20" loading="lazy" />LangChain</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/langgraph.svg" alt="" width="20" height="20" loading="lazy" />LangGraph</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/crewai.svg" alt="" width="20" height="20" loading="lazy" />CrewAI</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/openai.svg" alt="" width="20" height="20" loading="lazy" />OpenAI</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/anthropic.svg" alt="" width="20" height="20" loading="lazy" />Anthropic</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/huggingface.svg" alt="" width="20" height="20" loading="lazy" />Hugging Face</span></p>
+            <p class="logos"><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/langchain.svg" alt="" width="20" height="20" loading="lazy" />LangChain</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/langgraph.svg" alt="" width="20" height="20" loading="lazy" />LangGraph</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/crewai.svg" alt="" width="20" height="20" loading="lazy" />CrewAI</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/openai.svg" alt="" width="20" height="20" loading="lazy" />OpenAI</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/anthropic.svg" alt="" width="20" height="20" loading="lazy" />Anthropic</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/huggingface.svg" alt="" width="20" height="20" loading="lazy" />Hugging Face</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/google.svg" alt="" width="20" height="20" loading="lazy" />Google</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/vercel.svg" alt="" width="20" height="20" loading="lazy" />Vercel</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/cloudflare.svg" alt="" width="20" height="20" loading="lazy" />Cloudflare</span></p>
           </div>
         </div>
 
