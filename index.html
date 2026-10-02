@@ -1207,15 +1207,9 @@
       (function () {
         /* Copy buttons on terminal blocks */
         var liveTranscript = [
-          "$ submit handoff",
-          "ACCEPT",
-          "Handoff recorded and completed.",
-          "$ submit the same handoff again",
-          "REJECT",
-          "duplicate_idempotency_key: already completed by handoff h-0001.",
-          "$ submit it once more",
-          "REJECT",
-          "duplicate_idempotency_key: already completed by handoff h-0001."
+          "$ python3 src/handoff_check.py examples/v03/packets/valid-signed.json --registry examples/v03/registry.json --workspace examples/v03/workspace --ledger ledger.json",
+          "$ python3 src/handoff_check.py examples/v03/packets/valid-signed.json --registry examples/v03/registry.json --workspace examples/v03/workspace --ledger ledger.json",
+          "$ python3 src/handoff_check.py examples/v03/packets/valid-signed.json --registry examples/v03/registry.json --workspace examples/v03/workspace --ledger ledger.json"
         ].join("\n");
 
         document.querySelectorAll(".copybtn").forEach(function (btn) {
