@@ -52,6 +52,7 @@
         --term-cream: #f3ecdb;
         --term-green: #8fd694;
         --term-amber: #f0a35e;
+        --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
       }
 
       * { box-sizing: border-box; }
@@ -101,6 +102,7 @@
         font-weight: 600;
         letter-spacing: -0.01em;
       }
+      .topnav { display: flex; gap: 22px; align-items: baseline; }
       .topnav a {
         font-size: 15px;
         font-weight: 500;
@@ -239,7 +241,9 @@
         border-top: 1px solid rgba(36, 29, 20, 0.12);
         margin-top: clamp(44px, 8vw, 76px);
         padding-top: clamp(40px, 7vw, 68px);
+        scroll-margin-top: 72px;
       }
+      section.block h2[id] { scroll-margin-top: 72px; }
       h2 {
         margin: 0 0 26px;
         font-family: "Fraunces", Georgia, serif;
@@ -336,6 +340,12 @@
         font-size: 12px;
         letter-spacing: 0.14em;
         text-transform: uppercase;
+        color: var(--muted);
+      }
+      .compat-note {
+        margin: 14px 0 0;
+        text-align: center;
+        font-size: 13px;
         color: var(--muted);
       }
       .marquee-track .m-logo {
@@ -871,6 +881,10 @@
       <header class="site-head">
         <span class="wordmark">Synthe</span>
         <nav class="topnav">
+          <a href="forge.html">Forge</a>
+          <a href="playground.html">Playground</a>
+          <a href="tamper.html">Tamper</a>
+          <a href="docs.html">Docs</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
         </nav>
       </header>
@@ -902,6 +916,7 @@
             <span class="m-logo"><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/cloudflare.svg" alt="" width="18" height="18" loading="lazy" />Cloudflare</span><span class="dot">•</span>
           </div>
         </div>
+        <p class="compat-note">Logos shown for compatibility only. No endorsement implied.</p>
 
         <section class="block" id="tryit" aria-labelledby="tryit-h">
           <h2 id="tryit-h">Try it in <em>two minutes</em></h2>
@@ -914,7 +929,7 @@
             <p><span class="prompt">$ </span><span class="cmd">python3 src/handoff_check.py examples/bad-paraphrase-evidence.json --registry examples/registry.json --workspace . --dry-run</span><br />
             <span class="reject">REJECT</span> <span class="dim">invalid: evidence_not_verbatim</span></p>
           </div>
-          <p class="trynote">Python 3 only, no install step. Exit code <code>0</code> means ACCEPT, <code>2</code> means REJECT.</p>
+          <p class="trynote">Timed October 2026: 1.5 seconds from a fresh clone to ACCEPT. Python 3 only, no install step. Exit code <code>0</code> means ACCEPT, <code>2</code> means REJECT.</p>
         </section>
 
         <section class="block" aria-labelledby="how-h">
@@ -1077,6 +1092,29 @@
           <p class="trynote">The keys in <code>examples/v03/test-keys/</code> are public test keys. Bring your own keys for real use.</p>
         </section>
 
+        <section class="block" aria-labelledby="demos-h">
+          <p class="kicker">Interactive</p>
+          <h2 id="demos-h">Try it in <em>your browser</em></h2>
+          <p class="blockintro">No install, no server. Each demo runs entirely in this tab.</p>
+          <div class="change versus">
+            <div class="card">
+              <span class="label">Forge this handoff</span>
+              <p>A signed handoff is issued in your browser. Attack it six ways and watch each one land on a different reason code. Survive all six and mint a shareable certificate.</p>
+              <p><a class="textlink" href="forge.html">Open the forge</a></p>
+            </div>
+            <div class="card">
+              <span class="label">Contract playground</span>
+              <p>Draft a typed handoff in a form, sign it with real Ed25519 keys, and validate it against the same rules the command-line checker enforces. Copy the JSON, Python, or CLI.</p>
+              <p><a class="textlink" href="playground.html">Open the playground</a></p>
+            </div>
+            <div class="card">
+              <span class="label">Tamper evidence</span>
+              <p>A hash-chained log of handoff events. Edit, delete, reorder, or forge an entry, then run verification and see exactly which block breaks.</p>
+              <p><a class="textlink" href="tamper.html">Open the demo</a></p>
+            </div>
+          </div>
+        </section>
+
         <section class="block" aria-labelledby="foryou-h">
           <p class="kicker">Fit</p>
           <h2 id="foryou-h">Is this <em>for you?</em></h2>
@@ -1153,6 +1191,7 @@
             <button class="btn" type="submit">Request access</button>
           </form>
           <p class="trynote form-note" id="partner-note" role="status"></p>
+          <p class="trynote">Requesting access opens your email app with the message ready to send. Nothing is stored or sent on its own.</p>
           <p class="trynote">Prefer plain email? Write to <a class="textlink" href="mailto:info@synthe.live">info@synthe.live</a> directly.</p>
         </section>
       </main>
@@ -1160,8 +1199,16 @@
       <footer>
         <p>Synthe is an early project, shared under an evaluation license.</p>
         <nav>
+          <a href="forge.html">Forge this handoff</a>
+          <a href="playground.html">Playground</a>
+          <a href="tamper.html">Tamper evidence</a>
+          <a href="anatomy.html">Anatomy of a handoff</a>
+          <a href="quiz.html">Do I need this?</a>
           <a href="docs.html">Docs</a>
           <a href="log.html">Changelog</a>
+          <a href="receipts.html">Receipts</a>
+          <a href="benchmarks.html">Benchmarks</a>
+          <a href="status.html">Status &amp; trust</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
           <a href="https://github.com/rohansiddam/Synthe/blob/main/README.md">README</a>
           <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">Spec</a>
@@ -1321,16 +1368,21 @@
       (function () {
         var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-        /* Sticky CTA + anchor nav visibility */
+        /* Sticky CTA + anchor nav visibility.
+           The floating chrome hides over the hero (nothing to navigate to yet)
+           and over the partner section and footer (so it never covers content). */
         var hero = document.querySelector(".hero");
         var partner = document.getElementById("partner");
+        var footer = document.querySelector("footer");
         var sticky = document.getElementById("sticky-cta");
         var anchorNav = document.getElementById("anchor-nav");
         var heroVisible = true;
         var partnerVisible = false;
+        var footerVisible = false;
         function updateChrome() {
-          sticky.classList.toggle("show", !heroVisible && !partnerVisible);
-          anchorNav.classList.toggle("show", !heroVisible);
+          var clear = !partnerVisible && !footerVisible;
+          sticky.classList.toggle("show", !heroVisible && clear);
+          anchorNav.classList.toggle("show", !heroVisible && clear);
         }
         if ("IntersectionObserver" in window) {
           new IntersectionObserver(function (entries) {
@@ -1341,6 +1393,12 @@
             partnerVisible = entries[0].isIntersecting;
             updateChrome();
           }).observe(partner);
+          if (footer) {
+            new IntersectionObserver(function (entries) {
+              footerVisible = entries[0].isIntersecting;
+              updateChrome();
+            }).observe(footer);
+          }
         }
 
         /* Attack simulator */
