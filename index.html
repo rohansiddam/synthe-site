@@ -169,7 +169,7 @@
 
       /* Marquee ribbon */
       .marquee {
-        margin-top: clamp(48px, 8vw, 76px);
+        margin-top: 0;
         margin-left: calc(50% - 50vw);
         margin-right: calc(50% - 50vw);
         background: var(--ink);
@@ -290,36 +290,27 @@
       }
       .copybtn:hover { color: var(--term-cream); border-color: #9a8f78; }
 
-      /* Ecosystem strip */
-      .ecosystem { margin-top: clamp(36px, 6vw, 54px); }
-      .ecosystem .kicker {
-        margin: 0;
+      /* Logo marquee kicker */
+      .marquee-kicker {
+        margin: clamp(40px, 7vw, 64px) 0 20px;
+        text-align: center;
         font-family: "IBM Plex Mono", ui-monospace, monospace;
         font-size: 12px;
         letter-spacing: 0.14em;
         text-transform: uppercase;
         color: var(--muted);
       }
-      .ecosystem .logos {
-        margin: 18px 0 0;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 18px 12px;
-        justify-items: center;
-        font-size: 16px;
-        font-weight: 600;
-        color: var(--ink-soft);
-      }
-      .ecosystem .logos span {
+      .marquee-track .m-logo {
         display: inline-flex;
         align-items: center;
-        gap: 9px;
+        gap: 10px;
+        font-size: 14px;
       }
-      .ecosystem .logos img {
-        width: 20px;
-        height: 20px;
-        filter: grayscale(1);
-        opacity: 0.72;
+      .marquee-track .m-logo img {
+        width: 18px;
+        height: 18px;
+        filter: grayscale(1) brightness(1.9);
+        opacity: 0.9;
       }
 
       /* Live pulse */
@@ -626,7 +617,6 @@
         body { font-size: 16px; }
         .change { grid-template-columns: 1fr; }
         .catchgrid { grid-template-columns: 1fr; }
-        .ecosystem .logos { grid-template-columns: repeat(2, 1fr); }
         .terminal { padding: 18px 16px; }
         .terminal pre { white-space: pre-wrap; }
         .sticker { font-size: 11px; }
@@ -661,19 +651,22 @@
             <a class="btn" href="#tryit">Try it in two minutes</a>
             <a class="textlink" href="https://github.com/rohansiddam/Synthe">Read the repo</a>
           </div>
-          <div class="ecosystem">
-            <p class="kicker">Works with any stack that emits JSON</p>
-            <p class="logos"><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/langchain.svg" alt="" width="20" height="20" loading="lazy" />LangChain</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/langgraph.svg" alt="" width="20" height="20" loading="lazy" />LangGraph</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/crewai.svg" alt="" width="20" height="20" loading="lazy" />CrewAI</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/openai.svg" alt="" width="20" height="20" loading="lazy" />OpenAI</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/anthropic.svg" alt="" width="20" height="20" loading="lazy" />Anthropic</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/huggingface.svg" alt="" width="20" height="20" loading="lazy" />Hugging Face</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/google.svg" alt="" width="20" height="20" loading="lazy" />Google</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/vercel.svg" alt="" width="20" height="20" loading="lazy" />Vercel</span><span><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/cloudflare.svg" alt="" width="20" height="20" loading="lazy" />Cloudflare</span></p>
-          </div>
         </div>
 
+        <p class="marquee-kicker">Works with any stack that emits JSON</p>
         <div class="marquee" aria-hidden="true">
           <div class="marquee-track" id="marquee-track">
-            <span>Duplicates</span><span class="dot">•</span>
-            <span>Expired handoffs</span><span class="dot">•</span>
-            <span>Stale artifacts</span><span class="dot">•</span>
-            <span>Missing fields</span><span class="dot">•</span>
-            <span>Unauthorized actions</span><span class="dot">•</span>
+            <span class="m-logo"><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/langchain.svg" alt="" width="18" height="18" loading="lazy" />LangChain</span><span class="dot">•</span>
+            <span class="m-logo"><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/langgraph.svg" alt="" width="18" height="18" loading="lazy" />LangGraph</span><span class="dot">•</span>
+            <span class="m-logo"><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/crewai.svg" alt="" width="18" height="18" loading="lazy" />CrewAI</span><span class="dot">•</span>
+            <span class="m-logo"><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/openai.svg" alt="" width="18" height="18" loading="lazy" />OpenAI</span><span class="dot">•</span>
+            <span class="m-logo"><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/anthropic.svg" alt="" width="18" height="18" loading="lazy" />Anthropic</span><span class="dot">•</span>
+            <span class="m-logo"><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/google.svg" alt="" width="18" height="18" loading="lazy" />Google</span><span class="dot">•</span>
+            <span class="m-logo"><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/meta.svg" alt="" width="18" height="18" loading="lazy" />Meta</span><span class="dot">•</span>
+            <span class="m-logo"><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/microsoft.svg" alt="" width="18" height="18" loading="lazy" />Microsoft</span><span class="dot">•</span>
+            <span class="m-logo"><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/huggingface.svg" alt="" width="18" height="18" loading="lazy" />Hugging Face</span><span class="dot">•</span>
+            <span class="m-logo"><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/vercel.svg" alt="" width="18" height="18" loading="lazy" />Vercel</span><span class="dot">•</span>
+            <span class="m-logo"><img src="https://cdn.jsdelivr.net/npm/simple-icons/icons/cloudflare.svg" alt="" width="18" height="18" loading="lazy" />Cloudflare</span><span class="dot">•</span>
           </div>
         </div>
 
