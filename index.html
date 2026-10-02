@@ -255,6 +255,13 @@
         padding: 2px 7px;
         border-radius: 6px;
       }
+      .blockintro {
+        margin: 0 0 20px;
+        font-size: 17px;
+        line-height: 1.6;
+        color: var(--ink-soft);
+        max-width: 34em;
+      }
 
       /* Steps */
       .steps { list-style: none; margin: 0; padding: 0; }
@@ -571,6 +578,52 @@
           </div>
         </section>
 
+        <section class="block" aria-labelledby="breakit-h">
+          <h2 id="breakit-h">Try to <em>break it</em></h2>
+          <p class="blockintro">The repo ships one valid signed packet and eight attacks. Run them all through the checker and watch each attack get rejected with its reason named.</p>
+          <div class="terminal" role="img" aria-label="Shell loop running the checker over every v03 example packet.">
+            <p><span class="prompt">$ </span><span class="cmd">for f in examples/v03/packets/*.json; do</span><br />
+            <span class="prompt">$ </span><span class="cmd">&nbsp;&nbsp;python3 src/handoff_check.py "$f" --registry examples/v03/registry.json --workspace examples/v03/workspace --dry-run | head -4</span><br />
+            <span class="prompt">$ </span><span class="cmd">done</span></p>
+            <p><span class="accept">ACCEPT</span> <span class="dim">once, for valid-signed.json. The other eight are REJECTs.</span></p>
+          </div>
+          <ul class="catchlist">
+            <li>
+              <span class="name">Tampered after signing</span>
+              <span class="desc">The packet was altered after the signature was made.</span>
+            </li>
+            <li>
+              <span class="name">Spoofed sender</span>
+              <span class="desc">Sent under someone else's identity.</span>
+            </li>
+            <li>
+              <span class="name">Self-granted authority</span>
+              <span class="desc">The sender gave itself authority it was never granted.</span>
+            </li>
+            <li>
+              <span class="name">Forged approval</span>
+              <span class="desc">Carries an approval nobody issued.</span>
+            </li>
+            <li>
+              <span class="name">Replayed approval</span>
+              <span class="desc">Reuses an approval from a different handoff.</span>
+            </li>
+            <li>
+              <span class="name">Exceeds receiver policy</span>
+              <span class="desc">Asks for more than the receiver's policy allows.</span>
+            </li>
+            <li>
+              <span class="name">Paraphrased "verbatim" evidence</span>
+              <span class="desc">Evidence quoted loosely where the receiver required it word for word.</span>
+            </li>
+            <li>
+              <span class="name">Undeclared actions</span>
+              <span class="desc">Takes actions the handoff never declared.</span>
+            </li>
+          </ul>
+          <p class="trynote">The keys in <code>examples/v03/test-keys/</code> are public test keys. Bring your own keys for real use.</p>
+        </section>
+
         <section class="block" aria-labelledby="updates-h">
           <h2 id="updates-h">Updates</h2>
           <ul class="updates">
@@ -588,6 +641,32 @@
             </li>
           </ul>
         </section>
+        <section class="block" aria-labelledby="faq-h">
+          <h2 id="faq-h">Questions, <em>answered</em></h2>
+          <ul class="catchlist">
+            <li>
+              <span class="name">Which agent frameworks does it work with?</span>
+              <span class="desc">Any of them. The checker is dependency-free Python and a handoff is just JSON. If your agents can emit JSON, they can send handoffs.</span>
+            </li>
+            <li>
+              <span class="name">What does it cost?</span>
+              <span class="desc">Nothing to evaluate. Copy it, run it against your own agent workflows, and see.</span>
+            </li>
+            <li>
+              <span class="name">Who is building Synthe?</span>
+              <span class="desc">Rohan Siddam and his cofounder Rishab, out of the University of Utah's Sandbox startup community. Say hello below.</span>
+            </li>
+            <li>
+              <span class="name">Does running Synthe change my code's license?</span>
+              <span class="desc">No. The evaluation license covers Synthe's code, not yours. Checking your handoffs changes nothing about how your own code is licensed.</span>
+            </li>
+            <li>
+              <span class="name">Do my agents have to trust each other?</span>
+              <span class="desc">No, that is the point. The receiver verifies the packet's signature against its registry and pins the evidence hashes before acting. Trust the check, not the sender.</span>
+            </li>
+          </ul>
+        </section>
+
         <section class="block" aria-labelledby="contact-h">
           <h2 id="contact-h">Get in <em>touch</em></h2>
           <p class="contactline">For any inquiries, email <a href="mailto:info@synthe.live">info@synthe.live</a>.</p>
@@ -595,10 +674,12 @@
       </main>
 
       <footer>
-        <p>Synthe is an early, open project.</p>
+        <p>Synthe is an early project, shared under an evaluation license.</p>
         <nav>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
           <a href="https://github.com/rohansiddam/Synthe/blob/main/README.md">README</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">Spec</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md">Threat model</a>
         </nav>
       </footer>
     </div>
