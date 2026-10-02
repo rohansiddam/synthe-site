@@ -369,45 +369,84 @@
         100% { box-shadow: 0 0 0 0 rgba(143, 214, 148, 0); }
       }
 
-      /* Catch cards */
-      .catchgrid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-        margin: 6px 0 0;
-        padding: 0;
+      /* What this catches: ledger rows */
+      .catchledger {
         list-style: none;
+        margin: 26px 0 0;
+        padding: 0;
+        border-top: 1px solid var(--line);
       }
-      .catchcard {
-        background: rgba(255, 255, 255, 0.5);
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        padding: 22px;
+      .catchrow {
+        display: grid;
+        grid-template-columns: 52px 1fr auto;
+        gap: 20px;
+        align-items: center;
+        padding: 20px 6px;
+        border-bottom: 1px solid var(--line);
+        transition: opacity 0.45s ease, transform 0.45s ease, background 0.25s ease, padding-left 0.25s ease;
       }
-      .catchcard .name {
-        display: block;
+      .catchrow:hover { background: rgba(255, 255, 255, 0.45); padding-left: 14px; }
+      .catchrow.pre { opacity: 0; transform: translateY(26px); }
+      .catchrow.in { opacity: 1; transform: translateY(0); }
+      .catch-index {
         font-family: "Fraunces", Georgia, serif;
-        font-size: 20px;
-        font-weight: 500;
-        letter-spacing: -0.01em;
+        font-size: 24px;
+        color: var(--rust);
       }
-      .catchcard .desc {
+      .catch-main .name { display: block; font-weight: 600; font-size: 17px; }
+      .catch-main .desc {
         display: block;
-        margin-top: 6px;
-        font-size: 15px;
-        line-height: 1.55;
         color: var(--ink-soft);
+        font-size: 15px;
+        margin-top: 4px;
+        max-width: 38em;
+        line-height: 1.55;
       }
-      .catchcard .snippet {
-        margin: 14px 0 0;
+      .catch-code {
         font-family: "IBM Plex Mono", ui-monospace, monospace;
-        font-size: 13px;
-        background: var(--term-bg);
-        color: var(--term-cream);
-        border-radius: 10px;
-        padding: 10px 14px;
+        font-size: 12.5px;
+        background: var(--ink);
+        color: var(--cream);
+        padding: 8px 14px;
+        border-radius: 9px;
+        white-space: nowrap;
       }
-      .catchcard .snippet .rej { color: var(--term-amber); font-weight: 600; }
+      .catch-code .rej { color: #e0a458; font-weight: 600; margin-right: 8px; }
+
+      /* Is this for you: persona cards */
+      .foryou-grid {
+        list-style: none;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin: 26px 0 0;
+        padding: 0;
+      }
+      .foryou-card {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.5);
+        padding: 26px 24px;
+        transition: opacity 0.45s ease, transform 0.45s ease, box-shadow 0.25s ease;
+      }
+      .foryou-card.pre { opacity: 0; transform: translateY(26px); }
+      .foryou-card.in { opacity: 1; transform: translateY(0); transition: opacity 0.45s ease, transform 0.22s ease, box-shadow 0.22s ease; }
+      .foryou-card.in:hover { transform: translateY(-5px); box-shadow: 0 14px 32px rgba(28, 22, 17, 0.12); }
+      .foryou-index {
+        font-family: "Fraunces", Georgia, serif;
+        font-size: 34px;
+        color: var(--rust);
+        display: block;
+        line-height: 1;
+      }
+      .foryou-card .name { display: block; font-weight: 600; font-size: 18px; margin-top: 14px; }
+      .foryou-card .desc {
+        display: block;
+        color: var(--ink-soft);
+        font-size: 15px;
+        margin-top: 8px;
+        line-height: 1.6;
+      }
 
       /* Steps */
       .steps { list-style: none; margin: 0; padding: 0; }
@@ -753,7 +792,15 @@
         border-radius: 14px;
         padding: 16px 20px;
         background: rgba(255, 255, 255, 0.5);
+        transition: opacity 0.2s ease, transform 0.2s ease;
       }
+      .sim-current.no-trans { transition: none; }
+      .sim-current.out-left { opacity: 0; transform: translateX(-18px); }
+      .sim-current.out-right { opacity: 0; transform: translateX(18px); }
+      .sim-current.in-left { opacity: 0; transform: translateX(-18px); }
+      .sim-current.in-right { opacity: 0; transform: translateX(18px); }
+      #sim-output { transition: opacity 0.18s ease; }
+      #sim-output.fading { opacity: 0; }
       .sim-count {
         font-family: var(--mono);
         font-size: 12px;
@@ -794,7 +841,9 @@
       @media (max-width: 600px) {
         body { font-size: 16px; }
         .change { grid-template-columns: 1fr; }
-        .catchgrid { grid-template-columns: 1fr; }
+        .foryou-grid { grid-template-columns: 1fr; }
+        .catchrow { grid-template-columns: 40px 1fr; gap: 14px; }
+        .catch-code { grid-column: 2; justify-self: start; }
         .terminal { padding: 18px 16px; }
         .terminal pre { white-space: pre-wrap; }
         .sticker { font-size: 11px; }
@@ -919,31 +968,46 @@
           </div>
 
           <h3 class="seeit-sub">What this catches</h3>
-          <ul class="catchgrid">
-            <li class="catchcard">
-              <span class="name">Duplicate handoffs</span>
-              <span class="desc">The same handoff arrives twice. The second copy is rejected, so the work runs once.</span>
-              <p class="snippet"><span class="rej">REJECT</span> duplicate_idempotency_key</p>
+          <ul class="catchledger">
+            <li class="catchrow">
+              <span class="catch-index" aria-hidden="true">01</span>
+              <div class="catch-main">
+                <span class="name">Duplicate handoffs</span>
+                <span class="desc">The same handoff arrives twice. The second copy is rejected, so the work runs once.</span>
+              </div>
+              <code class="catch-code"><span class="rej">REJECT</span>duplicate_idempotency_key</code>
             </li>
-            <li class="catchcard">
-              <span class="name">Expired handoffs</span>
-              <span class="desc">The handoff sat too long before it arrived. It is rejected instead of acted on late.</span>
-              <p class="snippet"><span class="rej">REJECT</span> handoff_expired</p>
+            <li class="catchrow">
+              <span class="catch-index" aria-hidden="true">02</span>
+              <div class="catch-main">
+                <span class="name">Expired handoffs</span>
+                <span class="desc">The handoff sat too long before it arrived. It is rejected instead of acted on late.</span>
+              </div>
+              <code class="catch-code"><span class="rej">REJECT</span>handoff_expired</code>
             </li>
-            <li class="catchcard">
-              <span class="name">Stale artifacts</span>
-              <span class="desc">The artifact changed after the handoff was made. Its hash no longer matches, so the handoff is rejected.</span>
-              <p class="snippet"><span class="rej">REJECT</span> artifact_hash_mismatch</p>
+            <li class="catchrow">
+              <span class="catch-index" aria-hidden="true">03</span>
+              <div class="catch-main">
+                <span class="name">Stale artifacts</span>
+                <span class="desc">The artifact changed after the handoff was made. Its hash no longer matches, so the handoff is rejected.</span>
+              </div>
+              <code class="catch-code"><span class="rej">REJECT</span>artifact_hash_mismatch</code>
             </li>
-            <li class="catchcard">
-              <span class="name">Missing required fields</span>
-              <span class="desc">A field the receiver needs is absent. The handoff is rejected with the gap named.</span>
-              <p class="snippet"><span class="rej">REJECT</span> incomplete</p>
+            <li class="catchrow">
+              <span class="catch-index" aria-hidden="true">04</span>
+              <div class="catch-main">
+                <span class="name">Missing required fields</span>
+                <span class="desc">A field the receiver needs is absent. The handoff is rejected with the gap named.</span>
+              </div>
+              <code class="catch-code"><span class="rej">REJECT</span>incomplete</code>
             </li>
-            <li class="catchcard">
-              <span class="name">Actions the receiver is not allowed to take</span>
-              <span class="desc">The handoff asks for an action outside the receiver's permissions. It is stopped before anything runs.</span>
-              <p class="snippet"><span class="rej">REJECT</span> authority_exceeds_receiver_policy</p>
+            <li class="catchrow">
+              <span class="catch-index" aria-hidden="true">05</span>
+              <div class="catch-main">
+                <span class="name">Actions the receiver is not allowed to take</span>
+                <span class="desc">The handoff asks for an action outside the receiver's permissions. It is stopped before anything runs.</span>
+              </div>
+              <code class="catch-code"><span class="rej">REJECT</span>authority_exceeds_receiver_policy</code>
             </li>
           </ul>
 
@@ -1011,16 +1075,19 @@
         <section class="block" aria-labelledby="foryou-h">
           <p class="kicker">Fit</p>
           <h2 id="foryou-h">Is this <em>for you?</em></h2>
-          <ul class="catchgrid">
-            <li class="catchcard">
+          <ul class="foryou-grid">
+            <li class="foryou-card">
+              <span class="foryou-index" aria-hidden="true">01</span>
               <span class="name">You build agent frameworks</span>
               <span class="desc">Plug the checker into your handoff path. Typed packets in, ACCEPT or REJECT out, no new infrastructure to run.</span>
             </li>
-            <li class="catchcard">
+            <li class="foryou-card">
+              <span class="foryou-index" aria-hidden="true">02</span>
               <span class="name">You run multi-agent workflows</span>
               <span class="desc">Stop paying for work done twice. Every handoff is verified and recorded before your agents act.</span>
             </li>
-            <li class="catchcard">
+            <li class="foryou-card">
+              <span class="foryou-index" aria-hidden="true">03</span>
               <span class="name">You evaluate AI systems</span>
               <span class="desc">Eight attacks, one valid packet, every verdict named. Try to break it above, then bring your own.</span>
             </li>
@@ -1286,6 +1353,7 @@
         var simCount = document.getElementById("sim-count");
         var simName = document.getElementById("sim-name");
         var simDesc = document.getElementById("sim-desc");
+        var simCurrent = document.querySelector(".sim-current");
         var simIndex = 0;
         var simTimer = null;
         var simAutoRan = false;
@@ -1314,25 +1382,66 @@
             }
           }, 14);
         }
-        function renderSim(i) {
+        function renderSim(i, dir, instant) {
           simIndex = (i + attacks.length) % attacks.length;
-          simCount.textContent = "Attack " + (simIndex + 1) + " of " + attacks.length;
-          simName.textContent = attacks[simIndex].name;
-          simDesc.textContent = attacks[simIndex].desc;
-          simVerdict(simIndex);
+          function swap() {
+            simCount.textContent = "Attack " + (simIndex + 1) + " of " + attacks.length;
+            simName.textContent = attacks[simIndex].name;
+            simDesc.textContent = attacks[simIndex].desc;
+            simVerdict(simIndex);
+          }
+          if (instant || reduceMotion) { swap(); return; }
+          var outCls = dir < 0 ? "out-right" : "out-left";
+          var inCls = dir < 0 ? "in-left" : "in-right";
+          simCurrent.classList.add(outCls);
+          simOutput.classList.add("fading");
+          setTimeout(function () {
+            swap();
+            simCurrent.classList.add("no-trans");
+            simCurrent.classList.remove(outCls);
+            simCurrent.classList.add(inCls);
+            void simCurrent.offsetWidth;
+            simCurrent.classList.remove("no-trans");
+            simCurrent.classList.remove(inCls);
+            simOutput.classList.remove("fading");
+          }, 200);
         }
-        document.getElementById("sim-prev").addEventListener("click", function () { renderSim(simIndex - 1); });
-        document.getElementById("sim-next").addEventListener("click", function () { renderSim(simIndex + 1); });
+        document.getElementById("sim-prev").addEventListener("click", function () { renderSim(simIndex - 1, -1); });
+        document.getElementById("sim-next").addEventListener("click", function () { renderSim(simIndex + 1, 1); });
         if ("IntersectionObserver" in window) {
           var simEl = document.getElementById("simulator");
           new IntersectionObserver(function (entries, obs) {
             if (entries[0].isIntersecting && !simAutoRan) {
               simAutoRan = true;
-              renderSim(0);
+              renderSim(0, 1, true);
               obs.disconnect();
             }
           }, { threshold: 0.3 }).observe(simEl);
         }
+
+        /* Staggered fade-up reveals on scroll */
+        function revealStagger(containerSel, itemSel) {
+          var container = document.querySelector(containerSel);
+          if (!container) return;
+          var items = container.querySelectorAll(itemSel);
+          if (reduceMotion || !("IntersectionObserver" in window)) {
+            items.forEach(function (c) { c.classList.add("in"); });
+            return;
+          }
+          items.forEach(function (c) { c.classList.add("pre"); });
+          var seen = false;
+          new IntersectionObserver(function (entries, obs) {
+            if (entries[0].isIntersecting && !seen) {
+              seen = true;
+              items.forEach(function (c, k) {
+                setTimeout(function () { c.classList.add("in"); }, k * 110);
+              });
+              obs.disconnect();
+            }
+          }, { threshold: 0.15 }).observe(container);
+        }
+        revealStagger(".foryou-grid", ".foryou-card");
+        revealStagger(".catchledger", ".catchrow");
 
         /* Partner form -> mailto */
         var form = document.getElementById("partner-form");
