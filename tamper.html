@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content="A hash-chained handoff log you can tamper with, then verify. See exactly where the chain breaks." />
+    <link rel="icon" href="data:," />
+    <title>Tamper evidence · Synthe</title>
+    <meta property="og:title" content="Tamper evidence · Synthe" />
+    <meta property="og:description" content="Tamper with a hash-chained handoff log, then watch verification find the exact broken link." />
+    <meta property="og:image" content="https://synthe.live/og-image.png" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..650;1,9..144,400..650&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --cream: #ece4d1;
+        --cream-deep: #e3d7bd;
+        --ink: #1c1611;
+        --ink-soft: #4c4433;
+        --muted: #8b7d64;
+        --line: #e0d4b8;
+        --rust: #b8490f;
+        --rust-deep: #93380a;
+        --green: #0b4b41;
+        --green-soft: #e6f0e8;
+        --red-soft: #f6e3d5;
+        --term-bg: #1c1611;
+        --term-cream: #f3ecdb;
+        --term-green: #8fd694;
+        --term-amber: #f0a35e;
+        --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+      html { scrollbar-width: thin; scrollbar-color: rgba(36, 29, 20, 0.35) transparent; }
+      ::-webkit-scrollbar { width: 10px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(36, 29, 20, 0.28); border-radius: 8px; border: 2px solid var(--cream); }
+      body {
+        overflow-x: clip; margin: 0; color: var(--ink);
+        font-family: "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+        background-color: var(--cream);
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23241d14'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+        background-size: 480px 480px;
+      }
+      .page { max-width: 1060px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
+      header.site-head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; border-bottom: 1px solid rgba(36, 29, 20, 0.14); padding-bottom: 18px; }
+      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 22px; font-weight: 600; color: var(--ink); text-decoration: none; }
+      .topnav { display: flex; gap: 22px; align-items: baseline; }
+      .topnav a { font-size: 15px; font-weight: 500; color: var(--ink-soft); text-decoration: none; }
+      .topnav a:hover { color: var(--rust); }
+      .hero { margin-top: clamp(40px, 7vw, 72px); max-width: 760px; }
+      .hero h1 { margin: 0; font-family: "Fraunces", Georgia, serif; font-size: clamp(36px, 6vw, 56px); font-weight: 500; letter-spacing: -0.02em; }
+      .hero h1 em { font-style: italic; color: var(--rust); }
+      .lede { color: var(--ink-soft); max-width: 38em; font-size: 18px; }
+      .deck { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 36px; align-items: start; }
+      .card { background: rgba(255, 255, 255, 0.5); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 28px); }
+      .card h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 22px; margin: 0 0 4px; }
+      .card > p.sub { font-size: 14.5px; color: var(--muted); margin: 0 0 16px; }
+      .chain { list-style: none; margin: 0; padding: 0; font-family: var(--mono); font-size: 12.5px; }
+      .chain li { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; background: rgba(255,255,255,0.45); position: relative; }
+      .chain li:not(:last-child)::after { content: ""; position: absolute; left: 28px; bottom: -11px; width: 2px; height: 10px; background: var(--line); }
+      .chain .ev { font-size: 14px; font-family: "General Sans", sans-serif; font-weight: 500; color: var(--ink); }
+      .chain .hash { color: var(--muted); word-break: break-all; }
+      .chain .hash b { color: var(--ink-soft); font-weight: 500; }
+      .chain li.broken { border-color: var(--rust); background: var(--red-soft); }
+      .chain li.broken .ev { color: var(--rust-deep); }
+      .chain li .tag { display: inline-block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 10px; border-radius: 999px; margin-left: 8px; vertical-align: 1px; }
+      .chain li .tag.bad { background: var(--rust); color: #fff; }
+      .chain li.diff { border-style: dashed; border-color: var(--rust); }
+      .attacks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+      .attack { text-align: left; border: 1px solid var(--line); background: rgba(255,255,255,0.5); border-radius: 12px; padding: 12px 14px; cursor: pointer; font: inherit; }
+      .attack:hover { border-color: var(--rust); }
+      .attack:disabled { opacity: 0.45; cursor: default; }
+      .attack strong { display: block; font-size: 15px; }
+      .attack span { font-size: 13px; color: var(--muted); }
+      .attack.used { border-color: var(--green); }
+      .verdict { margin-top: 24px; border-radius: 18px; padding: clamp(20px, 3vw, 28px); border: 1px solid var(--line); background: rgba(255,255,255,0.55); }
+      .verdict-status { font-family: var(--mono); font-weight: 600; font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; }
+      .verdict-status.accept { color: var(--green); }
+      .verdict-status.reject { color: var(--rust); }
+      .verdict-status.idle { color: var(--muted); }
+      .walk { list-style: none; margin: 14px 0 0; padding: 0; font-family: var(--mono); font-size: 13px; }
+      .walk li { padding: 7px 0; border-top: 1px solid var(--line); color: var(--ink-soft); }
+      .walk li.bad { color: var(--rust-deep); font-weight: 500; }
+      .walk li.good { color: var(--green); }
+      .btn { display: inline-block; background: var(--ink); color: var(--cream); font-size: 16px; font-weight: 600; padding: 12px 24px; border-radius: 999px; border: none; cursor: pointer; font-family: inherit; transition: background 0.2s ease, transform 0.2s ease; }
+      .btn:hover { background: var(--rust); transform: translateY(-1px); }
+      .btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+      .btn.secondary:hover { border-color: var(--rust); color: var(--rust); background: transparent; }
+      .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+      .honest { font-size: 14px; color: var(--muted); margin-top: 22px; max-width: 44em; }
+      .honest code { font-family: var(--mono); font-size: 0.88em; background: var(--cream-deep); padding: 1px 6px; border-radius: 5px; }
+      .textlink { font-size: 16px; font-weight: 500; color: var(--rust); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+      footer { margin-top: clamp(56px, 10vw, 92px); padding-top: 26px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: baseline; }
+      footer p { margin: 0; }
+      footer .colophon { font-family: "Fraunces", Georgia, serif; font-style: italic; }
+      footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+      footer a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
+      footer a:hover { color: var(--rust); }
+      a:focus-visible, button:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
+      [hidden] { display: none !important; }
+      @media (max-width: 900px) { .deck { grid-template-columns: 1fr; } }
+      @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-head">
+        <a class="wordmark" href="/">Synthe</a>
+        <nav class="topnav">
+          <a href="forge.html">Forge</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+        </nav>
+      </header>
+      <main>
+        <div class="hero">
+          <h1>A log you can <em>check</em></h1>
+          <p class="lede">Each entry in this handoff log carries the hash of the one before it. Tamper with any entry, then run verification and see exactly where the chain breaks. All in this tab.</p>
+        </div>
+        <div class="deck">
+          <section class="card" aria-labelledby="log-h">
+            <h2 id="log-h">The log</h2>
+            <p class="sub">Five notarized handoff events. Each block commits to the previous block's hash.</p>
+            <ol class="chain" id="chain"></ol>
+            <div class="actions">
+              <button class="btn secondary" type="button" id="btn-regen">Regenerate log</button>
+            </div>
+          </section>
+          <section class="card" aria-labelledby="attack-h">
+            <h2 id="attack-h">Tamper with it</h2>
+            <p class="sub">Pick an attack. The log on the left changes; verification on the right finds it.</p>
+            <div class="attacks" id="attacks"></div>
+            <div class="actions">
+              <button class="btn secondary" type="button" id="btn-reset" disabled>Restore original</button>
+            </div>
+          </section>
+        </div>
+        <section class="verdict" aria-labelledby="verify-h" aria-live="polite">
+          <h2 id="verify-h" style="font-family:'Fraunces',Georgia,serif;font-weight:500;font-size:22px;margin:0 0 4px">Verification</h2>
+          <p class="sub" style="font-size:14.5px;color:var(--muted);margin:0 0 8px">Recompute every hash, check every link, in order.</p>
+          <span class="verdict-status idle" id="v-status">Not verified yet</span>
+          <ol class="walk" id="walk"></ol>
+          <div class="actions">
+            <button class="btn" type="button" id="btn-verify">Verify the chain</button>
+          </div>
+        </section>
+        <p class="honest">A hash chain shows <em>that</em> a log was altered and exactly where. It does not say <em>who</em> altered it or whether the original entries were true. That is what signatures and approvals are for: see the <a class="textlink" href="forge.html">forge</a> and the <a class="textlink" href="playground.html">playground</a>.</p>
+        <p style="margin-top:8px"><a class="textlink" href="docs.html">How Synthe checks a handoff, in the docs</a></p>
+      </main>
+      <footer>
+        <p>Synthe is an early project, shared under an evaluation license.</p>
+        <nav>
+          <a href="/">Home</a>
+          <a href="forge.html">Forge this handoff</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="log.html">Changelog</a>
+          <a href="status.html">Status &amp; trust</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+        </nav>
+        <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
+      </footer>
+    </div>
+    <script>
+      (function () {
+        "use strict";
+        var te = new TextEncoder();
+        function hex(buf) {
+          return Array.prototype.map.call(new Uint8Array(buf), function (b) {
+            return b.toString(16).padStart(2, "0");
+          }).join("");
+        }
+        function sha256hex(s) { return crypto.subtle.digest("SHA-256", te.encode(s)).then(hex); }
+
+        var EVENTS = [
+          "alice → bob: handoff h-0001 proposed (verdict pack review)",
+          "supervisor: approval appr-1 signed for read_rules",
+          "bob: evidence pinned (rules/M-1.md verbatim quote)",
+          "bob → alice: handoff h-0001 accepted, claim recorded",
+          "alice: handoff h-0001 completed, ledger released"
+        ];
+
+        var original = [];   // pristine chain
+        var current = [];    // possibly tampered chain
+        var tamperedAt = -1;
+        var attackUsed = null;
+
+        function blockHash(index, event, prev) {
+          return sha256hex(index + "|" + event + "|" + prev);
+        }
+        function buildChain() {
+          var chain = Promise.resolve([]);
+          EVENTS.forEach(function (ev, i) {
+            chain = chain.then(function (arr) {
+              var prev = i === 0 ? "GENESIS" : arr[i - 1].hash;
+              return blockHash(i, ev, prev).then(function (h) {
+                arr.push({ index: i, event: ev, prev: prev, hash: h });
+                return arr;
+              });
+            });
+          });
+          return chain;
+        }
+
+        function esc(s) {
+          return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+        function short(h) { return h.slice(0, 20) + "…"; }
+
+        function renderChain() {
+          var ol = document.getElementById("chain");
+          ol.innerHTML = "";
+          current.forEach(function (b) {
+            var li = document.createElement("li");
+            var isBad = b.index === tamperedAt;
+            if (isBad) li.className = "broken";
+            li.innerHTML =
+              '<div class="ev">#' + b.index + " " + esc(b.event) +
+              (isBad ? '<span class="tag bad">tampered</span>' : "") + "</div>" +
+              '<div class="hash"><b>hash</b> ' + esc(short(b.hash)) + '<br><b>prev</b> ' + esc(b.prev === "GENESIS" ? "GENESIS" : short(b.prev)) + "</div>";
+            ol.appendChild(li);
+          });
+        }
+
+        var ATTACKS = [
+          { id: "edit", name: "Edit an event", desc: "Rewrite event #2 after it was hashed.",
+            run: function () { current[2].event = "bob: evidence pinned (rules/M-1.md, totally rewritten quote)"; tamperedAt = 2; } },
+          { id: "delete", name: "Delete an event", desc: "Remove event #1 and close the gap.",
+            run: function () { current.splice(1, 1); tamperedAt = 1; } },
+          { id: "reorder", name: "Reorder events", desc: "Swap events #1 and #3.",
+            run: function () { var t = current[1]; current[1] = current[3]; current[3] = t; tamperedAt = 1; } },
+          { id: "insert", name: "Insert a forged event", desc: "Sneak a new event in at position #2.",
+            run: function () { current.splice(2, 0, { index: 2, event: "mallory: approval appr-9 signed for send_email (forged)", prev: current[1].hash, hash: current[2].hash }); tamperedAt = 2; } }
+        ];
+
+        function renderAttacks() {
+          var box = document.getElementById("attacks");
+          box.innerHTML = "";
+          ATTACKS.forEach(function (a) {
+            var b = document.createElement("button");
+            b.type = "button"; b.className = "attack" + (attackUsed === a.id ? " used" : "");
+            b.disabled = attackUsed !== null;
+            b.innerHTML = "<strong>" + esc(a.name) + "</strong><span>" + esc(a.desc) + "</span>";
+            b.addEventListener("click", function () {
+              current = JSON.parse(JSON.stringify(original));
+              a.run();
+              attackUsed = a.id;
+              document.getElementById("btn-reset").disabled = false;
+              renderChain(); renderAttacks(); resetVerdict();
+            });
+            box.appendChild(b);
+          });
+        }
+
+        function resetVerdict() {
+          var st = document.getElementById("v-status");
+          st.className = "verdict-status idle";
+          st.textContent = attackUsed ? "Tampered · not verified yet" : "Not verified yet";
+          document.getElementById("walk").innerHTML = "";
+        }
+
+        function verifyChain() {
+          var walk = document.getElementById("walk");
+          var st = document.getElementById("v-status");
+          walk.innerHTML = "";
+          var chain = Promise.resolve({ ok: true, at: -1, why: "" });
+          current.forEach(function (b, pos) {
+            chain = chain.then(function (s) {
+              if (!s.ok) return s;
+              var li = document.createElement("li");
+              var expectPrev = pos === 0 ? "GENESIS" : current[pos - 1].hash;
+              return blockHash(b.index, b.event, b.prev).then(function (recomputed) {
+                if (recomputed !== b.hash) {
+                  li.className = "bad";
+                  li.textContent = "block #" + b.index + ": recomputed hash does not match stored hash → content was altered";
+                  walk.appendChild(li);
+                  return { ok: false, at: b.index, why: "hash_mismatch" };
+                }
+                if (b.prev !== expectPrev) {
+                  li.className = "bad";
+                  li.textContent = "block #" + b.index + ": prev link does not match the previous block's hash → chain broken here";
+                  walk.appendChild(li);
+                  return { ok: false, at: b.index, why: "broken_link" };
+                }
+                // index continuity: blocks must be numbered in order
+                if (b.index !== pos) {
+                  li.className = "bad";
+                  li.textContent = "block #" + b.index + ": out of order at position " + pos + " → sequence broken here";
+                  walk.appendChild(li);
+                  return { ok: false, at: b.index, why: "out_of_order" };
+                }
+                li.className = "good";
+                li.textContent = "block #" + b.index + ": hash recomputed ✓ · prev link ✓";
+                walk.appendChild(li);
+                return s;
+              });
+            });
+          });
+          return chain.then(function (s) {
+            if (s.ok) {
+              st.className = "verdict-status accept";
+              st.textContent = "Chain intact · " + current.length + " blocks verified";
+            } else {
+              st.className = "verdict-status reject";
+              var why = s.why === "hash_mismatch" ? "content altered" : s.why === "broken_link" ? "link broken" : "order broken";
+              st.textContent = "Chain broken at block #" + s.at + " · " + why;
+              tamperedAt = s.at;
+              renderChain();
+            }
+          });
+        }
+
+        document.getElementById("btn-verify").addEventListener("click", verifyChain);
+        document.getElementById("btn-reset").addEventListener("click", function () {
+          current = JSON.parse(JSON.stringify(original));
+          tamperedAt = -1; attackUsed = null;
+          this.disabled = true;
+          renderChain(); renderAttacks(); resetVerdict();
+        });
+        document.getElementById("btn-regen").addEventListener("click", function () {
+          buildChain().then(function (arr) {
+            original = arr;
+            current = JSON.parse(JSON.stringify(arr));
+            tamperedAt = -1; attackUsed = null;
+            document.getElementById("btn-reset").disabled = true;
+            renderChain(); renderAttacks(); resetVerdict();
+          });
+        });
+
+        if (!window.crypto || !crypto.subtle) {
+          document.getElementById("chain").innerHTML = "<li>WebCrypto is unavailable in this browser, so the demo cannot run here.</li>";
+        } else {
+          buildChain().then(function (arr) {
+            original = arr;
+            current = JSON.parse(JSON.stringify(arr));
+            renderChain(); renderAttacks(); resetVerdict();
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
