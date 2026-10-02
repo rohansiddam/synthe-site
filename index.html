@@ -771,27 +771,49 @@
         text-transform: uppercase;
         color: var(--ink-soft);
       }
-      .sim-picks {
+      .sim-bar {
         display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
+        align-items: stretch;
+        gap: 12px;
         margin: 14px 0 20px;
       }
-      .sim-picks button {
-        font-family: var(--mono);
-        font-size: 13px;
-        background: rgba(255, 255, 255, 0.5);
+      .sim-nav {
+        flex: 0 0 auto;
+        width: 54px;
+        border-radius: 14px;
         border: 1px solid var(--line);
-        border-radius: 999px;
-        padding: 8px 16px;
+        background: rgba(255, 255, 255, 0.5);
+        font-size: 24px;
+        line-height: 1;
         cursor: pointer;
-        color: var(--ink-soft);
+        color: var(--ink);
       }
-      .sim-picks button:hover { border-color: var(--rust); color: var(--rust); }
-      .sim-picks button.active {
-        background: var(--ink);
-        color: var(--cream);
-        border-color: var(--ink);
+      .sim-nav:hover { border-color: var(--rust); color: var(--rust); }
+      .sim-current {
+        flex: 1;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px 20px;
+        background: rgba(255, 255, 255, 0.5);
+      }
+      .sim-count {
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--rust);
+      }
+      .sim-name {
+        display: block;
+        font-family: "Fraunces", Georgia, serif;
+        font-size: clamp(20px, 3vw, 26px);
+        margin-top: 6px;
+      }
+      .sim-desc {
+        display: block;
+        color: var(--ink-soft);
+        font-size: 15px;
+        margin-top: 4px;
       }
       .sim-terminal { margin-top: 0; }
       .sim-terminal .term-body { min-height: 110px; }
@@ -821,7 +843,7 @@
         .caret::after { animation: none; }
         .pulse-dot { animation: none; }
         .btn { transition: none; }
-        .sticky-cta, .anchor-nav, .sim-picks button { transition: none; }
+        .sticky-cta, .anchor-nav, .sim-nav { transition: none; }
       }
     </style>
   </head>
@@ -991,7 +1013,7 @@
 
         <section class="block" aria-labelledby="breakit-h">
           <h2 id="breakit-h">Try to <em>break it</em></h2>
-          <p class="blockintro">The repo ships one valid signed packet and eight attacks. Open each one to see the exact command and the reason it gets rejected.</p>
+          <p class="blockintro">The repo ships one valid signed packet and eight attacks. Step through them with the arrows and watch each verdict land, or open any attack for the exact command.</p>
           <div class="terminal" role="group" aria-label="Shell loop running the checker over every v03 example packet.">
             <div class="term-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><button class="copybtn" type="button">Copy</button></div>
             <p><span class="prompt">$ </span><span class="cmd">for f in examples/v03/packets/*.json; do</span><br />
@@ -1000,20 +1022,19 @@
             <p><span class="accept">ACCEPT</span> <span class="dim">once, for valid-signed.json. The other eight are REJECTs.</span></p>
           </div>
           <div class="simulator" id="simulator">
-            <p class="sim-label">Pick an attack, watch the verdict</p>
-            <div class="sim-picks" role="group" aria-label="Choose an attack to simulate">
-              <button type="button" data-attack="0">Tampered after signing</button>
-              <button type="button" data-attack="1">Spoofed sender</button>
-              <button type="button" data-attack="2">Self-granted authority</button>
-              <button type="button" data-attack="3">Forged approval</button>
-              <button type="button" data-attack="4">Replayed approval</button>
-              <button type="button" data-attack="5">Exceeds receiver policy</button>
-              <button type="button" data-attack="6">Paraphrased "verbatim" evidence</button>
-              <button type="button" data-attack="7">Undeclared actions</button>
+            <p class="sim-label">Step through the attacks</p>
+            <div class="sim-bar">
+              <button type="button" class="sim-nav" id="sim-prev" aria-label="Previous attack">&#8592;</button>
+              <div class="sim-current">
+                <span class="sim-count" id="sim-count">Attack 1 of 8</span>
+                <span class="sim-name" id="sim-name">Tampered after signing</span>
+                <span class="sim-desc" id="sim-desc">The packet was altered after the signature was made, so the signature no longer matches.</span>
+              </div>
+              <button type="button" class="sim-nav" id="sim-next" aria-label="Next attack">&#8594;</button>
             </div>
             <div class="terminal sim-terminal" role="group" aria-label="Simulated attack verdict.">
               <div class="term-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
-              <div class="term-body" id="sim-output" aria-live="polite"><p><span class="dim">Choose an attack above.</span></p></div>
+              <div class="term-body" id="sim-output" aria-live="polite"><p><span class="dim">Use the arrows to step through the attacks.</span></p></div>
             </div>
           </div>
           <details class="attack">
@@ -1365,21 +1386,26 @@
 
         /* Attack simulator */
         var attacks = [
-          { file: "attack-tampered-after-signing.json", code: "signature_invalid" },
-          { file: "attack-spoofed-sender.json", code: "signature_invalid" },
-          { file: "attack-self-granted-authority.json", code: "approval_missing" },
-          { file: "attack-forged-approval.json", code: "approval_unsigned" },
-          { file: "attack-replayed-approval.json", code: "approval_signature_invalid" },
-          { file: "attack-exceeds-receiver-policy.json", code: "authority_exceeds_receiver_policy" },
-          { file: "attack-paraphrased-verbatim.json", code: "evidence_hash_mismatch" },
-          { file: "attack-undeclared-actions.json", code: "planned_actions_missing" }
+          { name: "Tampered after signing", desc: "The packet was altered after the signature was made, so the signature no longer matches.", file: "attack-tampered-after-signing.json", code: "signature_invalid" },
+          { name: "Spoofed sender", desc: "The packet claims to come from an agent it isn't. The signature check fails.", file: "attack-spoofed-sender.json", code: "signature_invalid" },
+          { name: "Self-granted authority", desc: "The sender granted itself authority that no approval covers.", file: "attack-self-granted-authority.json", code: "approval_missing" },
+          { name: "Forged approval", desc: "The attached approval was never actually issued.", file: "attack-forged-approval.json", code: "approval_unsigned" },
+          { name: "Replayed approval", desc: "An approval lifted from a different handoff and reused here.", file: "attack-replayed-approval.json", code: "approval_signature_invalid" },
+          { name: "Exceeds receiver policy", desc: "The handoff asks for more authority than the receiver's policy allows.", file: "attack-exceeds-receiver-policy.json", code: "authority_exceeds_receiver_policy" },
+          { name: "Paraphrased \"verbatim\" evidence", desc: "Evidence quoted loosely where the receiver required it word for word, so the hash doesn't match.", file: "attack-paraphrased-verbatim.json", code: "evidence_hash_mismatch" },
+          { name: "Undeclared actions", desc: "The packet takes actions it never declared up front.", file: "attack-undeclared-actions.json", code: "planned_actions_missing" }
         ];
         var simOutput = document.getElementById("sim-output");
-        var simButtons = document.querySelectorAll(".sim-picks button");
+        var simCount = document.getElementById("sim-count");
+        var simName = document.getElementById("sim-name");
+        var simDesc = document.getElementById("sim-desc");
+        var simIndex = 0;
         var simTimer = null;
+        var simAutoRan = false;
         function simVerdict(i) {
           var cmd = "python3 src/handoff_check.py examples/v03/packets/" + attacks[i].file +
             " --registry examples/v03/registry.json --workspace examples/v03/workspace --dry-run";
+          if (simTimer) { clearInterval(simTimer); clearTimeout(simTimer); simTimer = null; }
           simOutput.innerHTML = '<p><span class="prompt">$ </span><span class="cmd" id="sim-cmd"></span><span class="caret"></span></p>';
           var cmdEl = document.getElementById("sim-cmd");
           if (reduceMotion) {
@@ -1401,14 +1427,25 @@
             }
           }, 14);
         }
-        simButtons.forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            simButtons.forEach(function (b) { b.classList.remove("active"); });
-            btn.classList.add("active");
-            if (simTimer) { clearInterval(simTimer); clearTimeout(simTimer); }
-            simVerdict(parseInt(btn.getAttribute("data-attack"), 10));
-          });
-        });
+        function renderSim(i) {
+          simIndex = (i + attacks.length) % attacks.length;
+          simCount.textContent = "Attack " + (simIndex + 1) + " of " + attacks.length;
+          simName.textContent = attacks[simIndex].name;
+          simDesc.textContent = attacks[simIndex].desc;
+          simVerdict(simIndex);
+        }
+        document.getElementById("sim-prev").addEventListener("click", function () { renderSim(simIndex - 1); });
+        document.getElementById("sim-next").addEventListener("click", function () { renderSim(simIndex + 1); });
+        if ("IntersectionObserver" in window) {
+          var simEl = document.getElementById("simulator");
+          new IntersectionObserver(function (entries, obs) {
+            if (entries[0].isIntersecting && !simAutoRan) {
+              simAutoRan = true;
+              renderSim(0);
+              obs.disconnect();
+            }
+          }, { threshold: 0.3 }).observe(simEl);
+        }
 
         /* Partner form -> mailto */
         var form = document.getElementById("partner-form");
