@@ -263,6 +263,116 @@
         max-width: 34em;
       }
 
+      /* Terminal chrome + copy */
+      .term-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+      .term-bar .dots { display: inline-flex; gap: 8px; }
+      .term-bar .dots i {
+        width: 11px; height: 11px; border-radius: 50%;
+        background: #3a3227;
+      }
+      .term-bar .dots i:nth-child(1) { background: #d96a5b; }
+      .term-bar .dots i:nth-child(2) { background: #d9a45b; }
+      .term-bar .dots i:nth-child(3) { background: #7fb069; }
+      .copybtn {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 12px;
+        color: #9a8f78;
+        background: transparent;
+        border: 1px solid #3a3227;
+        border-radius: 8px;
+        padding: 5px 12px;
+        cursor: pointer;
+      }
+      .copybtn:hover { color: var(--term-cream); border-color: #9a8f78; }
+
+      /* Ecosystem strip */
+      .ecosystem { margin-top: clamp(36px, 6vw, 54px); }
+      .ecosystem .kicker {
+        margin: 0;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .ecosystem .logos {
+        margin: 14px 0 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 26px;
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--ink-soft);
+      }
+
+      /* Live pulse */
+      .pulse {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 20px;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #a9c8b8;
+      }
+      .pulse-dot {
+        width: 9px; height: 9px; border-radius: 50%;
+        background: #8fd694;
+        animation: pulse-ring 2s ease-out infinite;
+      }
+      @keyframes pulse-ring {
+        0% { box-shadow: 0 0 0 0 rgba(143, 214, 148, 0.55); }
+        70% { box-shadow: 0 0 0 10px rgba(143, 214, 148, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(143, 214, 148, 0); }
+      }
+
+      /* Catch cards */
+      .catchgrid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin: 6px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .catchcard {
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 22px;
+      }
+      .catchcard .name {
+        display: block;
+        font-family: "Fraunces", Georgia, serif;
+        font-size: 20px;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+      }
+      .catchcard .desc {
+        display: block;
+        margin-top: 6px;
+        font-size: 15px;
+        line-height: 1.55;
+        color: var(--ink-soft);
+      }
+      .catchcard .snippet {
+        margin: 14px 0 0;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 13px;
+        background: var(--term-bg);
+        color: var(--term-cream);
+        border-radius: 10px;
+        padding: 10px 14px;
+      }
+      .catchcard .snippet .rej { color: var(--term-amber); font-weight: 600; }
+
       /* Steps */
       .steps { list-style: none; margin: 0; padding: 0; }
       .steps li {
@@ -449,6 +559,7 @@
       @media (max-width: 600px) {
         body { font-size: 16px; }
         .change { grid-template-columns: 1fr; }
+        .catchgrid { grid-template-columns: 1fr; }
         .terminal { padding: 18px 16px; }
         .terminal pre { white-space: pre-wrap; }
         .sticker { font-size: 11px; }
@@ -460,6 +571,7 @@
         .rotator-inner span:nth-child(n+2) { display: none; }
         .marquee-track { animation: none; }
         .caret::after { animation: none; }
+        .pulse-dot { animation: none; }
         .btn { transition: none; }
       }
     </style>
@@ -482,6 +594,10 @@
             <a class="btn" href="#tryit">Try it in two minutes</a>
             <a class="textlink" href="https://github.com/rohansiddam/Synthe">Read the repo</a>
           </div>
+          <div class="ecosystem">
+            <p class="kicker">Works with any framework that emits JSON</p>
+            <p class="logos"><span>LangChain</span><span>LangGraph</span><span>CrewAI</span><span>AutoGen</span><span>LlamaIndex</span><span>OpenAI</span></p>
+          </div>
         </div>
 
         <div class="marquee" aria-hidden="true">
@@ -496,7 +612,8 @@
 
         <section class="block" id="tryit" aria-labelledby="tryit-h">
           <h2 id="tryit-h">Try it in <em>two minutes</em></h2>
-          <div class="terminal" role="img" aria-label="Quickstart: clone the repo, run the checker on a valid handoff to get ACCEPT, then on a bad handoff to get REJECT.">
+          <div class="terminal" role="group" aria-label="Quickstart: clone the repo, run the checker on a valid handoff to get ACCEPT, then on a bad handoff to get REJECT.">
+            <div class="term-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><button class="copybtn" type="button">Copy</button></div>
             <p><span class="prompt">$ </span><span class="cmd">git clone https://github.com/rohansiddam/Synthe.git</span><br />
             <span class="prompt">$ </span><span class="cmd">cd Synthe</span></p>
             <p><span class="prompt">$ </span><span class="cmd">python3 src/handoff_check.py examples/valid.json --registry examples/registry.json --workspace . --ledger ledger.json</span><br />
@@ -527,6 +644,7 @@
 
         <section class="block" aria-labelledby="proof-h">
           <div class="proof-panel">
+            <p class="pulse"><span class="pulse-dot" aria-hidden="true"></span> Live on real GitHub runners</p>
             <h2 id="proof-h">Proven on <em>real runners</em></h2>
             <p>Three runs were dispatched back to back on real GitHub runners on October 1, 2026. Exactly one got ACCEPT and flipped to COMPLETED. The other two were both rejected as duplicates, with code <code>duplicate_idempotency_key</code>, checked against the completed entry rather than the claim-time snapshot.</p>
             <div class="runlinks">
@@ -539,29 +657,37 @@
 
         <section class="block" aria-labelledby="seeit-h">
           <h2 id="seeit-h">See it <em>run</em></h2>
-          <div class="terminal" id="live-terminal" aria-live="polite" aria-label="Live demo: the same handoff submitted three times. First ACCEPT, then REJECT as duplicate twice."></div>
+          <div class="terminal">
+            <div class="term-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><button class="copybtn" type="button" data-copy="live">Copy</button></div>
+            <div id="live-terminal" aria-live="polite" aria-label="Live demo: the same handoff submitted three times. First ACCEPT, then REJECT as duplicate twice."></div>
+          </div>
 
           <h3 class="seeit-sub">What this catches</h3>
-          <ul class="catchlist">
-            <li>
+          <ul class="catchgrid">
+            <li class="catchcard">
               <span class="name">Duplicate handoffs</span>
               <span class="desc">The same handoff arrives twice. The second copy is rejected, so the work runs once.</span>
+              <p class="snippet"><span class="rej">REJECT</span> duplicate_idempotency_key</p>
             </li>
-            <li>
+            <li class="catchcard">
               <span class="name">Expired handoffs</span>
               <span class="desc">The handoff sat too long before it arrived. It is rejected instead of acted on late.</span>
+              <p class="snippet"><span class="rej">REJECT</span> handoff_expired</p>
             </li>
-            <li>
+            <li class="catchcard">
               <span class="name">Stale artifacts</span>
               <span class="desc">The artifact changed after the handoff was made. Its hash no longer matches, so the handoff is rejected.</span>
+              <p class="snippet"><span class="rej">REJECT</span> artifact_hash_mismatch</p>
             </li>
-            <li>
+            <li class="catchcard">
               <span class="name">Missing required fields</span>
               <span class="desc">A field the receiver needs is absent. The handoff is rejected with the gap named.</span>
+              <p class="snippet"><span class="rej">REJECT</span> incomplete</p>
             </li>
-            <li>
+            <li class="catchcard">
               <span class="name">Actions the receiver is not allowed to take</span>
               <span class="desc">The handoff asks for an action outside the receiver's permissions. It is stopped before anything runs.</span>
+              <p class="snippet"><span class="rej">REJECT</span> authority_exceeds_receiver_policy</p>
             </li>
           </ul>
 
@@ -581,7 +707,8 @@
         <section class="block" aria-labelledby="breakit-h">
           <h2 id="breakit-h">Try to <em>break it</em></h2>
           <p class="blockintro">The repo ships one valid signed packet and eight attacks. Run them all through the checker and watch each attack get rejected with its reason named.</p>
-          <div class="terminal" role="img" aria-label="Shell loop running the checker over every v03 example packet.">
+          <div class="terminal" role="group" aria-label="Shell loop running the checker over every v03 example packet.">
+            <div class="term-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><button class="copybtn" type="button">Copy</button></div>
             <p><span class="prompt">$ </span><span class="cmd">for f in examples/v03/packets/*.json; do</span><br />
             <span class="prompt">$ </span><span class="cmd">&nbsp;&nbsp;python3 src/handoff_check.py "$f" --registry examples/v03/registry.json --workspace examples/v03/workspace --dry-run | head -4</span><br />
             <span class="prompt">$ </span><span class="cmd">done</span></p>
@@ -769,6 +896,54 @@
         } else {
           play();
         }
+      })();
+    </script>
+    <script>
+      (function () {
+        /* Copy buttons on terminal blocks */
+        var liveTranscript = [
+          "$ submit handoff",
+          "ACCEPT",
+          "Handoff recorded and completed.",
+          "$ submit the same handoff again",
+          "REJECT",
+          "duplicate_idempotency_key: already completed by handoff h-0001.",
+          "$ submit it once more",
+          "REJECT",
+          "duplicate_idempotency_key: already completed by handoff h-0001."
+        ].join("\n");
+
+        document.querySelectorAll(".copybtn").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var text;
+            if (btn.hasAttribute("data-copy")) {
+              text = liveTranscript;
+            } else {
+              var term = btn.closest(".terminal");
+              var clone = term.cloneNode(true);
+              var bar = clone.querySelector(".term-bar");
+              if (bar) bar.remove();
+              text = clone.innerText.replace(/\n{3,}/g, "\n\n").trim();
+            }
+            function done() {
+              btn.textContent = "Copied";
+              setTimeout(function () { btn.textContent = "Copy"; }, 1500);
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(done, done);
+            } else {
+              var ta = document.createElement("textarea");
+              ta.value = text;
+              ta.style.position = "fixed";
+              ta.style.opacity = "0";
+              document.body.appendChild(ta);
+              ta.select();
+              try { document.execCommand("copy"); } catch (e) {}
+              document.body.removeChild(ta);
+              done();
+            }
+          });
+        });
       })();
     </script>
   </body>
