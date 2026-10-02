@@ -102,34 +102,6 @@
         margin-top: clamp(48px, 9vw, 96px);
         position: relative;
       }
-      /* Dotted flight-path trajectories behind the hero */
-      .hero > :not(.trajectory) { position: relative; z-index: 1; }
-      .trajectory {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 0;
-      }
-      .trajectory path {
-        fill: none;
-        stroke: var(--rust);
-        stroke-width: 2;
-        opacity: 0.3;
-        stroke-dasharray: 2 14;
-        stroke-linecap: round;
-        vector-effect: non-scaling-stroke;
-        animation: dashmove 40s linear infinite;
-      }
-      .trajectory path.faint {
-        stroke: var(--ink);
-        opacity: 0.1;
-        animation-duration: 60s;
-      }
-      @keyframes dashmove {
-        to { stroke-dashoffset: -320; }
-      }
       /* Paper grain over the whole page */
       body::after {
         content: "";
@@ -883,7 +855,6 @@
         .pulse-dot { animation: none; }
         .btn { transition: none; }
         .sticky-cta, .anchor-nav, .sim-nav { transition: none; }
-        .trajectory path { animation: none; }
       }
     </style>
   </head>
@@ -898,11 +869,6 @@
 
       <main>
         <div class="hero">
-          <svg class="trajectory" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M -40 520 C 280 480, 480 260, 820 220 S 1120 140, 1260 90" />
-            <path class="faint" d="M -40 580 C 240 560, 560 380, 900 360 S 1140 300, 1260 260" />
-            <path class="faint" d="M -40 440 C 320 400, 520 180, 880 160" />
-          </svg>
           <span class="sticker">ACCEPT or REJECT, with a reason</span>
           <h1>Synthe is the bouncer for your AI agents. Every handoff gets <span class="rotator" aria-label="checked"><span class="rotator-inner" aria-hidden="true"><span>checked</span><span>verified</span><span>screened</span><span>checked</span></span></span> at the door.</h1>
           <p class="lede">When one AI agent hands work to another, Synthe validates the handoff as a typed packet before the receiver acts. Every accepted handoff is recorded, so the same one cannot be claimed twice.</p>
