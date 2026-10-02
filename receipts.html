@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content="Public receipts: every Synthe claim links to the run that proves it." />
+    <link rel="icon" href="data:," />
+    <title>Receipts · Synthe</title>
+    <meta property="og:title" content="Receipts · Synthe" />
+    <meta property="og:description" content="Every Synthe claim links to the run that proves it." />
+    <meta property="og:image" content="https://synthe.live/og-image.png" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..650;1,9..144,400..650&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --cream: #ece4d1; --cream-deep: #e3d7bd; --ink: #1c1611; --ink-soft: #4c4433;
+        --muted: #8b7d64; --line: #e0d4b8; --rust: #b8490f; --green: #0b4b41;
+        --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+      html { scrollbar-width: thin; scrollbar-color: rgba(36, 29, 20, 0.35) transparent; }
+      ::-webkit-scrollbar { width: 10px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(36, 29, 20, 0.28); border-radius: 8px; border: 2px solid var(--cream); }
+      body {
+        overflow-x: clip; margin: 0; color: var(--ink);
+        font-family: "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+        background-color: var(--cream);
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23241d14'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+        background-size: 480px 480px;
+      }
+      .page { max-width: 780px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
+      header.site-head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; border-bottom: 1px solid rgba(36, 29, 20, 0.14); padding-bottom: 18px; }
+      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 22px; font-weight: 600; color: var(--ink); text-decoration: none; }
+      .topnav { display: flex; gap: 22px; align-items: baseline; }
+      .topnav a { font-size: 15px; font-weight: 500; color: var(--ink-soft); text-decoration: none; }
+      .topnav a:hover { color: var(--rust); }
+      .hero { margin-top: clamp(40px, 7vw, 72px); }
+      .hero h1 { margin: 0; font-family: "Fraunces", Georgia, serif; font-size: clamp(36px, 6vw, 56px); font-weight: 500; letter-spacing: -0.02em; }
+      .hero h1 em { font-style: italic; color: var(--rust); }
+      .lede { color: var(--ink-soft); max-width: 36em; font-size: 18px; }
+      .receipt { background: rgba(255,255,255,0.5); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 28px); margin-top: 20px; }
+      .receipt .date { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rust); }
+      .receipt h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 22px; margin: 8px 0 6px; }
+      .receipt p { margin: 0 0 12px; color: var(--ink-soft); max-width: 40em; }
+      .receipt p:last-child { margin-bottom: 0; }
+      .receipt code { font-family: var(--mono); font-size: 0.85em; background: var(--cream-deep); padding: 1px 7px; border-radius: 5px; }
+      .textlink { font-size: 16px; font-weight: 500; color: var(--rust); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+      .stampline { display: inline-block; font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; border: 2px solid var(--green); color: var(--green); border-radius: 8px; padding: 4px 12px; transform: rotate(-3deg); margin-bottom: 8px; }
+      .stampline.red { border-color: var(--rust); color: var(--rust); }
+      .demo-strip { margin-top: 44px; }
+      .demo-strip h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 24px; margin: 0 0 4px; }
+      .demo-strip .note { font-size: 14px; color: var(--muted); margin: 0 0 14px; }
+      .ledger { font-family: var(--mono); font-size: 12.5px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+      .ledger div { padding: 10px 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; background: rgba(255,255,255,0.4); }
+      .ledger div:last-child { border-bottom: none; }
+      .ledger .ok { color: var(--green); font-weight: 600; }
+      footer { margin-top: clamp(56px, 10vw, 92px); padding-top: 26px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: baseline; }
+      footer p { margin: 0; }
+      footer .colophon { font-family: "Fraunces", Georgia, serif; font-style: italic; }
+      footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+      footer a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
+      footer a:hover { color: var(--rust); }
+      a:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-head">
+        <a class="wordmark" href="/">Synthe</a>
+        <nav class="topnav">
+          <a href="forge.html">Forge</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+        </nav>
+      </header>
+      <main>
+        <div class="hero">
+          <h1>Re<em>ceipts</em></h1>
+          <p class="lede">Synthe makes claims with receipts attached. Every entry below links to the run, file, or measurement behind it. No claim without a source.</p>
+        </div>
+
+        <div class="receipt">
+          <span class="stampline">Accepted</span>
+          <p class="date">October 1, 2026 · GitHub Actions</p>
+          <h2>Exactly-once on a real runner</h2>
+          <p>One handoff dispatched to a real GitHub runner: <code>ACCEPT</code>, claim recorded, flipped to <code>COMPLETED</code>. Exit code 0.</p>
+          <p><a class="textlink" href="https://github.com/rohansiddam/Synthe/actions/runs/36913336715">Open the run</a></p>
+        </div>
+
+        <div class="receipt">
+          <span class="stampline red">Rejected · duplicate</span>
+          <p class="date">October 1, 2026 · GitHub Actions</p>
+          <h2>Two duplicates, both caught</h2>
+          <p>The same handoff dispatched twice more. Both rejected with <code>duplicate_idempotency_key</code>. Exit code 2.</p>
+          <p><a class="textlink" href="https://github.com/rohansiddam/Synthe/actions/runs/36913571379">Duplicate run 1</a> · <a class="textlink" href="https://github.com/rohansiddam/Synthe/actions/runs/36913698021">Duplicate run 2</a></p>
+        </div>
+
+        <div class="receipt">
+          <span class="stampline">Accepted</span>
+          <p class="date">October 2, 2026 · measured locally</p>
+          <h2>1.5 seconds to first ACCEPT</h2>
+          <p>Fresh clone to <code>ACCEPT</code> in 1.505 seconds: <code>git clone</code>, then <code>python3 src/handoff_check.py examples/valid.json --registry examples/registry.json --workspace . --ledger ledger.json</code>. Python 3 only, no install step. Re-run the timing yourself; the command is on the <a class="textlink" href="/">homepage</a>.</p>
+        </div>
+
+        <div class="receipt">
+          <span class="stampline red">Rejected · 8 of 8</span>
+          <p class="date">Shipped in the repo · reproducible</p>
+          <h2>Eight attacks, eight REJECTs</h2>
+          <p><code>examples/v03/packets/</code> ships one valid signed packet and eight attacks. Run the loop from the homepage and watch each verdict land with its reason code. Or attack a handoff yourself in the <a class="textlink" href="forge.html">forge</a>.</p>
+        </div>
+
+        <div class="demo-strip">
+          <h2>Sample ledger</h2>
+          <p class="note">Demo entries, generated for illustration. Not live network activity.</p>
+          <div class="ledger">
+            <div><span>h-0001 · cadros:verdict-pack:m1-os-pl:rev-7</span><span class="ok">COMPLETED</span></div>
+            <div><span>h-0002 · deploy:web:2026-10-01:release</span><span class="ok">COMPLETED</span></div>
+            <div><span>h-0003 · agent:atlas:summarize:q3</span><span class="ok">ACCEPTED</span></div>
+          </div>
+        </div>
+      </main>
+      <footer>
+        <p>Synthe is an early project, shared under an evaluation license.</p>
+        <nav>
+          <a href="/">Home</a>
+          <a href="forge.html">Forge this handoff</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="log.html">Changelog</a>
+          <a href="status.html">Status &amp; trust</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+        </nav>
+        <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content="What Synthe is, what it is not, and what this site does with your data (nothing)." />
+    <link rel="icon" href="data:," />
+    <title>Status &amp; trust · Synthe</title>
+    <meta property="og:title" content="Status & trust · Synthe" />
+    <meta property="og:description" content="What Synthe is, what it is not, and what this site does with your data." />
+    <meta property="og:image" content="https://synthe.live/og-image.png" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..650;1,9..144,400..650&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --cream: #ece4d1; --cream-deep: #e3d7bd; --ink: #1c1611; --ink-soft: #4c4433;
+        --muted: #8b7d64; --line: #e0d4b8; --rust: #b8490f; --green: #0b4b41;
+        --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+      html { scrollbar-width: thin; scrollbar-color: rgba(36, 29, 20, 0.35) transparent; }
+      ::-webkit-scrollbar { width: 10px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(36, 29, 20, 0.28); border-radius: 8px; border: 2px solid var(--cream); }
+      body {
+        overflow-x: clip; margin: 0; color: var(--ink);
+        font-family: "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+        background-color: var(--cream);
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23241d14'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+        background-size: 480px 480px;
+      }
+      .page { max-width: 780px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
+      header.site-head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; border-bottom: 1px solid rgba(36, 29, 20, 0.14); padding-bottom: 18px; }
+      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 22px; font-weight: 600; color: var(--ink); text-decoration: none; }
+      .topnav { display: flex; gap: 22px; align-items: baseline; }
+      .topnav a { font-size: 15px; font-weight: 500; color: var(--ink-soft); text-decoration: none; }
+      .topnav a:hover { color: var(--rust); }
+      .hero { margin-top: clamp(40px, 7vw, 72px); }
+      .hero h1 { margin: 0; font-family: "Fraunces", Georgia, serif; font-size: clamp(36px, 6vw, 56px); font-weight: 500; letter-spacing: -0.02em; }
+      .hero h1 em { font-style: italic; color: var(--rust); }
+      .lede { color: var(--ink-soft); max-width: 36em; font-size: 18px; }
+      h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: clamp(24px, 4vw, 32px); margin: 48px 0 8px; letter-spacing: -0.01em; }
+      h2 em { color: var(--rust); font-style: italic; }
+      p.body { color: var(--ink-soft); max-width: 40em; }
+      .facts { list-style: none; margin: 20px 0 0; padding: 0; }
+      .facts li { display: flex; gap: 14px; padding: 12px 0; border-top: 1px solid var(--line); }
+      .facts li:last-child { border-bottom: 1px solid var(--line); }
+      .facts .k { font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); flex: 0 0 190px; padding-top: 3px; }
+      .facts .v { color: var(--ink-soft); }
+      .facts .v strong { color: var(--ink); }
+      .textlink { font-size: 16px; font-weight: 500; color: var(--rust); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+      footer { margin-top: clamp(56px, 10vw, 92px); padding-top: 26px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: baseline; }
+      footer p { margin: 0; }
+      footer .colophon { font-family: "Fraunces", Georgia, serif; font-style: italic; }
+      footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+      footer a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
+      footer a:hover { color: var(--rust); }
+      a:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
+      @media (max-width: 600px) { .facts li { flex-direction: column; gap: 2px; } .facts .k { flex: none; } }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-head">
+        <a class="wordmark" href="/">Synthe</a>
+        <nav class="topnav">
+          <a href="forge.html">Forge</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+        </nav>
+      </header>
+      <main>
+        <div class="hero">
+          <h1>Status &amp; <em>trust</em></h1>
+          <p class="lede">Plain facts about what Synthe is, what it is not, and what this site does with your information.</p>
+        </div>
+
+        <h2>Project <em>status</em></h2>
+        <ul class="facts">
+          <li><span class="k">Stage</span><span class="v"><strong>Early, open, and evaluable.</strong> The checker, spec, threat model, and tests are public at <a class="textlink" href="https://github.com/rohansiddam/Synthe">github.com/rohansiddam/Synthe</a>, shared under an evaluation license.</span></li>
+          <li><span class="k">Proven</span><span class="v">Exactly-once semantics on real GitHub runners (<a class="textlink" href="receipts.html">receipts</a>); eight shipped attacks all rejected with named reason codes.</span></li>
+          <li><span class="k">Not yet</span><span class="v">No hosted service, no managed keys, no SLA. You run the checker where your agents run.</span></li>
+        </ul>
+
+        <h2>What it <em>is not</em></h2>
+        <ul class="facts">
+          <li><span class="k">Not a blockchain</span><span class="v">No chain, no tokens, no consensus. A signed packet checked against a registry and a local ledger.</span></li>
+          <li><span class="k">Not tamper-proof</span><span class="v"><strong>Tamper-evident.</strong> Synthe detects alteration and names the broken link; it cannot prevent someone from altering their own copy.</span></li>
+          <li><span class="k">Not a truth machine</span><span class="v">It checks that evidence matches its pinned hash, not that the evidence itself is true.</span></li>
+          <li><span class="k">Not an endorsement</span><span class="v">Framework and model logos on the homepage indicate compatibility only. No endorsement is implied.</span></li>
+        </ul>
+
+        <h2>Your <em>data</em></h2>
+        <ul class="facts">
+          <li><span class="k">This site collects</span><span class="v"><strong>Nothing.</strong> No accounts, no analytics, no cookies, no tracking pixels.</span></li>
+          <li><span class="k">The demos</span><span class="v">The forge, playground, and tamper demo run entirely in your browser. Demo keys never leave the tab.</span></li>
+          <li><span class="k">The contact form</span><span class="v">Requesting access opens your email app with a draft. Nothing is stored or sent automatically.</span></li>
+          <li><span class="k">Shared certificates</span><span class="v">A certificate link carries its own demo keys and receipt in the URL fragment, which is never sent to any server. Anyone opening it re-runs the check locally.</span></li>
+        </ul>
+
+        <h2>Security <em>contact</em></h2>
+        <p class="body">Found a flaw in the checker or the threat model? Open an issue at <a class="textlink" href="https://github.com/rohansiddam/Synthe/issues">github.com/rohansiddam/Synthe/issues</a> or write to <a class="textlink" href="mailto:info@synthe.live">info@synthe.live</a>.</p>
+      </main>
+      <footer>
+        <p>Synthe is an early project, shared under an evaluation license.</p>
+        <nav>
+          <a href="/">Home</a>
+          <a href="forge.html">Forge this handoff</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="log.html">Changelog</a>
+          <a href="receipts.html">Receipts</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+        </nav>
+        <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content="Five questions to find out whether typed handoff contracts would help your agent setup." />
+    <link rel="icon" href="data:," />
+    <title>Do I need typed contracts? · Synthe</title>
+    <meta property="og:title" content="Do I need typed contracts? · Synthe" />
+    <meta property="og:description" content="Five questions to find out whether typed handoff contracts would help your agent setup." />
+    <meta property="og:image" content="https://synthe.live/og-image.png" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..650;1,9..144,400..650&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --cream: #ece4d1; --cream-deep: #e3d7bd; --ink: #1c1611; --ink-soft: #4c4433;
+        --muted: #8b7d64; --line: #e0d4b8; --rust: #b8490f; --green: #0b4b41;
+        --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+      html { scrollbar-width: thin; scrollbar-color: rgba(36, 29, 20, 0.35) transparent; }
+      ::-webkit-scrollbar { width: 10px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(36, 29, 20, 0.28); border-radius: 8px; border: 2px solid var(--cream); }
+      body {
+        overflow-x: clip; margin: 0; color: var(--ink);
+        font-family: "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+        background-color: var(--cream);
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23241d14'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+        background-size: 480px 480px;
+      }
+      .page { max-width: 720px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
+      header.site-head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; border-bottom: 1px solid rgba(36, 29, 20, 0.14); padding-bottom: 18px; }
+      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 22px; font-weight: 600; color: var(--ink); text-decoration: none; }
+      .topnav { display: flex; gap: 22px; align-items: baseline; }
+      .topnav a { font-size: 15px; font-weight: 500; color: var(--ink-soft); text-decoration: none; }
+      .topnav a:hover { color: var(--rust); }
+      .hero { margin-top: clamp(40px, 7vw, 72px); }
+      .hero h1 { margin: 0; font-family: "Fraunces", Georgia, serif; font-size: clamp(34px, 5.6vw, 52px); font-weight: 500; letter-spacing: -0.02em; }
+      .hero h1 em { font-style: italic; color: var(--rust); }
+      .lede { color: var(--ink-soft); max-width: 36em; font-size: 18px; }
+      .q { background: rgba(255,255,255,0.5); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 28px); margin-top: 18px; }
+      .q h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 21px; margin: 0 0 14px; }
+      .q h2 .n { font-family: var(--mono); font-size: 13px; color: var(--rust); display: block; letter-spacing: 0.1em; margin-bottom: 6px; }
+      .opts { display: grid; gap: 10px; }
+      .opt { text-align: left; border: 1px solid var(--line); background: rgba(255,255,255,0.5); border-radius: 12px; padding: 13px 16px; cursor: pointer; font: inherit; font-size: 15.5px; color: var(--ink-soft); }
+      .opt:hover { border-color: var(--rust); color: var(--ink); }
+      .opt[aria-pressed="true"] { border-color: var(--rust); color: var(--ink); background: rgba(184,73,15,0.06); }
+      .result { margin-top: 26px; border-radius: 18px; padding: clamp(24px, 4vw, 36px); border: 1px solid var(--line); background: rgba(255,255,255,0.55); }
+      .result h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 26px; margin: 0 0 8px; }
+      .result p { color: var(--ink-soft); max-width: 38em; margin: 0 0 12px; }
+      .result .score { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--rust); display: block; margin-bottom: 8px; }
+      .btn { display: inline-block; background: var(--ink); color: var(--cream); font-size: 16px; font-weight: 600; padding: 12px 24px; border-radius: 999px; border: none; cursor: pointer; font-family: inherit; text-decoration: none; transition: background 0.2s ease, transform 0.2s ease; margin-right: 10px; margin-top: 6px; }
+      .btn:hover { background: var(--rust); transform: translateY(-1px); }
+      .btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+      .btn.secondary:hover { border-color: var(--rust); color: var(--rust); background: transparent; }
+      .textlink { font-size: 16px; font-weight: 500; color: var(--rust); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+      footer { margin-top: clamp(56px, 10vw, 92px); padding-top: 26px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: baseline; }
+      footer p { margin: 0; }
+      footer .colophon { font-family: "Fraunces", Georgia, serif; font-style: italic; }
+      footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+      footer a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
+      footer a:hover { color: var(--rust); }
+      a:focus-visible, button:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
+      [hidden] { display: none !important; }
+      @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-head">
+        <a class="wordmark" href="/">Synthe</a>
+        <nav class="topnav">
+          <a href="forge.html">Forge</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+        </nav>
+      </header>
+      <main>
+        <div class="hero">
+          <h1>Do I need <em>typed contracts?</em></h1>
+          <p class="lede">Five questions about how your agents hand off work. A rough heuristic, not a diagnosis. Your answers never leave this tab.</p>
+        </div>
+        <div id="quiz"></div>
+        <div class="result" id="result" hidden>
+          <span class="score" id="r-score"></span>
+          <h2 id="r-title"></h2>
+          <p id="r-body"></p>
+          <div id="r-links"></div>
+          <button class="btn secondary" type="button" id="btn-retake">Retake</button>
+        </div>
+      </main>
+      <footer>
+        <p>Synthe is an early project, shared under an evaluation license.</p>
+        <nav>
+          <a href="/">Home</a>
+          <a href="forge.html">Forge this handoff</a>
+          <a href="playground.html">Playground</a>
+          <a href="docs.html">Docs</a>
+          <a href="log.html">Changelog</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+        </nav>
+        <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
+      </footer>
+    </div>
+    <script>
+      (function () {
+        "use strict";
+        var QUESTIONS = [
+          { q: "How many agents hand work to each other in your setup?",
+            opts: [["Just one agent, end to end", 0], ["Two or three", 1], ["A whole crew", 2]] },
+          { q: "When something goes wrong between agents, can you say exactly which handoff caused it?",
+            opts: [["Yes, we can trace it", 0], ["Sometimes, with effort", 1], ["No, it is guesswork", 2]] },
+          { q: "Has the same agent task ever run twice by accident?",
+            opts: [["Never", 0], ["Once or twice", 1], ["More than I would like to admit", 2]] },
+          { q: "Do agents act on files or data that might have changed since the task was assigned?",
+            opts: [["No, inputs are fixed", 0], ["Rarely", 1], ["Yes, regularly", 2]] },
+          { q: "Could one compromised or confused agent cause real damage (spend money, send messages, delete things)?",
+            opts: [["No, the blast radius is small", 0], ["Somewhat", 1], ["Yes, absolutely", 2]] }
+        ];
+        var answers = new Array(QUESTIONS.length).fill(null);
+        var quizEl = document.getElementById("quiz");
+
+        function render() {
+          quizEl.innerHTML = "";
+          QUESTIONS.forEach(function (item, i) {
+            var div = document.createElement("section");
+            div.className = "q";
+            var h = document.createElement("h2");
+            h.innerHTML = '<span class="n">Question ' + (i + 1) + " of " + QUESTIONS.length + "</span>";
+            h.appendChild(document.createTextNode(item.q));
+            div.appendChild(h);
+            var opts = document.createElement("div");
+            opts.className = "opts";
+            item.opts.forEach(function (o) {
+              var b = document.createElement("button");
+              b.type = "button"; b.className = "opt";
+              b.textContent = o[0];
+              b.setAttribute("aria-pressed", answers[i] === o[1] ? "true" : "false");
+              b.addEventListener("click", function () {
+                answers[i] = o[1];
+                render();
+                if (answers.every(function (a) { return a !== null; })) showResult();
+              });
+              opts.appendChild(b);
+            });
+            div.appendChild(opts);
+            quizEl.appendChild(div);
+          });
+        }
+
+        function showResult() {
+          var score = answers.reduce(function (s, a) { return s + a; }, 0);
+          var title, body, links;
+          document.getElementById("r-score").textContent = "Score " + score + " of 10";
+          if (score <= 2) {
+            title = "Probably not yet";
+            body = "Your setup is small and traceable enough that typed contracts would add ceremony without payoff. Keep the forge bookmarked for when the crew grows.";
+            links = '<a class="btn secondary" href="forge.html">See what it does anyway</a>';
+          } else if (score <= 6) {
+            title = "Worth a trial";
+            body = "You have real handoffs and real failure modes. Try the playground: draft one of your actual handoffs as a typed packet and run the checker on it. Two minutes, no install.";
+            links = '<a class="btn" href="playground.html">Open the playground</a><a class="btn secondary" href="docs.html">Read the docs</a>';
+          } else {
+            title = "You are the reason this exists";
+            body = "Multiple agents, murky failures, duplicate runs, and a real blast radius. That is exactly the setup Synthe gates. Start with the forge to feel the checks, then run the real checker on one handoff.";
+            links = '<a class="btn" href="forge.html">Open the forge</a><a class="btn secondary" href="https://github.com/rohansiddam/Synthe">Clone the repo</a>';
+          }
+          document.getElementById("r-title").textContent = title;
+          document.getElementById("r-body").textContent = body;
+          document.getElementById("r-links").innerHTML = links;
+          var r = document.getElementById("result");
+          r.hidden = false;
+          var smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          r.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start" });
+        }
+
+        document.getElementById("btn-retake").addEventListener("click", function () {
+          answers = new Array(QUESTIONS.length).fill(null);
+          document.getElementById("result").hidden = true;
+          render();
+          var smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          window.scrollTo({ top: 0, behavior: smooth ? "smooth" : "auto" });
+        });
+
+        render();
+      })();
+    </script>
+  </body>
+</html>
