@@ -102,16 +102,34 @@
         margin-top: clamp(48px, 9vw, 96px);
         position: relative;
       }
-      /* Warm light behind the hero */
-      .hero::before {
-        content: "";
+      /* Dotted flight-path trajectories behind the hero */
+      .hero > :not(.trajectory) { position: relative; z-index: 1; }
+      .trajectory {
         position: absolute;
-        inset: -120px -60px 0;
-        background: radial-gradient(58% 46% at 50% 0%, rgba(180, 85, 42, 0.12), transparent 70%);
+        inset: 0;
+        width: 100%;
+        height: 100%;
         pointer-events: none;
         z-index: 0;
       }
-      .hero > * { position: relative; z-index: 1; }
+      .trajectory path {
+        fill: none;
+        stroke: var(--rust);
+        stroke-width: 2;
+        opacity: 0.3;
+        stroke-dasharray: 2 14;
+        stroke-linecap: round;
+        vector-effect: non-scaling-stroke;
+        animation: dashmove 40s linear infinite;
+      }
+      .trajectory path.faint {
+        stroke: var(--ink);
+        opacity: 0.1;
+        animation-duration: 60s;
+      }
+      @keyframes dashmove {
+        to { stroke-dashoffset: -320; }
+      }
       /* Paper grain over the whole page */
       body::after {
         content: "";
@@ -694,12 +712,12 @@
         transform: translate(-50%, 90px);
         display: flex;
         gap: 2px;
-        background: rgba(246, 241, 230, 0.94);
+        background: rgba(28, 22, 17, 0.94);
         backdrop-filter: blur(8px);
-        border: 1px solid var(--line);
+        border: 1px solid rgba(28, 22, 17, 1);
         border-radius: 999px;
         padding: 7px 10px;
-        box-shadow: 0 10px 30px rgba(28, 22, 17, 0.14);
+        box-shadow: 0 10px 30px rgba(28, 22, 17, 0.3);
         transition: transform 0.35s ease;
         z-index: 60;
       }
@@ -709,12 +727,12 @@
         font-size: 12px;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: var(--ink-soft);
+        color: #f6f1e6;
         text-decoration: none;
         padding: 7px 11px;
         border-radius: 999px;
       }
-      .anchor-nav a:hover { color: var(--rust); background: rgba(28, 22, 17, 0.05); }
+      .anchor-nav a:hover { color: #f0c078; background: rgba(255, 255, 255, 0.08); }
 
       /* Partner form */
       .sr-only {
@@ -865,6 +883,7 @@
         .pulse-dot { animation: none; }
         .btn { transition: none; }
         .sticky-cta, .anchor-nav, .sim-nav { transition: none; }
+        .trajectory path { animation: none; }
       }
     </style>
   </head>
@@ -879,6 +898,11 @@
 
       <main>
         <div class="hero">
+          <svg class="trajectory" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M -40 520 C 280 480, 480 260, 820 220 S 1120 140, 1260 90" />
+            <path class="faint" d="M -40 580 C 240 560, 560 380, 900 360 S 1140 300, 1260 260" />
+            <path class="faint" d="M -40 440 C 320 400, 520 180, 880 160" />
+          </svg>
           <span class="sticker">ACCEPT or REJECT, with a reason</span>
           <h1>Synthe is the bouncer for your AI agents. Every handoff gets <span class="rotator" aria-label="checked"><span class="rotator-inner" aria-hidden="true"><span>checked</span><span>verified</span><span>screened</span><span>checked</span></span></span> at the door.</h1>
           <p class="lede">When one AI agent hands work to another, Synthe validates the handoff as a typed packet before the receiver acts. Every accepted handoff is recorded, so the same one cannot be claimed twice.</p>
