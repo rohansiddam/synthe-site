@@ -101,6 +101,8 @@
       footer a { color: var(--ink-soft); }
       footer a:hover { color: var(--rust); }
       a:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
+      .textlink { color: var(--rust); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; font-weight: 500; }
+      .textlink:hover { color: var(--ink); }
     </style>
   </head>
   <body>
@@ -114,26 +116,32 @@
       </header>
       <main>
         <h1>Change<em>log</em></h1>
+        <p class="lede" style="color: var(--ink-soft); max-width: 38em; margin: -24px 0 40px;">What shipped, why it matters, and the receipts.</p>
         <ul class="entries">
           <li>
+            <span class="date">October 2, 2026</span>
+            <h2>The site becomes a proving ground</h2>
+            <p>Three interactive demos ship, all running in your browser: <a class="textlink" href="forge.html">forge this handoff</a> (six attacks, six reason codes, shareable certificates), the <a class="textlink" href="playground.html">contract playground</a> (draft, sign with real Ed25519 keys, and validate a packet), and the <a class="textlink" href="tamper.html">tamper-evidence demo</a> (break a hash chain, find the broken block). Docs gained the full reason-code reference, and every claim on the site now links to its <a class="textlink" href="receipts.html">receipt</a>.</p>
+          </li>
+          <li>
             <span class="date">October 1, 2026</span>
-            <h2>v0.3 proof on real runners</h2>
-            <p>Three runs dispatched back to back on real GitHub runners. Exactly one ACCEPT flipped to COMPLETED; the other two were rejected as duplicates with code duplicate_idempotency_key.</p>
+            <h2>Exactly-once, proven on real runners</h2>
+            <p>Three runs dispatched back to back on real GitHub runners. Exactly one ACCEPT flipped to COMPLETED; the other two were rejected as duplicates with code <span style="font-family: var(--mono); font-size: 14px;">duplicate_idempotency_key</span>. The same work cannot be claimed twice, even across restarts. <a class="textlink" href="https://github.com/rohansiddam/Synthe/actions/runs/36913336715">ACCEPT run</a> · <a class="textlink" href="https://github.com/rohansiddam/Synthe/actions/runs/36913571379">duplicate 1</a> · <a class="textlink" href="https://github.com/rohansiddam/Synthe/actions/runs/36913698021">duplicate 2</a></p>
           </li>
           <li>
             <span class="date">September 30, 2026</span>
-            <h2>Two-runner verification</h2>
-            <p>Exactly one ACCEPT across two real-runner runs; the second was rejected as a duplicate. The completed-state restore path was fixed and re-verified.</p>
+            <h2>Two runners, one claim</h2>
+            <p>Exactly one ACCEPT across two real-runner runs; the second was rejected as a duplicate. The completed-state restore path was fixed and re-verified, so a crashed receiver cannot double-claim on recovery.</p>
           </li>
           <li>
             <span class="date">September 30, 2026</span>
-            <h2>Public repo goes live</h2>
-            <p>Spec, checker, GitHub Action, and tests all in the open at github.com/rohansiddam/Synthe.</p>
+            <h2>The checker is open source</h2>
+            <p>Spec, checker, GitHub Action, and tests all in the open at <a class="textlink" href="https://github.com/rohansiddam/Synthe">github.com/rohansiddam/Synthe</a>. Read the rules before you trust them.</p>
           </li>
         </ul>
       </main>
       <footer>
-        <p><a href="/">Back to synthe.live</a> · Shared under an evaluation license.</p>
+        <p><a href="/">Back to synthe.live</a> · <a href="forge.html">Forge</a> · <a href="playground.html">Playground</a> · <a href="docs.html">Docs</a> · Shared under an evaluation license.</p>
       </footer>
     </div>
   </body>

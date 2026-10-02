@@ -126,6 +126,54 @@
       footer a { color: var(--ink-soft); }
       footer a:hover { color: var(--rust); }
       a:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
+      .version-badge {
+        display: inline-block; font-family: var(--mono); font-size: 12.5px;
+        letter-spacing: 0.06em; border: 1px solid var(--line); border-radius: 999px;
+        padding: 6px 16px; color: var(--ink-soft); margin-top: 14px; background: rgba(255,255,255,0.4);
+      }
+      .toc {
+        margin: 34px 0 8px; padding: 20px 24px; border: 1px solid var(--line);
+        border-radius: 14px; background: rgba(255,255,255,0.4);
+      }
+      .toc p { font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--rust); margin: 0 0 10px; }
+      .toc ol { margin: 0; padding-left: 20px; columns: 2; column-gap: 32px; font-size: 15px; }
+      .toc li { margin-bottom: 6px; }
+      .toc a { color: var(--ink-soft); text-decoration: none; }
+      .toc a:hover { color: var(--rust); }
+      .term-bar { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+      .copybtn {
+        font-family: var(--mono); font-size: 12px; padding: 5px 14px; border-radius: 999px;
+        border: 1px solid rgba(232,226,212,0.25); background: transparent; color: #8a8071; cursor: pointer;
+      }
+      .copybtn:hover { color: #e8e2d4; border-color: #e8e2d4; }
+      .reason-table { width: 100%; border-collapse: collapse; margin: 18px 0 8px; font-size: 15px; }
+      .reason-table th {
+        font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+        color: var(--rust); text-align: left; padding: 14px 10px 8px; border-bottom: 1px solid var(--line);
+      }
+      .reason-table td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+      .reason-table td:first-child { font-family: var(--mono); font-size: 13px; white-space: nowrap; color: var(--ink); }
+      .reason-table td:last-child { color: var(--ink-soft); }
+      .check-order { margin: 18px 0; padding-left: 0; list-style: none; counter-reset: step; }
+      .check-order li { counter-increment: step; display: flex; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+      .check-order li::before {
+        content: counter(step); flex: 0 0 30px; height: 30px; border: 1px solid var(--line); border-radius: 50%;
+        display: inline-flex; align-items: center; justify-content: center;
+        font-family: var(--mono); font-size: 13px; color: var(--rust);
+      }
+      .check-order strong { display: block; font-size: 16px; }
+      .check-order span { font-size: 14.5px; color: var(--ink-soft); }
+      .check-order code { font-family: var(--mono); font-size: 12.5px; background: rgba(36,29,20,0.06); padding: 1px 7px; border-radius: 5px; }
+      .demolinks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 18px; }
+      .demolinks a {
+        display: block; border: 1px solid var(--line); border-radius: 14px; padding: 18px;
+        text-decoration: none; color: var(--ink); background: rgba(255,255,255,0.4);
+      }
+      .demolinks a:hover { border-color: var(--rust); }
+      .demolinks strong { display: block; font-size: 16px; margin-bottom: 4px; }
+      .demolinks span { font-size: 14px; color: var(--ink-soft); }
+      h2 { scroll-margin-top: 24px; }
+      @media (max-width: 640px) { .toc ol { columns: 1; } .demolinks { grid-template-columns: 1fr; } }
     </style>
   </head>
   <body>
@@ -140,16 +188,42 @@
       <main>
         <h1>Synthe <em>docs</em></h1>
         <p class="lede">Everything you need to check your first handoff. The full formal spec and threat model live in the repo.</p>
+        <p><span class="version-badge">PACKET SCHEMA 0.1 · DOCS OCTOBER 2026</span></p>
 
-        <h2>Getting <em>started</em></h2>
+        <nav class="toc" aria-label="On this page">
+          <p>On this page</p>
+          <ol>
+            <li><a href="#getting-started">Getting started</a></li>
+            <li><a href="#check-order">The check order</a></li>
+            <li><a href="#concepts">Core concepts</a></li>
+            <li><a href="#reasons">Reason codes</a></li>
+            <li><a href="#try-interactive">Try it interactively</a></li>
+            <li><a href="#references">Full references</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="getting-started">Getting <em>started</em></h2>
         <p>Clone the repo, run the checker against the example packets. Two minutes, no dependencies beyond Python.</p>
         <div class="terminal" role="group" aria-label="Synthe quickstart commands.">
+          <div class="term-bar"><button class="copybtn" type="button">Copy</button></div>
           <p><span class="prompt">$ </span><span class="cmd">git clone https://github.com/rohansiddam/Synthe.git &amp;&amp; cd Synthe</span></p>
           <p><span class="prompt">$ </span><span class="cmd">python3 src/handoff_check.py examples/v03/packets/valid-signed.json --registry examples/v03/registry.json --workspace examples/v03/workspace</span></p>
           <p><span class="accept">ACCEPT</span> <span class="dim">claim recorded</span></p>
         </div>
 
-        <h2>Core <em>concepts</em></h2>
+        <h2 id="check-order">The check <em>order</em></h2>
+        <p>The checker runs these checks in order and stops at the first failure, so the reason code tells you exactly which link broke.</p>
+        <ol class="check-order">
+          <li><div><strong>Structure</strong><span>Required fields, schema version, and field shapes. <code>missing_field:id</code>, <code>bad_schema_version</code></span></div></li>
+          <li><div><strong>Identity</strong><span>Sender and receiver resolve in the registry; aliases must use the canonical id. <code>unknown_agent:from</code></span></div></li>
+          <li><div><strong>Signature</strong><span>Ed25519 over domain-separated canonical JSON. <code>signature_invalid</code>, <code>signature_signer_mismatch</code></span></div></li>
+          <li><div><strong>Idempotency</strong><span>The key must not be completed, reserved, or in an unknown state. <code>duplicate_idempotency_key</code></span></div></li>
+          <li><div><strong>Freshness</strong><span>The handoff must not be expired. <code>handoff_expired</code></span></div></li>
+          <li><div><strong>Authority</strong><span>Planned actions against tools, forbidden lists, signed approvals, and budget. <code>approval_missing</code>, <code>budget_exceeded</code></span></div></li>
+          <li><div><strong>Evidence</strong><span>Pinned hashes recomputed against workspace files. <code>evidence_not_verbatim</code>, <code>artifact_hash_mismatch</code></span></div></li>
+        </ol>
+
+        <h2 id="concepts">Core <em>concepts</em></h2>
         <div class="concept">
           <h3>The packet</h3>
           <p>A handoff is a typed JSON packet: who sends, who receives, what was done, what evidence backs it, and what the receiver may do next. Nothing free-form.</p>
@@ -167,10 +241,56 @@
           <p>Actions a packet declares must be covered by a signed approval. A bad or missing approval is a REJECT with the reason named, not a silent pass.</p>
         </div>
 
-        <h2>Reason <em>codes</em></h2>
-        <p>Every verdict names its reason: <span style="font-family: var(--mono); font-size: 15px;">signature_invalid</span>, <span style="font-family: var(--mono); font-size: 15px;">duplicate_idempotency_key</span>, <span style="font-family: var(--mono); font-size: 15px;">approval_missing</span>, and more. The complete list is in the spec.</p>
+        <h2 id="reasons">Reason <em>codes</em></h2>
+        <p>Every verdict names its reason. The complete reference, grouped by check stage:</p>
+        <table class="reason-table">
+          <tr><th colspan="2">Structure</th></tr>
+          <tr><td>missing_handoff</td><td>The packet has no <code>handoff</code> object.</td></tr>
+          <tr><td>missing_field:<i>name</i></td><td>A required field is absent or empty, e.g. <code>missing_field:purpose</code>.</td></tr>
+          <tr><td>bad_schema_version</td><td>Only schema <code>0.1</code> is accepted.</td></tr>
+          <tr><td>bad_on_failure</td><td><code>on_failure</code> is not one of reject, retry_with_budget, escalate, request_human.</td></tr>
+          <tr><td>planned_actions_missing</td><td>The receiver's policy requires declared planned actions.</td></tr>
+          <tr><th colspan="2">Identity</th></tr>
+          <tr><td>unknown_agent:from / :to</td><td>The sender or receiver is not in the registry.</td></tr>
+          <tr><td>alias_not_canonical</td><td>An alias was used where the canonical agent id is required.</td></tr>
+          <tr><th colspan="2">Signature</th></tr>
+          <tr><td>signature_missing</td><td>Receiver policy requires a signed packet; none present.</td></tr>
+          <tr><td>signature_malformed</td><td>The signature block is not an object with a <code>sig</code> string.</td></tr>
+          <tr><td>signature_alg_unsupported</td><td>Only Ed25519 is accepted.</td></tr>
+          <tr><td>signature_signer_mismatch</td><td>The signature's signer does not match the packet's <code>from</code>.</td></tr>
+          <tr><td>signature_key_unknown</td><td>No Ed25519 key on record for the signer.</td></tr>
+          <tr><td>signature_invalid</td><td>The signature does not verify: the packet was altered after signing, or the wrong key was used.</td></tr>
+          <tr><th colspan="2">Idempotency</th></tr>
+          <tr><td>duplicate_idempotency_key</td><td>This handoff was already completed.</td></tr>
+          <tr><td>idempotency_key_reserved</td><td>The key was claimed but the effect was never confirmed; reconcile before redispatch.</td></tr>
+          <tr><td>unknown_outcome</td><td>The key was claimed long ago and never completed; the receiver may have crashed mid-effect.</td></tr>
+          <tr><th colspan="2">Freshness</th></tr>
+          <tr><td>bad_expires_at</td><td><code>acceptance.expires_at</code> is not a valid timestamp.</td></tr>
+          <tr><td>handoff_expired</td><td>The handoff expired before it was checked.</td></tr>
+          <tr><th colspan="2">Authority</th></tr>
+          <tr><td>tool_not_allowed</td><td>A planned action uses a tool outside <code>allowed_tools</code>.</td></tr>
+          <tr><td>forbidden_action</td><td>A planned action is forbidden by scope.</td></tr>
+          <tr><td>approval_missing</td><td>An action that needs approval has none recorded.</td></tr>
+          <tr><td>approval_expired</td><td>The covering approval expired.</td></tr>
+          <tr><td>approval_signature_invalid</td><td>An approval's signature does not verify for its approver on this handoff.</td></tr>
+          <tr><td>approver_not_trusted</td><td>The approver is not trusted by the receiver's policy.</td></tr>
+          <tr><td>budget_exceeded</td><td>Estimated tokens, USD, or minutes exceed the budget.</td></tr>
+          <tr><th colspan="2">Evidence</th></tr>
+          <tr><td>evidence_missing</td><td>A required evidence kind has no entry.</td></tr>
+          <tr><td>evidence_not_verbatim</td><td>A verbatim quote does not match its pinned hash.</td></tr>
+          <tr><td>artifact_hash_mismatch</td><td>An input artifact changed since the handoff was made.</td></tr>
+          <tr><td>evidence_ref_missing</td><td>An evidence reference was not found in the workspace.</td></tr>
+        </table>
 
-        <h2>Full <em>references</em></h2>
+        <h2 id="try-interactive">Try it <em>interactively</em></h2>
+        <p>Every check above runs in your browser, no install needed.</p>
+        <div class="demolinks">
+          <a href="forge.html"><strong>Forge this handoff</strong><span>Six attacks, six reason codes, one stamp.</span></a>
+          <a href="playground.html"><strong>Contract playground</strong><span>Draft, sign, and validate a real packet.</span></a>
+          <a href="tamper.html"><strong>Tamper evidence</strong><span>Break a hash chain and find where.</span></a>
+        </div>
+
+        <h2 id="references">Full <em>references</em></h2>
         <div class="doclinks">
           <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">SPEC.md</a>
           <a href="https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md">THREAT_MODEL.md</a>
@@ -178,8 +298,22 @@
         </div>
       </main>
       <footer>
-        <p><a href="/">Back to synthe.live</a> · Shared under an evaluation license.</p>
+        <p><a href="/">Back to synthe.live</a> · <a href="forge.html">Forge</a> · <a href="playground.html">Playground</a> · <a href="tamper.html">Tamper</a> · <a href="log.html">Changelog</a> · Shared under an evaluation license.</p>
       </footer>
     </div>
+    <script>
+      (function () {
+        "use strict";
+        document.querySelectorAll(".copybtn").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var term = btn.closest(".terminal");
+            var txt = Array.prototype.map.call(term.querySelectorAll("p"), function (p) { return p.textContent; }).join("\n");
+            function done() { btn.textContent = "Copied"; setTimeout(function () { btn.textContent = "Copy"; }, 1500); }
+            if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, done);
+            else done();
+          });
+        });
+      })();
+    </script>
   </body>
 </html>
