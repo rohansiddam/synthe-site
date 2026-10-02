@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content="The Synthe changelog: what shipped and when." />
+    <link rel="icon" href="data:," />
+    <title>Synthe changelog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..650;1,9..144,400..650&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --cream: #f6f1e6;
+        --ink: #1c1611;
+        --ink-soft: #5c5347;
+        --rust: #b4552a;
+        --line: #d8cdb4;
+        --mono: "IBM Plex Mono", ui-monospace, monospace;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Inter", system-ui, sans-serif;
+        background: var(--cream);
+        color: var(--ink);
+        font-size: 17px;
+        line-height: 1.6;
+      }
+      .page { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 26px 0;
+        border-bottom: 1px solid var(--line);
+        margin-bottom: 56px;
+      }
+      .wordmark {
+        font-family: "Fraunces", Georgia, serif;
+        font-size: 26px;
+        font-weight: 600;
+        color: var(--ink);
+        text-decoration: none;
+      }
+      header nav a {
+        font-family: var(--mono);
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        text-decoration: none;
+        margin-left: 22px;
+      }
+      header nav a:hover { color: var(--rust); }
+      h1 {
+        font-family: "Fraunces", Georgia, serif;
+        font-weight: 500;
+        font-size: clamp(40px, 7vw, 60px);
+        letter-spacing: -0.02em;
+        margin: 0 0 40px;
+      }
+      h1 em { color: var(--rust); font-style: italic; }
+      .entries { list-style: none; margin: 0; padding: 0; }
+      .entries li {
+        padding: 26px 0;
+        border-top: 1px solid var(--line);
+      }
+      .entries li:last-child { border-bottom: 1px solid var(--line); }
+      .date {
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--rust);
+      }
+      .entries h2 {
+        font-family: "Fraunces", Georgia, serif;
+        font-weight: 500;
+        font-size: 24px;
+        margin: 8px 0 6px;
+      }
+      .entries p { margin: 0; color: var(--ink-soft); max-width: 38em; }
+      footer {
+        margin-top: 80px;
+        padding-top: 24px;
+        border-top: 1px solid var(--line);
+        color: var(--ink-soft);
+        font-size: 15px;
+      }
+      footer a { color: var(--ink-soft); }
+      footer a:hover { color: var(--rust); }
+      a:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <a class="wordmark" href="/">Synthe</a>
+        <nav>
+          <a href="/">Home</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+        </nav>
+      </header>
+      <main>
+        <h1>Change<em>log</em></h1>
+        <ul class="entries">
+          <li>
+            <span class="date">October 1, 2026</span>
+            <h2>v0.3 proof on real runners</h2>
+            <p>Three runs dispatched back to back on real GitHub runners. Exactly one ACCEPT flipped to COMPLETED; the other two were rejected as duplicates with code duplicate_idempotency_key.</p>
+          </li>
+          <li>
+            <span class="date">September 30, 2026</span>
+            <h2>Two-runner verification</h2>
+            <p>Exactly one ACCEPT across two real-runner runs; the second was rejected as a duplicate. The completed-state restore path was fixed and re-verified.</p>
+          </li>
+          <li>
+            <span class="date">September 30, 2026</span>
+            <h2>Public repo goes live</h2>
+            <p>Spec, checker, GitHub Action, and tests all in the open at github.com/rohansiddam/Synthe.</p>
+          </li>
+        </ul>
+      </main>
+      <footer>
+        <p><a href="/">Back to synthe.live</a> · Shared under an evaluation license.</p>
+      </footer>
+    </div>
+  </body>
+</html>

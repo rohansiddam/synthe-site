@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <meta name="description" content="Synthe docs: get started, core concepts, and links to the full spec and threat model." />
+    <link rel="icon" href="data:," />
+    <title>Synthe docs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..650;1,9..144,400..650&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --cream: #f6f1e6;
+        --ink: #1c1611;
+        --ink-soft: #5c5347;
+        --rust: #b4552a;
+        --line: #d8cdb4;
+        --mono: "IBM Plex Mono", ui-monospace, monospace;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Inter", system-ui, sans-serif;
+        background: var(--cream);
+        color: var(--ink);
+        font-size: 17px;
+        line-height: 1.6;
+      }
+      .page { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 26px 0;
+        border-bottom: 1px solid var(--line);
+        margin-bottom: 56px;
+      }
+      .wordmark {
+        font-family: "Fraunces", Georgia, serif;
+        font-size: 26px;
+        font-weight: 600;
+        color: var(--ink);
+        text-decoration: none;
+      }
+      header nav a {
+        font-family: var(--mono);
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        text-decoration: none;
+        margin-left: 22px;
+      }
+      header nav a:hover { color: var(--rust); }
+      h1 {
+        font-family: "Fraunces", Georgia, serif;
+        font-weight: 500;
+        font-size: clamp(40px, 7vw, 60px);
+        letter-spacing: -0.02em;
+        margin: 0 0 12px;
+      }
+      h1 em { color: var(--rust); font-style: italic; }
+      h2 {
+        font-family: "Fraunces", Georgia, serif;
+        font-weight: 500;
+        font-size: clamp(26px, 4vw, 34px);
+        margin: 56px 0 12px;
+      }
+      h2 em { color: var(--rust); font-style: italic; }
+      .lede { font-size: 19px; color: var(--ink-soft); max-width: 36em; }
+      .terminal {
+        background: #171310;
+        color: #e8e2d4;
+        border-radius: 14px;
+        padding: 22px 24px;
+        font-family: var(--mono);
+        font-size: 14px;
+        line-height: 1.7;
+        margin: 24px 0;
+        overflow-x: auto;
+      }
+      .terminal .prompt { color: #8a8071; }
+      .terminal .cmd { color: #e8e2d4; }
+      .terminal .accept { color: #7fb069; font-weight: 600; }
+      .terminal .dim { color: #8a8071; }
+      .concept { margin: 26px 0; }
+      .concept h3 {
+        font-family: var(--mono);
+        font-size: 13px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--rust);
+        margin: 0 0 6px;
+      }
+      .concept p { margin: 0; color: var(--ink-soft); max-width: 38em; }
+      .doclinks { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+      .doclinks a {
+        display: inline-block;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 10px 22px;
+        color: var(--ink);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 15px;
+      }
+      .doclinks a:hover { border-color: var(--rust); color: var(--rust); }
+      footer {
+        margin-top: 80px;
+        padding-top: 24px;
+        border-top: 1px solid var(--line);
+        color: var(--ink-soft);
+        font-size: 15px;
+      }
+      footer a { color: var(--ink-soft); }
+      footer a:hover { color: var(--rust); }
+      a:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <a class="wordmark" href="/">Synthe</a>
+        <nav>
+          <a href="/">Home</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+        </nav>
+      </header>
+      <main>
+        <h1>Synthe <em>docs</em></h1>
+        <p class="lede">Everything you need to check your first handoff. The full formal spec and threat model live in the repo.</p>
+
+        <h2>Getting <em>started</em></h2>
+        <p>Clone the repo, run the checker against the example packets. Two minutes, no dependencies beyond Python.</p>
+        <div class="terminal" role="group" aria-label="Synthe quickstart commands.">
+          <p><span class="prompt">$ </span><span class="cmd">git clone https://github.com/rohansiddam/Synthe.git &amp;&amp; cd Synthe</span></p>
+          <p><span class="prompt">$ </span><span class="cmd">python3 src/handoff_check.py examples/v03/packets/valid-signed.json --registry examples/v03/registry.json --workspace examples/v03/workspace</span></p>
+          <p><span class="accept">ACCEPT</span> <span class="dim">claim recorded</span></p>
+        </div>
+
+        <h2>Core <em>concepts</em></h2>
+        <div class="concept">
+          <h3>The packet</h3>
+          <p>A handoff is a typed JSON packet: who sends, who receives, what was done, what evidence backs it, and what the receiver may do next. Nothing free-form.</p>
+        </div>
+        <div class="concept">
+          <h3>The registry</h3>
+          <p>Each receiver holds a registry of agent identities and public keys. A packet's signature is verified against the registry before anything else is checked.</p>
+        </div>
+        <div class="concept">
+          <h3>The ledger</h3>
+          <p>Every ACCEPT is recorded with an idempotency key. The same work can never be claimed twice, even across restarts.</p>
+        </div>
+        <div class="concept">
+          <h3>Approvals</h3>
+          <p>Actions a packet declares must be covered by a signed approval. A bad or missing approval is a REJECT with the reason named, not a silent pass.</p>
+        </div>
+
+        <h2>Reason <em>codes</em></h2>
+        <p>Every verdict names its reason: <span style="font-family: var(--mono); font-size: 15px;">signature_invalid</span>, <span style="font-family: var(--mono); font-size: 15px;">duplicate_idempotency_key</span>, <span style="font-family: var(--mono); font-size: 15px;">approval_missing</span>, and more. The complete list is in the spec.</p>
+
+        <h2>Full <em>references</em></h2>
+        <div class="doclinks">
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">SPEC.md</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md">THREAT_MODEL.md</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/README.md">README.md</a>
+        </div>
+      </main>
+      <footer>
+        <p><a href="/">Back to synthe.live</a> · Shared under an evaluation license.</p>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -6,7 +6,26 @@
     <meta name="color-scheme" content="light" />
     <meta name="description" content="Synthe validates every handoff between AI agents before the receiver acts. ACCEPT or REJECT, with a reason." />
     <link rel="icon" href="data:," />
-    <title>Synthe</title>
+    <title>Synthe: the bouncer for your AI agents</title>
+    <meta property="og:title" content="Synthe: the bouncer for your AI agents" />
+    <meta property="og:description" content="Synthe validates every handoff between AI agents before the receiver acts. ACCEPT or REJECT, with a reason." />
+    <meta property="og:image" content="https://synthe.live/og-image.png" />
+    <meta property="og:url" content="https://synthe.live/" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type": "Question", "name": "Which agent frameworks does it work with?", "acceptedAnswer": {"@type": "Answer", "text": "Any of them. The checker is dependency-free Python and a handoff is just JSON. If your agents can emit JSON, they can send handoffs."}},
+        {"@type": "Question", "name": "What does it cost?", "acceptedAnswer": {"@type": "Answer", "text": "Nothing to evaluate. Copy it, run it against your own agent workflows, and see."}},
+        {"@type": "Question", "name": "Who is building Synthe?", "acceptedAnswer": {"@type": "Answer", "text": "Co-founders Rohan Siddamsettiwar and Rishab Ramalingam, out of the University of Utah's Sandbox startup community."}},
+        {"@type": "Question", "name": "Does running Synthe change my code's license?", "acceptedAnswer": {"@type": "Answer", "text": "No. The evaluation license covers Synthe's code, not yours. Checking your handoffs changes nothing about how your own code is licensed."}},
+        {"@type": "Question", "name": "Do my agents have to trust each other?", "acceptedAnswer": {"@type": "Answer", "text": "No, that is the point. The receiver verifies the packet's signature against its registry and pins the evidence hashes before acting. Trust the check, not the sender."}}
+      ]
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -617,6 +636,169 @@
         outline-offset: 3px;
       }
 
+      /* Sticky CTA + anchor nav */
+      .sticky-cta {
+        position: fixed;
+        top: 14px;
+        left: 50%;
+        transform: translate(-50%, -90px);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: rgba(246, 241, 230, 0.94);
+        backdrop-filter: blur(8px);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 8px 8px 22px;
+        font-size: 15px;
+        font-weight: 500;
+        box-shadow: 0 10px 30px rgba(28, 22, 17, 0.14);
+        transition: transform 0.35s ease;
+        z-index: 60;
+        white-space: nowrap;
+      }
+      .sticky-cta.show { transform: translate(-50%, 0); }
+      .btn-small { padding: 9px 20px; font-size: 14px; }
+
+      .anchor-nav {
+        position: fixed;
+        bottom: 18px;
+        left: 50%;
+        transform: translate(-50%, 90px);
+        display: flex;
+        gap: 2px;
+        background: rgba(246, 241, 230, 0.94);
+        backdrop-filter: blur(8px);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 7px 10px;
+        box-shadow: 0 10px 30px rgba(28, 22, 17, 0.14);
+        transition: transform 0.35s ease;
+        z-index: 60;
+      }
+      .anchor-nav.show { transform: translate(-50%, 0); }
+      .anchor-nav a {
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        text-decoration: none;
+        padding: 7px 11px;
+        border-radius: 999px;
+      }
+      .anchor-nav a:hover { color: var(--rust); background: rgba(28, 22, 17, 0.05); }
+
+      /* Partner form */
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+      }
+      .partner-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 22px;
+        max-width: 560px;
+      }
+      .partner-form input[type="email"] {
+        flex: 1 1 240px;
+        font: inherit;
+        padding: 13px 22px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.65);
+        color: var(--ink);
+      }
+      .partner-form input[type="email"]:focus {
+        outline: 2px solid var(--rust);
+        outline-offset: 2px;
+        border-color: var(--rust);
+      }
+      .form-note { min-height: 1.4em; }
+
+      /* Origin story */
+      .origin p {
+        font-family: "Fraunces", Georgia, serif;
+        font-size: clamp(20px, 3vw, 26px);
+        line-height: 1.5;
+        max-width: 34em;
+      }
+      .origin p + p { margin-top: 18px; }
+
+      /* Numbers band */
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-top: 26px;
+        padding-top: 26px;
+        border-top: 1px solid rgba(255, 255, 255, 0.16);
+        text-align: center;
+      }
+      .stats > div { display: flex; flex-direction: column; gap: 6px; }
+      .stat-num {
+        font-family: "Fraunces", Georgia, serif;
+        font-size: clamp(26px, 4vw, 38px);
+        color: #f4efe2;
+      }
+      .stat-label {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #a9c8b8;
+      }
+
+      /* Comparison strip: 3-up cards reusing .change/.card */
+      .change.versus { grid-template-columns: repeat(3, 1fr); }
+
+      /* Attack simulator */
+      .simulator { margin-top: 26px; }
+      .sim-label {
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+      }
+      .sim-picks {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 14px 0 20px;
+      }
+      .sim-picks button {
+        font-family: var(--mono);
+        font-size: 13px;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 8px 16px;
+        cursor: pointer;
+        color: var(--ink-soft);
+      }
+      .sim-picks button:hover { border-color: var(--rust); color: var(--rust); }
+      .sim-picks button.active {
+        background: var(--ink);
+        color: var(--cream);
+        border-color: var(--ink);
+      }
+      .sim-terminal { margin-top: 0; }
+      .sim-terminal .term-body { min-height: 110px; }
+
+      @media (max-width: 600px) {
+        .change.versus { grid-template-columns: 1fr; }
+        .stats { grid-template-columns: repeat(2, 1fr); gap: 20px 12px; }
+        .anchor-nav { display: none; }
+        .sticky-cta span { display: none; }
+        .sticky-cta { padding: 7px; gap: 0; }
+      }
+
       @media (max-width: 600px) {
         body { font-size: 16px; }
         .change { grid-template-columns: 1fr; }
@@ -634,6 +816,7 @@
         .caret::after { animation: none; }
         .pulse-dot { animation: none; }
         .btn { transition: none; }
+        .sticky-cta, .anchor-nav, .sim-picks button { transition: none; }
       }
     </style>
   </head>
@@ -652,8 +835,8 @@
           <h1>Synthe is the bouncer for your AI agents. Every handoff gets <span class="rotator" aria-label="checked"><span class="rotator-inner" aria-hidden="true"><span>checked</span><span>verified</span><span>screened</span><span>checked</span></span></span> at the door.</h1>
           <p class="lede">When one AI agent hands work to another, Synthe validates the handoff as a typed packet before the receiver acts. Every accepted handoff is recorded, so the same one cannot be claimed twice.</p>
           <div class="cta-row">
-            <a class="btn" href="#tryit">Try it in two minutes</a>
-            <a class="textlink" href="https://github.com/rohansiddam/Synthe">Read the repo</a>
+            <a class="btn" href="#partner">Become a design partner</a>
+            <a class="textlink" href="#tryit">Try it in two minutes</a>
           </div>
         </div>
 
@@ -706,6 +889,15 @@
           </ol>
         </section>
 
+        <section class="block" aria-labelledby="origin-h">
+          <p class="kicker">Origin</p>
+          <h2 id="origin-h">Why we <em>built it</em></h2>
+          <div class="origin">
+            <p>Synthe started as our own pain. We were building Cadros, an AI land-development product, with a team of AI agents, and we kept watching handoffs fail: work done twice, agents acting on stale files, actions nobody approved.</p>
+            <p>So between September 30 and October 1, we built the gate we wished existed. Two founders, one day, no permission needed.</p>
+          </div>
+        </section>
+
         <section class="block" aria-labelledby="proof-h">
           <div class="proof-panel">
             <p class="pulse"><span class="pulse-dot" aria-hidden="true"></span> Live on real GitHub runners</p>
@@ -715,6 +907,12 @@
               <a href="https://github.com/rohansiddam/Synthe/actions/runs/36913336715">Run #12: the ACCEPT run</a>
               <a href="https://github.com/rohansiddam/Synthe/actions/runs/36913571379">Run #13: the duplicate REJECT run</a>
               <a href="https://github.com/rohansiddam/Synthe/actions/runs/36913698021">Run #14: the duplicate REJECT run</a>
+            </div>
+            <div class="stats" aria-label="Synthe by the numbers">
+              <div><span class="stat-num">3</span><span class="stat-label">real-runner runs</span></div>
+              <div><span class="stat-num">1 / 2</span><span class="stat-label">accept / duplicate rejects</span></div>
+              <div><span class="stat-num">8 / 8</span><span class="stat-label">attacks rejected</span></div>
+              <div><span class="stat-num">45</span><span class="stat-label">tests green</span></div>
             </div>
           </div>
         </section>
@@ -768,6 +966,25 @@
           </div>
         </section>
 
+        <section class="block" aria-labelledby="compare-h">
+          <p class="kicker">Why Synthe</p>
+          <h2 id="compare-h">Why not just <em>trust the text?</em></h2>
+          <div class="change versus">
+            <div class="card">
+              <span class="label">Trust the handoff</span>
+              <p>The receiver takes the text on faith. Duplicates run twice, stale files get acted on, and when something goes wrong nobody can say why, because nothing was checked.</p>
+            </div>
+            <div class="card">
+              <span class="label">DIY checks</span>
+              <p>You write ad-hoc validation into every receiver. It drifts between agents, lives in no shared record, and every new agent re-learns the same lessons.</p>
+            </div>
+            <div class="card good">
+              <span class="label">Synthe</span>
+              <p>One gate checks every handoff the same way. Typed packets, pinned evidence, signed approvals, and a ledger, so nothing is claimed twice.</p>
+            </div>
+          </div>
+        </section>
+
         <section class="block" aria-labelledby="breakit-h">
           <h2 id="breakit-h">Try to <em>break it</em></h2>
           <p class="blockintro">The repo ships one valid signed packet and eight attacks. Open each one to see the exact command and the reason it gets rejected.</p>
@@ -777,6 +994,23 @@
             <span class="prompt">$ </span><span class="cmd">&nbsp;&nbsp;python3 src/handoff_check.py "$f" --registry examples/v03/registry.json --workspace examples/v03/workspace --dry-run | head -4</span><br />
             <span class="prompt">$ </span><span class="cmd">done</span></p>
             <p><span class="accept">ACCEPT</span> <span class="dim">once, for valid-signed.json. The other eight are REJECTs.</span></p>
+          </div>
+          <div class="simulator" id="simulator">
+            <p class="sim-label">Pick an attack, watch the verdict</p>
+            <div class="sim-picks" role="group" aria-label="Choose an attack to simulate">
+              <button type="button" data-attack="0">Tampered after signing</button>
+              <button type="button" data-attack="1">Spoofed sender</button>
+              <button type="button" data-attack="2">Self-granted authority</button>
+              <button type="button" data-attack="3">Forged approval</button>
+              <button type="button" data-attack="4">Replayed approval</button>
+              <button type="button" data-attack="5">Exceeds receiver policy</button>
+              <button type="button" data-attack="6">Paraphrased "verbatim" evidence</button>
+              <button type="button" data-attack="7">Undeclared actions</button>
+            </div>
+            <div class="terminal sim-terminal" role="group" aria-label="Simulated attack verdict.">
+              <div class="term-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+              <div class="term-body" id="sim-output" aria-live="polite"><p><span class="dim">Choose an attack above.</span></p></div>
+            </div>
           </div>
           <details class="attack">
             <summary><span>Tampered after signing</span><span class="plus" aria-hidden="true">+</span></summary>
@@ -861,6 +1095,25 @@
           <p class="trynote">The keys in <code>examples/v03/test-keys/</code> are public test keys. Bring your own keys for real use.</p>
         </section>
 
+        <section class="block" aria-labelledby="foryou-h">
+          <p class="kicker">Fit</p>
+          <h2 id="foryou-h">Is this <em>for you?</em></h2>
+          <ul class="catchgrid">
+            <li class="catchcard">
+              <span class="name">You build agent frameworks</span>
+              <span class="desc">Plug the checker into your handoff path. Typed packets in, ACCEPT or REJECT out, no new infrastructure to run.</span>
+            </li>
+            <li class="catchcard">
+              <span class="name">You run multi-agent workflows</span>
+              <span class="desc">Stop paying for work done twice. Every handoff is verified and recorded before your agents act.</span>
+            </li>
+            <li class="catchcard">
+              <span class="name">You evaluate AI systems</span>
+              <span class="desc">Eight attacks, one valid packet, every verdict named. Try to break it above, then bring your own.</span>
+            </li>
+          </ul>
+        </section>
+
         <section class="block" aria-labelledby="updates-h">
           <h2 id="updates-h">Updates</h2>
           <ul class="updates">
@@ -877,6 +1130,7 @@
               <p>Public repo is live. Spec, checker, GitHub Action, and tests are all in the open.</p>
             </li>
           </ul>
+          <p class="trynote"><a class="textlink" href="log.html">Full changelog</a></p>
         </section>
         <section class="block" aria-labelledby="faq-h">
           <h2 id="faq-h">Questions, <em>answered</em></h2>
@@ -904,15 +1158,25 @@
           </ul>
         </section>
 
-        <section class="block" aria-labelledby="contact-h">
-          <h2 id="contact-h">Get in <em>touch</em></h2>
-          <p class="contactline">For any inquiries, email <a href="mailto:info@synthe.live">info@synthe.live</a>.</p>
+        <section class="block" aria-labelledby="partner-h" id="partner">
+          <p class="kicker">Design partners</p>
+          <h2 id="partner-h">Pilot Synthe with <em>your agents</em></h2>
+          <p class="blockintro">We're looking for a small number of design partners running multi-agent workflows. Tell us where to reach you and we'll set up a pilot.</p>
+          <form class="partner-form" id="partner-form">
+            <label class="sr-only" for="partner-email">Email address</label>
+            <input type="email" id="partner-email" name="email" placeholder="you@company.com" required autocomplete="email" />
+            <button class="btn" type="submit">Request access</button>
+          </form>
+          <p class="trynote form-note" id="partner-note" role="status"></p>
+          <p class="trynote">Prefer plain email? Write to <a class="textlink" href="mailto:info@synthe.live">info@synthe.live</a> directly.</p>
         </section>
       </main>
 
       <footer>
         <p>Synthe is an early project, shared under an evaluation license.</p>
         <nav>
+          <a href="docs.html">Docs</a>
+          <a href="log.html">Changelog</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
           <a href="https://github.com/rohansiddam/Synthe/blob/main/README.md">README</a>
           <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">Spec</a>
@@ -920,6 +1184,18 @@
         </nav>
         <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
       </footer>
+
+      <div class="sticky-cta" id="sticky-cta">
+        <span>Pilot Synthe with your agents</span>
+        <a class="btn btn-small" href="#partner">Become a design partner</a>
+      </div>
+      <nav class="anchor-nav" id="anchor-nav" aria-label="Section navigation">
+        <a href="#tryit">Try it</a>
+        <a href="#proof-h">Proof</a>
+        <a href="#breakit-h">Break it</a>
+        <a href="#faq-h">FAQ</a>
+        <a href="#partner">Contact</a>
+      </nav>
     </div>
     <script>
       (function () {
@@ -1054,6 +1330,93 @@
               done();
             }
           });
+        });
+      })();
+    </script>
+    <script>
+      (function () {
+        var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        /* Sticky CTA + anchor nav visibility */
+        var hero = document.querySelector(".hero");
+        var partner = document.getElementById("partner");
+        var sticky = document.getElementById("sticky-cta");
+        var anchorNav = document.getElementById("anchor-nav");
+        var heroVisible = true;
+        var partnerVisible = false;
+        function updateChrome() {
+          sticky.classList.toggle("show", !heroVisible && !partnerVisible);
+          anchorNav.classList.toggle("show", !heroVisible);
+        }
+        if ("IntersectionObserver" in window) {
+          new IntersectionObserver(function (entries) {
+            heroVisible = entries[0].isIntersecting;
+            updateChrome();
+          }).observe(hero);
+          new IntersectionObserver(function (entries) {
+            partnerVisible = entries[0].isIntersecting;
+            updateChrome();
+          }).observe(partner);
+        }
+
+        /* Attack simulator */
+        var attacks = [
+          { file: "attack-tampered-after-signing.json", code: "signature_invalid" },
+          { file: "attack-spoofed-sender.json", code: "signature_invalid" },
+          { file: "attack-self-granted-authority.json", code: "approval_missing" },
+          { file: "attack-forged-approval.json", code: "approval_unsigned" },
+          { file: "attack-replayed-approval.json", code: "approval_signature_invalid" },
+          { file: "attack-exceeds-receiver-policy.json", code: "authority_exceeds_receiver_policy" },
+          { file: "attack-paraphrased-verbatim.json", code: "evidence_hash_mismatch" },
+          { file: "attack-undeclared-actions.json", code: "planned_actions_missing" }
+        ];
+        var simOutput = document.getElementById("sim-output");
+        var simButtons = document.querySelectorAll(".sim-picks button");
+        var simTimer = null;
+        function simVerdict(i) {
+          var cmd = "python3 src/handoff_check.py examples/v03/packets/" + attacks[i].file +
+            " --registry examples/v03/registry.json --workspace examples/v03/workspace --dry-run";
+          simOutput.innerHTML = '<p><span class="prompt">$ </span><span class="cmd" id="sim-cmd"></span><span class="caret"></span></p>';
+          var cmdEl = document.getElementById("sim-cmd");
+          if (reduceMotion) {
+            cmdEl.textContent = cmd;
+            simOutput.insertAdjacentHTML("beforeend",
+              '<p><span class="rej">REJECT</span> <span class="dim">' + attacks[i].code + "</span></p>");
+            return;
+          }
+          var n = 0;
+          simTimer = setInterval(function () {
+            n += 2;
+            cmdEl.textContent = cmd.slice(0, n);
+            if (n >= cmd.length) {
+              clearInterval(simTimer);
+              simTimer = setTimeout(function () {
+                simOutput.insertAdjacentHTML("beforeend",
+                  '<p><span class="rej">REJECT</span> <span class="dim">' + attacks[i].code + "</span></p>");
+              }, 350);
+            }
+          }, 14);
+        }
+        simButtons.forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            simButtons.forEach(function (b) { b.classList.remove("active"); });
+            btn.classList.add("active");
+            if (simTimer) { clearInterval(simTimer); clearTimeout(simTimer); }
+            simVerdict(parseInt(btn.getAttribute("data-attack"), 10));
+          });
+        });
+
+        /* Partner form -> mailto */
+        var form = document.getElementById("partner-form");
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          var email = document.getElementById("partner-email").value.trim();
+          if (!email) return;
+          var subject = encodeURIComponent("Design partner request");
+          var body = encodeURIComponent("Hi,\n\nI'd like to pilot Synthe with my agents.\n\nMy email: " + email + "\n");
+          window.location.href = "mailto:info@synthe.live?subject=" + subject + "&body=" + body;
+          document.getElementById("partner-note").textContent =
+            "Opening your email app with the request ready to send.";
         });
       })();
     </script>
