@@ -102,6 +102,25 @@
         margin-top: clamp(48px, 9vw, 96px);
         position: relative;
       }
+      /* Warm light behind the hero */
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: -120px -60px 0;
+        background: radial-gradient(58% 46% at 50% 0%, rgba(180, 85, 42, 0.12), transparent 70%);
+        pointer-events: none;
+        z-index: 0;
+      }
+      .hero > * { position: relative; z-index: 1; }
+      /* Paper grain over the whole page */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+      }
       .sticker {
         display: inline-block;
         transform: rotate(-4deg);
@@ -647,23 +666,26 @@
         top: 14px;
         left: 50%;
         transform: translate(-50%, -90px);
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        background: rgba(246, 241, 230, 0.94);
-        backdrop-filter: blur(8px);
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        padding: 8px 8px 8px 22px;
-        font-size: 15px;
-        font-weight: 500;
-        box-shadow: 0 10px 30px rgba(28, 22, 17, 0.14);
         transition: transform 0.35s ease;
         z-index: 60;
-        white-space: nowrap;
       }
       .sticky-cta.show { transform: translate(-50%, 0); }
-      .btn-small { padding: 9px 20px; font-size: 14px; }
+      .sticky-cta a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--ink);
+        color: var(--cream);
+        border-radius: 999px;
+        padding: 13px 24px;
+        font-size: 15px;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        box-shadow: 0 10px 30px rgba(28, 22, 17, 0.25);
+      }
+      .sticky-cta a:hover { background: #000; }
+      .sticky-cta a .arrow { font-weight: 400; }
 
       .anchor-nav {
         position: fixed;
@@ -822,8 +844,7 @@
         .change.versus { grid-template-columns: 1fr; }
         .stats { grid-template-columns: repeat(2, 1fr); gap: 20px 12px; }
         .anchor-nav { display: none; }
-        .sticky-cta span { display: none; }
-        .sticky-cta { padding: 7px; gap: 0; }
+        .sticky-cta a { padding: 11px 20px; font-size: 14px; }
       }
 
       @media (max-width: 600px) {
@@ -1211,8 +1232,7 @@
       </footer>
 
       <div class="sticky-cta" id="sticky-cta">
-        <span>Pilot Synthe with your agents</span>
-        <a class="btn btn-small" href="#partner">Become a design partner</a>
+        <a href="#partner">Pilot Synthe with your agents <span class="arrow" aria-hidden="true">&#8594;</span></a>
       </div>
       <nav class="anchor-nav" id="anchor-nav" aria-label="Section navigation">
         <a href="#tryit">Try it</a>
