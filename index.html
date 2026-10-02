@@ -404,6 +404,19 @@
         max-width: 34em;
       }
 
+      /* Contact */
+      .contactline {
+        font-size: clamp(18px, 2.6vw, 22px);
+        margin: 0;
+        max-width: 34em;
+      }
+      .contactline a {
+        color: var(--rust);
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .contactline a:hover { text-decoration: underline; }
+
       /* Footer */
       footer {
         margin-top: clamp(56px, 10vw, 92px);
@@ -574,6 +587,10 @@
               <p>Public repo is live. Spec, checker, GitHub Action, and tests are all in the open.</p>
             </li>
           </ul>
+        </section>
+        <section class="block" aria-labelledby="contact-h">
+          <h2 id="contact-h">Get in <em>touch</em></h2>
+          <p class="contactline">For any inquiries, email <a href="mailto:info@synthe.live">info@synthe.live</a>.</p>
         </section>
       </main>
 
