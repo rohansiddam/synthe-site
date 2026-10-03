@@ -40,7 +40,8 @@
         --term-green: #8fd694;
         --term-amber: #f0a35e;
         --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-      }
+            --card: #fffdf7;
+}
       html[data-theme="dark"] {
         color-scheme: dark;
         --cream: #171310;
@@ -54,7 +55,8 @@
         --green: #7fc9a8;
         --green-soft: #1d2b24;
         --red-soft: #2e1d16;
-      }
+              --card: #211b13;
+}
       html[data-theme="dark"] body {
         background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23ede3cd'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
       }
@@ -77,21 +79,18 @@
         background-size: 480px 480px;
       }
       .page { max-width: 1060px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
-      header.site-head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; border-bottom: 1px solid rgba(36, 29, 20, 0.14); padding-bottom: 18px; }
-      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 22px; font-weight: 600; color: var(--ink); text-decoration: none; }
-      .topnav { display: flex; gap: 22px; align-items: baseline; }
-      .topnav a { font-size: 15px; font-weight: 500; color: var(--ink-soft); text-decoration: none; }
-      .topnav a:hover { color: var(--rust); }
+
+
       .hero { margin-top: clamp(40px, 7vw, 72px); max-width: 760px; }
       .hero h1 { margin: 0; font-family: "Fraunces", Georgia, serif; font-size: clamp(36px, 6vw, 56px); font-weight: 500; letter-spacing: -0.02em; }
       .hero h1 em { font-style: italic; color: var(--rust); }
       .lede { color: var(--ink-soft); max-width: 38em; font-size: 18px; }
       .deck { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 36px; align-items: start; }
-      .card { background: rgba(255, 255, 255, 0.5); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 28px); }
+      .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 28px); }
       .card h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 22px; margin: 0 0 4px; }
       .card > p.sub { font-size: 14.5px; color: var(--muted); margin: 0 0 16px; }
       .chain { list-style: none; margin: 0; padding: 0; font-family: var(--mono); font-size: 12.5px; }
-      .chain li { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; background: rgba(255,255,255,0.45); position: relative; }
+      .chain li { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; background: var(--card); position: relative; }
       .chain li:not(:last-child)::after { content: ""; position: absolute; left: 28px; bottom: -11px; width: 2px; height: 10px; background: var(--line); }
       .chain .ev { font-size: 14px; font-family: "General Sans", sans-serif; font-weight: 500; color: var(--ink); }
       .chain .hash { color: var(--muted); word-break: break-all; }
@@ -102,13 +101,13 @@
       .chain li .tag.bad { background: var(--rust); color: #fff; }
       .chain li.diff { border-style: dashed; border-color: var(--rust); }
       .attacks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
-      .attack { text-align: left; border: 1px solid var(--line); background: rgba(255,255,255,0.5); border-radius: 12px; padding: 12px 14px; cursor: pointer; font: inherit; }
+      .attack { text-align: left; border: 1px solid var(--line); background: var(--card); border-radius: 12px; padding: 12px 14px; cursor: pointer; font: inherit; }
       .attack:hover { border-color: var(--rust); }
       .attack:disabled { opacity: 0.45; cursor: default; }
       .attack strong { display: block; font-size: 15px; }
       .attack span { font-size: 13px; color: var(--muted); }
       .attack.used { border-color: var(--green); }
-      .verdict { margin-top: 24px; border-radius: 18px; padding: clamp(20px, 3vw, 28px); border: 1px solid var(--line); background: rgba(255,255,255,0.55); }
+      .verdict { margin-top: 24px; border-radius: 18px; padding: clamp(20px, 3vw, 28px); border: 1px solid var(--line); background: var(--card); }
       .verdict-status { font-family: var(--mono); font-weight: 600; font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; }
       .verdict-status.accept { color: var(--green); }
       .verdict-status.reject { color: var(--rust); }
@@ -135,6 +134,12 @@
       [hidden] { display: none !important; }
       @media (max-width: 900px) { .deck { grid-template-columns: 1fr; } }
       @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+          /* standard site header: identical on every page */
+      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-bottom: 1px solid var(--line); }
+      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink); text-decoration: none; }
+      .topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
+      .topnav a { margin-left: 18px; color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; }
+      .topnav a:hover { color: var(--rust); }
     </style>
       <script>
       /* theme: set before first paint to avoid a flash */
@@ -148,14 +153,15 @@
   </head>
   <body>
     <div class="page">
-      <header class="site-head">
+            <header class="site-head">
         <a class="wordmark" href="/">Synthe</a>
         <nav class="topnav">
           <a href="forge.html">Forge</a>
           <a href="playground.html">Playground</a>
+          <a href="tamper.html">Tamper</a>
           <a href="docs.html">Docs</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
-                  <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
+          <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
         </nav>
       </header>
       <main>

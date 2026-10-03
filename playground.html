@@ -31,10 +31,8 @@
       body { margin: 0; background: var(--paper); color: var(--ink);
         font-family: "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
       .page { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
-      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-bottom: 1px solid var(--line); }
-      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink); text-decoration: none; }
-      .topnav a { margin-left: 18px; color: var(--muted); text-decoration: none; font-size: 15px; }
-      .topnav a:hover { color: var(--rust); }
+
+
       .hero { padding: 44px 0 8px; max-width: 640px; }
       .eyebrow { text-transform: uppercase; letter-spacing: 0.14em; font-size: 12px; color: var(--rust); margin: 0 0 10px; }
       h1 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: clamp(30px, 5vw, 44px); margin: 0 0 12px; line-height: 1.1; }
@@ -106,7 +104,7 @@
       .attack strong { display: block; font-size: 16px; margin-bottom: 6px; }
       .attack span { color: var(--muted); font-size: 14px; line-height: 1.5; }
 
-      details.how { margin-top: 26px; border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; background: rgba(255,255,255,.5); font-size: 14.5px; color: var(--muted); line-height: 1.6; }
+      details.how { margin-top: 26px; border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; background: var(--card); font-size: 14.5px; color: var(--muted); line-height: 1.6; }
       details.how summary { cursor: pointer; font-weight: 650; color: var(--ink); }
       details.how code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; }
       .nextline { margin-top: 26px; }
@@ -123,6 +121,12 @@
         .stamp.show, .frow.flash { animation: none !important; }
         .scene { transform: none; }
       }
+          /* standard site header: identical on every page */
+      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-bottom: 1px solid var(--line); }
+      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink); text-decoration: none; }
+      .topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
+      .topnav a { margin-left: 18px; color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; }
+      .topnav a:hover { color: var(--rust); }
     </style>
       <script>
       /* theme: set before first paint to avoid a flash */
@@ -136,7 +140,7 @@
   </head>
   <body>
     <div class="page">
-      <header class="site-head">
+            <header class="site-head">
         <a class="wordmark" href="/">Synthe</a>
         <nav class="topnav">
           <a href="forge.html">Forge</a>
@@ -144,7 +148,7 @@
           <a href="tamper.html">Tamper</a>
           <a href="docs.html">Docs</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
-                  <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
+          <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
         </nav>
       </header>
       <main>

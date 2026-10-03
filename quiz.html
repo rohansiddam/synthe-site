@@ -27,7 +27,8 @@
         --cream: #ece4d1; --cream-deep: #e3d7bd; --ink: #1c1611; --ink-soft: #4c4433;
         --muted: #8b7d64; --line: #e0d4b8; --rust: #b8490f; --green: #0b4b41;
         --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-      }
+            --card: #fffdf7;
+}
       html[data-theme="dark"] {
         color-scheme: dark;
         --cream: #171310;
@@ -38,7 +39,8 @@
         --line: #3a3125;
         --rust: #e07840;
         --green: #7fc9a8;
-      }
+              --card: #211b13;
+}
       html[data-theme="dark"] body {
         background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23ede3cd'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
       }
@@ -61,23 +63,20 @@
         background-size: 480px 480px;
       }
       .page { max-width: 720px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
-      header.site-head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; border-bottom: 1px solid rgba(36, 29, 20, 0.14); padding-bottom: 18px; }
-      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 22px; font-weight: 600; color: var(--ink); text-decoration: none; }
-      .topnav { display: flex; gap: 22px; align-items: baseline; }
-      .topnav a { font-size: 15px; font-weight: 500; color: var(--ink-soft); text-decoration: none; }
-      .topnav a:hover { color: var(--rust); }
+
+
       .hero { margin-top: clamp(40px, 7vw, 72px); }
       .hero h1 { margin: 0; font-family: "Fraunces", Georgia, serif; font-size: clamp(34px, 5.6vw, 52px); font-weight: 500; letter-spacing: -0.02em; }
       .hero h1 em { font-style: italic; color: var(--rust); }
       .lede { color: var(--ink-soft); max-width: 36em; font-size: 18px; }
-      .q { background: rgba(255,255,255,0.5); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 28px); margin-top: 18px; }
+      .q { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 28px); margin-top: 18px; }
       .q h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 21px; margin: 0 0 14px; }
       .q h2 .n { font-family: var(--mono); font-size: 13px; color: var(--rust); display: block; letter-spacing: 0.1em; margin-bottom: 6px; }
       .opts { display: grid; gap: 10px; }
-      .opt { text-align: left; border: 1px solid var(--line); background: rgba(255,255,255,0.5); border-radius: 12px; padding: 13px 16px; cursor: pointer; font: inherit; font-size: 15.5px; color: var(--ink-soft); }
+      .opt { text-align: left; border: 1px solid var(--line); background: var(--card); border-radius: 12px; padding: 13px 16px; cursor: pointer; font: inherit; font-size: 15.5px; color: var(--ink-soft); }
       .opt:hover { border-color: var(--rust); color: var(--ink); }
       .opt[aria-pressed="true"] { border-color: var(--rust); color: var(--ink); background: rgba(184,73,15,0.06); }
-      .result { margin-top: 26px; border-radius: 18px; padding: clamp(24px, 4vw, 36px); border: 1px solid var(--line); background: rgba(255,255,255,0.55); }
+      .result { margin-top: 26px; border-radius: 18px; padding: clamp(24px, 4vw, 36px); border: 1px solid var(--line); background: var(--card); }
       .result h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 26px; margin: 0 0 8px; }
       .result p { color: var(--ink-soft); max-width: 38em; margin: 0 0 12px; }
       .result .score { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--rust); display: block; margin-bottom: 8px; }
@@ -95,6 +94,12 @@
       a:focus-visible, button:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
       [hidden] { display: none !important; }
       @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+          /* standard site header: identical on every page */
+      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-bottom: 1px solid var(--line); }
+      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink); text-decoration: none; }
+      .topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
+      .topnav a { margin-left: 18px; color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; }
+      .topnav a:hover { color: var(--rust); }
     </style>
       <script>
       /* theme: set before first paint to avoid a flash */
@@ -108,14 +113,15 @@
   </head>
   <body>
     <div class="page">
-      <header class="site-head">
+            <header class="site-head">
         <a class="wordmark" href="/">Synthe</a>
         <nav class="topnav">
           <a href="forge.html">Forge</a>
           <a href="playground.html">Playground</a>
+          <a href="tamper.html">Tamper</a>
           <a href="docs.html">Docs</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
-                  <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
+          <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
         </nav>
       </header>
       <main>
