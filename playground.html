@@ -688,9 +688,8 @@
                 $("packet-caught").innerHTML = packetRows(atk.id);
                 showScene("scene-caught");
                 fireStamp("stamp-reject");
-                b.disabled = false;
               });
-            });
+            }).then(function () { b.disabled = false; }, function () { b.disabled = false; });
           });
           $("attacks").appendChild(b);
         });
