@@ -40,7 +40,8 @@
         --term-green: #8fd694;
         --term-amber: #f0a35e;
         --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-      }
+            --card: #fffdf7;
+}
       html[data-theme="dark"] {
         color-scheme: dark;
         --cream: #171310;
@@ -54,7 +55,8 @@
         --green: #7fc9a8;
         --green-soft: #1d2b24;
         --red-soft: #2e1d16;
-      }
+              --card: #211b13;
+}
       html[data-theme="dark"] body {
         background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23ede3cd'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
       }
@@ -77,11 +79,8 @@
         background-size: 480px 480px;
       }
       .page { max-width: 1180px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
-      header.site-head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; border-bottom: 1px solid rgba(36, 29, 20, 0.14); padding-bottom: 18px; }
-      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 22px; font-weight: 600; color: var(--ink); text-decoration: none; }
-      .topnav { display: flex; gap: 22px; align-items: baseline; }
-      .topnav a { font-size: 15px; font-weight: 500; color: var(--ink-soft); text-decoration: none; }
-      .topnav a:hover { color: var(--rust); }
+
+
       .hero { margin-top: clamp(32px, 5vw, 56px); max-width: 720px; }
       .hero h1 { margin: 0; font-family: "Fraunces", Georgia, serif; font-size: clamp(34px, 5.4vw, 52px); font-weight: 500; letter-spacing: -0.02em; }
       .hero h1 em { font-style: italic; color: var(--rust); }
@@ -91,11 +90,11 @@
       .pip.hit { background: var(--green); border-color: var(--green); }
       .pip-label { font-family: var(--mono); font-size: 13px; color: var(--muted); margin-left: 6px; }
       .lab { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 24px; margin-top: 28px; align-items: start; }
-      .packet-card { position: sticky; top: 24px; background: rgba(255, 255, 255, 0.5); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 28px); }
+      .packet-card { position: sticky; top: 24px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 28px); }
       .packet-card h2, .attack-col h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 21px; margin: 0 0 4px; }
       .sub { font-size: 14px; color: var(--muted); margin: 0 0 16px; }
       .fields { list-style: none; margin: 0; padding: 0; }
-      .fields li { padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px; background: rgba(255,255,255,0.45); transition: border-color 0.25s, background 0.25s; }
+      .fields li { padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px; background: var(--card); transition: border-color 0.25s, background 0.25s; }
       .fields .flabel { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 2px; }
       .fields .fval { font-size: 14.5px; color: var(--ink); word-break: break-word; }
       .fields .fval code { font-family: var(--mono); font-size: 12.5px; background: var(--cream-deep); padding: 1px 7px; border-radius: 5px; }
@@ -107,7 +106,7 @@
       .mini-btn { font-family: var(--mono); font-size: 12.5px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--ink-soft); cursor: pointer; }
       .mini-btn:hover { border-color: var(--rust); color: var(--rust); }
       .attack-list { display: grid; gap: 10px; }
-      .attack { border: 1px solid var(--line); background: rgba(255,255,255,0.5); border-radius: 14px; overflow: hidden; }
+      .attack { border: 1px solid var(--line); background: var(--card); border-radius: 14px; overflow: hidden; }
       .attack > button { width: 100%; text-align: left; background: none; border: none; padding: 14px 18px; cursor: pointer; font: inherit; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
       .attack > button:hover .aname { color: var(--rust); }
       .attack > button:disabled { cursor: default; }
@@ -128,7 +127,7 @@
       @keyframes stamp-slam { 0% { transform: rotate(-6deg) scale(1.7); opacity: 0; } 60% { transform: rotate(-6deg) scale(0.94); opacity: 1; } 100% { transform: rotate(-6deg) scale(1); opacity: 1; } }
       .vdetail { font-size: 14.5px; color: var(--ink-soft); margin: 0; }
       .vdetail code { font-family: var(--mono); font-size: 12.5px; background: var(--cream-deep); padding: 1px 7px; border-radius: 5px; }
-      .done-panel { margin-top: 20px; background: rgba(255,255,255,0.55); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 28px); text-align: center; }
+      .done-panel { margin-top: 20px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 28px); text-align: center; }
       .done-panel h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 24px; margin: 0 0 6px; }
       .btn { display: inline-block; background: var(--ink); color: var(--cream); font-size: 16px; font-weight: 600; padding: 12px 26px; border-radius: 999px; border: none; cursor: pointer; font-family: inherit; text-decoration: none; transition: background 0.2s ease, transform 0.2s ease; }
       .btn:hover { background: var(--rust); transform: translateY(-1px); }
@@ -136,7 +135,7 @@
       .how h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: clamp(26px, 4vw, 36px); margin: 0 0 6px; letter-spacing: -0.015em; }
       .how h2 em { color: var(--rust); font-style: italic; }
       .steps { list-style: none; margin: 20px 0 0; padding: 0; counter-reset: step; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-      .steps li { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: rgba(255,255,255,0.4); font-size: 14.5px; color: var(--ink-soft); }
+      .steps li { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: var(--card); font-size: 14.5px; color: var(--ink-soft); }
       .steps li strong { display: block; color: var(--ink); font-size: 15.5px; margin-bottom: 4px; }
       .steps li code { font-family: var(--mono); font-size: 12px; background: var(--cream-deep); padding: 1px 7px; border-radius: 5px; }
       .honest { font-size: 14px; color: var(--muted); margin-top: 26px; max-width: 44em; }
@@ -151,6 +150,12 @@
       [hidden] { display: none !important; }
       @media (max-width: 960px) { .lab { grid-template-columns: 1fr; } .packet-card { position: static; } .steps { grid-template-columns: 1fr; } }
       @media (prefers-reduced-motion: reduce) { .stamp.slam, .fields li.tampered { animation: none; } .btn { transition: none; } }
+          /* standard site header: identical on every page */
+      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-bottom: 1px solid var(--line); }
+      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink); text-decoration: none; }
+      .topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
+      .topnav a { margin-left: 18px; color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; }
+      .topnav a:hover { color: var(--rust); }
     </style>
       <script>
       /* theme: set before first paint to avoid a flash */
@@ -164,7 +169,7 @@
   </head>
   <body>
     <div class="page">
-      <header class="site-head">
+            <header class="site-head">
         <a class="wordmark" href="/">Synthe</a>
         <nav class="topnav">
           <a href="forge.html">Forge</a>
@@ -172,7 +177,7 @@
           <a href="tamper.html">Tamper</a>
           <a href="docs.html">Docs</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
-                  <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
+          <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
         </nav>
       </header>
       <main>
