@@ -22,7 +22,6 @@
 - [Forge this handoff](https://synthe.live/forge.html): tamper with a signed handoff in your browser and watch verification fail at the exact broken link. No install, no signup.
 - [Contract playground](https://synthe.live/playground.html): build a handoff packet in a form, validate it live, and copy the generated client code.
 - [Tamper-evidence demo](https://synthe.live/tamper.html): a hash-chained handoff log you can attack four ways (edit, delete, reorder, forge), then verify to find the exact broken block.
-- [Notarized certificates](https://synthe.live/forge.html): survive all six forge attacks to mint a shareable certificate; anyone opening the link re-runs the check in their browser (see https://synthe.live/certificate.html).
 - [Public receipts](https://synthe.live/receipts.html): inspectable receipts from real verification runs, each linked to its GitHub Actions run.
 - [Anatomy of a handoff](https://synthe.live/anatomy.html): five steps from draft to ledger, with the packet beside each one.
 - [Benchmarks](https://synthe.live/benchmarks.html): every performance claim with its source.
