@@ -107,8 +107,8 @@
       @keyframes stamp-slam { 0% { transform: rotate(-6deg) scale(1.7); opacity: 0; } 60% { transform: rotate(-6deg) scale(0.94); opacity: 1; } 100% { transform: rotate(-6deg) scale(1); opacity: 1; } }
       .vdetail { font-size: 14.5px; color: var(--ink-soft); margin: 0; }
       .vdetail code { font-family: var(--mono); font-size: 12.5px; background: var(--cream-deep); padding: 1px 7px; border-radius: 5px; }
-      .cert-panel { margin-top: 20px; background: rgba(255,255,255,0.55); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 28px); text-align: center; }
-      .cert-panel h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 24px; margin: 0 0 6px; }
+      .done-panel { margin-top: 20px; background: rgba(255,255,255,0.55); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 28px); text-align: center; }
+      .done-panel h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 24px; margin: 0 0 6px; }
       .btn { display: inline-block; background: var(--ink); color: var(--cream); font-size: 16px; font-weight: 600; padding: 12px 26px; border-radius: 999px; border: none; cursor: pointer; font-family: inherit; text-decoration: none; transition: background 0.2s ease, transform 0.2s ease; }
       .btn:hover { background: var(--rust); transform: translateY(-1px); }
       .how { margin-top: 48px; }
@@ -170,11 +170,9 @@
             <p class="sub">Each attack mutates the packet, then the checker runs. Tap to expand the verdict.</p>
             <div class="attack-list" id="attack-list"></div>
 
-            <div class="cert-panel" id="cert-panel" hidden>
+            <div class="done-panel" id="done-panel" hidden>
               <h2>Unforgeable.</h2>
-              <p class="sub">All six attacks repelled, each on a different reason code. Mint the certificate and share it: anyone who opens the link re-runs the check.</p>
-              <button class="btn" type="button" id="btn-cert">Mint notarized certificate</button>
-              <p class="sub" id="cert-link-wrap" hidden style="margin-top:14px"><a class="textlink" id="cert-link" href="#">Open the certificate</a></p>
+              <p class="sub">All six attacks repelled, each on a different reason code. That is the whole point: tampering is always evidence.</p>
             </div>
           </section>
         </div>
@@ -230,12 +228,6 @@
         }
         function sha256hex(s) { return crypto.subtle.digest("SHA-256", te.encode(s)).then(hex); }
         function hmacHex(key, s) { return crypto.subtle.sign("HMAC", key, te.encode(s)).then(hex); }
-        function b64url(bytes) {
-          var bin = "";
-          var u8 = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
-          for (var i = 0; i < u8.length; i++) bin += String.fromCharCode(u8[i]);
-          return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-        }
         function fail(brokenAt, reason) { return { valid: false, brokenAt: brokenAt, reason: reason }; }
 
         var keys = null;
@@ -383,7 +375,6 @@
 
         /* ---------- UI ---------- */
         var repelled = {};   // attack id -> result
-        var results = [];    // for the certificate
 
         function esc(s) {
           return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -446,7 +437,7 @@
             p.classList.toggle("hit", i < n);
           });
           document.getElementById("pip-label").textContent = n + " of 6 attacks repelled";
-          if (n === ATTACKS.length) document.getElementById("cert-panel").hidden = false;
+          if (n === ATTACKS.length) document.getElementById("done-panel").hidden = false;
         }
 
         function walkHtml(v) {
@@ -474,7 +465,6 @@
             var ok = !v.valid;
             if (ok && !repelled[a.id]) {
               repelled[a.id] = v;
-              results.push({ attack: a.id, name: a.name, reason: v.reason });
             }
             renderFields(a.field);
             // fill verdict
@@ -515,26 +505,6 @@
           var rj = document.getElementById("raw-json");
           rj.hidden = !rj.hidden;
           this.textContent = rj.hidden ? "View raw JSON" : "Hide raw JSON";
-        });
-
-        document.getElementById("btn-cert").addEventListener("click", function () {
-          var btn = this;
-          btn.disabled = true;
-          btn.textContent = "Minting…";
-          Promise.all(
-            [keys.alice, keys.bob, keys.supervisor].map(function (k) { return crypto.subtle.exportKey("jwk", k); })
-          ).then(function (jwks) {
-            var receipt = {
-              v: 1, kind: "forge", ts: new Date().toISOString(),
-              keys: { alice: jwks[0], bob: jwks[1], supervisor: jwks[2] },
-              packet: pristine.packet, files: pristine.files, results: results
-            };
-            var link = "certificate.html#r=" + b64url(te.encode(JSON.stringify(receipt)));
-            var a = document.getElementById("cert-link");
-            a.href = link;
-            document.getElementById("cert-link-wrap").hidden = false;
-            btn.textContent = "Certificate minted";
-          });
         });
 
         /* ---------- init ---------- */
