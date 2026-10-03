@@ -1,135 +1,113 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="color-scheme" content="light" />
-    <meta name="description" content="Draft a typed handoff contract, sign it with real Ed25519 keys, and watch the checker validate it, all in your browser." />
-    <link rel="icon" href="data:," />
-    <title>Contract playground · Synthe</title>
-    <meta property="og:title" content="Contract playground · Synthe" />
-    <meta property="og:description" content="Draft a typed handoff contract, sign it, and watch the checker validate it. All in your browser." />
-    <meta property="og:image" content="https://synthe.live/og-image.png" />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..650;1,9..144,400..650&family=IBM+Plex+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
-      rel="stylesheet"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Playground: watch a handoff get signed, then try to break it — Synthe</title>
+    <meta name="description" content="A real Ed25519-signed agent handoff, checked live in your browser. Sign it, break it five ways, watch every attack land on a different reason code. No typing, no signup." />
+    <meta property="og:title" content="Synthe playground: sign it, then break it" />
+    <meta property="og:description" content="A signed agent handoff, sabotaged five ways in your browser. Every attack lands on a different reason code." />
     <style>
       :root {
-        --cream: #ece4d1;
-        --cream-deep: #e3d7bd;
-        --ink: #1c1611;
-        --ink-soft: #4c4433;
-        --muted: #8b7d64;
-        --line: #e0d4b8;
-        --rust: #b8490f;
-        --rust-deep: #93380a;
-        --green: #0b4b41;
-        --green-soft: #e6f0e8;
-        --red-soft: #f6e3d5;
-        --term-bg: #1c1611;
-        --term-cream: #f3ecdb;
-        --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        --paper: #f6f1e7; --ink: #1d1a14; --muted: #6d6353; --line: #ddd2bd;
+        --rust: #a33b1f; --green: #2e6b34; --red: #b02a2a; --card: #fffdf7;
       }
       * { box-sizing: border-box; }
-      html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
-      html { scrollbar-width: thin; scrollbar-color: rgba(36, 29, 20, 0.35) transparent; }
-      ::-webkit-scrollbar { width: 10px; }
-      ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: rgba(36, 29, 20, 0.28); border-radius: 8px; border: 2px solid var(--cream); }
-      body {
-        overflow-x: clip; margin: 0; color: var(--ink);
-        font-family: "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased;
-        background-color: var(--cream);
-        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23241d14'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
-        background-size: 480px 480px;
-      }
-      .page { max-width: 1240px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
-      header.site-head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; border-bottom: 1px solid rgba(36, 29, 20, 0.14); padding-bottom: 18px; }
-      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 22px; font-weight: 600; color: var(--ink); text-decoration: none; }
-      .topnav { display: flex; gap: 22px; align-items: baseline; }
-      .topnav a { font-size: 15px; font-weight: 500; color: var(--ink-soft); text-decoration: none; }
+      body { margin: 0; background: var(--paper); color: var(--ink);
+        font-family: "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .page { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
+      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-bottom: 1px solid var(--line); }
+      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink); text-decoration: none; }
+      .topnav a { margin-left: 18px; color: var(--muted); text-decoration: none; font-size: 15px; }
       .topnav a:hover { color: var(--rust); }
-      .hero { margin-top: clamp(32px, 5vw, 56px); max-width: 720px; }
-      .hero h1 { margin: 0; font-family: "Fraunces", Georgia, serif; font-size: clamp(34px, 5.4vw, 52px); font-weight: 500; letter-spacing: -0.02em; }
-      .hero h1 em { font-style: italic; color: var(--rust); }
-      .lede { color: var(--ink-soft); max-width: 38em; font-size: 17px; }
-      .grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 24px; margin-top: 28px; align-items: start; }
-      .card { background: rgba(255, 255, 255, 0.5); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 28px); margin-bottom: 16px; }
-      .card h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 21px; margin: 0 0 4px; }
-      .card > p.sub { font-size: 14px; color: var(--muted); margin: 0 0 16px; }
-      .field { margin-bottom: 14px; }
-      .field label { display: block; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-      .field input[type="text"], .field input[type="number"], .field select, .field textarea {
-        width: 100%; font: inherit; font-size: 15px; color: var(--ink);
-        background: rgba(255,255,255,0.7); border: 1px solid var(--line); border-radius: 10px;
-        padding: 10px 12px;
-      }
-      .field textarea { font-family: var(--mono); font-size: 13px; min-height: 68px; resize: vertical; }
-      .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-      details.advanced { background: rgba(255,255,255,0.35); border: 1px dashed var(--line); border-radius: 18px; padding: 16px 22px; margin-bottom: 16px; }
-      details.advanced summary { cursor: pointer; font-weight: 600; font-size: 15.5px; color: var(--ink-soft); }
-      details.advanced summary:hover { color: var(--rust); }
-      details.advanced .adv-body { margin-top: 16px; }
-      .listitem { border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin-bottom: 10px; background: rgba(255,255,255,0.4); }
-      .mini-btn { font-family: var(--mono); font-size: 12.5px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--ink-soft); cursor: pointer; }
-      .mini-btn:hover { border-color: var(--rust); color: var(--rust); }
-      .mini-btn.danger:hover { border-color: var(--rust-deep); color: var(--rust-deep); }
-      .btn { display: inline-block; background: var(--ink); color: var(--cream); font-size: 17px; font-weight: 600; padding: 14px 32px; border-radius: 999px; border: none; cursor: pointer; font-family: inherit; transition: background 0.2s ease, transform 0.2s ease; width: 100%; }
+      .hero { padding: 44px 0 8px; max-width: 640px; }
+      .eyebrow { text-transform: uppercase; letter-spacing: 0.14em; font-size: 12px; color: var(--rust); margin: 0 0 10px; }
+      h1 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: clamp(30px, 5vw, 44px); margin: 0 0 12px; line-height: 1.1; }
+      h1 em { font-style: italic; color: var(--rust); }
+      .lede { color: var(--muted); font-size: 17px; line-height: 1.55; margin: 0; }
+
+      /* progress steps */
+      .steps { display: flex; gap: 8px; align-items: center; margin: 28px 0 18px; }
+      .step { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+      .step .n { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--line); display: inline-flex; align-items: center; justify-content: center; font-size: 13px; background: var(--card); transition: all .3s ease; }
+      .step.done .n { background: var(--green); border-color: var(--green); color: #fff; }
+      .step.now .n { border-color: var(--rust); color: var(--rust); }
+      .step.now { color: var(--ink); }
+      .step-sep { flex: 0 0 24px; height: 1.5px; background: var(--line); }
+
+      /* the stage: scenes stack and crossfade */
+      .stage { display: grid; margin-top: 6px; }
+      .scene { grid-area: 1 / 1; opacity: 0; transform: translateY(18px); visibility: hidden;
+        transition: opacity .45s ease, transform .45s ease, visibility 0s linear .45s; }
+      .scene.active { opacity: 1; transform: none; visibility: visible; transition: opacity .45s ease, transform .45s ease; }
+      .panel { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: clamp(22px, 4vw, 36px); box-shadow: 0 2px 14px rgba(29,26,20,.05); }
+      .panel h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 24px; margin: 0 0 8px; }
+      .panel .sub { color: var(--muted); margin: 0 0 20px; line-height: 1.55; font-size: 15.5px; }
+      .storyline { font-size: 16.5px; line-height: 1.6; margin: 0 0 20px; }
+      .storyline strong { font-weight: 650; }
+
+      /* packet field rows */
+      .packet { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 0 0 22px; }
+      .frow { display: grid; grid-template-columns: 130px 1fr; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--line); font-size: 14.5px; align-items: baseline; }
+      .frow:last-child { border-bottom: none; }
+      .frow:nth-child(odd) { background: rgba(29,26,20,.025); }
+      .fname { color: var(--muted); font-size: 12.5px; text-transform: uppercase; letter-spacing: .08em; }
+      .fval { font-weight: 550; }
+      .fval .changed-tag { display: inline-block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #fff; background: var(--red); border-radius: 4px; padding: 2px 7px; margin-left: 8px; vertical-align: 1px; }
+      .frow.flash { animation: fieldFlash .8s ease 2; border-left: 3px solid var(--red); }
+      @keyframes fieldFlash { 0%, 100% { background-color: transparent; } 50% { background-color: rgba(176,42,42,.20); } }
+
+      .btn { display: inline-block; background: var(--ink); color: var(--paper); border: none; border-radius: 999px; padding: 14px 30px; font-size: 16px; font-weight: 650; cursor: pointer; transition: transform .15s ease, background .15s ease; }
       .btn:hover { background: var(--rust); transform: translateY(-1px); }
-      .btn:disabled { opacity: 0.5; cursor: default; transform: none; }
-      .sabotage { margin-top: 18px; }
-      .sabotage p { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
-      .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-      .chip { font-family: var(--mono); font-size: 12.5px; padding: 8px 15px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,0.5); color: var(--ink-soft); cursor: pointer; }
-      .chip:hover { border-color: var(--rust); color: var(--rust-deep); }
-      .chip.active { border-color: var(--rust); color: var(--rust-deep); background: var(--red-soft); }
-      .preview { position: sticky; top: 24px; }
-      .verdict { border-radius: 18px; padding: clamp(20px, 3vw, 28px); border: 1px solid var(--line); background: rgba(255,255,255,0.55); margin-bottom: 16px; }
-      .verdict-status { font-family: var(--mono); font-weight: 600; font-size: 16px; letter-spacing: 0.06em; text-transform: uppercase; }
-      .verdict-status.accept { color: var(--green); }
-      .verdict-status.reject { color: var(--rust); }
-      .verdict-status.idle { color: var(--muted); }
-      .verdict-status.working { color: var(--muted); }
-      .checks { list-style: none; margin: 14px 0 0; padding: 0; font-size: 14px; }
-      .checks li { display: flex; gap: 10px; padding: 6px 0; border-top: 1px solid var(--line); color: var(--ink-soft); }
-      .checks li .dot { font-family: var(--mono); font-weight: 600; flex: 0 0 20px; }
-      .checks li.pass .dot { color: var(--green); }
-      .checks li.fail .dot { color: var(--rust); }
-      .checks li.fail { color: var(--ink); }
-      .checks li code { font-family: var(--mono); font-size: 11.5px; background: var(--red-soft); padding: 1px 6px; border-radius: 5px; }
-      .checks li.pass code { background: var(--green-soft); }
-      .checks li.pending { opacity: 0.45; }
-      .explain { font-size: 13.5px; color: var(--muted); margin-top: 12px; }
-      .explain code { font-family: var(--mono); font-size: 12px; background: var(--cream-deep); padding: 1px 6px; border-radius: 5px; }
-      .tabs { display: flex; gap: 6px; margin-bottom: 0; }
-      .tab { font-family: var(--mono); font-size: 13px; padding: 8px 18px; border-radius: 10px 10px 0 0; border: 1px solid var(--line); border-bottom: none; background: rgba(255,255,255,0.4); color: var(--muted); cursor: pointer; }
-      .tab[aria-selected="true"] { background: var(--term-bg); color: var(--term-cream); border-color: var(--term-bg); }
-      .terminal { background: var(--term-bg); color: var(--term-cream); border-radius: 0 14px 14px 14px; padding: 20px 22px; font-family: var(--mono); font-size: 12.5px; line-height: 1.65; overflow: auto; max-height: 420px; }
-      .terminal pre { margin: 0; white-space: pre; }
-      .copybar { display: flex; justify-content: flex-end; margin-top: 10px; }
-      .honest { font-size: 13.5px; color: var(--muted); margin-top: 18px; max-width: 40em; }
-      .honest code { font-family: var(--mono); font-size: 0.88em; background: var(--cream-deep); padding: 1px 6px; border-radius: 5px; }
-      .textlink { font-size: 16px; font-weight: 500; color: var(--rust); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
-      footer { margin-top: clamp(56px, 10vw, 92px); padding-top: 26px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: baseline; }
-      footer p { margin: 0; }
-      footer .colophon { font-family: "Fraunces", Georgia, serif; font-style: italic; }
-      footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
-      footer a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
+      .btn:active { transform: translateY(0); }
+      .btn.ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+      .btn.ghost:hover { border-color: var(--rust); color: var(--rust); background: transparent; }
+      .btnrow { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+
+      /* verdict + checks */
+      .verdict-head { display: flex; align-items: center; gap: 18px; margin-bottom: 18px; flex-wrap: wrap; }
+      .stamp { font-family: "Fraunces", Georgia, serif; font-weight: 700; font-size: 30px; letter-spacing: .06em; padding: 8px 22px; border: 3px solid; border-radius: 8px; transform: rotate(-8deg); display: inline-block; }
+      .stamp.accept { color: var(--green); border-color: var(--green); }
+      .stamp.reject { color: var(--red); border-color: var(--red); }
+      .stamp.show { animation: stampIn .45s cubic-bezier(.2,1.4,.4,1) both; }
+      @keyframes stampIn { 0% { opacity: 0; transform: scale(2.4) rotate(-14deg); } 60% { opacity: 1; transform: scale(.94) rotate(-8deg); } 100% { opacity: 1; transform: scale(1) rotate(-8deg); } }
+      .checks { list-style: none; margin: 0 0 20px; padding: 0; }
+      .check { display: flex; gap: 10px; align-items: baseline; padding: 7px 0; font-size: 15px; border-bottom: 1px dashed var(--line);
+        opacity: 0; transform: translateX(-10px); transition: opacity .3s ease, transform .3s ease; }
+      .check:last-child { border-bottom: none; }
+      .checks.go .check { opacity: 1; transform: none; }
+      .check .tick { font-weight: 700; width: 20px; flex: none; }
+      .check.pass .tick { color: var(--green); }
+      .check.fail .tick { color: var(--red); }
+      .check.fail { font-weight: 650; }
+      .reason-tag { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; background: rgba(176,42,42,.1); border: 1px solid rgba(176,42,42,.35); color: var(--red); border-radius: 6px; padding: 2px 8px; margin-left: 8px; white-space: nowrap; }
+      .what { background: rgba(163,59,31,.06); border-left: 3px solid var(--rust); border-radius: 0 10px 10px 0; padding: 14px 16px; margin: 0 0 22px; font-size: 15.5px; line-height: 1.6; }
+
+      /* attack cards */
+      .attacks { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 0 0 8px; }
+      .attack { text-align: left; background: var(--card); border: 1.5px solid var(--line); border-radius: 14px; padding: 18px; cursor: pointer; transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease; font-family: inherit; color: inherit; }
+      .attack:hover { transform: translateY(-2px); border-color: var(--rust); box-shadow: 0 6px 18px rgba(29,26,20,.08); }
+      .attack:active { transform: translateY(0) scale(.99); }
+      .attack strong { display: block; font-size: 16px; margin-bottom: 6px; }
+      .attack span { color: var(--muted); font-size: 14px; line-height: 1.5; }
+
+      details.how { margin-top: 26px; border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; background: rgba(255,255,255,.5); font-size: 14.5px; color: var(--muted); line-height: 1.6; }
+      details.how summary { cursor: pointer; font-weight: 650; color: var(--ink); }
+      details.how code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; }
+      .nextline { margin-top: 26px; }
+      a.textlink { color: var(--rust); text-decoration: underline; text-underline-offset: 3px; }
+      footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+      footer nav { margin: 10px 0; }
+      footer a { color: var(--muted); margin-right: 16px; text-decoration: none; }
       footer a:hover { color: var(--rust); }
-      a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
+      .colophon { font-style: italic; }
+      a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
       [hidden] { display: none !important; }
-      @media (max-width: 960px) { .grid { grid-template-columns: 1fr; } .preview { position: static; } }
-      @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+      @media (prefers-reduced-motion: reduce) {
+        .scene, .check, .btn, .attack, .step .n { transition: none !important; }
+        .stamp.show, .frow.flash { animation: none !important; }
+        .scene { transform: none; }
+      }
     </style>
   </head>
   <body>
@@ -146,100 +124,73 @@
       </header>
       <main>
         <div class="hero">
-          <h1>Draft a <em>contract</em></h1>
-          <p class="lede">Fill in five fields, hit <strong>Sign &amp; check</strong>, and watch the checker run. Then break it on purpose with the sabotage chips. Everything runs in this tab.</p>
+          <p class="eyebrow">Interactive demo</p>
+          <h1>Sign it. Then <em>break it.</em></h1>
+          <p class="lede">A real Ed25519-signed agent handoff, checked live in your browser. No typing, no signup: watch it pass, then sabotage it five ways and see every attack land on a different reason code.</p>
         </div>
-        <div class="grid">
-          <div class="formcol">
-            <section class="card" aria-labelledby="ess-h">
-              <h2 id="ess-h">The handoff</h2>
-              <p class="sub">The essentials. Everything else has a sane default.</p>
-              <div class="row2">
-                <div class="field"><label for="f-from">From</label><select id="f-from"></select></div>
-                <div class="field"><label for="f-to">To</label><select id="f-to"></select></div>
-              </div>
-              <div class="field"><label for="f-purpose">Purpose</label><input type="text" id="f-purpose" /></div>
-              <div class="row2">
-                <div class="field"><label for="f-action">Planned action</label><input type="text" id="f-action" /></div>
-                <div class="field"><label for="f-tool">Tool</label><input type="text" id="f-tool" /></div>
-              </div>
-              <div class="field"><label for="f-evidence">Evidence (verbatim quote, hashed live)</label><textarea id="f-evidence"></textarea></div>
-              <button class="btn" type="button" id="btn-signcheck">Sign &amp; check</button>
-              <div class="sabotage" id="sabotage" hidden>
-                <p>Break it on purpose</p>
-                <div class="chips" id="chips"></div>
-              </div>
-            </section>
-            <details class="advanced">
-              <summary>Advanced fields</summary>
-              <div class="adv-body">
-                <div class="row2">
-                  <div class="field"><label for="f-id">Handoff id</label><input type="text" id="f-id" /></div>
-                  <div class="field"><label for="f-trace">Trace id</label><input type="text" id="f-trace" /></div>
-                </div>
-                <div class="field"><label for="f-idem">Idempotency key</label><input type="text" id="f-idem" /></div>
-                <div class="row2">
-                  <div class="field"><label for="f-onfail">On failure</label>
-                    <select id="f-onfail">
-                      <option value="reject">reject</option>
-                      <option value="retry_with_budget">retry_with_budget</option>
-                      <option value="escalate">escalate</option>
-                      <option value="request_human">request_human</option>
-                    </select>
-                  </div>
-                  <div class="field"><label for="f-expires">Expires at (UTC)</label><input type="text" id="f-expires" /></div>
-                </div>
-                <div class="field"><label for="f-tools">Allowed tools (one per line)</label><textarea id="f-tools"></textarea></div>
-                <div class="field"><label for="f-reqappr">Approval required for (one per line)</label><textarea id="f-reqappr"></textarea></div>
-                <div class="field"><label for="f-forbidden">Forbidden (one per line)</label><textarea id="f-forbidden"></textarea></div>
-                <div class="field"><label for="f-paths">Scope: owned paths (one per line)</label><textarea id="f-paths"></textarea></div>
-                <div class="row2" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
-                  <div class="field"><label for="f-tokens">Tokens</label><input type="number" id="f-tokens" /></div>
-                  <div class="field"><label for="f-usd">USD</label><input type="number" id="f-usd" step="0.01" /></div>
-                  <div class="field"><label for="f-minutes">Minutes</label><input type="number" id="f-minutes" /></div>
-                </div>
-                <div class="field"><label for="f-reqev">Required evidence kinds (one per line)</label><textarea id="f-reqev"></textarea></div>
-                <div class="row2">
-                  <div class="field"><label for="f-schema">Output schema</label><input type="text" id="f-schema" /></div>
-                  <div class="field"><label for="f-staterev">State revision</label><input type="text" id="f-staterev" /></div>
-                </div>
-                <div id="approvals-box"></div>
-                <button class="mini-btn" type="button" id="btn-add-approval">+ Add signed approval</button>
-                <div id="artifacts-box" style="margin-top:14px"></div>
-                <button class="mini-btn" type="button" id="btn-add-artifact">+ Add artifact</button>
-                <div style="margin-top:14px">
-                  <div class="field"><label>Registry (demo keys)</label><div id="registry-list"></div></div>
-                  <button class="mini-btn" type="button" id="btn-rekey">Regenerate demo keys</button>
-                  <button class="mini-btn" type="button" id="btn-reset-ledger" style="margin-left:8px">Reset ledger</button>
-                </div>
-              </div>
-            </details>
-          </div>
-          <div class="preview">
-            <div class="verdict" aria-live="polite">
-              <span class="verdict-status idle" id="verdict-status">Not checked yet</span>
-              <ul class="checks" id="checks">
-                <li class="pending"><span class="dot">·</span><span>Structure and required fields</span></li>
-                <li class="pending"><span class="dot">·</span><span>Sender and receiver known</span></li>
-                <li class="pending"><span class="dot">·</span><span>Signature valid</span></li>
-                <li class="pending"><span class="dot">·</span><span>Idempotency key fresh</span></li>
-                <li class="pending"><span class="dot">·</span><span>Not expired</span></li>
-                <li class="pending"><span class="dot">·</span><span>Authority: tools, approvals, budget</span></li>
-                <li class="pending"><span class="dot">·</span><span>Evidence and artifact pins match</span></li>
-              </ul>
-              <p class="explain" id="explain" hidden></p>
-            </div>
-            <div class="tabs" role="tablist" aria-label="Packet output formats">
-              <button class="tab" role="tab" aria-selected="true" data-tab="json" type="button">JSON packet</button>
-              <button class="tab" role="tab" aria-selected="false" data-tab="python" type="button">Python</button>
-              <button class="tab" role="tab" aria-selected="false" data-tab="cli" type="button">CLI</button>
-            </div>
-            <div class="terminal" id="terminal"><pre id="term-pre"></pre></div>
-            <div class="copybar"><button class="mini-btn" type="button" id="btn-copy">Copy</button></div>
-            <p class="honest">Validation here is a faithful subset of <code>handoff_check.py</code>: same field rules, same check order, same reason codes, real Ed25519 signatures. Copy the JSON and run the real checker for the complete verdict.</p>
-          </div>
+
+        <div class="steps" aria-label="Progress">
+          <span class="step now" data-step="1"><span class="n">1</span> The deal</span>
+          <span class="step-sep"></span>
+          <span class="step" data-step="2"><span class="n">2</span> Signed</span>
+          <span class="step-sep"></span>
+          <span class="step" data-step="3"><span class="n">3</span> Break it</span>
         </div>
-        <p style="margin-top:8px"><a class="textlink" href="forge.html">Next: try to forge a signed handoff</a></p>
+
+        <div class="stage" id="stage">
+          <section class="scene active" id="scene-deal" aria-label="The deal">
+            <div class="panel">
+              <h2>The deal</h2>
+              <p class="storyline"><strong>Maya</strong>, a design agent, hands the Q3 launch report to <strong>Luis</strong>, an engineering agent. One job: deliver it for review. Their lead <strong>Priya</strong> signed off on the plan. The handoff below is the whole contract.</p>
+              <div class="packet" id="packet-deal"></div>
+              <button class="btn" type="button" id="btn-sign">Sign it and check</button>
+            </div>
+          </section>
+
+          <section class="scene" id="scene-signed" aria-label="Signed">
+            <div class="panel">
+              <div class="verdict-head">
+                <span class="stamp accept" id="stamp-accept">ACCEPT</span>
+                <p class="sub" style="margin:0">Maya signed with her Ed25519 key. Every check passed, so the handoff is binding.</p>
+              </div>
+              <ul class="checks" id="checks-ok"></ul>
+              <div class="btnrow">
+                <button class="btn" type="button" id="btn-break">Now try to break it</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="scene" id="scene-break" aria-label="Break it">
+            <div class="panel">
+              <h2>Break it</h2>
+              <p class="sub">Pick a sabotage. Each one is signed and checked for real, and each fails on a different reason code.</p>
+              <div class="attacks" id="attacks"></div>
+              <p class="nextline"><a class="textlink" href="#" id="link-back-deal">Back to the deal</a></p>
+            </div>
+          </section>
+
+          <section class="scene" id="scene-caught" aria-label="Caught">
+            <div class="panel">
+              <div class="verdict-head">
+                <span class="stamp reject" id="stamp-reject">REJECT</span>
+                <p class="sub" style="margin:0" id="caught-lede"></p>
+              </div>
+              <ul class="checks" id="checks-bad"></ul>
+              <p class="what" id="caught-what"></p>
+              <div class="packet" id="packet-caught"></div>
+              <div class="btnrow">
+                <button class="btn" type="button" id="btn-again">Try another attack</button>
+                <button class="btn ghost" type="button" id="btn-replay">Replay the story</button>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <details class="how">
+          <summary>How this works</summary>
+          <p>Every run signs with a fresh Ed25519 key over Synthe's exact domain-separated canonical bytes, then runs the same seven checks in the same order as <code>handoff_check.py</code>, with the same reason codes. Keys are generated in this tab and never leave it. The only shortcut: each run gets a unique idempotency key, so the demo ledger never fills up.</p>
+        </details>
+        <p class="nextline"><a class="textlink" href="forge.html">Next: forge a signed handoff six ways</a> · <a class="textlink" href="docs.html">Read the docs</a></p>
       </main>
       <footer>
         <p>Synthe is an early project, shared under an evaluation license.</p>
@@ -483,499 +434,249 @@
           return { accept: !bad.length, checks: list, reasons: bad.map(function (x) { return x.code; }) };
         }
       }
-      /* ---------- UI ---------- */
+      /* ---------- story UI: no forms, click-through scenes ---------- */
       (function () {
         "use strict";
         if (!window.crypto || !crypto.subtle) {
-          document.getElementById("term-pre").textContent = "WebCrypto is unavailable in this browser, so signing cannot run here.";
+          document.getElementById("scene-deal").innerHTML =
+            "<div class=\"panel\"><h2>Not available</h2><p class=\"sub\">WebCrypto is unavailable in this browser, so signing cannot run here.</p></div>";
           return;
         }
-        var edOK = true;
-        try { crypto.subtle.generateKey({ name: "Ed25519" }, false, ["sign"]); }
-        catch (e) { edOK = false; }
 
-        var state = null;
-        var ledger = new Set();
-        var signedPacket = null;
-        var activeTab = "json";
-        var activeChip = null;
+        var PURPOSE = "Deliver the Q3 launch report for engineering review";
+        var PURPOSE_TAMPERED = "Delete the Q3 launch report and tell nobody";
+        var EV_REF = "brief/q3-launch.md#objective";
+        var EV_TRUE = "Q3 launch: the report ships Friday, no exceptions.";
+        var EV_SWAPPED = "Q3 launch: the report ships whenever, no rush.";
+        var ART_PATH = "reports/q3-launch.pdf";
+        var ART_CONTENT = "PDF bytes of the Q3 launch report (demo).";
+        var EXPIRES_OK = "2999-01-01T00:00:00Z";
+        var EXPIRES_PAST = "2020-01-01T00:00:00Z";
 
-        function defaultState() {
-          return {
-            agents: {}, agentOrder: [],
-            from: "alice", to: "bob",
-            purpose: "Verify the M-1 verdict pack before it enters the rules store",
-            action: "read_rules", tool: "read_repo",
-            evidenceRef: "rules/M-1.md#m1-u-12",
-            evidenceContent: "M-1 light industrial: retail is a conditional use.",
-            id: "h-0001", trace: "trace-demo-001", idem: "demo:verdict-pack:rev-7",
-            onfail: "reject", expires: "2999-01-01T00:00:00Z",
-            tools: ["read_repo", "run_tests"], reqappr: ["read_repo"], forbidden: ["send_email", "publish", "delete"],
-            paths: ["rules/**"],
-            approvals: [],
-            tokens: 50000, usd: 2, minutes: 30,
-            artifacts: [{ path: "context/brief.md", content: "Client brief for the M-1 verdict pack review.", sha256: null }],
-            reqev: ["verbatim_quote"], schema: "verdict_pack.v1", staterev: "rev-42"
-          };
-        }
+        var ATTACKS = [
+          { id: "drop-approval", title: "Drop Priya's approval", desc: "Remove the signed approval the plan requires.", field: "approval", reason: "approval_missing",
+            lede: "The approval is gone, so Luis must refuse.",
+            what: "The deliver_report step needs Priya's signed approval, and it is not attached. Without that signature, the handoff is just a request, not a contract." },
+          { id: "swap-evidence", title: "Swap the evidence quote", desc: "Change the quoted words after the hash was pinned.", field: "evidence", reason: "evidence_not_verbatim",
+            lede: "The evidence was altered after pinning.",
+            what: "The quoted text no longer matches its pinned hash. The words changed after the hash was recorded, so the quote can't be trusted." },
+          { id: "expire", title: "Let the deadline pass", desc: "Check the handoff after its expiry date.", field: "expires", reason: "handoff_expired",
+            lede: "The handoff expired before it was checked.",
+            what: "The deadline passed before Luis ran the check. An old handoff can't be accepted, even if everything else is perfect." },
+          { id: "stranger", title: "Send it from a stranger", desc: "Re-sign the whole thing as someone unknown.", field: "from", reason: "unknown_agent:from",
+            lede: "The sender isn't anyone Luis knows.",
+            what: "mallory is not in the trusted agent registry. Luis rejects the handoff before even looking at the signature, because he has no idea who it is from." },
+          { id: "rewrite", title: "Rewrite it after signing", desc: "Edit the purpose after Maya's signature is on it.", field: "purpose", reason: "signature_invalid",
+            lede: "The packet was changed after signing.",
+            what: "The purpose was edited after Maya signed. Her signature no longer matches the packet, which is exactly what signatures are for." }
+        ];
 
-        function genAgentKeys(id, role) {
-          return crypto.subtle.generateKey({ name: "Ed25519" }, true, ["sign", "verify"]).then(function (kp) {
-            return crypto.subtle.exportKey("raw", kp.publicKey).then(function (raw) {
-              state.agents[id] = { role: role, kid: "demo-1", priv: kp.privateKey, pub: kp.publicKey, pubB64: b64u(raw) };
-              if (state.agentOrder.indexOf(id) === -1) state.agentOrder.push(id);
-            });
-          });
-        }
-        function freshKeys() {
-          var ids = state.agentOrder.length ? state.agentOrder.slice() : ["alice", "bob", "supervisor"];
-          var roles = { alice: "drafter", bob: "receiver", supervisor: "approver" };
-          var oldRoles = {};
-          ids.forEach(function (id) { oldRoles[id] = (state.agents[id] && state.agents[id].role) || roles[id] || "agent"; });
-          state.agents = {}; state.agentOrder = [];
-          var chain = Promise.resolve();
-          ids.forEach(function (id) {
-            chain = chain.then(function () { return genAgentKeys(id, oldRoles[id]); });
-          });
-          return chain.then(function () { renderParties(); renderTerminal(); });
-        }
+        var CHECK_LABELS = [
+          "Structure and required fields", "Sender and receiver known", "Signature valid",
+          "Idempotency key fresh", "Not expired", "Authority: tools, approvals, budget",
+          "Evidence and artifact pins match"
+        ];
 
-        function buildHandoff() {
-          return {
-            acceptance: {
-              evidence: [{ kind: "verbatim_quote", ref: state.evidenceRef, verbatim: true, sha256: state.evidenceSha || null }],
-              expires_at: state.expires,
-              output_schema: state.schema,
-              required_evidence: state.reqev.slice()
-            },
-            authority: {
-              allowed_tools: state.tools.slice(),
-              approval_required_for: state.reqappr.slice(),
-              approvals: state.approvals.map(function (a) {
-                return { action: a.action, approver: a.approver, expires_at: a.expires_at, sig: a.sig, kid: a.kid };
-              }),
-              budget: { minutes: state.minutes, tokens: state.tokens, usd: state.usd }
-            },
-            from: state.from,
-            id: state.id,
-            idempotency_key: state.idem,
-            inputs: {
-              artifact_refs: state.artifacts.map(function (a) { return { path: a.path, sha256: a.sha256 }; }),
-              state_revision: state.staterev
-            },
-            on_failure: state.onfail,
-            planned_actions: [{ name: state.action, tool: state.tool, est_minutes: 10, est_tokens: 5000, est_usd: 0.2 }],
-            purpose: state.purpose,
-            schema_version: "0.1",
-            scope: { forbidden: state.forbidden.slice(), owned_paths: state.paths.slice() },
-            to: state.to,
-            trace_id: state.trace
-          };
-        }
-        function buildRegistry() {
-          var agents = {};
-          state.agentOrder.forEach(function (id) {
-            var a = state.agents[id];
-            agents[id] = { role: a.role, keys: [{ alg: "Ed25519", kid: a.kid, public_key: a.pubB64 }] };
-          });
-          return { agents: agents };
-        }
+        var keys = {};   // id -> {priv, pubB64}
+        var runCounter = 0;
 
         function esc(s) {
           return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
+        function $(id) { return document.getElementById(id); }
 
-        function syncFromForm() {
-          state.from = document.getElementById("f-from").value;
-          state.to = document.getElementById("f-to").value;
-          state.purpose = document.getElementById("f-purpose").value;
-          state.action = document.getElementById("f-action").value;
-          state.tool = document.getElementById("f-tool").value;
-          state.evidenceContent = document.getElementById("f-evidence").value;
-          state.id = document.getElementById("f-id").value;
-          state.trace = document.getElementById("f-trace").value;
-          state.idem = document.getElementById("f-idem").value;
-          state.onfail = document.getElementById("f-onfail").value;
-          state.expires = document.getElementById("f-expires").value;
-          state.tools = linesTo("f-tools"); state.reqappr = linesTo("f-reqappr");
-          state.forbidden = linesTo("f-forbidden"); state.paths = linesTo("f-paths");
-          state.reqev = linesTo("f-reqev"); state.schema = document.getElementById("f-schema").value;
-          state.staterev = document.getElementById("f-staterev").value;
-          state.tokens = parseFloat(document.getElementById("f-tokens").value) || 0;
-          state.usd = parseFloat(document.getElementById("f-usd").value) || 0;
-          state.minutes = parseFloat(document.getElementById("f-minutes").value) || 0;
-        }
-        function linesTo(id) {
-          return document.getElementById(id).value.split("\n").map(function (s) { return s.trim(); }).filter(Boolean);
-        }
-        function fillForm() {
-          document.getElementById("f-purpose").value = state.purpose;
-          document.getElementById("f-action").value = state.action;
-          document.getElementById("f-tool").value = state.tool;
-          document.getElementById("f-evidence").value = state.evidenceContent;
-          document.getElementById("f-id").value = state.id;
-          document.getElementById("f-trace").value = state.trace;
-          document.getElementById("f-idem").value = state.idem;
-          document.getElementById("f-onfail").value = state.onfail;
-          document.getElementById("f-expires").value = state.expires;
-          document.getElementById("f-tools").value = state.tools.join("\n");
-          document.getElementById("f-reqappr").value = state.reqappr.join("\n");
-          document.getElementById("f-forbidden").value = state.forbidden.join("\n");
-          document.getElementById("f-paths").value = state.paths.join("\n");
-          document.getElementById("f-reqev").value = state.reqev.join("\n");
-          document.getElementById("f-schema").value = state.schema;
-          document.getElementById("f-staterev").value = state.staterev;
-          document.getElementById("f-tokens").value = state.tokens;
-          document.getElementById("f-usd").value = state.usd;
-          document.getElementById("f-minutes").value = state.minutes;
-        }
-
-        function renderParties() {
-          var fs = document.getElementById("f-from"), ts = document.getElementById("f-to");
-          fs.innerHTML = ""; ts.innerHTML = "";
-          state.agentOrder.forEach(function (id) {
-            var o1 = document.createElement("option"); o1.value = id; o1.textContent = id;
-            var o2 = document.createElement("option"); o2.value = id; o2.textContent = id;
-            if (id === state.from) o1.selected = true;
-            if (id === state.to) o2.selected = true;
-            fs.appendChild(o1); ts.appendChild(o2);
-          });
-          var rl = document.getElementById("registry-list");
-          rl.innerHTML = "";
-          state.agentOrder.forEach(function (id) {
-            var a = state.agents[id];
-            var div = document.createElement("div");
-            div.style.cssText = "font-size:13.5px;padding:6px 0;border-top:1px solid var(--line)";
-            div.innerHTML = "<strong>" + esc(id) + "</strong> <span style='color:var(--muted)'>" + esc(a.role) + " · </span><code style='font-family:var(--mono);font-size:11px;color:var(--muted)'>" + esc(a.pubB64.slice(0, 28)) + "…</code>";
-            rl.appendChild(div);
-          });
-        }
-
-        function renderApprovals() {
-          var box = document.getElementById("approvals-box");
-          box.innerHTML = "<div class='field'><label>Signed approvals</label></div>";
-          if (!state.approvals.length) box.innerHTML += "<p style='font-size:13.5px;color:var(--muted)'>None. Actions in “approval required for” will fail without one.</p>";
-          state.approvals.forEach(function (a, i) {
-            var div = document.createElement("div");
-            div.className = "listitem";
-            div.innerHTML = "<div style='font-size:14px'><strong>" + esc(a.approver) + "</strong> approved <code style='font-family:var(--mono);font-size:12px'>" + esc(a.action) + "</code></div>";
-            var del = document.createElement("button");
-            del.className = "mini-btn danger"; del.type = "button"; del.textContent = "Remove";
-            del.style.marginTop = "8px";
-            del.addEventListener("click", function () { state.approvals.splice(i, 1); signedPacket = null; renderApprovals(); renderTerminal(); });
-            div.appendChild(del);
-            box.appendChild(div);
-          });
-        }
-
-        function renderArtifacts() {
-          var box = document.getElementById("artifacts-box");
-          box.innerHTML = "<div class='field'><label>Input artifacts</label></div>";
-          state.artifacts.forEach(function (a, i) {
-            var div = document.createElement("div");
-            div.className = "listitem";
-            div.innerHTML =
-              '<div class="field"><label>Path</label><input type="text" data-x="path" value="' + esc(a.path) + '"></div>' +
-              '<div class="field"><label>Content</label><textarea data-x="content">' + esc(a.content) + "</textarea></div>";
-            var del = document.createElement("button");
-            del.className = "mini-btn danger"; del.type = "button"; del.textContent = "Remove";
-            del.addEventListener("click", function () { state.artifacts.splice(i, 1); signedPacket = null; renderArtifacts(); renderTerminal(); });
-            div.appendChild(del);
-            div.querySelectorAll("[data-x]").forEach(function (inp) {
-              inp.addEventListener("input", function () {
-                a[inp.getAttribute("data-x")] = inp.value;
-                signedPacket = null; renderTerminal();
+        function genKeys() {
+          var ids = ["maya", "luis", "priya", "mallory"];
+          var chain = Promise.resolve();
+          ids.forEach(function (id) {
+            chain = chain.then(function () {
+              return crypto.subtle.generateKey({ name: "Ed25519" }, true, ["sign", "verify"]).then(function (kp) {
+                return crypto.subtle.exportKey("raw", kp.publicKey).then(function (raw) {
+                  keys[id] = { priv: kp.privateKey, pubB64: b64u(raw) };
+                });
               });
             });
-            box.appendChild(div);
+          });
+          return chain;
+        }
+
+        function buildRegistry() {
+          var agents = {};
+          [["maya", "design agent"], ["luis", "engineering agent"], ["priya", "team lead"]].forEach(function (p) {
+            agents[p[0]] = { role: p[1], keys: [{ alg: "Ed25519", kid: "demo-1", public_key: keys[p[0]].pubB64 }] };
+          });
+          return { agents: agents };
+        }
+
+        function signBytes(priv, bytes) {
+          return crypto.subtle.sign({ name: "Ed25519" }, priv, bytes).then(b64u);
+        }
+
+        function buildPacket(attackId) {
+          var a = attackId || null;
+          return sha256hex(EV_TRUE).then(function (evHash) {
+            return sha256hex(ART_CONTENT).then(function (artHash) {
+              var from = a === "stranger" ? "mallory" : "maya";
+              var approvals = [];
+              var handoff = {
+                acceptance: {
+                  evidence: [{ kind: "verbatim_quote", ref: EV_REF, verbatim: true, sha256: evHash,
+                    _content: a === "swap-evidence" ? EV_SWAPPED : EV_TRUE }],
+                  expires_at: a === "expire" ? EXPIRES_PAST : EXPIRES_OK,
+                  output_schema: "launch_report.v1",
+                  required_evidence: ["verbatim_quote"]
+                },
+                authority: {
+                  allowed_tools: ["write_file", "read_repo"],
+                  approval_required_for: ["write_file"],
+                  approvals: approvals,
+                  budget: { minutes: 30, tokens: 50000, usd: 2 }
+                },
+                from: from,
+                id: "h-story-001",
+                idempotency_key: "story:run:" + (++runCounter),
+                inputs: {
+                  artifact_refs: [{ path: ART_PATH, sha256: artHash, _content: ART_CONTENT }],
+                  state_revision: "rev-7"
+                },
+                on_failure: "reject",
+                planned_actions: [{ name: "deliver_report", tool: "write_file", est_minutes: 10, est_tokens: 5000, est_usd: 0.2 }],
+                purpose: PURPOSE,
+                schema_version: "0.1",
+                scope: { forbidden: ["send_email", "publish"], owned_paths: ["reports/**"] },
+                to: "luis",
+                trace_id: "trace-story-001"
+              };
+              var registry = buildRegistry();
+              var approvalP = Promise.resolve();
+              if (a !== "drop-approval") {
+                var ap = { action: "deliver_report", approver: "priya", expires_at: EXPIRES_OK, kid: "demo-1" };
+                approvalP = signBytes(keys.priya.priv, approvalInput(ap, handoff)).then(function (sig) {
+                  ap.sig = sig;
+                  handoff.authority.approvals.push(ap);
+                });
+              }
+              return approvalP.then(function () {
+                var signer = a === "stranger" ? "mallory" : "maya";
+                return signBytes(keys[signer].priv, signingInput(stripContent(handoff))).then(function (sig) {
+                  if (a === "rewrite") handoff.purpose = PURPOSE_TAMPERED; // edit AFTER signing
+                  return { packet: { handoff: handoff, signature: { signer: signer, sig: sig, kid: "demo-1" } }, registry: registry };
+                });
+              });
+            });
           });
         }
 
-        /* ----- terminal tabs ----- */
-        function packetJSON() {
-          var pkt = signedPacket || { handoff: buildHandoff(), signature: null };
-          return JSON.stringify(pkt, null, 2);
-        }
-        function pythonCode() {
-          var a = state.agents[state.from];
-          var pubB64 = a ? a.pubB64 : "PASTE_PUBLIC_KEY";
-          var blob = JSON.stringify(buildHandoff());
-          return [
-            "import json, sys",
-            "sys.path.insert(0, \"src\")  # from a clone of github.com/rohansiddam/Synthe",
-            "import synthe_crypto as sc",
-            "",
-            "handoff = json.loads(" + JSON.stringify(blob) + ")",
-            "",
-            "# sender: sign the canonical bytes (domain-separated, Ed25519)",
-            "secret = sc.unb64u(\"<demo private key: base64url, 32 bytes>\")",
-            "sig = sc.b64u(sc.sign_bytes(secret, sc.packet_signing_input(handoff)))",
-            "packet = {\"handoff\": handoff,",
-            "          \"signature\": {\"alg\": \"Ed25519\", \"signer\": " + JSON.stringify(state.from) + ",",
-            "                          \"kid\": \"demo-1\", \"sig\": sig}}",
-            "",
-            "# receiver: verify against the registry key",
-            "public = sc.unb64u(" + JSON.stringify(pubB64) + ")",
-            "ok = sc.verify_bytes(public, sc.packet_signing_input(handoff), sc.unb64u(sig))",
-            "print(\"signature ok:\", ok)"
-          ].join("\n");
-        }
-        function cliCode() {
-          return [
-            "$ git clone https://github.com/rohansiddam/Synthe.git && cd Synthe",
-            "$ python3 src/synthe_sign.py keygen --agent " + state.from + " --out keys/" + state.from + ".json",
-            "  # paste the printed public entry under agents." + state.from + ".keys in registry.json",
-            "$ python3 src/synthe_sign.py sign packet.json --key keys/" + state.from + ".json --out signed.json",
-            "$ python3 src/handoff_check.py signed.json --registry registry.json --workspace . --ledger ledger.json",
-            "ACCEPT"
-          ].join("\n");
-        }
-        function renderTerminal() {
-          syncFromForm();
-          var pre = document.getElementById("term-pre");
-          pre.textContent = activeTab === "json" ? packetJSON() : activeTab === "python" ? pythonCode() : cliCode();
+        /* ---------- rendering ---------- */
+        function packetRows(attackId) {
+          var a = attackId || null;
+          function row(name, val, changed) {
+            return "<div class=\"frow" + (changed ? " flash" : "") + "\"><span class=\"fname\">" + name + "</span>" +
+              "<span class=\"fval\">" + val + (changed ? "<span class=\"changed-tag\">changed</span>" : "") + "</span></div>";
+          }
+          return (
+            row("From", a === "stranger" ? "mallory <span style=\"color:var(--muted);font-weight:400\">(not in the registry)</span>" : "Maya, design agent", a === "stranger") +
+            row("To", "Luis, engineering agent", false) +
+            row("Purpose", esc(a === "rewrite" ? PURPOSE_TAMPERED : PURPOSE), a === "rewrite") +
+            row("Planned action", "deliver_report <span style=\"color:var(--muted);font-weight:400\">via write_file</span>", false) +
+            row("Evidence", "&ldquo;" + esc(a === "swap-evidence" ? EV_SWAPPED : EV_TRUE) + "&rdquo; <span style=\"color:var(--muted);font-weight:400\">" + esc(EV_REF) + ", hash pinned</span>", a === "swap-evidence") +
+            row("Approval", a === "drop-approval" ? "missing" : "Priya signed off on deliver_report", a === "drop-approval") +
+            row("Expires", a === "expire" ? "2020-01-01 <span style=\"color:var(--muted);font-weight:400\">(in the past)</span>" : "2999-01-01", a === "expire")
+          );
         }
 
-        /* ----- verdict ----- */
-        var EXPLAIN = {
-          signature_invalid: "Something changed after signing. The signature is computed over the whole handoff, so any edit breaks it.",
-          unknown_agent: "The from/to agent is not in the registry, so there is no key to check against.",
-          approval_missing: "A planned action uses a tool that requires approval, but no signed approval covers it.",
-          evidence_not_verbatim: "The evidence content no longer matches the hash pinned at signing.",
-          handoff_expired: "The expires_at timestamp is in the past.",
-          duplicate_idempotency_key: "This idempotency key was already used. Each handoff runs once.",
-          signature_missing: "The packet was never signed. Sign it first."
-        };
-        function renderVerdict(res) {
-          var st = document.getElementById("verdict-status");
-          var ul = document.getElementById("checks");
-          var ex = document.getElementById("explain");
+        function renderChecks(ul, checks) {
+          ul.classList.remove("go");
           ul.innerHTML = "";
-          if (!res) {
-            st.className = "verdict-status idle";
-            st.textContent = "Not checked yet";
-            ex.hidden = true;
-            return;
-          }
-          st.className = "verdict-status " + (res.accept ? "accept" : "reject");
-          st.textContent = res.accept ? "ACCEPT" : "REJECT · " + (res.reasons[0] || "invalid");
-          res.checks.forEach(function (chk) {
+          checks.forEach(function (c, i) {
             var li = document.createElement("li");
-            li.className = chk.pass ? "pass" : "fail";
-            var detail = chk.pass ? "" : ' <code>' + esc(chk.code) + "</code>";
-            li.innerHTML = '<span class="dot">' + (chk.pass ? "✓" : "✕") + "</span><span>" + esc(chk.label) + detail + "</span>";
+            li.className = "check " + (c.pass ? "pass" : "fail");
+            li.style.transitionDelay = (i * 90) + "ms";
+            li.innerHTML = "<span class=\"tick\">" + (c.pass ? "✓" : "✕") + "</span><span>" + esc(c.label) +
+              (c.pass ? "" : "<span class=\"reason-tag\">" + esc(c.code) + "</span>") + "</span>";
             ul.appendChild(li);
           });
-          if (!res.accept && res.reasons[0] && EXPLAIN[res.reasons[0]]) {
-            ex.innerHTML = "What happened: " + esc(EXPLAIN[res.reasons[0]]);
-            ex.hidden = false;
-          } else if (res.accept) {
-            ex.innerHTML = "Every check passed. The idempotency key is now recorded: running it again would be a <code>duplicate_idempotency_key</code> reject.";
-            ex.hidden = false;
-          } else ex.hidden = true;
-        }
-
-        function currentPacketForValidation() {
-          var pkt = signedPacket ? JSON.parse(JSON.stringify(signedPacket)) : { handoff: buildHandoff(), signature: null };
-          var h = pkt.handoff;
-          h.acceptance.evidence.forEach(function (ev) { ev._content = state.evidenceContent; });
-          h.inputs.artifact_refs.forEach(function (ref, i) {
-            if (state.artifacts[i]) ref._content = state.artifacts[i].content;
-          });
-          return pkt;
-        }
-
-        function runValidation() {
-          var pkt = currentPacketForValidation();
-          return validateHandoff(pkt, buildRegistry(), ledger, Date.now()).then(function (res) {
-            if (res.accept) ledger.add(pkt.handoff.idempotency_key);
-            renderVerdict(res);
-            return res;
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () { ul.classList.add("go"); });
           });
         }
 
-        function signCurrent() {
-          syncFromForm();
-          var a = state.agents[state.from];
-          if (!a) {
-            renderVerdict({ accept: false, checks: [failCheck("unknown_agent:from", "Sender and receiver known", "no key for '" + state.from + "'")], reasons: ["unknown_agent:from"] });
-            return Promise.resolve(null);
-          }
-          var chain = sha256hex(state.evidenceContent).then(function (hh) { state.evidenceSha = hh; });
-          state.artifacts.forEach(function (art) {
-            chain = chain.then(function () { return sha256hex(art.content).then(function (hh) { art.sha256 = hh; }); });
-          });
-          return chain.then(function () {
-            var h = buildHandoff();
-            return crypto.subtle.sign({ name: "Ed25519" }, a.priv, signingInput(h)).then(function (sigBuf) {
-              signedPacket = {
-                handoff: h,
-                signature: { alg: "Ed25519", signer: state.from, kid: a.kid, sig: b64u(sigBuf) }
-              };
-              return signedPacket;
-            });
-          });
+        function fireStamp(id) {
+          var el = $(id);
+          el.classList.remove("show");
+          void el.offsetWidth;
+          el.classList.add("show");
         }
 
-        function signAndCheck() {
-          var st = document.getElementById("verdict-status");
-          st.className = "verdict-status working";
-          st.textContent = "Signing…";
-          document.getElementById("btn-signcheck").disabled = true;
-          return signCurrent().then(function (pkt) {
-            document.getElementById("btn-signcheck").disabled = false;
-            if (!pkt) return null;
-            renderTerminal();
-            document.getElementById("sabotage").hidden = false;
-            return runValidation();
+        var STEPS = ["scene-deal", "scene-signed", "scene-break"];
+        function showScene(id) {
+          document.querySelectorAll(".scene").forEach(function (s) {
+            s.classList.toggle("active", s.id === id);
           });
+          var stepIdx = id === "scene-deal" ? 1 : id === "scene-signed" ? 2 : 3;
+          document.querySelectorAll(".step").forEach(function (st) {
+            var n = parseInt(st.getAttribute("data-step"), 10);
+            st.classList.toggle("done", n < stepIdx);
+            st.classList.toggle("now", n === stepIdx);
+          });
+          $("stage").scrollIntoView({ block: "nearest", behavior: "smooth" });
         }
 
-        /* ----- sabotage chips ----- */
-        var CHIPS = [
-          { id: "drop-approval", label: "Drop the approval", hint: "approval_missing",
-            run: function () { state.approvals = []; fillForm(); renderApprovals(); return signCurrent().then(runValidation); } },
-          { id: "swap-evidence", label: "Swap the evidence", hint: "evidence_not_verbatim",
-            run: function () {
-              return signCurrent().then(function (pkt) {
-                if (!pkt) return null;
-                state.evidenceContent = "M-1 light industrial: retail is a permitted use. Obviously.";
-                document.getElementById("f-evidence").value = state.evidenceContent;
-                return runValidation();  // content changed after signing: pin no longer matches
-              });
-            } },
-          { id: "expire", label: "Expire the handoff", hint: "handoff_expired",
-            run: function () { state.expires = "2020-01-01T00:00:00Z"; fillForm(); return signCurrent().then(runValidation); } },
-          { id: "unknown", label: "Unknown sender", hint: "unknown_agent:from",
-            run: function () {
-              syncFromForm();
-              state.from = "mallory";
-              var pkt = { handoff: buildHandoff(), signature: signedPacket ? signedPacket.signature : null };
-              var h = pkt.handoff;
-              h.acceptance.evidence.forEach(function (ev) { ev._content = state.evidenceContent; });
-              return validateHandoff(pkt, buildRegistry(), ledger, Date.now()).then(function (res) {
-                renderVerdict(res); renderParties(); return res;
-              });
-            } },
-          { id: "tamper", label: "Tamper after signing", hint: "signature_invalid",
-            run: function () {
-              return signCurrent().then(function (pkt) {
-                if (!pkt) return null;
-                state.purpose = state.purpose + " (edited)";
-                document.getElementById("f-purpose").value = state.purpose;
-                return runValidation();  // purpose changed after signing
-              });
-            } },
-          { id: "reset", label: "Reset", hint: null,
-            run: function () {
-              var keepAgents = state.agentOrder.slice();
-              var keepKeys = state.agents;
-              state = defaultState();
-              state.agentOrder = keepAgents; state.agents = keepKeys;
-              signedPacket = null; activeChip = null;
-              fillForm(); renderParties(); renderApprovals(); renderArtifacts(); renderTerminal();
-              renderVerdict(null);
-              document.getElementById("sabotage").hidden = true;
-              document.querySelectorAll(".chip").forEach(function (c) { c.classList.remove("active"); });
-              // re-add the default approval
-              return addDefaultApproval();
-            } }
-        ];
-
-        function renderChips() {
-          var box = document.getElementById("chips");
-          box.innerHTML = "";
-          CHIPS.forEach(function (c) {
-            var b = document.createElement("button");
-            b.type = "button"; b.className = "chip" + (activeChip === c.id ? " active" : "");
-            b.textContent = c.label;
-            b.title = c.hint ? "Expect: " + c.hint : "Restore the working example";
-            b.addEventListener("click", function () {
-              activeChip = c.id;
-              document.querySelectorAll(".chip").forEach(function (x) { x.classList.remove("active"); });
-              b.classList.add("active");
-              var st = document.getElementById("verdict-status");
-              st.className = "verdict-status working";
-              st.textContent = "Checking…";
-              c.run();
-            });
-            box.appendChild(b);
-          });
+        function attackById(id) {
+          return ATTACKS.filter(function (x) { return x.id === id; })[0];
         }
 
-        function addDefaultApproval() {
-          var approver = state.agentOrder.indexOf("bob") !== -1 ? "bob" : state.agentOrder[0];
-          var key = state.agents[approver];
-          if (!key) return Promise.resolve();
-          var appr = { action: state.action, approver: approver, expires_at: "2999-01-01T00:00:00Z", kid: key.kid };
-          var h = buildHandoff();
-          return crypto.subtle.sign({ name: "Ed25519" }, key.priv, approvalInput(appr, h)).then(function (buf) {
-            appr.sig = b64u(buf);
-            state.approvals = [appr];
-            renderApprovals();
-          });
-        }
-
-        /* ----- events ----- */
-        document.querySelectorAll(".tab").forEach(function (t) {
-          t.addEventListener("click", function () {
-            activeTab = t.getAttribute("data-tab");
-            document.querySelectorAll(".tab").forEach(function (x) { x.setAttribute("aria-selected", x === t ? "true" : "false"); });
-            renderTerminal();
-          });
-        });
-        ["f-from", "f-to", "f-purpose", "f-action", "f-tool", "f-evidence"].forEach(function (id) {
-          document.getElementById(id).addEventListener("input", function () {
-            syncFromForm(); signedPacket = null; renderTerminal();
-          });
-        });
-        document.getElementById("btn-signcheck").addEventListener("click", signAndCheck);
-        document.getElementById("btn-copy").addEventListener("click", function () {
-          var txt = document.getElementById("term-pre").textContent;
+        /* ---------- wiring ---------- */
+        $("btn-sign").addEventListener("click", function () {
           var btn = this;
-          function done() { btn.textContent = "Copied"; setTimeout(function () { btn.textContent = "Copy"; }, 1500); }
-          if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, done);
-          else done();
-        });
-        document.getElementById("btn-add-approval").addEventListener("click", function () {
-          syncFromForm();
-          var approver = state.to !== state.from ? state.to : state.agentOrder[0];
-          var key = state.agents[approver];
-          if (!key) return;
-          var appr = { action: state.action, approver: approver, expires_at: "2999-01-01T00:00:00Z", kid: key.kid };
-          var h = buildHandoff();
-          crypto.subtle.sign({ name: "Ed25519" }, key.priv, approvalInput(appr, h)).then(function (buf) {
-            appr.sig = b64u(buf);
-            state.approvals.push(appr);
-            signedPacket = null; renderApprovals(); renderTerminal();
+          btn.disabled = true;
+          btn.textContent = "Signing…";
+          buildPacket(null).then(function (r) {
+            return validateHandoff(r.packet, r.registry, new Set(), Date.now()).then(function (v) {
+              renderChecks($("checks-ok"), v.checks);
+              showScene("scene-signed");
+              fireStamp("stamp-accept");
+              btn.disabled = false;
+              btn.textContent = "Sign it and check";
+            });
           });
         });
-        document.getElementById("btn-add-artifact").addEventListener("click", function () {
-          syncFromForm();
-          state.artifacts.push({ path: "context/notes.md", content: "Paste the artifact content here.", sha256: null });
-          signedPacket = null; renderArtifacts(); renderTerminal();
-        });
-        document.getElementById("btn-rekey").addEventListener("click", function () {
-          signedPacket = null; state.approvals = [];
-          freshKeys().then(addDefaultApproval);
-        });
-        document.getElementById("btn-reset-ledger").addEventListener("click", function () {
-          ledger = new Set(); renderVerdict(null);
+
+        $("btn-break").addEventListener("click", function () { showScene("scene-break"); });
+
+        ATTACKS.forEach(function (atk) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "attack";
+          b.innerHTML = "<strong>" + esc(atk.title) + "</strong><span>" + esc(atk.desc) + "</span>";
+          b.addEventListener("click", function () {
+            b.disabled = true;
+            buildPacket(atk.id).then(function (r) {
+              return validateHandoff(r.packet, r.registry, new Set(), Date.now()).then(function (v) {
+                $("caught-lede").textContent = atk.lede;
+                renderChecks($("checks-bad"), v.checks);
+                $("caught-what").textContent = atk.what;
+                $("packet-caught").innerHTML = packetRows(atk.id);
+                showScene("scene-caught");
+                fireStamp("stamp-reject");
+                b.disabled = false;
+              });
+            });
+          });
+          $("attacks").appendChild(b);
         });
 
-        /* ----- init ----- */
-        state = defaultState();
-        fillForm();
-        renderChips();
-        if (!edOK) {
-          document.getElementById("term-pre").textContent = "This browser does not support Ed25519 in WebCrypto, so signing cannot run here. Try a recent Chrome, Edge, Safari, or Firefox.";
-          renderParties();
-          return;
+        $("btn-again").addEventListener("click", function () { showScene("scene-break"); });
+        function replay() {
+          $("packet-deal").innerHTML = packetRows(null);
+          showScene("scene-deal");
         }
-        freshKeys().then(function () {
-          return addDefaultApproval();
-        }).then(function () {
-          renderApprovals(); renderArtifacts(); renderTerminal();
+        $("btn-replay").addEventListener("click", replay);
+        $("link-back-deal").addEventListener("click", function (e) { e.preventDefault(); replay(); });
+
+        /* ---------- init ---------- */
+        genKeys().then(function () {
+          $("packet-deal").innerHTML = packetRows(null);
         });
       })();
     </script>
