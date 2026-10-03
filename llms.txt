@@ -20,7 +20,7 @@
 
 - [Quickstart: check your first handoff in two minutes](https://synthe.live/docs.html): clone the repo, run the dependency-free Python checker against the example packets. Timed October 2026: 1.5 seconds from a fresh clone to ACCEPT.
 - [Forge this handoff](https://synthe.live/forge.html): tamper with a signed handoff in your browser and watch verification fail at the exact broken link. No install, no signup.
-- [Contract playground](https://synthe.live/playground.html): build a handoff packet in a form, validate it live, and copy the generated client code.
+- [Contract playground](https://synthe.live/playground.html): watch a signed handoff get checked live, then sabotage it five ways. No typing, just click through.
 - [Tamper-evidence demo](https://synthe.live/tamper.html): a hash-chained handoff log you can attack four ways (edit, delete, reorder, forge), then verify to find the exact broken block.
 - [Public receipts](https://synthe.live/receipts.html): inspectable receipts from real verification runs, each linked to its GitHub Actions run.
 - [Anatomy of a handoff](https://synthe.live/anatomy.html): five steps from draft to ledger, with the packet beside each one.
