@@ -103,6 +103,10 @@ Fraunces and IBM Plex Mono load from Google Fonts (the one allowed exception to 
 .topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
 .topnav a { margin-left: 18px; color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; }
 .topnav a:hover { color: var(--rust); }
+/* theme toggle: looks like a nav link, but a 40px tap target (padding + compensating negative margin keeps the 18px visual gap) */
+.theme-toggle { background: none; border: none; padding: 10px 12px; margin: -10px -12px -10px 6px; font: inherit; font-size: 15px; color: var(--muted); cursor: pointer; white-space: nowrap; }
+.theme-toggle:hover { color: var(--rust); }
+.theme-toggle:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
 ```
 Do not add, remove, or reorder nav items on individual pages. Past drift (docs/log had only Home+GitHub; some pages lacked Tamper) was fixed deliberately.
 
