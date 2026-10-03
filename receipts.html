@@ -27,7 +27,8 @@
         --cream: #ece4d1; --cream-deep: #e3d7bd; --ink: #1c1611; --ink-soft: #4c4433;
         --muted: #8b7d64; --line: #e0d4b8; --rust: #b8490f; --green: #0b4b41;
         --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-      }
+            --card: #fffdf7;
+}
       html[data-theme="dark"] {
         color-scheme: dark;
         --cream: #171310;
@@ -38,7 +39,8 @@
         --line: #3a3125;
         --rust: #e07840;
         --green: #7fc9a8;
-      }
+              --card: #211b13;
+}
       html[data-theme="dark"] body {
         background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23ede3cd'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
       }
@@ -61,16 +63,13 @@
         background-size: 480px 480px;
       }
       .page { max-width: 780px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
-      header.site-head { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; border-bottom: 1px solid rgba(36, 29, 20, 0.14); padding-bottom: 18px; }
-      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 22px; font-weight: 600; color: var(--ink); text-decoration: none; }
-      .topnav { display: flex; gap: 22px; align-items: baseline; }
-      .topnav a { font-size: 15px; font-weight: 500; color: var(--ink-soft); text-decoration: none; }
-      .topnav a:hover { color: var(--rust); }
+
+
       .hero { margin-top: clamp(40px, 7vw, 72px); }
       .hero h1 { margin: 0; font-family: "Fraunces", Georgia, serif; font-size: clamp(36px, 6vw, 56px); font-weight: 500; letter-spacing: -0.02em; }
       .hero h1 em { font-style: italic; color: var(--rust); }
       .lede { color: var(--ink-soft); max-width: 36em; font-size: 18px; }
-      .receipt { background: rgba(255,255,255,0.5); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 28px); margin-top: 20px; }
+      .receipt { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3vw, 28px); margin-top: 20px; }
       .receipt .date { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rust); }
       .receipt h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 22px; margin: 8px 0 6px; }
       .receipt p { margin: 0 0 12px; color: var(--ink-soft); max-width: 40em; }
@@ -83,7 +82,7 @@
       .demo-strip h2 { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 24px; margin: 0 0 4px; }
       .demo-strip .note { font-size: 14px; color: var(--muted); margin: 0 0 14px; }
       .ledger { font-family: var(--mono); font-size: 12.5px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
-      .ledger div { padding: 10px 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; background: rgba(255,255,255,0.4); }
+      .ledger div { padding: 10px 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; background: var(--card); }
       .ledger div:last-child { border-bottom: none; }
       .ledger .ok { color: var(--green); font-weight: 600; }
       footer { margin-top: clamp(56px, 10vw, 92px); padding-top: 26px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: baseline; }
@@ -93,6 +92,12 @@
       footer a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
       footer a:hover { color: var(--rust); }
       a:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
+          /* standard site header: identical on every page */
+      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-bottom: 1px solid var(--line); }
+      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink); text-decoration: none; }
+      .topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
+      .topnav a { margin-left: 18px; color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; }
+      .topnav a:hover { color: var(--rust); }
     </style>
       <script>
       /* theme: set before first paint to avoid a flash */
@@ -106,14 +111,15 @@
   </head>
   <body>
     <div class="page">
-      <header class="site-head">
+            <header class="site-head">
         <a class="wordmark" href="/">Synthe</a>
         <nav class="topnav">
           <a href="forge.html">Forge</a>
           <a href="playground.html">Playground</a>
+          <a href="tamper.html">Tamper</a>
           <a href="docs.html">Docs</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
-                  <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
+          <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
         </nav>
       </header>
       <main>
