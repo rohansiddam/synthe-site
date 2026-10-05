@@ -9,26 +9,41 @@
     <meta property="og:description" content="A signed agent handoff, sabotaged five ways in your browser. Every attack lands on a different reason code." />
     <style>
       :root {
-        --paper: #f6f1e7; --ink: #1d1a14; --muted: #6d6353; --line: #ddd2bd;
-        --rust: #a33b1f; --green: #2e6b34; --red: #b02a2a; --card: #fffdf7;
-      }
+        --cream: #f5efe2;
+        --cream-deep: #e9dfc8;
+        --ink: #2b2118;
+        --ink-soft: #4e4436;
+        --muted: #675c4c;
+        --line: #dacdaf;
+        --rust: #8a1919;
+        --rust-deep: #6b1212;
+        --green: #286920;
+        --green-soft: #e3ebda;
+        --red-soft: #f0e0d3;
+        --card: #fbf7ec;
+        --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
       html[data-theme="dark"] {
         color-scheme: dark;
-        --paper: #171310;
-        --ink: #ede3cd;
-        --muted: #9d8f74;
-        --line: #3a3125;
-        --rust: #e07840;
-        --green: #7fc9a8;
-        --red: #e0806a;
-        --card: #211b13;
-      }
+        --cream: #1a1210;
+        --cream-deep: #221915;
+        --ink: #ece4d2;
+        --ink-soft: #c9c0aa;
+        --muted: #94897a;
+        --line: #38291f;
+        --rust: #e08d76;
+        --rust-deep: #c97a52;
+        --green: #7fb069;
+        --green-soft: #1a2417;
+        --red-soft: #2c1e15;
+        --card: #231a15;
+}
       .theme-toggle { background: none; border: none; padding: 10px 12px; margin: -10px -12px -10px 6px; font: inherit; font-size: 15px; color: var(--muted); cursor: pointer; white-space: nowrap; }
       .theme-toggle:hover { color: var(--rust); }
       .theme-toggle:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
       body { transition: background-color .25s ease, color .25s ease; }
       * { box-sizing: border-box; }
-      body { margin: 0; background: var(--paper); color: var(--ink);
+      body { margin: 0; background: var(--cream); color: var(--ink);
         font-family: "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
       .page { max-width: 960px; margin: 0 auto; padding: 0 20px 80px; }
 
@@ -70,7 +85,7 @@
       .frow.flash { animation: fieldFlash .8s ease 2; border-left: 3px solid var(--red); }
       @keyframes fieldFlash { 0%, 100% { background-color: transparent; } 50% { background-color: rgba(176,42,42,.20); } }
 
-      .btn { display: inline-block; background: var(--ink); color: var(--paper); border: none; border-radius: 999px; padding: 14px 30px; font-size: 16px; font-weight: 650; cursor: pointer; transition: transform .15s ease, background .15s ease; }
+      .btn { display: inline-block; background: var(--ink); color: var(--cream); border: none; border-radius: 999px; padding: 14px 30px; font-size: 16px; font-weight: 650; cursor: pointer; transition: transform .15s ease, background .15s ease; }
       .btn:hover { background: var(--rust); transform: translateY(-1px); }
       .btn:active { transform: translateY(0); }
       .btn.ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
