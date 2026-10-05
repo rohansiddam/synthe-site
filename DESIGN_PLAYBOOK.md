@@ -40,19 +40,19 @@ Same names, warm inverted values. The concept is "the archive after hours": deep
 
 | Token | Value |
 |---|---|
-| `--cream` | `#0c0705` |
-| `--cream-deep` | `#150d09` |
-| `--card` | `#1f130c` |
-| `--ink` | `#f5e9d5` |
-| `--ink-soft` | `#d8c8a8` |
-| `--muted` | `#a8977d` |
-| `--line` | `#463227` |
-| `--rust` | `#f0936f` |
-| `--rust-deep` | `#e0704f` |
-| `--green` | `#8fce7a` |
-| `--green-soft` | `#131e15` |
-| `--red-soft` | `#2c1a11` |
-| `--red` | `#ef9a7a` |
+| `--cream` | `#0e0d0c` |
+| `--cream-deep` | `#161513` |
+| `--card` | `#1a1917` |
+| `--ink` | `#f2ede4` |
+| `--ink-soft` | `#d6cec0` |
+| `--muted` | `#a8a094` |
+| `--line` | `#38352f` |
+| `--rust` | `#ec5358` |
+| `--rust-deep` | `#ef6a52` |
+| `--green` | `#7fb069` |
+| `--green-soft` | `#161d17` |
+| `--red-soft` | `#241a16` |
+| `--red` | `#f2555a` |
 
 ### Hard rules learned the painful way
 
