@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light" />
     <meta name="description" content="Follow one handoff from draft to ledger: what is in the packet, and what the checker does at each step." />
-    <link rel="icon" href="data:," />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <title>Anatomy of a handoff · Synthe</title>
     <meta property="og:title" content="Anatomy of a handoff · Synthe" />
     <meta property="og:description" content="Follow one handoff from draft to ledger." />
@@ -94,7 +96,8 @@
       @media (max-width: 860px) { .step { grid-template-columns: 1fr; } .terminal { position: static; } }
           /* standard site header: identical on every page */
       .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-bottom: 1px solid var(--line); }
-      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink); text-decoration: none; }
+      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
+      .wordmark-logo { width: 26px; height: 28px; flex: none; }
       .topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
       .topnav a { margin-left: 18px; color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; }
       .topnav a:hover { color: var(--rust); }
@@ -112,7 +115,7 @@
   <body>
     <div class="page">
             <header class="site-head">
-        <a class="wordmark" href="/">Synthe</a>
+        <a class="wordmark" href="/"><svg class="wordmark-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</a>
         <nav class="topnav">
           <a href="forge.html">Forge</a>
           <a href="playground.html">Playground</a>
