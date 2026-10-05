@@ -39,18 +39,18 @@ Same names, warm inverted values. The concept is "the archive after hours": deep
 
 | Token | Value |
 |---|---|
-| `--cream` | `#1a1210` |
-| `--cream-deep` | `#221915` |
-| `--card` | `#231a15` |
-| `--ink` | `#ece4d2` |
-| `--ink-soft` | `#c9c0aa` |
-| `--muted` | `#94897a` |
-| `--line` | `#38291f` |
-| `--rust` | `#e08d76` |
-| `--rust-deep` | `#c97a52` |
+| `--cream` | `#0f0b09` |
+| `--cream-deep` | `#161110` |
+| `--card` | `#1e1613` |
+| `--ink` | `#f0e7d6` |
+| `--ink-soft` | `#cfc2ab` |
+| `--muted` | `#9a8d7c` |
+| `--line` | `#3d2f26` |
+| `--rust` | `#e8937a` |
+| `--rust-deep` | `#d9765c` |
 | `--green` | `#7fb069` |
-| `--green-soft` | `#1a2417` |
-| `--red-soft` | `#2c1e15` |
+| `--green-soft` | `#16211a` |
+| `--red-soft` | `#2a1c14` |
 
 ### Hard rules learned the painful way
 
