@@ -20,6 +20,7 @@
         --green: #286920;
         --green-soft: #e3ebda;
         --red-soft: #f0e0d3;
+        --red: #b3401f;
         --card: #fbf7ec;
         --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
@@ -36,6 +37,7 @@
         --green: #7fb069;
         --green-soft: #16211a;
         --red-soft: #2a1c14;
+        --red: #e08a63;
         --card: #1e1613;
 }
       .theme-toggle { background: none; border: none; padding: 10px 12px; margin: -10px -12px -10px 6px; font: inherit; font-size: 15px; color: var(--muted); cursor: pointer; white-space: nowrap; }
@@ -82,6 +84,7 @@
       .fname { color: var(--muted); font-size: 12.5px; text-transform: uppercase; letter-spacing: .08em; }
       .fval { font-weight: 550; }
       .fval .changed-tag { display: inline-block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #fff; background: var(--red); border-radius: 4px; padding: 2px 7px; margin-left: 8px; vertical-align: 1px; }
+      html[data-theme="dark"] .fval .changed-tag { background: #93301c; }
       .frow.flash { animation: fieldFlash .8s ease 2; border-left: 3px solid var(--red); }
       @keyframes fieldFlash { 0%, 100% { background-color: transparent; } 50% { background-color: rgba(176,42,42,.20); } }
 
@@ -108,7 +111,7 @@
       .check.pass .tick { color: var(--green); }
       .check.fail .tick { color: var(--red); }
       .check.fail { font-weight: 650; }
-      .reason-tag { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; background: rgba(176,42,42,.1); border: 1px solid rgba(176,42,42,.35); color: var(--red); border-radius: 6px; padding: 2px 8px; margin-left: 8px; white-space: nowrap; }
+      .reason-tag { font-family: var(--mono); font-size: 12.5px; background: rgba(176,42,42,.1); border: 1px solid rgba(176,42,42,.35); color: var(--red); border-radius: 6px; padding: 2px 8px; margin-left: 8px; white-space: nowrap; }
       .what { background: rgba(163,59,31,.06); border-left: 3px solid var(--rust); border-radius: 0 10px 10px 0; padding: 14px 16px; margin: 0 0 22px; font-size: 15.5px; line-height: 1.6; }
 
       /* attack cards */
@@ -316,7 +319,7 @@
       function validateHandoff(packet, registry, ledger, nowMs) {
         var checks = [];
         var h = packet && packet.handoff;
-        if (!h || typeof h !== "object") return { accept: false, checks: [failCheck("missing_handoff", "Packet structure", "packet must contain a 'handoff' object")], reasons: ["missing_handoff"] };
+        if (!h || typeof h !== "object") return Promise.resolve({ accept: false, checks: [failCheck("missing_handoff", "Packet structure", "packet must contain a 'handoff' object")], reasons: ["missing_handoff"] });
 
         var c = check(null, "Structure and required fields");
         var REQUIRED = ["id", "idempotency_key", "trace_id", "from", "to", "purpose", "schema_version", "on_failure", "scope", "authority", "acceptance", "inputs"];
@@ -353,14 +356,14 @@
           }
         }
         checks.push(structFail || c);
-        if (structFail) return done(checks);
+        if (structFail) return Promise.resolve(done(checks));
 
         c = check(null, "Sender and receiver known");
         var agents = (registry && registry.agents) || {};
         if (!agents[h.from]) checks.push(failCheck("unknown_agent:from", c.label, "from '" + h.from + "' is not in the agent registry"));
         else if (!agents[h.to]) checks.push(failCheck("unknown_agent:to", c.label, "to '" + h.to + "' is not in the agent registry"));
         else checks.push(c);
-        if (!checks[checks.length - 1].pass) return done(checks);
+        if (!checks[checks.length - 1].pass) return Promise.resolve(done(checks));
 
         var sig = packet.signature;
         var sc = check(null, "Signature valid");
