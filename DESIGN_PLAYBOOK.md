@@ -12,7 +12,7 @@ The site's framing is **Archival Ledger & Notary Stamp**: a warm paper archive w
 
 ## 2. Color system
 
-All colors go through CSS variables. Never hardcode a hex in a component; use the token.
+All colors go through CSS variables. Never hardcode a hex in a component; use the token. Exception: `.changed-tag` uses a darker `#93301c` fill in dark mode so white text keeps 4.5:1 contrast.
 
 ### Light mode (`:root`)
 
@@ -30,6 +30,7 @@ All colors go through CSS variables. Never hardcode a hex in a component; use th
 | `--green` | `#286920` | Success = forest. Text, stamps, small indicators |
 | `--green-soft` | `#e3ebda` | Success tint background |
 | `--red-soft` | `#f0e0d3` | Danger tint background |
+| `--red` | `#b3401f` | Signal red: REJECT text, stamps, fail ticks. Brighter than brick, never confused with the brand |
 
 Pages also define `--mono` and terminal tokens (`--term-bg: #1c1611`, `--term-cream: #f0e6d2`, `--term-green: #7fb069`, `--term-amber: #d99a5b`). All pages share one token set; no page-level overrides.
 
@@ -51,11 +52,13 @@ Same names, warm inverted values. The concept is "the archive after hours": deep
 | `--green` | `#7fb069` |
 | `--green-soft` | `#16211a` |
 | `--red-soft` | `#2a1c14` |
+| `--red` | `#e08a63` |
 
 ### Hard rules learned the painful way
 
 1. **Never use `rgba(255,255,255,X)` for a card background.** On light mode it reads as paper; in dark mode it renders as washed-out gray mush. Use `var(--card)` for every card, always.
-2. **Large brand fills stay deep brick in both modes.** Hardcode `background: #6b1212` (never a theme token) on large filled areas like the proof panel and "With Synthe" cards, so no dark-mode override is needed at all. `--green` is forest/moss: correct for *text, stamps, and small indicators* only.
+2. **Async validators must always resolve promises.** `validateHandoff` once returned a plain object on its early sender-failure path, so `.then()` threw and the playground's "stranger" attack silently died. Every direct return is now `Promise.resolve(...)`.
+3. **Large brand fills stay deep brick in both modes.** Hardcode `background: #6b1212` (never a theme token) on large filled areas like the proof panel and "With Synthe" cards, so no dark-mode override is needed at all. `--green` is forest/moss: correct for *text, stamps, and small indicators* only.
    html[data-theme="dark"] .change .card.good { background: #0b4b41; border-color: #0b4b41; }
    ```
    Small indicators (pips, step dots) keep the bright sage; it reads as "lit".
