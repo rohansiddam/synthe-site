@@ -43,6 +43,7 @@
       .theme-toggle { background: none; border: none; padding: 10px 12px; margin: -10px -12px -10px 6px; font: inherit; font-size: 15px; color: var(--muted); cursor: pointer; white-space: nowrap; }
       .theme-toggle:hover { color: var(--rust); }
       .theme-toggle:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
+      html { scrollbar-gutter: stable; }
       body { transition: background-color .25s ease, color .25s ease; }
       * { box-sizing: border-box; }
       body {
@@ -170,7 +171,7 @@
       h2 { scroll-margin-top: 24px; }
       @media (max-width: 640px) { .toc ol { columns: 1; } .demolinks { grid-template-columns: 1fr; } }
           /* standard site header: identical on every page */
-      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-bottom: 1px solid var(--line); }
+      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; background: var(--bg); }
       .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
       .wordmark-logo { width: 26px; height: 28px; flex: none; }
       .topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }

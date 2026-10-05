@@ -82,7 +82,7 @@
       body { transition: background-color .25s ease, color .25s ease; }
 
       * { box-sizing: border-box; }
-      html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; overflow-x: clip; }
+      html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scrollbar-gutter: stable; overflow-x: clip; }
       /* Editorial scrollbar: slim warm thumb, transparent track */
       html { scrollbar-width: thin; scrollbar-color: rgba(43, 33, 24, 0.35) transparent; }
       ::-webkit-scrollbar { width: 10px; }
@@ -864,7 +864,7 @@
         .sticky-cta, .anchor-nav, .sim-nav { transition: none; }
       }
       /* standard site header: identical on every page */
-      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-bottom: 1px solid var(--line); }
+      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; background: var(--bg); }
       .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
       .wordmark-logo { width: 26px; height: 28px; flex: none; }
       .topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
