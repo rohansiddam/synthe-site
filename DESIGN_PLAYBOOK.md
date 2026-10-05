@@ -18,46 +18,44 @@ All colors go through CSS variables. Never hardcode a hex in a component; use th
 
 | Token | Value | Role |
 |---|---|---|
-| `--cream` | `#ece4d1` | Page background |
-| `--cream-deep` | `#e3d7bd` | Alt background, wells, code chips |
-| `--card` | `#fffdf7` | Card surfaces (lifted off the page) |
-| `--ink` | `#1c1611` | Primary text |
-| `--ink-soft` | `#4c4433` | Secondary text |
-| `--muted` | `#8b7d64` | Muted text, nav links |
-| `--line` | `#e0d4b8` | Borders, rules, dividers |
-| `--rust` | `#b8490f` | Primary accent (links, eyebrows, hovers) |
-| `--rust-deep` | `#93380a` | Deep accent |
-| `--green` | `#0b4b41` | Success (deep pine). Text, stamps, small indicators |
-| `--green-soft` | `#e9f2ec` | Success tint background |
-| `--red-soft` | `#f6e3d5` | Danger tint background |
+| `--cream` | `#f5efe2` | Page background (sand) |
+| `--cream-deep` | `#e9dfc8` | Alt background, wells, code chips |
+| `--card` | `#fbf7ec` | Card surfaces (lifted off the page) |
+| `--ink` | `#2b2118` | Primary text (bark) |
+| `--ink-soft` | `#4e4436` | Secondary text |
+| `--muted` | `#675c4c` | Muted text, nav links |
+| `--line` | `#dacdaf` | Borders, rules, dividers |
+| `--rust` | `#8a1919` | Primary accent = brick (links, eyebrows, hovers) |
+| `--rust-deep` | `#6b1212` | Deep brick (large brand fills) |
+| `--green` | `#286920` | Success = forest. Text, stamps, small indicators |
+| `--green-soft` | `#e3ebda` | Success tint background |
+| `--red-soft` | `#f0e0d3` | Danger tint background |
 
-Pages also define `--mono` (`"IBM Plex Mono", ui-monospace, ...`) and terminal tokens (`--term-bg: #1c1611`, `--term-cream`, `--term-green`, `--term-amber`). The playground additionally uses `--paper`, `--red`.
+Pages also define `--mono` and terminal tokens (`--term-bg: #1c1611`, `--term-cream: #f0e6d2`, `--term-green: #7fb069`, `--term-amber: #d99a5b`). All pages share one token set; no page-level overrides.
 
 ### Dark mode (`html[data-theme="dark"]`)
 
-Same names, warm inverted values. The concept is "the archive after hours": deep espresso, not blue-gray.
+Same names, warm inverted values. The concept is "the archive after hours": deep ember-brown, not blue-gray.
 
 | Token | Value |
 |---|---|
-| `--cream` | `#171310` |
-| `--cream-deep` | `#201a14` |
-| `--card` | `#211b13` |
-| `--ink` | `#ede3cd` |
-| `--ink-soft` | `#cbbfa5` |
-| `--muted` | `#9d8f74` |
-| `--line` | `#3a3125` |
-| `--rust` | `#e07840` |
-| `--rust-deep` | `#b85a28` |
-| `--green` | `#7fc9a8` |
-| `--green-soft` | `#1d2b24` |
-| `--red-soft` | `#2e1d16` |
+| `--cream` | `#1a1210` |
+| `--cream-deep` | `#221915` |
+| `--card` | `#231a15` |
+| `--ink` | `#ece4d2` |
+| `--ink-soft` | `#c9c0aa` |
+| `--muted` | `#94897a` |
+| `--line` | `#38291f` |
+| `--rust` | `#e08d76` |
+| `--rust-deep` | `#c97a52` |
+| `--green` | `#7fb069` |
+| `--green-soft` | `#1a2417` |
+| `--red-soft` | `#2c1e15` |
 
 ### Hard rules learned the painful way
 
 1. **Never use `rgba(255,255,255,X)` for a card background.** On light mode it reads as paper; in dark mode it renders as washed-out gray mush. Use `var(--card)` for every card, always.
-2. **Large green fills stay deep pine in both modes.** `--green` brightens to sage in dark mode, which is correct for *text, stamps, and small indicators* but wrong for *large filled areas* (the text on them was designed for pine). Any selector with `background: var(--green)` covering a large area gets an explicit dark override:
-   ```css
-   html[data-theme="dark"] .proof-panel { background: #0b4b41; }
+2. **Large brand fills stay deep brick in both modes.** Hardcode `background: #6b1212` (never a theme token) on large filled areas like the proof panel and "With Synthe" cards, so no dark-mode override is needed at all. `--green` is forest/moss: correct for *text, stamps, and small indicators* only.
    html[data-theme="dark"] .change .card.good { background: #0b4b41; border-color: #0b4b41; }
    ```
    Small indicators (pips, step dots) keep the bright sage; it reads as "lit".
