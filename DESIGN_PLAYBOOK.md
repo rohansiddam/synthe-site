@@ -12,7 +12,7 @@ The site's framing is **Archival Ledger & Notary Stamp**: a warm paper archive w
 
 ## 2. Color system
 
-All colors go through CSS variables. Never hardcode a hex in a component; use the token. Exception: `.changed-tag` uses a darker `#93301c` fill in dark mode so white text keeps 4.5:1 contrast.
+All colors go through CSS variables. Never hardcode a hex in a component; use the token. Exception: `.changed-tag` uses a darker `#8a2f1c` fill in dark mode so white text keeps 4.5:1 contrast.
 
 ### Light mode (`:root`)
 
@@ -40,19 +40,19 @@ Same names, warm inverted values. The concept is "the archive after hours": deep
 
 | Token | Value |
 |---|---|
-| `--cream` | `#0f0b09` |
-| `--cream-deep` | `#161110` |
-| `--card` | `#1e1613` |
-| `--ink` | `#f0e7d6` |
-| `--ink-soft` | `#cfc2ab` |
-| `--muted` | `#9a8d7c` |
-| `--line` | `#3d2f26` |
-| `--rust` | `#e8937a` |
-| `--rust-deep` | `#d9765c` |
-| `--green` | `#7fb069` |
-| `--green-soft` | `#16211a` |
-| `--red-soft` | `#2a1c14` |
-| `--red` | `#e08a63` |
+| `--cream` | `#0c0705` |
+| `--cream-deep` | `#150d09` |
+| `--card` | `#1f130c` |
+| `--ink` | `#f5e9d5` |
+| `--ink-soft` | `#d8c8a8` |
+| `--muted` | `#a8977d` |
+| `--line` | `#463227` |
+| `--rust` | `#f0936f` |
+| `--rust-deep` | `#e0704f` |
+| `--green` | `#8fce7a` |
+| `--green-soft` | `#131e15` |
+| `--red-soft` | `#2c1a11` |
+| `--red` | `#ef9a7a` |
 
 ### Hard rules learned the painful way
 
