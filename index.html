@@ -643,13 +643,13 @@
       /* Sticky CTA + anchor nav */
       .sticky-cta {
         position: fixed;
-        top: 92px;
-        left: 50%;
-        transform: translate(-50%, -90px);
+        bottom: 18px;
+        right: 18px;
+        transform: translateY(90px);
         transition: transform 0.35s ease;
         z-index: 60;
       }
-      .sticky-cta.show { transform: translate(-50%, 0); }
+      .sticky-cta.show { transform: translateY(0); }
       .sticky-cta a {
         display: flex;
         align-items: center;
