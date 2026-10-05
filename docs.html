@@ -171,7 +171,7 @@
       h2 { scroll-margin-top: 24px; }
       @media (max-width: 640px) { .toc ol { columns: 1; } .demolinks { grid-template-columns: 1fr; } }
           /* standard site header: identical on every page */
-      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; background: var(--bg); }
+      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px max(24px, calc(50vw - 530px)); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; background: var(--cream); margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
       .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
       .wordmark-logo { width: 26px; height: 28px; flex: none; }
       .topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
