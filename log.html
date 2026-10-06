@@ -20,8 +20,8 @@
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="preload" href="/fonts/fraunces-normal-400-650-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/site.css" />
-    <script src="/site.js" defer></script>
+    <link rel="stylesheet" href="/site.css?v=7c7e9c83" />
+    <script src="/site.js?v=0106cb96" defer></script>
     <style>
       :root {
         --cream: #f5efe2;
@@ -103,15 +103,16 @@
 
     </style>
     <script>
-      /* theme: set before first paint to avoid a flash. The js class turns on
+      /* theme and motion: set before first paint to avoid a flash. The js class turns on
          script-only layouts, like the phone menu. */
       try { (function () {
         var d = document.documentElement;
         d.classList.add("js");
-        var t = null;
-        try { t = localStorage.getItem("synthe-theme"); } catch (e) {}
+        var t = null, m = null;
+        try { t = localStorage.getItem("synthe-theme"); m = localStorage.getItem("synthe-motion"); } catch (e) {}
         var dark = t ? t === "dark" : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
         d.setAttribute("data-theme", dark ? "dark" : "light");
+        if (m === "paused") d.classList.add("motion-paused");
       })(); } catch (e) {}
     </script>
   </head>
@@ -122,12 +123,29 @@
         <a class="wordmark" href="/"><svg class="wordmark-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</a>
         <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="topnav">Menu</button>
         <nav class="topnav" id="topnav" aria-label="Main">
-          <a href="/race.html">Race</a>
-          <a href="/forge.html">Forge</a>
-          <a href="/playground.html">Playground</a>
-          <a href="/tamper.html">Tamper</a>
+          <a href="/how.html">How it works</a>
+          <details class="nav-group">
+            <summary>Demos</summary>
+            <div class="nav-panel">
+              <a href="/race.html"><strong>Race two agents</strong><span>Two agents, one change, exactly one commit.</span></a>
+              <a href="/forge.html"><strong>Forge this handoff</strong><span>Attack a signed handoff six ways.</span></a>
+              <a href="/playground.html"><strong>Playground</strong><span>Sign a real handoff, then break it.</span></a>
+              <a href="/tamper.html"><strong>Tamper evidence</strong><span>Break a hash chain and find where.</span></a>
+              <a href="/anatomy.html"><strong>Anatomy of a handoff</strong><span>One handoff, from draft to ledger.</span></a>
+            </div>
+          </details>
           <a href="/docs.html">Docs</a>
+          <details class="nav-group">
+            <summary>Proof</summary>
+            <div class="nav-panel">
+              <a href="/receipts.html"><strong>Receipts</strong><span>Every claim, linked to the run behind it.</span></a>
+              <a href="/benchmarks.html"><strong>Benchmarks</strong><span>Every number on the site and its source.</span></a>
+              <a href="/status.html"><strong>Status &amp; trust</strong><span>What's public, what isn't proven, your data.</span></a>
+              <a href="/log.html" aria-current="page"><strong>Changelog</strong><span>What shipped, and when.</span></a>
+            </div>
+          </details>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+          <a class="nav-cta" href="/#partner">Become a design partner</a>
           <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
         </nav>
       </header>
@@ -171,6 +189,7 @@
         <p class="footer-brand"><svg class="footer-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</p>
         <p class="footer-line">The commit barrier for AI agents. Agents propose. Synthe commits. Anyone can verify.</p>
         <nav class="footer-nav" aria-label="Footer">
+          <a href="/how.html">How it works</a>
           <a href="/race.html">Race two agents</a>
           <a href="/forge.html">Forge this handoff</a>
           <a href="/playground.html">Playground</a>

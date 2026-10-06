@@ -12,6 +12,7 @@ It fails (exit 1) when:
   - an internal link or #anchor points nowhere
   - sitemap.xml and the indexable pages disagree
   - the CSP <meta> tag and the CSP in _headers disagree
+  - a page links an out-of-date site.css or site.js version (run tools/stamp.py)
   - the design-partner form's privacy copy doesn't match where the form sends data
 It warns (exit 0) while the form uses the email fallback (no Formspree form ID yet).
 """
@@ -25,6 +26,7 @@ from pathlib import Path
 SITE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(SITE / "tools"))
 import facts  # noqa: E402
+import stamp  # noqa: E402
 
 PAGES = sorted(SITE.glob("*.html"))
 COPY_FILES = PAGES + [SITE / "llms.txt", SITE / "llms-full.txt", SITE / ".well-known" / "security.txt"]
@@ -79,8 +81,8 @@ for p in PAGES:
         footers[p.name] = foot
     must = {
         "CSP meta tag": 'http-equiv="Content-Security-Policy"',
-        "site.css": 'href="/site.css"',
-        "site.js": 'src="/site.js"',
+        "site.css": 'href="/site.css?v=',
+        "site.js": 'src="/site.js?v=',
         "skip link": 'class="skip-link" href="#main"',
         "<main id=main>": '<main id="main">',
         "meta description": '<meta name="description"',
@@ -136,6 +138,7 @@ for p in PAGES:
         if re.match(r"^(?:https?:|mailto:|tel:|data:)", href):
             continue
         path, _, frag = href.partition("#")
+        path = path.split("?", 1)[0]
         if path in ("", "/"):
             target = p.name if path == "" else "index.html"
         else:
@@ -162,6 +165,15 @@ for p in PAGES:
     m = re.search(r'http-equiv="Content-Security-Policy" content="([^"]+)"', text(p))
     if m and hdr_csp and m.group(1).strip() != hdr_csp:
         err(f"{p.name}: CSP meta tag differs from _headers")
+
+# 7b. Shared assets carry their current version, so no browser mixes new pages with an old cached file
+current = stamp.versions()
+for p in PAGES:
+    h = text(p)
+    for asset, v in current.items():
+        found = re.findall(rf'/{re.escape(asset)}\?v=([0-9a-f]+)', h)
+        if found and any(f != v for f in found):
+            err(f"{p.name}: links an old {asset} version; run python3 tools/stamp.py")
 
 # 8. The design-partner form: its privacy copy must match where it sends data.
 #    data-formspree="" -> the form opens the visitor's email app; nothing goes to a third party.
@@ -190,6 +202,17 @@ else:
                 err(f"{name}: the form posts to Formspree, so this page's privacy copy must say so")
             if "Nothing is stored or sent on its own" in html:
                 err(f"{name}: still says nothing is sent, but the form posts to Formspree")
+
+# 9. Homepage length budget (DESIGN_PLAYBOOK.md section 12): new detail belongs on a deeper page
+home_main = re.search(r"<main[^>]*>(.*?)</main>", index_html, re.S)
+if home_main:
+    shown = visible(home_main.group(1))
+    # count what a visitor sees by default: collapsed FAQ answers and screen-reader-only text add no length
+    shown = re.sub(r'<div class="faq-a">.*?</div>', " ", shown, flags=re.S)
+    shown = re.sub(r'<(p|span) class="sr-only">.*?</\1>', " ", shown, flags=re.S)
+    words = len(re.sub(r"<[^>]+>", " ", shown).split())
+    if words > 900:
+        warn(f"index.html: the homepage has {words} words of main text (budget 900). Move detail to how.html or docs.html.")
 
 for w in warnings:
     print(f"::warning::{w}" if IN_CI else f"warning: {w}")
