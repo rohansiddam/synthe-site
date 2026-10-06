@@ -12,9 +12,11 @@ The site's framing is **Archival Ledger & Notary Stamp**: a warm paper archive w
 
 ## 2. Color system
 
-All colors go through CSS variables. Never hardcode a hex in a component; use the token. Exception: `.changed-tag` uses a darker `#8a2f1c` fill in dark mode so white text keeps 4.5:1 contrast.
+All colors go through CSS variables. Never hardcode a hex in a component; use the token.
 
 ### Light mode (`:root`)
+
+The site's paper side: warm sand backgrounds, brick-red brand accent, forest success.
 
 | Token | Value | Role |
 |---|---|---|
@@ -36,34 +38,32 @@ Pages also define `--mono` and terminal tokens (`--term-bg: #1c1611`, `--term-cr
 
 ### Dark mode (`html[data-theme="dark"]`)
 
-Same names, warm inverted values. The concept is "the archive after hours": deep ember-brown, not blue-gray.
+The **Stark** theme: the archive after dark. Neutral charcoal, not blue-gray and not brown. Same token names, inverted values; the brand accent flips from brick to signal red in dark mode.
 
-| Token | Value |
-|---|---|
-| `--cream` | `#0e0d0c` |
-| `--cream-deep` | `#161513` |
-| `--card` | `#1a1917` |
-| `--ink` | `#f2ede4` |
-| `--ink-soft` | `#d6cec0` |
-| `--muted` | `#a8a094` |
-| `--line` | `#38352f` |
-| `--rust` | `#ec5358` |
-| `--rust-deep` | `#ef6a52` |
-| `--green` | `#7fb069` |
-| `--green-soft` | `#161d17` |
-| `--red-soft` | `#241a16` |
-| `--red` | `#f2555a` |
+| Token | Value | Role |
+|---|---|---|
+| `--cream` | `#0e0d0c` | Page background (neutral charcoal) |
+| `--cream-deep` | `#161513` | Alt background, wells |
+| `--card` | `#1a1917` | Card surfaces |
+| `--ink` | `#f2ede4` | Primary text (warm paper white) |
+| `--ink-soft` | `#d6cec0` | Secondary text |
+| `--muted` | `#a8a094` | Muted text, nav links |
+| `--line` | `#38352f` | Borders, rules, dividers |
+| `--rust` | `#ec5358` | Primary accent = signal red (links, eyebrows, hovers) |
+| `--rust-deep` | `#ef6a52` | Deep variant (rare fills) |
+| `--green` | `#7fb069` | Success = moss. Text, stamps, small indicators |
+| `--green-soft` | `#161d17` | Success tint background |
+| `--red-soft` | `#241a16` | Danger tint background |
+| `--red` | `#f2555a` | Signal red: REJECT text, stamps, fail ticks |
 
 ### Hard rules learned the painful way
 
 1. **Never use `rgba(255,255,255,X)` for a card background.** On light mode it reads as paper; in dark mode it renders as washed-out gray mush. Use `var(--card)` for every card, always.
 2. **Async validators must always resolve promises.** `validateHandoff` once returned a plain object on its early sender-failure path, so `.then()` threw and the playground's "stranger" attack silently died. Every direct return is now `Promise.resolve(...)`.
-3. **Large brand fills stay deep brick in both modes.** Hardcode `background: #6b1212` (never a theme token) on large filled areas like the proof panel and "With Synthe" cards, so no dark-mode override is needed at all. `--green` is forest/moss: correct for *text, stamps, and small indicators* only.
-   html[data-theme="dark"] .change .card.good { background: #0b4b41; border-color: #0b4b41; }
-   ```
-   Small indicators (pips, step dots) keep the bright sage; it reads as "lit".
-3. **Terminal blocks are already dark.** Leave `--term-*` untouched in dark mode.
-4. **White overlays are only for already-dark surfaces** (floating pills, dark bands). If the surface adapts to the theme, the overlay must too.
+3. **Large brand fills stay deep brick in both modes.** Hardcode `background: #6b1212` (never a theme token) on large filled areas like the proof panel and "With Synthe" cards, so no dark-mode override is needed at all.
+4. **`--green` is for text, stamps, and small indicators only.** Small ACCEPT fills and pips use `var(--green)` (forest in light, moss in dark); never paint a large surface green in either mode. Small indicators keep the bright moss; it reads as "lit" on the dark canvas.
+5. **Terminal blocks are already dark.** Leave `--term-*` untouched in dark mode.
+6. **White overlays are only for already-dark surfaces** (floating pills, dark bands). If the surface adapts to the theme, the overlay must too.
 
 ## 3. Typography
 
@@ -71,23 +71,38 @@ Same names, warm inverted values. The concept is "the archive after hours": deep
 - **Body:** `"General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`.
 - **Mono:** `"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace` — code, reason codes, kickers, eyebrows, small labels. Eyebrows/kickers are uppercase, letter-spacing `0.08em`-`0.14em`, 12-13px, rust or muted.
 
-Fraunces and IBM Plex Mono load from Google Fonts (the one allowed exception to the no-network rule, and it was already there). Everything else is system.
+Fraunces and IBM Plex Mono load from Google Fonts (the one allowed exception to the no-network rule, and it was already there). Everything else is system. **Every page must include the same font links.** Playground once shipped without them and silently fell back to system fonts (its text looked noticeably thicker); the mismatch was only caught by eye. Copy the `<link>` tags verbatim from another page when adding one.
 
 ## 4. Texture
 
-- **The watermark** is a single inline SVG data-URI tile (lathe-like wavy lines + concentric circles), applied as `body { background-image }`. No network request, no JavaScript. Stroke color is `%23241d14` at 5% opacity in light mode; each page carries a dark-mode override swapping the stroke to `%23ede3cd`:
+- **The watermark** is a single inline SVG data-URI tile (lathe-like wavy lines + concentric circles), applied as `body { background-image }`. No network request, no JavaScript. Stroke color is `%23241d14` in light mode; each page carries a dark-mode override swapping the stroke to `%23f2ede4`:
   ```css
-  html[data-theme="dark"] body { background-image: url("data:image/svg+xml,...stroke='%23ede3cd'..."); }
+  html[data-theme="dark"] body { background-image: url("data:image/svg+xml,...stroke='%23f2ede4'..."); }
   ```
   When editing the tile, change the stroke in BOTH copies.
 - There is no grain overlay (it was removed). Do not add one.
+
+## 4b. Logo and identity
+
+The mark is an inline SVG of the Synthe stamp glyph, carried directly in the HTML (no `<img>` tag, no request).
+
+- **`fill="currentColor"` everywhere.** The glyph inherits `--ink`, so it adapts to the theme automatically. Never hardcode a fill color on it.
+- **Nav wordmark:** mark sits directly left of the "Synthe" text, `.wordmark-logo { width: 26px; height: 28px; flex: none; }`. Optically centered on the wordmark cap height; check the alignment by eye in both themes whenever the wordmark size changes.
+- **Footer:** same glyph at `.footer-logo { width: 22px; height: 24px; }`, next to the brand line.
+- **Favicon:** `favicon.svg` linked on every page via `<link rel="icon" href="favicon.svg" type="image/svg+xml">`.
+- **Social card:** `og-image.png` on the homepage (`og:image`), with the logo and "Synthe" locked up on one line and the tagline "The trust layer for AI agents" beneath in the dark brick red used for the homepage's ACCEPT/REJECT line.
+- The full path data lives in the page markup; when the mark needs replacing, swap the whole inline SVG on every page (all 11), not just one.
 
 ## 5. Components
 
 ### Site header (identical on every page — keep it that way)
 ```html
 <header class="site-head">
-  <a class="wordmark" href="/">Synthe</a>
+  <a class="wordmark" href="/">
+    <!-- the logo mark: inline SVG glyph, fill="currentColor", see section 4b -->
+    <svg class="wordmark-logo" viewBox="0 0 275 290" aria-hidden="true">...</svg>
+    Synthe
+  </a>
   <nav class="topnav">
     <a href="forge.html">Forge</a>
     <a href="playground.html">Playground</a>
@@ -164,11 +179,11 @@ Every page follows the same pattern. To add dark mode to a new page, copy it exa
    ```css
    html[data-theme="dark"] {
      color-scheme: dark;
-     --cream: #171310;
+     --cream: #0e0d0c;
      /* ... full table from section 2 ... */
    }
    ```
-2. **Watermark swap** (if the page has the texture): dark block overriding `body { background-image }` with the `%23ede3cd` stroke copy.
+2. **Watermark swap** (if the page has the texture): dark block overriding `body { background-image }` with the `%23f2ede4` stroke copy.
 3. **Head script** (runs before first paint, prevents flash):
    ```html
    <script>
@@ -217,8 +232,10 @@ Every page follows the same pattern. To add dark mode to a new page, copy it exa
 ## 10. Pitfalls checklist (check before shipping)
 
 - [ ] No `rgba(255,255,255,X)` card backgrounds (use `var(--card)`)
-- [ ] No large `var(--green)` fills without a dark-mode pine pin
+- [ ] No large `var(--green)` fills; large brand fills hardcode `#6b1212` in both modes
 - [ ] Header nav identical on every page
+- [ ] Every page loads the same Google Fonts links (Fraunces + IBM Plex Mono)
+- [ ] Logo mark present next to the wordmark and in the footer on every page; favicon linked
 - [ ] Watermark stroke updated in both light and dark copies
 - [ ] Footer links wrap as whole units
 - [ ] Toggle present, label flips, choice persists, no flash on reload
