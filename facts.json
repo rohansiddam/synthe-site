@@ -1,0 +1,22 @@
+{
+  "_about": "Every number on synthe.live comes from this file. tools/facts.py refresh re-measures the public checker; tools/facts.py apply writes the values into each page's data-fact spans; tools/check_site.py fails CI when a page disagrees.",
+  "checker_repo": "https://github.com/rohansiddam/Synthe",
+  "checker_commit": "15f1527",
+  "checker_version": "0.5",
+  "facts_checked_on": "2026-10-06",
+  "tests_passed": 57,
+  "attacks_shipped": 8,
+  "attacks_rejected": 8,
+  "runner_runs": 3,
+  "runner_accepts": 1,
+  "runner_duplicates": 2,
+  "runner_date": "2026-10-01",
+  "clone_to_accept_s": 1.5,
+  "_manual": {
+    "runner_runs": "GitHub Actions runs 36913336715, 36913571379, 36913698021 on rohansiddam/Synthe. Not re-run by the refresh.",
+    "runner_accepts": "Same three runs.",
+    "runner_duplicates": "Same three runs.",
+    "runner_date": "Same three runs.",
+    "clone_to_accept_s": "Fresh git clone to ACCEPT, 1.505 s, timed by hand in October 2026. Re-measured at 0.78 s on 2026-10-06; the site keeps the slower figure."
+  }
+}

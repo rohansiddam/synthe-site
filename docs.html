@@ -2,23 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io mailto:; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="color-scheme" content="light" />
-    <meta name="description" content="Synthe docs: get started, core concepts, and links to the full spec and threat model." />
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="favicon-32x32.png" type="image/png" sizes="32x32" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-    <title>Synthe docs</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..650;1,9..144,400..650&family=IBM+Plex+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
-      rel="stylesheet"
-    />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="How the Synthe commit barrier works, how to run the public checker, the check order, and every reason code." />
+    <link rel="canonical" href="https://synthe.live/docs.html" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>Docs · Synthe</title>
+    <meta property="og:title" content="Docs · Synthe" />
+    <meta property="og:description" content="How the Synthe commit barrier works, how to run the public checker, the check order, and every reason code." />
+    <meta property="og:image" content="https://synthe.live/og-image.png" />
+    <meta property="og:url" content="https://synthe.live/docs.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Synthe" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="/fonts/fraunces-normal-400-650-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/site.css" />
+    <script src="/site.js" defer></script>
     <style>
       :root {
         --cream: #f5efe2;
@@ -49,15 +52,13 @@
       html[data-theme="dark"] body {
         background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23f2ede4'%20stroke-width%3D'1'%3E%3Cpath%20d%3D'M-16%2C18L0%2C24L16%2C30L32%2C30L48%2C24L64%2C18L80%2C18L96%2C24L112%2C30L128%2C30L144%2C24L160%2C18L176%2C18L192%2C24L208%2C30L224%2C30L240%2C24L256%2C18L272%2C18L288%2C24L304%2C30L320%2C30L336%2C24L352%2C18L368%2C18L384%2C24L400%2C30L416%2C30L432%2C24L448%2C18L464%2C18L480%2C24L496%2C30'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C72L0%2C78L16%2C78L32%2C72L48%2C66L64%2C66L80%2C72L96%2C78L112%2C78L128%2C72L144%2C66L160%2C66L176%2C72L192%2C78L208%2C78L224%2C72L240%2C66L256%2C66L272%2C72L288%2C78L304%2C78L320%2C72L336%2C66L352%2C66L368%2C72L384%2C78L400%2C78L416%2C72L432%2C66L448%2C66L464%2C72L480%2C78L496%2C78'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C126L0%2C126L16%2C119L32%2C114L48%2C114L64%2C121L80%2C126L96%2C126L112%2C119L128%2C114L144%2C114L160%2C121L176%2C126L192%2C126L208%2C119L224%2C114L240%2C114L256%2C121L272%2C126L288%2C126L304%2C119L320%2C114L336%2C114L352%2C121L368%2C126L384%2C126L400%2C119L416%2C114L432%2C114L448%2C121L464%2C126L480%2C126L496%2C119'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C173L0%2C167L16%2C161L32%2C163L48%2C169L64%2C175L80%2C173L96%2C167L112%2C161L128%2C163L144%2C169L160%2C175L176%2C173L192%2C167L208%2C161L224%2C163L240%2C169L256%2C175L272%2C173L288%2C167L304%2C161L320%2C163L336%2C169L352%2C175L368%2C173L384%2C167L400%2C161L416%2C163L432%2C169L448%2C175L464%2C173L480%2C167L496%2C161'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C215L0%2C209L16%2C211L32%2C217L48%2C223L64%2C221L80%2C215L96%2C209L112%2C211L128%2C217L144%2C223L160%2C221L176%2C215L192%2C209L208%2C211L224%2C217L240%2C223L256%2C221L272%2C215L288%2C209L304%2C211L320%2C217L336%2C223L352%2C221L368%2C215L384%2C209L400%2C211L416%2C217L432%2C223L448%2C221L464%2C215L480%2C209L496%2C211'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C257L0%2C259L16%2C266L32%2C271L48%2C269L64%2C262L80%2C257L96%2C259L112%2C266L128%2C271L144%2C269L160%2C262L176%2C257L192%2C259L208%2C266L224%2C271L240%2C269L256%2C262L272%2C257L288%2C259L304%2C266L320%2C271L336%2C269L352%2C262L368%2C257L384%2C259L400%2C266L416%2C271L432%2C269L448%2C262L464%2C257L480%2C259L496%2C266'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C307L0%2C314L16%2C319L32%2C317L48%2C310L64%2C305L80%2C307L96%2C314L112%2C319L128%2C317L144%2C310L160%2C305L176%2C307L192%2C314L208%2C319L224%2C317L240%2C310L256%2C305L272%2C307L288%2C314L304%2C319L320%2C317L336%2C310L352%2C305L368%2C307L384%2C314L400%2C319L416%2C317L432%2C310L448%2C305L464%2C307L480%2C314L496%2C319'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C363L0%2C367L16%2C364L32%2C357L48%2C353L64%2C356L80%2C363L96%2C367L112%2C364L128%2C357L144%2C353L160%2C356L176%2C363L192%2C367L208%2C364L224%2C357L240%2C353L256%2C356L272%2C363L288%2C367L304%2C364L320%2C357L336%2C353L352%2C356L368%2C363L384%2C367L400%2C364L416%2C357L432%2C353L448%2C356L464%2C363L480%2C367L496%2C364'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C415L0%2C412L16%2C405L32%2C401L48%2C404L64%2C411L80%2C415L96%2C412L112%2C405L128%2C401L144%2C404L160%2C411L176%2C415L192%2C412L208%2C405L224%2C401L240%2C404L256%2C411L272%2C415L288%2C412L304%2C405L320%2C401L336%2C404L352%2C411L368%2C415L384%2C412L400%2C405L416%2C401L432%2C404L448%2C411L464%2C415L480%2C412L496%2C405'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C460L0%2C453L16%2C449L32%2C452L48%2C459L64%2C463L80%2C460L96%2C453L112%2C449L128%2C452L144%2C459L160%2C463L176%2C460L192%2C453L208%2C449L224%2C452L240%2C459L256%2C463L272%2C460L288%2C453L304%2C449L320%2C452L336%2C459L352%2C463L368%2C460L384%2C453L400%2C449L416%2C452L432%2C459L448%2C463L464%2C460L480%2C453L496%2C449'%20stroke-opacity%3D'0.05'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
       }
-      .theme-toggle { background: none; border: none; padding: 10px 12px; margin: -10px -12px -10px 6px; font: inherit; font-size: 15px; color: var(--muted); cursor: pointer; white-space: nowrap; }
-      .theme-toggle:hover { color: var(--rust); }
-      .theme-toggle:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
+
       html { scrollbar-gutter: stable; }
       body { transition: background-color .25s ease, color .25s ease; }
       * { box-sizing: border-box; }
       body {
         margin: 0;
-        font-family: "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased;
+        font-family: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased;
         background-color: var(--cream);
         background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23241d14'%20stroke-width%3D'1'%3E%3Cpath%20d%3D'M-16%2C18L0%2C24L16%2C30L32%2C30L48%2C24L64%2C18L80%2C18L96%2C24L112%2C30L128%2C30L144%2C24L160%2C18L176%2C18L192%2C24L208%2C30L224%2C30L240%2C24L256%2C18L272%2C18L288%2C24L304%2C30L320%2C30L336%2C24L352%2C18L368%2C18L384%2C24L400%2C30L416%2C30L432%2C24L448%2C18L464%2C18L480%2C24L496%2C30'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C72L0%2C78L16%2C78L32%2C72L48%2C66L64%2C66L80%2C72L96%2C78L112%2C78L128%2C72L144%2C66L160%2C66L176%2C72L192%2C78L208%2C78L224%2C72L240%2C66L256%2C66L272%2C72L288%2C78L304%2C78L320%2C72L336%2C66L352%2C66L368%2C72L384%2C78L400%2C78L416%2C72L432%2C66L448%2C66L464%2C72L480%2C78L496%2C78'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C126L0%2C126L16%2C119L32%2C114L48%2C114L64%2C121L80%2C126L96%2C126L112%2C119L128%2C114L144%2C114L160%2C121L176%2C126L192%2C126L208%2C119L224%2C114L240%2C114L256%2C121L272%2C126L288%2C126L304%2C119L320%2C114L336%2C114L352%2C121L368%2C126L384%2C126L400%2C119L416%2C114L432%2C114L448%2C121L464%2C126L480%2C126L496%2C119'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C173L0%2C167L16%2C161L32%2C163L48%2C169L64%2C175L80%2C173L96%2C167L112%2C161L128%2C163L144%2C169L160%2C175L176%2C173L192%2C167L208%2C161L224%2C163L240%2C169L256%2C175L272%2C173L288%2C167L304%2C161L320%2C163L336%2C169L352%2C175L368%2C173L384%2C167L400%2C161L416%2C163L432%2C169L448%2C175L464%2C173L480%2C167L496%2C161'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C215L0%2C209L16%2C211L32%2C217L48%2C223L64%2C221L80%2C215L96%2C209L112%2C211L128%2C217L144%2C223L160%2C221L176%2C215L192%2C209L208%2C211L224%2C217L240%2C223L256%2C221L272%2C215L288%2C209L304%2C211L320%2C217L336%2C223L352%2C221L368%2C215L384%2C209L400%2C211L416%2C217L432%2C223L448%2C221L464%2C215L480%2C209L496%2C211'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C257L0%2C259L16%2C266L32%2C271L48%2C269L64%2C262L80%2C257L96%2C259L112%2C266L128%2C271L144%2C269L160%2C262L176%2C257L192%2C259L208%2C266L224%2C271L240%2C269L256%2C262L272%2C257L288%2C259L304%2C266L320%2C271L336%2C269L352%2C262L368%2C257L384%2C259L400%2C266L416%2C271L432%2C269L448%2C262L464%2C257L480%2C259L496%2C266'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C307L0%2C314L16%2C319L32%2C317L48%2C310L64%2C305L80%2C307L96%2C314L112%2C319L128%2C317L144%2C310L160%2C305L176%2C307L192%2C314L208%2C319L224%2C317L240%2C310L256%2C305L272%2C307L288%2C314L304%2C319L320%2C317L336%2C310L352%2C305L368%2C307L384%2C314L400%2C319L416%2C317L432%2C310L448%2C305L464%2C307L480%2C314L496%2C319'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C363L0%2C367L16%2C364L32%2C357L48%2C353L64%2C356L80%2C363L96%2C367L112%2C364L128%2C357L144%2C353L160%2C356L176%2C363L192%2C367L208%2C364L224%2C357L240%2C353L256%2C356L272%2C363L288%2C367L304%2C364L320%2C357L336%2C353L352%2C356L368%2C363L384%2C367L400%2C364L416%2C357L432%2C353L448%2C356L464%2C363L480%2C367L496%2C364'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C415L0%2C412L16%2C405L32%2C401L48%2C404L64%2C411L80%2C415L96%2C412L112%2C405L128%2C401L144%2C404L160%2C411L176%2C415L192%2C412L208%2C405L224%2C401L240%2C404L256%2C411L272%2C415L288%2C412L304%2C405L320%2C401L336%2C404L352%2C411L368%2C415L384%2C412L400%2C405L416%2C401L432%2C404L448%2C411L464%2C415L480%2C412L496%2C405'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C460L0%2C453L16%2C449L32%2C452L48%2C459L64%2C463L80%2C460L96%2C453L112%2C449L128%2C452L144%2C459L160%2C463L176%2C460L192%2C453L208%2C449L224%2C452L240%2C459L256%2C463L272%2C460L288%2C453L304%2C449L320%2C452L336%2C459L352%2C463L368%2C460L384%2C453L400%2C449L416%2C452L432%2C459L448%2C463L464%2C460L480%2C453L496%2C449'%20stroke-opacity%3D'0.05'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
         background-size: 480px 480px;
@@ -66,7 +67,6 @@
         line-height: 1.6;
       }
       .page { max-width: 780px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px 80px; }
-
 
       main { padding-top: clamp(32px, 5vw, 56px); }
       h1 {
@@ -122,15 +122,7 @@
         font-size: 15px;
       }
       .doclinks a:hover { border-color: var(--rust); color: var(--rust); }
-      footer {
-        margin-top: 80px;
-        padding-top: 24px;
-        border-top: 1px solid var(--line);
-        color: var(--ink-soft);
-        font-size: 15px;
-      }
-      footer a { color: var(--ink-soft); }
-      footer a:hover { color: var(--rust); }
+
       a:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
       .version-badge {
         display: inline-block; font-family: var(--mono); font-size: 12.5px;
@@ -170,7 +162,7 @@
       .check-order strong { display: block; font-size: 16px; }
       .check-order span { font-size: 14.5px; color: var(--ink-soft); }
       .check-order code { font-family: var(--mono); font-size: 12.5px; background: rgba(36,29,20,0.06); padding: 1px 7px; border-radius: 5px; }
-      .demolinks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 18px; }
+      .demolinks { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 18px; }
       .demolinks a {
         display: block; border: 1px solid var(--line); border-radius: 14px; padding: 18px;
         text-decoration: none; color: var(--ink); background: var(--card);
@@ -180,47 +172,69 @@
       .demolinks span { font-size: 14px; color: var(--ink-soft); }
       h2 { scroll-margin-top: 24px; }
       @media (max-width: 640px) { .toc ol { columns: 1; } .demolinks { grid-template-columns: 1fr; } }
-          /* standard site header: identical on every page */
-      .footer-brand { display: flex; align-items: center; gap: 10px; font-family: "Fraunces", Georgia, serif; font-size: 20px; color: var(--ink); margin: 0 0 12px; }
-      .footer-logo { width: 22px; height: 24px; }
-      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px max(24px, calc(50vw - 530px)); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; background: var(--cream); margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
-      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
-      .wordmark-logo { width: 26px; height: 28px; flex: none; }
-      .topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
-      .topnav a { margin-left: 18px; color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; }
-      .topnav a:hover { color: var(--rust); }
+
+
+      /* commit barrier callout + availability tags */
+      .callout { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--rust); border-radius: 0 12px 12px 0; padding: 14px 18px; margin: 18px 0; }
+      .callout p { margin: 6px 0; font-size: 15.5px; color: var(--ink-soft); }
+      .tag { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; padding: 1px 9px; border-radius: 999px; border: 1px solid currentColor; margin-right: 6px; vertical-align: 1px; }
+      .tag.public { color: var(--green); }
+      .tag.beta { color: var(--rust); }
+      .callout code, p code, .small code { font-family: var(--mono); font-size: 0.85em; background: var(--cream-deep); padding: 1px 6px; border-radius: 5px; }
+      .small { font-size: 15px; color: var(--ink-soft); }
+      .textlink { color: var(--rust); font-weight: 500; text-decoration: none; border-bottom: 1px solid currentColor; }
+      .textlink:hover { color: var(--rust-deep); }
+      .terminal .reject { color: #d99a5b; font-weight: 600; }
+      .terminal p + p { margin-top: 12px; }
+      .table-wrap { overflow-x: auto; }
+      .reason-table td code { font-family: var(--mono); font-size: 0.85em; }
+      .commit-path li::before { background: var(--rust); border-color: var(--rust); color: var(--cream); }
+      @media (max-width: 640px) {
+        .reason-table, .reason-table tbody, .reason-table tr, .reason-table th, .reason-table td { display: block; width: 100%; }
+        .reason-table tr { padding: 8px 0; border-bottom: 1px solid var(--line); }
+        .reason-table th { padding: 18px 0 6px; }
+        .reason-table td { border: none; padding: 2px 0; }
+        .reason-table td:first-child { white-space: normal; overflow-wrap: anywhere; font-weight: 500; }
+      }
     </style>
-      <script>
-      /* theme: set before first paint to avoid a flash */
+    <script>
+      /* theme: set before first paint to avoid a flash. The js class turns on
+         script-only layouts, like the phone menu. */
       try { (function () {
+        var d = document.documentElement;
+        d.classList.add("js");
         var t = null;
         try { t = localStorage.getItem("synthe-theme"); } catch (e) {}
         var dark = t ? t === "dark" : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
-        document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        d.setAttribute("data-theme", dark ? "dark" : "light");
       })(); } catch (e) {}
     </script>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <div class="page">
-            <header class="site-head">
+      <header class="site-head">
         <a class="wordmark" href="/"><svg class="wordmark-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</a>
-        <nav class="topnav">
-          <a href="forge.html">Forge</a>
-          <a href="playground.html">Playground</a>
-          <a href="tamper.html">Tamper</a>
-          <a href="docs.html">Docs</a>
+        <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="topnav">Menu</button>
+        <nav class="topnav" id="topnav" aria-label="Main">
+          <a href="/race.html">Race</a>
+          <a href="/forge.html">Forge</a>
+          <a href="/playground.html">Playground</a>
+          <a href="/tamper.html">Tamper</a>
+          <a href="/docs.html" aria-current="page">Docs</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
           <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
         </nav>
       </header>
-      <main>
+      <main id="main">
         <h1>Synthe <em>docs</em></h1>
-        <p class="lede">Everything you need to check your first handoff. The full formal spec and threat model live in the repo.</p>
-        <p><span class="version-badge">PACKET SCHEMA 0.1 · DOCS OCTOBER 2026</span></p>
+        <p class="lede">How the commit barrier works, and everything you need to check your first handoff with the public checker. The full spec and threat model live in the repo.</p>
+        <p><span class="version-badge">Checker v<span data-fact="checker_version">0.5</span> · packet schema 0.1 · docs October 2026</span></p>
 
         <nav class="toc" aria-label="On this page">
           <p>On this page</p>
           <ol>
+            <li><a href="#commit-barrier">The commit barrier</a></li>
             <li><a href="#getting-started">Getting started</a></li>
             <li><a href="#check-order">The check order</a></li>
             <li><a href="#concepts">Core concepts</a></li>
@@ -230,92 +244,151 @@
           </ol>
         </nav>
 
+        <h2 id="commit-barrier">The commit <em>barrier</em></h2>
+        <p>Synthe sits between your agents and the systems they change. Agents never hold the credentials for real-world actions; Synthe does. An agent proposes an action, and Synthe decides at the moment of commit, not when the plan was written.</p>
+        <ol class="check-order commit-path">
+          <li><div><strong>Claim</strong><span>The receiving agent claims a signed handoff. The checker validates it and records the claim under its idempotency key, so the same work can't be claimed twice.</span></div></li>
+          <li><div><strong>Work and propose</strong><span>The agent does the work, then proposes the effect, for example a push of its commits to an approved branch. It never touches the GitHub token.</span></div></li>
+          <li><div><strong>Re-check at commit</strong><span>Synthe checks the signed handoff and the human approval again, inspects every path the change touches against the agent's allowed paths, and waits for any upstream handoffs to complete.</span></div></li>
+          <li><div><strong>Compare and swap</strong><span>Synthe pushes only if the branch still points where the approval saw it. If anything moved, it pushes nothing and refuses with <code>non_fast_forward</code>.</span></div></li>
+          <li><div><strong>Confirm and receipt</strong><span>Synthe re-reads the remote to confirm the effect, then signs a hash-chained receipt. Every refusal gets a receipt too, with its reason.</span></div></li>
+        </ol>
+        <div class="callout">
+          <p><span class="tag public">Public today</span> Step 1, the claim ledger, signatures, approvals and evidence checks, in the <a class="textlink" href="https://github.com/rohansiddam/Synthe">public checker</a>.</p>
+          <p><span class="tag beta">Design-partner beta</span> Steps 2 to 5, in the commit broker. <code>git_push</code> ships first. <a class="textlink" href="/#partner">Ask about a pilot</a>.</p>
+        </div>
+        <p>What it can't do: an action a human approved will do exactly what was approved, and receipts prove which key and connector acted, not which model wrote the work. Synthe is only a barrier if agents can't go around it, so take their own credentials away. The full list is on the <a class="textlink" href="/status.html#limits">status page</a>. To watch the rules play out, <a class="textlink" href="/race.html">race two agents for one commit</a>.</p>
+
         <h2 id="getting-started">Getting <em>started</em></h2>
-        <p>Clone the repo, run the checker against the example packets. Two minutes, no dependencies beyond Python.</p>
-        <div class="terminal" role="group" aria-label="Synthe quickstart commands.">
+        <p>Clone the public checker and run it against the example packets. Two minutes, nothing to install beyond Python 3.</p>
+        <div class="terminal" role="group" aria-label="Quickstart: clone the checker and claim the example signed handoff.">
           <div class="term-bar"><button class="copybtn" type="button">Copy</button></div>
           <p><span class="prompt">$ </span><span class="cmd">git clone https://github.com/rohansiddam/Synthe.git &amp;&amp; cd Synthe</span></p>
-          <p><span class="prompt">$ </span><span class="cmd">python3 src/handoff_check.py examples/v03/packets/valid-signed.json --registry examples/v03/registry.json --workspace examples/v03/workspace</span></p>
-          <p><span class="accept">ACCEPT</span> <span class="dim">claim recorded</span></p>
+          <p><span class="prompt">$ </span><span class="cmd">python3 src/handoff_check.py examples/v03/packets/valid-signed.json --registry examples/v03/registry.json --workspace examples/v03/workspace --ledger ledger.json</span><br />
+          <span class="dim">{ "decision": </span><span class="accept">"ACCEPT"</span><span class="dim">, "handoff_id": "h-v03-0001", "signature": "verified", "claim": { … } }</span></p>
         </div>
+        <p class="small">Output shortened. Exit code <code>0</code> means ACCEPT, <code>2</code> means REJECT. Run the same command again and the second claim is refused with <code>idempotency_key_reserved</code>. Leave out <code>--ledger</code> to check a packet without claiming it.</p>
 
         <h2 id="check-order">The check <em>order</em></h2>
-        <p>The checker runs these checks in order and stops at the first failure, so the reason code tells you exactly which link broke.</p>
+        <p>The checker always runs these seven checks in the same order. If the structure is broken it stops right there. Otherwise it keeps going and reports every problem it finds, and the verdict takes its state from the first one, so the earliest broken link comes first.</p>
         <ol class="check-order">
-          <li><div><strong>Structure</strong><span>Required fields, schema version, and field shapes. <code>missing_field:id</code>, <code>bad_schema_version</code></span></div></li>
-          <li><div><strong>Identity</strong><span>Sender and receiver resolve in the registry; aliases must use the canonical id. <code>unknown_agent:from</code></span></div></li>
-          <li><div><strong>Signature</strong><span>Ed25519 over domain-separated canonical JSON. <code>signature_invalid</code>, <code>signature_signer_mismatch</code></span></div></li>
-          <li><div><strong>Idempotency</strong><span>The key must not be completed, reserved, or in an unknown state. <code>duplicate_idempotency_key</code></span></div></li>
-          <li><div><strong>Freshness</strong><span>The handoff must not be expired. <code>handoff_expired</code></span></div></li>
-          <li><div><strong>Authority</strong><span>Planned actions against tools, forbidden lists, signed approvals, and budget. <code>approval_missing</code>, <code>budget_exceeded</code></span></div></li>
-          <li><div><strong>Evidence</strong><span>Pinned hashes recomputed against workspace files. <code>evidence_not_verbatim</code>, <code>artifact_hash_mismatch</code></span></div></li>
+          <li><div><strong>Structure</strong><span>Required fields, types, full-length hashes, and declared actions when the receiver requires them. <code>missing_field:id</code>, <code>bad_schema_version</code>, <code>planned_actions_missing</code></span></div></li>
+          <li><div><strong>Identity and signature</strong><span>Sender and receiver resolve in the registry by their canonical ids, and the packet's Ed25519 signature verifies. <code>unknown_agent:from</code>, <code>signature_invalid</code></span></div></li>
+          <li><div><strong>Duplicates and conflicts</strong><span>The idempotency key is looked up in the ledger. Wait-for cycles and overlapping live claims are refused. <code>idempotency_key_reserved</code>, <code>duplicate_idempotency_key</code>, <code>claim_conflict</code></span></div></li>
+          <li><div><strong>Freshness</strong><span>The handoff hasn't expired. <code>handoff_expired</code></span></div></li>
+          <li><div><strong>Authority</strong><span>Planned actions against allowed tools, forbidden actions, signed approvals and budget, with the receiver's policy as a ceiling. <code>approval_missing</code>, <code>authority_exceeds_receiver_policy</code></span></div></li>
+          <li><div><strong>Artifacts</strong><span>Each input file exists inside the workspace and still matches its pinned SHA-256. <code>artifact_hash_mismatch</code></span></div></li>
+          <li><div><strong>Evidence</strong><span>Required evidence is present, verbatim quotes are marked verbatim, and pinned evidence matches its file. <code>evidence_not_verbatim</code>, <code>evidence_hash_mismatch</code></span></div></li>
         </ol>
 
         <h2 id="concepts">Core <em>concepts</em></h2>
         <div class="concept">
           <h3>The packet</h3>
-          <p>A handoff is a typed JSON packet: who sends, who receives, what was done, what evidence backs it, and what the receiver may do next. Nothing free-form.</p>
+          <p>A handoff is a typed JSON packet: who sends, who receives, what to do, what evidence backs it, and what the receiver may do next. Nothing free-form.</p>
         </div>
         <div class="concept">
           <h3>The registry</h3>
-          <p>Each receiver holds a registry of agent identities and public keys. A packet's signature is verified against the registry before anything else is checked.</p>
+          <p>Each receiver holds a registry of agent identities, public keys and its own policy. A packet's signature is verified against the registry, and the policy is a ceiling: authority can only narrow as work passes along.</p>
         </div>
         <div class="concept">
           <h3>The ledger</h3>
-          <p>Every ACCEPT is recorded with an idempotency key. The same work can never be claimed twice, even across restarts.</p>
+          <p>An ACCEPT is a claim, recorded under the handoff's idempotency key. The receiver marks it completed only after the effect is real. The same work can never be claimed twice, even across restarts.</p>
         </div>
         <div class="concept">
           <h3>Approvals</h3>
-          <p>Actions a packet declares must be covered by a signed approval. A bad or missing approval is a REJECT with the reason named, not a silent pass.</p>
+          <p>Actions that need approval must carry a human's signed approval. An approval can pin the exact target, like a branch, and it can arrive after work has started; nothing commits without it.</p>
+        </div>
+        <div class="concept">
+          <h3>Receipts</h3>
+          <p>At the commit barrier, every push and every refusal is written as a receipt that carries the hash of the one before it and a signature. Change or delete one and verification shows where the chain breaks. Receipts are part of the commit broker beta.</p>
         </div>
 
         <h2 id="reasons">Reason <em>codes</em></h2>
-        <p>Every verdict names its reason. The complete reference, grouped by check stage:</p>
+        <p>Every REJECT names its reasons. Each one has a state that says who should act. This is the complete list for the public checker v<span data-fact="checker_version">0.5</span>, from section 10 of the spec.</p>
+        <div class="table-wrap">
         <table class="reason-table">
-          <tr><th colspan="2">Structure</th></tr>
+          <tr><th colspan="2">invalid · the sender fixes the packet</th></tr>
           <tr><td>missing_handoff</td><td>The packet has no <code>handoff</code> object.</td></tr>
-          <tr><td>missing_field:<i>name</i></td><td>A required field is absent or empty, e.g. <code>missing_field:purpose</code>.</td></tr>
-          <tr><td>bad_schema_version</td><td>Only schema <code>0.1</code> is accepted.</td></tr>
-          <tr><td>bad_on_failure</td><td><code>on_failure</code> is not one of reject, retry_with_budget, escalate, request_human.</td></tr>
-          <tr><td>planned_actions_missing</td><td>The receiver's policy requires declared planned actions.</td></tr>
-          <tr><th colspan="2">Identity</th></tr>
+          <tr><td>missing_field:<i>name</i></td><td>A required field is absent or empty, for example <code>missing_field:purpose</code>.</td></tr>
+          <tr><td>bad_schema_version</td><td>Only packet schema <code>0.1</code> is accepted.</td></tr>
+          <tr><td>bad_on_failure</td><td><code>on_failure</code> is not one of reject, retry_with_budget, escalate or request_human.</td></tr>
+          <tr><td>malformed:<i>field</i></td><td>A field has the wrong type or shape, for example a <code>depends_on</code> that isn't a list of keys.</td></tr>
+          <tr><td>bad_sha256:<i>field</i></td><td>A hash is not a full 64-character SHA-256. Shortened or placeholder hashes are refused.</td></tr>
+          <tr><td>planned_actions_missing</td><td>The receiver's policy requires declared planned actions, and there are none.</td></tr>
           <tr><td>unknown_agent:from / :to</td><td>The sender or receiver is not in the registry.</td></tr>
-          <tr><td>alias_not_canonical</td><td>An alias was used where the canonical agent id is required.</td></tr>
-          <tr><th colspan="2">Signature</th></tr>
-          <tr><td>signature_missing</td><td>Receiver policy requires a signed packet; none present.</td></tr>
+          <tr><td>alias_not_canonical:from / :to</td><td>An alias was used where the canonical agent id is required.</td></tr>
+          <tr><td>signature_missing</td><td>The receiver requires a signed packet, and there is no signature.</td></tr>
           <tr><td>signature_malformed</td><td>The signature block is not an object with a <code>sig</code> string.</td></tr>
-          <tr><td>signature_alg_unsupported</td><td>Only Ed25519 is accepted.</td></tr>
-          <tr><td>signature_signer_mismatch</td><td>The signature's signer does not match the packet's <code>from</code>.</td></tr>
-          <tr><td>signature_key_unknown</td><td>No Ed25519 key on record for the signer.</td></tr>
-          <tr><td>signature_invalid</td><td>The signature does not verify: the packet was altered after signing, or the wrong key was used.</td></tr>
-          <tr><th colspan="2">Idempotency</th></tr>
-          <tr><td>duplicate_idempotency_key</td><td>This handoff was already completed.</td></tr>
-          <tr><td>idempotency_key_reserved</td><td>The key was claimed but the effect was never confirmed; reconcile before redispatch.</td></tr>
-          <tr><td>unknown_outcome</td><td>The key was claimed long ago and never completed; the receiver may have crashed mid-effect.</td></tr>
-          <tr><th colspan="2">Freshness</th></tr>
-          <tr><td>bad_expires_at</td><td><code>acceptance.expires_at</code> is not a valid timestamp.</td></tr>
+          <tr><td>signature_alg_unsupported</td><td>Only Ed25519 signatures are accepted.</td></tr>
+          <tr><td>signature_signer_mismatch</td><td>The signer named in the signature is not the packet's sender.</td></tr>
+          <tr><td>signature_key_unknown</td><td>The registry has no Ed25519 key for that signer and key id.</td></tr>
+          <tr><td>signature_invalid</td><td>The signature doesn't verify: the packet was changed after signing, or the wrong key was used.</td></tr>
+          <tr><td>signature_unsupported</td><td>The checker can't verify signatures because <code>synthe_crypto.py</code> is missing next to it.</td></tr>
+          <tr><td>bad_expires_at</td><td><code>acceptance.expires_at</code> is not a valid timestamp with a time zone.</td></tr>
+          <tr><td>artifact_path_escapes_workspace</td><td>An input path points outside the workspace.</td></tr>
+          <tr><td>evidence_path_escapes_workspace</td><td>An evidence reference points outside the workspace.</td></tr>
+          <tr><td>evidence_not_verbatim</td><td>Evidence of a verbatim kind, like a quote, is marked as a paraphrase or summary.</td></tr>
+          <tr><td>verbatim_evidence_unpinned</td><td>Evidence claims to be verbatim but pins no SHA-256, so it can't be checked.</td></tr>
+          <tr><td>workspace_required</td><td>A receiver policy is in force but no workspace was given, so pinned hashes can't be checked. Run with <code>--workspace</code>.</td></tr>
+          <tr><td>packet_unreadable</td><td>The packet file can't be read or isn't valid JSON.</td></tr>
+          <tr><td>registry_unreadable</td><td>The registry file can't be read.</td></tr>
+          <tr><td>registry_malformed</td><td>The registry isn't in the expected shape.</td></tr>
+          <tr><td>ledger_corrupt</td><td>The ledger file is not valid JSON.</td></tr>
+          <tr><td>ledger_required</td><td>Completing a claim needs <code>--ledger</code>, because the claim lives there.</td></tr>
+          <tr><td>missing_idempotency_key</td><td>The handoff has no idempotency key to claim.</td></tr>
+          <tr><td>completion_unknown_key</td><td>Completion was asked for a key with no live claim.</td></tr>
+          <tr><td>claim_token_required</td><td>The entry point requires the claim token to complete, and none was given.</td></tr>
+          <tr><td>release_not_reserved</td><td>A release was asked for a key that has no reserved claim.</td></tr>
+          <tr><td>dependency_cycle</td><td><code>depends_on</code> would close a wait-for cycle through live claims.</td></tr>
+
+          <tr><th colspan="2">blocked · an owner or approver acts, or the work waits</th></tr>
+          <tr><td>tool_not_allowed</td><td>A planned action uses a tool outside the handoff's <code>allowed_tools</code>.</td></tr>
+          <tr><td>tool_not_allowed_by_receiver</td><td>A planned action uses a tool the receiver's policy doesn't allow.</td></tr>
+          <tr><td>forbidden_action</td><td>A planned action is forbidden by the handoff's scope.</td></tr>
+          <tr><td>approval_missing</td><td>An action that needs approval has none.</td></tr>
+          <tr><td>approval_expired</td><td>The covering approval has expired.</td></tr>
+          <tr><td>approval_expires_invalid</td><td>An approval's expiry is not a valid timestamp.</td></tr>
+          <tr><td>approver_not_trusted</td><td>The approval comes from someone the receiver doesn't trust to approve.</td></tr>
+          <tr><td>approval_unsigned</td><td>The receiver requires signed approvals, and this one is unsigned.</td></tr>
+          <tr><td>approval_signature_invalid</td><td>An approval's signature doesn't verify for its approver on this handoff.</td></tr>
+          <tr><td>approval_params_mismatch</td><td>The approval pins a target, like a branch, that the plan doesn't match.</td></tr>
+          <tr><td>authority_exceeds_receiver_policy</td><td>The handoff asks for more than the receiver's policy allows.</td></tr>
+          <tr><td>budget_exceeded</td><td>Estimated tokens, dollars or minutes exceed the budget.</td></tr>
+          <tr><td>dependency_incomplete</td><td>An upstream handoff in <code>depends_on</code> hasn't completed yet. The commit waits; the claim stays.</td></tr>
+          <tr><td>dependency_unknown</td><td>An upstream handoff in <code>depends_on</code> was never claimed in this ledger.</td></tr>
+          <tr><td>claim_conflict</td><td>Under exclusive paths, the files this handoff owns may overlap another live claim.</td></tr>
+
+          <tr><th colspan="2">incomplete · the sender supplies what's missing</th></tr>
+          <tr><td>artifact_missing</td><td>An input file named in the handoff isn't in the workspace.</td></tr>
+          <tr><td>evidence_missing</td><td>A required kind of evidence has no entry.</td></tr>
+          <tr><td>evidence_unreferenced</td><td>An evidence item has no reference, so there's nothing to verify.</td></tr>
+          <tr><td>evidence_ref_missing</td><td>An evidence reference points to a file that isn't in the workspace.</td></tr>
+
+          <tr><th colspan="2">stale · the sender refreshes</th></tr>
           <tr><td>handoff_expired</td><td>The handoff expired before it was checked.</td></tr>
-          <tr><th colspan="2">Authority</th></tr>
-          <tr><td>tool_not_allowed</td><td>A planned action uses a tool outside <code>allowed_tools</code>.</td></tr>
-          <tr><td>forbidden_action</td><td>A planned action is forbidden by scope.</td></tr>
-          <tr><td>approval_missing</td><td>An action that needs approval has none recorded.</td></tr>
-          <tr><td>approval_expired</td><td>The covering approval expired.</td></tr>
-          <tr><td>approval_signature_invalid</td><td>An approval's signature does not verify for its approver on this handoff.</td></tr>
-          <tr><td>approver_not_trusted</td><td>The approver is not trusted by the receiver's policy.</td></tr>
-          <tr><td>budget_exceeded</td><td>Estimated tokens, USD, or minutes exceed the budget.</td></tr>
-          <tr><th colspan="2">Evidence</th></tr>
-          <tr><td>evidence_missing</td><td>A required evidence kind has no entry.</td></tr>
-          <tr><td>evidence_not_verbatim</td><td>A verbatim quote does not match its pinned hash.</td></tr>
-          <tr><td>artifact_hash_mismatch</td><td>An input artifact changed since the handoff was made.</td></tr>
-          <tr><td>evidence_ref_missing</td><td>An evidence reference was not found in the workspace.</td></tr>
+          <tr><td>artifact_hash_mismatch</td><td>An input file changed after the handoff was made.</td></tr>
+          <tr><td>evidence_hash_mismatch</td><td>An evidence file changed, or was swapped, after it was pinned.</td></tr>
+
+          <tr><th colspan="2">duplicate, conflicting or unknown · don't run it again</th></tr>
+          <tr><td>idempotency_key_reserved</td><td>Another claim on this key is still running.</td></tr>
+          <tr><td>duplicate_idempotency_key</td><td>This work already completed. With a different handoff behind it, the state is <code>conflicting</code> and a human resolves it.</td></tr>
+          <tr><td>completion_handoff_mismatch</td><td>The key was claimed by a different handoff than the one being completed.</td></tr>
+          <tr><td>completion_packet_mismatch</td><td>Completion must present the exact packet that was claimed.</td></tr>
+          <tr><td>claim_token_invalid</td><td>The claim token doesn't match the claim.</td></tr>
+          <tr><td>release_claim_fresh</td><td>The claim is younger than its time limit and its holder may still act. Wait, or force it if you know the holder is gone.</td></tr>
+          <tr><td>unknown_outcome</td><td>The claim was never completed within its time limit. Reconcile before sending the work again.</td></tr>
+          <tr><td>effect_already_executed</td><td>This effect already ran for this handoff.</td></tr>
+          <tr><td>effect_outcome_unknown</td><td>This effect started but its outcome was never confirmed. Reconcile before retrying.</td></tr>
         </table>
+        </div>
 
         <h2 id="try-interactive">Try it <em>interactively</em></h2>
         <p>Every check above runs in your browser, no install needed.</p>
         <div class="demolinks">
-          <a href="forge.html"><strong>Forge this handoff</strong><span>Six attacks, six reason codes, one stamp.</span></a>
-          <a href="playground.html"><strong>Contract playground</strong><span>Draft, sign, and validate a real packet.</span></a>
-          <a href="tamper.html"><strong>Tamper evidence</strong><span>Break a hash chain and find where.</span></a>
+          <a href="/race.html"><strong>Race two agents</strong><span>Two agents, one change, exactly one commit.</span></a>
+          <a href="/forge.html"><strong>Forge this handoff</strong><span>Six attacks, six reason codes, one stamp.</span></a>
+          <a href="/playground.html"><strong>Contract playground</strong><span>Sign a real Ed25519 handoff, then break it.</span></a>
+          <a href="/tamper.html"><strong>Tamper evidence</strong><span>Break a hash chain and find where.</span></a>
         </div>
 
         <h2 id="references">Full <em>references</em></h2>
@@ -323,11 +396,31 @@
           <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">SPEC.md</a>
           <a href="https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md">THREAT_MODEL.md</a>
           <a href="https://github.com/rohansiddam/Synthe/blob/main/README.md">README.md</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/EVALUATION_LICENSE.txt">Evaluation license</a>
         </div>
       </main>
-      <footer>
+      <footer class="site-foot">
         <p class="footer-brand"><svg class="footer-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</p>
-        <p><a href="/">Back to synthe.live</a> · <a href="forge.html">Forge</a> · <a href="playground.html">Playground</a> · <a href="tamper.html">Tamper</a> · <a href="log.html">Changelog</a> · Shared under an evaluation license.</p>
+        <p class="footer-line">The commit barrier for AI agents. Agents propose. Synthe commits. Anyone can verify.</p>
+        <nav class="footer-nav" aria-label="Footer">
+          <a href="/race.html">Race two agents</a>
+          <a href="/forge.html">Forge this handoff</a>
+          <a href="/playground.html">Playground</a>
+          <a href="/tamper.html">Tamper evidence</a>
+          <a href="/anatomy.html">Anatomy of a handoff</a>
+          <a href="/quiz.html">Do I need this?</a>
+          <a href="/docs.html">Docs</a>
+          <a href="/log.html">Changelog</a>
+          <a href="/receipts.html">Receipts</a>
+          <a href="/benchmarks.html">Benchmarks</a>
+          <a href="/status.html">Status &amp; trust</a>
+          <a href="/#partner">Design partners</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">Spec</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md">Threat model</a>
+        </nav>
+        <p class="footer-legal">Synthe is an early project. The public checker is shared under an <a href="https://github.com/rohansiddam/Synthe/blob/main/EVALUATION_LICENSE.txt">evaluation license</a>, not an open-source one.</p>
+        <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
       </footer>
     </div>
     <script>
@@ -342,25 +435,6 @@
             else done();
           });
         });
-      })();
-    </script>
-      <script>
-      /* theme toggle wiring */
-      (function () {
-        var b = document.getElementById("theme-toggle");
-        if (!b) return;
-        function paint() {
-          var dark = document.documentElement.getAttribute("data-theme") === "dark";
-          b.textContent = dark ? "Light" : "Dark";
-          b.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
-        }
-        b.addEventListener("click", function () {
-          var dark = document.documentElement.getAttribute("data-theme") !== "dark";
-          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-          try { localStorage.setItem("synthe-theme", dark ? "dark" : "light"); } catch (e) {}
-          paint();
-        });
-        paint();
       })();
     </script>
   </body>

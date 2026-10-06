@@ -1,21 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Playground: watch a handoff get signed, then try to break it — Synthe</title>
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="favicon-32x32.png" type="image/png" sizes="32x32" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io mailto:; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Playground: sign a handoff, then break it · Synthe</title>
+    <link rel="canonical" href="https://synthe.live/playground.html" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="description" content="A real Ed25519-signed agent handoff, checked live in your browser. Sign it, break it five ways, watch every attack land on a different reason code. No typing, no signup." />
-    <meta property="og:title" content="Synthe playground: sign it, then break it" />
+    <meta property="og:title" content="Playground: sign a handoff, then break it · Synthe" />
     <meta property="og:description" content="A signed agent handoff, sabotaged five ways in your browser. Every attack lands on a different reason code." />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..650;1,9..144,400..650&family=IBM+Plex+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
+    <meta property="og:image" content="https://synthe.live/og-image.png" />
+    <meta property="og:url" content="https://synthe.live/playground.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Synthe" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="/fonts/fraunces-normal-400-650-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/site.css" />
+    <script src="/site.js" defer></script>
     <style>
       :root {
         --cream: #f5efe2;
@@ -49,17 +55,14 @@
         --red: #f2555a;
         --card: #1a1917;
 }
-      .theme-toggle { background: none; border: none; padding: 10px 12px; margin: -10px -12px -10px 6px; font: inherit; font-size: 15px; color: var(--muted); cursor: pointer; white-space: nowrap; }
-      .theme-toggle:hover { color: var(--rust); }
-      .theme-toggle:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
+
       html { scrollbar-gutter: stable; }
       body { transition: background-color .25s ease, color .25s ease; }
       * { box-sizing: border-box; }
       body { margin: 0; background: var(--cream); color: var(--ink);
-        font-family: "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased;
+        font-family: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased;
         font-size: 17px; line-height: 1.6; }
       .page { max-width: 960px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 20px 80px; }
-
 
       .hero { margin-top: clamp(32px, 5vw, 56px); padding: 0 0 8px; max-width: 720px; }
       .eyebrow { text-transform: uppercase; letter-spacing: 0.14em; font-size: 12px; color: var(--rust); margin: 0 0 10px; }
@@ -77,7 +80,8 @@
       .step-sep { flex: 0 0 24px; height: 1.5px; background: var(--line); }
 
       /* the stage: scenes stack and crossfade */
-      .stage { display: grid; margin-top: 6px; }
+      .stage { display: grid; grid-template-columns: minmax(0, 1fr); margin-top: 6px; }
+      .panel { min-width: 0; overflow-wrap: anywhere; }
       .scene { grid-area: 1 / 1; opacity: 0; transform: translateY(18px); visibility: hidden;
         transition: opacity .45s ease, transform .45s ease, visibility 0s linear .45s; }
       .scene.active { opacity: 1; transform: none; visibility: visible; transition: opacity .45s ease, transform .45s ease; }
@@ -138,10 +142,7 @@
       details.how code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; }
       .nextline { margin-top: 26px; }
       a.textlink { color: var(--rust); text-decoration: underline; text-underline-offset: 3px; }
-      footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
-      footer nav { margin: 10px 0; }
-      footer a { color: var(--muted); margin-right: 16px; text-decoration: none; }
-      footer a:hover { color: var(--rust); }
+
       .colophon { font-style: italic; }
       a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
       [hidden] { display: none !important; }
@@ -150,40 +151,38 @@
         .stamp.show, .frow.flash { animation: none !important; }
         .scene { transform: none; }
       }
-          /* standard site header: identical on every page */
-      .footer-brand { display: flex; align-items: center; gap: 10px; font-family: "Fraunces", Georgia, serif; font-size: 20px; color: var(--ink); margin: 0 0 12px; }
-      .footer-logo { width: 22px; height: 24px; }
-      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px max(24px, calc(50vw - 530px)); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; background: var(--cream); margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
-      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
-      .wordmark-logo { width: 26px; height: 28px; flex: none; }
-      .topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
-      .topnav a { margin-left: 18px; color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; }
-      .topnav a:hover { color: var(--rust); }
+
     </style>
-      <script>
-      /* theme: set before first paint to avoid a flash */
+    <script>
+      /* theme: set before first paint to avoid a flash. The js class turns on
+         script-only layouts, like the phone menu. */
       try { (function () {
+        var d = document.documentElement;
+        d.classList.add("js");
         var t = null;
         try { t = localStorage.getItem("synthe-theme"); } catch (e) {}
         var dark = t ? t === "dark" : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
-        document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        d.setAttribute("data-theme", dark ? "dark" : "light");
       })(); } catch (e) {}
     </script>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <div class="page">
-            <header class="site-head">
+      <header class="site-head">
         <a class="wordmark" href="/"><svg class="wordmark-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</a>
-        <nav class="topnav">
-          <a href="forge.html">Forge</a>
-          <a href="playground.html">Playground</a>
-          <a href="tamper.html">Tamper</a>
-          <a href="docs.html">Docs</a>
+        <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="topnav">Menu</button>
+        <nav class="topnav" id="topnav" aria-label="Main">
+          <a href="/race.html">Race</a>
+          <a href="/forge.html">Forge</a>
+          <a href="/playground.html" aria-current="page">Playground</a>
+          <a href="/tamper.html">Tamper</a>
+          <a href="/docs.html">Docs</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
           <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
         </nav>
       </header>
-      <main>
+      <main id="main">
         <div class="hero">
           <h1>Sign it. Then <em>break it.</em></h1>
           <p class="lede">A real Ed25519-signed agent handoff, checked live in your browser. No typing, no signup: watch it pass, then sabotage it five ways and see every attack land on a different reason code.</p>
@@ -252,18 +251,27 @@
         </details>
         <p class="nextline"><a class="textlink" href="forge.html">Next: forge a signed handoff six ways</a> · <a class="textlink" href="docs.html">Read the docs</a></p>
       </main>
-      <footer>
+      <footer class="site-foot">
         <p class="footer-brand"><svg class="footer-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</p>
-        <p>Synthe is an early project, shared under an evaluation license.</p>
-        <nav>
-          <a href="/">Home</a>
-          <a href="forge.html">Forge this handoff</a>
-          <a href="playground.html">Playground</a>
-          <a href="docs.html">Docs</a>
-          <a href="log.html">Changelog</a>
-          <a href="status.html">Status &amp; trust</a>
+        <p class="footer-line">The commit barrier for AI agents. Agents propose. Synthe commits. Anyone can verify.</p>
+        <nav class="footer-nav" aria-label="Footer">
+          <a href="/race.html">Race two agents</a>
+          <a href="/forge.html">Forge this handoff</a>
+          <a href="/playground.html">Playground</a>
+          <a href="/tamper.html">Tamper evidence</a>
+          <a href="/anatomy.html">Anatomy of a handoff</a>
+          <a href="/quiz.html">Do I need this?</a>
+          <a href="/docs.html">Docs</a>
+          <a href="/log.html">Changelog</a>
+          <a href="/receipts.html">Receipts</a>
+          <a href="/benchmarks.html">Benchmarks</a>
+          <a href="/status.html">Status &amp; trust</a>
+          <a href="/#partner">Design partners</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">Spec</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md">Threat model</a>
         </nav>
+        <p class="footer-legal">Synthe is an early project. The public checker is shared under an <a href="https://github.com/rohansiddam/Synthe/blob/main/EVALUATION_LICENSE.txt">evaluation license</a>, not an open-source one.</p>
         <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
       </footer>
     </div>
@@ -738,25 +746,6 @@
         genKeys().then(function () {
           $("packet-deal").innerHTML = packetRows(null);
         });
-      })();
-    </script>
-      <script>
-      /* theme toggle wiring */
-      (function () {
-        var b = document.getElementById("theme-toggle");
-        if (!b) return;
-        function paint() {
-          var dark = document.documentElement.getAttribute("data-theme") === "dark";
-          b.textContent = dark ? "Light" : "Dark";
-          b.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
-        }
-        b.addEventListener("click", function () {
-          var dark = document.documentElement.getAttribute("data-theme") !== "dark";
-          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-          try { localStorage.setItem("synthe-theme", dark ? "dark" : "light"); } catch (e) {}
-          paint();
-        });
-        paint();
       })();
     </script>
   </body>

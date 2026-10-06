@@ -1,0 +1,50 @@
+name: Refresh facts
+
+# Re-measures the public checker and updates facts.json and the pages.
+# It never publishes: a change arrives as a pull request for a human to review and merge.
+on:
+  schedule:
+    - cron: "17 14 * * 1"   # Mondays, 14:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check out the public checker
+        uses: actions/checkout@v4
+        with:
+          repository: rohansiddam/Synthe
+          path: _synthe
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 -m pip install --quiet pytest
+      - name: Re-measure and update the pages
+        run: |
+          python3 tools/facts.py refresh --synthe _synthe
+          python3 tools/facts.py apply
+          python3 tools/check_site.py
+      - name: Open a pull request if anything changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet -- facts.json '*.html'; then
+            echo "Facts unchanged."
+            exit 0
+          fi
+          branch="facts/$(date -u +%Y-%m-%d)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$branch"
+          git add facts.json ./*.html
+          git commit -m "Refresh site facts from the public checker"
+          git push --force origin "$branch"
+          gh pr view "$branch" >/dev/null 2>&1 || gh pr create --base main --head "$branch" \
+            --title "Refresh site facts from the public checker" \
+            --body "The weekly fact refresh found a change. Review the diff in facts.json and the pages, then merge to publish."

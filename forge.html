@@ -2,28 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io mailto:; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="color-scheme" content="light" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="description" content="A signed handoff is issued in your browser. Attack it six ways and watch each one fail at the exact broken link." />
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="favicon-32x32.png" type="image/png" sizes="32x32" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="canonical" href="https://synthe.live/forge.html" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <title>Forge this handoff · Synthe</title>
     <meta property="og:title" content="Forge this handoff · Synthe" />
     <meta property="og:description" content="Six attacks, six reason codes, one stamp. All in your browser." />
     <meta property="og:image" content="https://synthe.live/og-image.png" />
+    <meta property="og:url" content="https://synthe.live/forge.html" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Synthe" />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..650;1,9..144,400..650&family=IBM+Plex+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preload" href="/fonts/fraunces-normal-400-650-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/site.css" />
+    <script src="/site.js" defer></script>
     <style>
       :root {
         --cream: #f5efe2;
@@ -64,9 +62,7 @@
       html[data-theme="dark"] body {
         background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23f2ede4'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
       }
-      .theme-toggle { background: none; border: none; padding: 10px 12px; margin: -10px -12px -10px 6px; font: inherit; font-size: 15px; color: var(--muted); cursor: pointer; white-space: nowrap; }
-      .theme-toggle:hover { color: var(--rust); }
-      .theme-toggle:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
+
       body { transition: background-color .25s ease, color .25s ease; }
       * { box-sizing: border-box; }
       html { -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; overflow-x: clip; }
@@ -76,14 +72,13 @@
       ::-webkit-scrollbar-thumb { background: rgba(43, 33, 24, 0.28); border-radius: 8px; border: 2px solid var(--cream); }
       body {
         overflow-x: clip; margin: 0; color: var(--ink);
-        font-family: "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-family: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased;
         background-color: var(--cream);
         background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23241d14'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
         background-size: 480px 480px;
       }
       .page { max-width: 1180px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
-
 
       .hero { margin-top: clamp(32px, 5vw, 56px); max-width: 720px; }
       .hero h1 { margin: 0; font-family: "Fraunces", Georgia, serif; font-size: clamp(36px, 6vw, 56px); font-weight: 500; letter-spacing: -0.02em; }
@@ -144,50 +139,43 @@
       .steps li code { font-family: var(--mono); font-size: 12px; background: var(--cream-deep); padding: 1px 7px; border-radius: 5px; }
       .honest { font-size: 14px; color: var(--muted); margin-top: 26px; max-width: 44em; }
       .textlink { font-size: 16px; font-weight: 500; color: var(--rust); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
-      footer { margin-top: clamp(56px, 10vw, 92px); padding-top: 26px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: baseline; }
-      footer p { margin: 0; }
-      footer .colophon { font-family: "Fraunces", Georgia, serif; font-style: italic; }
-      footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
-      footer a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
-      footer a:hover { color: var(--rust); }
+
       a:focus-visible, button:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
       [hidden] { display: none !important; }
       @media (max-width: 960px) { .lab { grid-template-columns: 1fr; } .packet-card { position: static; } .steps { grid-template-columns: 1fr; } }
       @media (prefers-reduced-motion: reduce) { .stamp.slam, .fields li.tampered { animation: none; } .btn { transition: none; } }
-          /* standard site header: identical on every page */
-      .footer-brand { display: flex; align-items: center; gap: 10px; font-family: "Fraunces", Georgia, serif; font-size: 20px; color: var(--ink); margin: 0 0 12px; }
-      .footer-logo { width: 22px; height: 24px; }
-      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px max(24px, calc(50vw - 530px)); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; background: var(--cream); margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
-      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
-      .wordmark-logo { width: 26px; height: 28px; flex: none; }
-      .topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
-      .topnav a { margin-left: 18px; color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; }
-      .topnav a:hover { color: var(--rust); }
+
     </style>
-      <script>
-      /* theme: set before first paint to avoid a flash */
+    <script>
+      /* theme: set before first paint to avoid a flash. The js class turns on
+         script-only layouts, like the phone menu. */
       try { (function () {
+        var d = document.documentElement;
+        d.classList.add("js");
         var t = null;
         try { t = localStorage.getItem("synthe-theme"); } catch (e) {}
         var dark = t ? t === "dark" : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
-        document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        d.setAttribute("data-theme", dark ? "dark" : "light");
       })(); } catch (e) {}
     </script>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <div class="page">
-            <header class="site-head">
+      <header class="site-head">
         <a class="wordmark" href="/"><svg class="wordmark-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</a>
-        <nav class="topnav">
-          <a href="forge.html">Forge</a>
-          <a href="playground.html">Playground</a>
-          <a href="tamper.html">Tamper</a>
-          <a href="docs.html">Docs</a>
+        <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="topnav">Menu</button>
+        <nav class="topnav" id="topnav" aria-label="Main">
+          <a href="/race.html">Race</a>
+          <a href="/forge.html" aria-current="page">Forge</a>
+          <a href="/playground.html">Playground</a>
+          <a href="/tamper.html">Tamper</a>
+          <a href="/docs.html">Docs</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
           <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
         </nav>
       </header>
-      <main>
+      <main id="main">
         <div class="hero">
           <h1>Forge this <em>handoff</em></h1>
           <p class="lede">A signed handoff is issued in your browser. Attack it six ways. Watch each attack land on a different reason code, right next to the field it touched.</p>
@@ -222,32 +210,39 @@
 
         <section class="how" aria-labelledby="how-h">
           <h2>How the <em>check</em> works</h2>
-          <p class="lede">Six links, checked in order. The first broken link names the verdict.</p>
+          <p class="lede">Five links, checked in the same order as the real checker. The first broken link names the verdict.</p>
           <ol class="steps">
-            <li><strong>1. Sender in registry.</strong> The sender must be known, so there is a key to check against. <code>unknown_sender</code></li>
-            <li><strong>2. Signature valid.</strong> Recomputed over the signed envelope and compared. <code>signature_invalid</code></li>
-            <li><strong>3. Evidence pinned.</strong> Every file hashed against its pin. <code>evidence_hash_mismatch</code></li>
+            <li><strong>1. Sender in registry.</strong> The sender must be known, so there is a key to check against. <code>unknown_agent:from</code></li>
+            <li><strong>2. Signature valid.</strong> Recomputed over the signed envelope, which includes the plan, and compared. <code>signature_invalid</code></li>
+            <li><strong>3. Not a replay.</strong> The idempotency key must not be claimed already. <code>duplicate_idempotency_key</code></li>
             <li><strong>4. Approvals cover actions.</strong> Approvals are separate signed credentials; each is verified. <code>approval_missing</code>, <code>approval_signature_invalid</code></li>
-            <li><strong>5. Plan intact.</strong> Steps hashed against the committed plan. <code>plan_tampered</code></li>
-            <li><strong>6. Not a replay.</strong> The idempotency key must be fresh. <code>duplicate_idempotency_key</code></li>
+            <li><strong>5. Evidence pinned.</strong> Every file hashed against its pin. <code>evidence_hash_mismatch</code></li>
           </ol>
-          <p class="honest">This demo uses HMAC with per-visit demo keys to keep the cryptography dependency-free. The real checker uses Ed25519. Either way, what you are seeing is tamper <em>evidence</em>: the check detects alteration and names the broken link. It does not prevent someone from altering their own copy.</p>
+          <p class="honest">This is a teaching model: it runs five of the real checker's seven checks, with the same reason codes, and uses HMAC with per-visit demo keys to keep the cryptography dependency-free. The real checker uses Ed25519, and the <a class="textlink" href="/playground.html">playground</a> signs with it in your browser. Either way, what you are seeing is tamper <em>evidence</em>: the check detects alteration and names the broken link. It does not prevent someone from altering their own copy.</p>
         </section>
         <p style="margin-top:24px"><a class="textlink" href="playground.html">Next: draft your own packet in the playground</a></p>
       </main>
-      <footer>
+      <footer class="site-foot">
         <p class="footer-brand"><svg class="footer-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</p>
-        <p>Synthe is an early project, shared under an evaluation license.</p>
-        <nav>
-          <a href="/">Home</a>
-          <a href="forge.html">Forge this handoff</a>
-          <a href="playground.html">Playground</a>
-          <a href="tamper.html">Tamper evidence</a>
-          <a href="docs.html">Docs</a>
-          <a href="log.html">Changelog</a>
-          <a href="status.html">Status &amp; trust</a>
+        <p class="footer-line">The commit barrier for AI agents. Agents propose. Synthe commits. Anyone can verify.</p>
+        <nav class="footer-nav" aria-label="Footer">
+          <a href="/race.html">Race two agents</a>
+          <a href="/forge.html">Forge this handoff</a>
+          <a href="/playground.html">Playground</a>
+          <a href="/tamper.html">Tamper evidence</a>
+          <a href="/anatomy.html">Anatomy of a handoff</a>
+          <a href="/quiz.html">Do I need this?</a>
+          <a href="/docs.html">Docs</a>
+          <a href="/log.html">Changelog</a>
+          <a href="/receipts.html">Receipts</a>
+          <a href="/benchmarks.html">Benchmarks</a>
+          <a href="/status.html">Status &amp; trust</a>
+          <a href="/#partner">Design partners</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">Spec</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md">Threat model</a>
         </nav>
+        <p class="footer-legal">Synthe is an early project. The public checker is shared under an <a href="https://github.com/rohansiddam/Synthe/blob/main/EVALUATION_LICENSE.txt">evaluation license</a>, not an open-source one.</p>
         <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
       </footer>
     </div>
@@ -275,7 +270,6 @@
         function fail(brokenAt, reason) { return { valid: false, brokenAt: brokenAt, reason: reason }; }
 
         var keys = null;
-        var ledger = new Set();
         var pristine = null;
 
         function genKeys() {
@@ -289,7 +283,7 @@
           var files = { "reports/q3.md": "Q3 revenue: $4.2M. Churn: 1.8%. Signed off by finance." };
           return sha256hex(files["reports/q3.md"]).then(function (evHash) {
             var steps = ["read reports/q3.md", "compute summary", "write summary.md"];
-            return sha256hex(canonical(steps)).then(function (planHash) {
+            return Promise.resolve().then(function () {
               var approvalBody = { id: "appr-1", approver: "supervisor", scope: ["read:reports/q3.md", "write:summary.md"] };
               return hmacHex(keys.supervisor, canonical(approvalBody)).then(function (apprSig) {
                 var envelope = {
@@ -298,7 +292,6 @@
                   receiver: "bob",
                   objective: "Summarize the Q3 report into summary.md",
                   steps: steps,
-                  plan_hash: planHash,
                   evidence: [{ name: "reports/q3.md", sha256: evHash }],
                   actions: ["read:reports/q3.md", "write:summary.md"]
                 };
@@ -320,59 +313,55 @@
           });
         }
 
-        function verify(pkt, files) {
+        function verify(pkt, files, claims) {
+          /* Same order as the real checker: identity, signature, duplicates, authority, evidence. */
           var env = pkt.envelope;
-          if (!keys[env.sender]) return Promise.resolve(fail("sender", "unknown_sender"));
+          claims = claims || new Set();
+          if (!keys[env.sender]) return Promise.resolve(fail("sender", "unknown_agent:from"));
           return hmacHex(keys[env.sender], canonical(env)).then(function (expect) {
             if (expect !== pkt.signature) return fail("signature", "signature_invalid");
-            var chain = Promise.resolve(null);
-            env.evidence.forEach(function (ev) {
-              chain = chain.then(function (f) {
-                if (f) return f;
-                var content = files[ev.name];
-                return sha256hex(content === undefined ? "" : content).then(function (h) {
-                  if (content === undefined || h !== ev.sha256) return fail("evidence[" + ev.name + "]", "evidence_hash_mismatch");
-                  return null;
-                });
-              });
-            });
-            return chain.then(function (f) {
-              if (f) return f;
-              var achain = Promise.resolve(null);
-              env.actions.forEach(function (act) {
-                achain = achain.then(function (ff) {
-                  if (ff) return ff;
-                  var covering = pkt.approvals.filter(function (a) { return a.scope.indexOf(act) !== -1; });
-                  if (!covering.length) return fail("approvals", "approval_missing");
-                  var vchain = Promise.resolve(null);
-                  covering.forEach(function (a) {
-                    vchain = vchain.then(function (fff) {
-                      if (fff) return fff;
-                      if (!keys[a.approver]) return fail("approvals", "unknown_approver");
-                      var abody = { id: a.id, approver: a.approver, scope: a.scope };
-                      return hmacHex(keys[a.approver], canonical(abody)).then(function (eh) {
-                        if (eh !== a.signature) return fail("approvals", "approval_signature_invalid");
-                        return null;
-                      });
+            if (claims.has(env.id)) return fail("idempotency_key", "duplicate_idempotency_key");
+            var achain = Promise.resolve(null);
+            env.actions.forEach(function (act) {
+              achain = achain.then(function (ff) {
+                if (ff) return ff;
+                var covering = pkt.approvals.filter(function (a) { return a.scope.indexOf(act) !== -1; });
+                if (!covering.length) return fail("approvals", "approval_missing");
+                var vchain = Promise.resolve(null);
+                covering.forEach(function (a) {
+                  vchain = vchain.then(function (fff) {
+                    if (fff) return fff;
+                    if (!keys[a.approver]) return fail("approvals", "approver_not_trusted");
+                    var abody = { id: a.id, approver: a.approver, scope: a.scope };
+                    return hmacHex(keys[a.approver], canonical(abody)).then(function (eh) {
+                      if (eh !== a.signature) return fail("approvals", "approval_signature_invalid");
+                      return null;
                     });
                   });
-                  return vchain;
+                });
+                return vchain;
+              });
+            });
+            return achain.then(function (ff) {
+              if (ff) return ff;
+              var chain = Promise.resolve(null);
+              env.evidence.forEach(function (ev) {
+                chain = chain.then(function (f) {
+                  if (f) return f;
+                  var content = files[ev.name];
+                  return sha256hex(content === undefined ? "" : content).then(function (h) {
+                    if (content === undefined || h !== ev.sha256) return fail("evidence[" + ev.name + "]", "evidence_hash_mismatch");
+                    return null;
+                  });
                 });
               });
-              return achain.then(function (ff) {
-                if (ff) return ff;
-                return sha256hex(canonical(env.steps)).then(function (ph) {
-                  if (ph !== env.plan_hash) return fail("plan", "plan_tampered");
-                  if (ledger.has(env.id)) return fail("idempotency_key", "duplicate_idempotency_key");
-                  return { valid: true, brokenAt: null, reason: null };
-                });
-              });
+              return chain.then(function (f) { return f || { valid: true, brokenAt: null, reason: null }; });
             });
           });
         }
 
-        var CHECKS = ["sender", "signature", "evidence", "approvals", "plan", "idempotency"];
-        var CHECK_LABELS = { sender: "sender", signature: "signature", evidence: "evidence", approvals: "approvals", plan: "plan", idempotency: "idempotency" };
+        var CHECKS = ["sender", "signature", "idempotency", "approvals", "evidence"];
+        var CHECK_LABELS = { sender: "sender", signature: "signature", idempotency: "not a replay", approvals: "approvals", evidence: "evidence" };
 
         var ATTACKS = [
           {
@@ -402,19 +391,19 @@
           },
           {
             id: "replay", name: "Replay the handoff", field: "id",
-            desc: "Submit the exact same handoff twice. The second must be rejected as a duplicate.",
+            desc: "Submit the exact same handoff again after it completed. The second must be refused as a duplicate.",
             replay: true
           }
         ];
 
         var REASONS = {
-          unknown_sender: "The sender is not in the receiver's registry, so there is no key to check the signature against.",
+          "unknown_agent:from": "The sender is not in the receiver's registry, so there is no key to check the signature against.",
           signature_invalid: "The signature no longer matches. A signed field was changed after signing.",
-          evidence_hash_mismatch: "The evidence file does not match its pinned hash. The file was swapped.",
+          duplicate_idempotency_key: "This handoff was already accepted and completed. It can't be claimed twice.",
           approval_missing: "A declared action has no covering approval.",
+          approver_not_trusted: "The approval comes from someone the receiver doesn't trust to approve.",
           approval_signature_invalid: "The approval's own signature does not verify. It was forged or altered.",
-          plan_tampered: "The steps no longer match the committed plan hash.",
-          duplicate_idempotency_key: "This handoff was already accepted. It cannot be claimed twice."
+          evidence_hash_mismatch: "The evidence file does not match its pinned hash. The file was swapped."
         };
 
         /* ---------- UI ---------- */
@@ -491,8 +480,9 @@
             if (v.valid) cls = "ok";
             else if (c === v.brokenAt || (v.brokenAt && v.brokenAt.indexOf(c) === 0)) cls = "bad";
             else {
-              var order = { sender: 0, signature: 1, evidence: 2, approvals: 3, plan: 4, idempotency: 5 };
-              cls = order[c] < order[v.brokenAt] ? "ok" : "";
+              var order = { sender: 0, signature: 1, idempotency: 2, approvals: 3, evidence: 4 };
+              var broken = CHECKS.filter(function (k) { return v.brokenAt && v.brokenAt.indexOf(k) === 0; })[0];
+              cls = order[c] < order[broken] ? "ok" : "";
             }
             return '<li class="' + cls + '">' + CHECK_LABELS[c] + "</li>";
           });
@@ -528,13 +518,14 @@
             updatePips();
           }
           if (a.replay) {
-            verify(m.packet, m.files).then(function (v1) {
-              if (v1.valid) ledger.add(m.packet.envelope.id);
+            var claims = new Set();
+            verify(m.packet, m.files, claims).then(function (v1) {
+              if (v1.valid) claims.add(m.packet.envelope.id);
               var m2 = {
                 packet: JSON.parse(JSON.stringify(pristine.packet)),
                 files: JSON.parse(JSON.stringify(pristine.files))
               };
-              verify(m2.packet, m2.files).then(function (v2) {
+              verify(m2.packet, m2.files, claims).then(function (v2) {
                 m.files.__replayNote = true;
                 finish(v2);
               });
@@ -564,25 +555,6 @@
           renderAttacks();
           updatePips();
         });
-      })();
-    </script>
-      <script>
-      /* theme toggle wiring */
-      (function () {
-        var b = document.getElementById("theme-toggle");
-        if (!b) return;
-        function paint() {
-          var dark = document.documentElement.getAttribute("data-theme") === "dark";
-          b.textContent = dark ? "Light" : "Dark";
-          b.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
-        }
-        b.addEventListener("click", function () {
-          var dark = document.documentElement.getAttribute("data-theme") !== "dark";
-          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-          try { localStorage.setItem("synthe-theme", dark ? "dark" : "light"); } catch (e) {}
-          paint();
-        });
-        paint();
       })();
     </script>
   </body>
