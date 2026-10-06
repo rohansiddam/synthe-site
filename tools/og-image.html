@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="robots" content="noindex" />
+<title>Social card source</title>
+<!-- Source for /og-image.png. Render at 1120x560 CSS px with device scale 2:
+     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars \
+       --window-size=1120,560 --force-device-scale-factor=2 --screenshot=og-image.png \
+       http://localhost:8790/tools/og-image.html -->
+<link rel="stylesheet" href="/site.css" />
+<style>
+  html, body { margin: 0; width: 1120px; height: 560px; overflow: hidden; }
+  body {
+    background-color: #f5efe2;
+    background-image: radial-gradient(#c9b994 1px, transparent 1.2px);
+    background-size: 22px 22px;
+    background-position: 11px 11px;
+    color: #2b2118;
+    font-family: "Hanken Grotesk", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .card { position: absolute; inset: 0; display: grid; grid-template-columns: 548px 1fr; align-items: center; padding: 0 60px; gap: 44px; }
+  .lockup { display: flex; align-items: center; gap: 18px; font-family: "Fraunces", Georgia, serif; font-weight: 560; font-size: 104px; line-height: 1; letter-spacing: -0.02em; }
+  .lockup svg { width: 66px; height: 70px; flex: none; margin-top: 6px; }
+  .tagline { margin: 18px 0 0 4px; font-family: "Fraunces", Georgia, serif; font-style: italic; font-weight: 500; font-size: 36px; color: #8a1919; letter-spacing: -0.01em; }
+  .motto { margin: 14px 0 0 4px; font-size: 21px; color: #4e4436; }
+  .term { background: #1c1611; border-radius: 26px; padding: 30px 34px 38px; box-shadow: 0 22px 50px rgba(43, 33, 24, 0.28); font-family: "IBM Plex Mono", monospace; font-size: 20px; line-height: 1.9; color: #f0e6d2; }
+  .dots { display: flex; gap: 11px; margin-bottom: 26px; }
+  .dots i { width: 14px; height: 14px; border-radius: 50%; background: #4e4436; }
+  .row { display: grid; grid-template-columns: 104px 1fr; white-space: nowrap; }
+  .ok { color: #7fb069; font-weight: 500; }
+  .no { color: #d99a5b; font-weight: 500; }
+  .dim { color: #a8a094; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div>
+      <div class="lockup"><svg viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</div>
+      <p class="tagline">The commit barrier for AI agents</p>
+      <p class="motto">Agents propose. Synthe commits. Anyone can verify.</p>
+    </div>
+    <div class="term" aria-hidden="true">
+      <div class="dots"><i></i><i></i><i></i></div>
+      <div class="row"><span class="ok">ACCEPT</span><span>committed once</span></div>
+      <div class="row"><span class="no">REJECT</span><span>non_fast_forward</span></div>
+      <div class="row"><span></span><span class="dim">2 receipts, signed</span></div>
+    </div>
+  </div>
+</body>
+</html>

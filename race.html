@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="Two agents try to ship the same change at the same moment. Watch the commit barrier let exactly one through, refuse the other with a reason, and sign a receipt for both. Runs in your browser." />
+    <link rel="canonical" href="https://synthe.live/race.html" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>Race two agents for one commit · Synthe</title>
+    <meta property="og:title" content="Race two agents for one commit · Synthe" />
+    <meta property="og:description" content="Two agents try to ship the same change at the same moment. Watch the commit barrier let exactly one through, refuse the other with a reason, and sign a receipt for both. Runs in your browser." />
+    <meta property="og:image" content="https://synthe.live/og-image.png" />
+    <meta property="og:url" content="https://synthe.live/race.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Synthe" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="/fonts/fraunces-normal-400-650-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/site.css" />
+    <script src="/site.js" defer></script>
+    <style>
+      :root {
+        --cream: #f5efe2;
+        --cream-deep: #e9dfc8;
+        --ink: #2b2118;
+        --ink-soft: #4e4436;
+        --muted: #675c4c;
+        --line: #dacdaf;
+        --rust: #8a1919;
+        --rust-deep: #6b1212;
+        --green: #286920;
+        --green-soft: #e3ebda;
+        --red-soft: #f0e0d3;
+        --red: #b3401f;
+        --term-bg: #2b2118;
+        --term-cream: #f0e6d2;
+        --term-green: #7fb069;
+        --term-amber: #d99a5b;
+        --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+            --card: #fbf7ec;
+}
+      html[data-theme="dark"] {
+        color-scheme: dark;
+        --cream: #0e0d0c;
+        --cream-deep: #161513;
+        --ink: #f2ede4;
+        --ink-soft: #d6cec0;
+        --muted: #a8a094;
+        --line: #38352f;
+        --rust: #ec5358;
+        --rust-deep: #ef6a52;
+        --green: #7fb069;
+        --green-soft: #161d17;
+        --red-soft: #241a16;
+        --red: #f2555a;
+              --card: #1a1917;
+}
+      html[data-theme="dark"] body {
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23f2ede4'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+      }
+
+      body { transition: background-color .25s ease, color .25s ease; }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; overflow-x: clip; }
+      html { scrollbar-width: thin; scrollbar-color: rgba(43, 33, 24, 0.35) transparent; }
+      body {
+        overflow-x: clip; margin: 0; color: var(--ink);
+        font-family: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+        background-color: var(--cream);
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23f2ede4'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+        background-size: 480px 480px;
+      }
+      a:focus-visible, button:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
+      code { font-family: var(--mono); font-size: 0.9em; }
+      .page { max-width: 1060px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
+
+      .kicker { margin: 0 0 12px; font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rust); }
+      .hero { margin-top: clamp(32px, 5vw, 56px); max-width: 760px; }
+      .hero h1 { margin: 0; font-family: "Fraunces", Georgia, serif; font-size: clamp(36px, 6vw, 58px); font-weight: 500; line-height: 1.06; letter-spacing: -0.02em; text-wrap: balance; }
+      .hero h1 em { font-style: italic; color: var(--rust); }
+      .lede { color: var(--ink-soft); max-width: 38em; font-size: 18px; margin: 18px 0 0; }
+      .textlink { color: var(--rust); font-weight: 500; text-decoration: none; border-bottom: 1px solid currentColor; }
+      .textlink:hover { color: var(--rust-deep); }
+
+      .btn {
+        display: inline-block; background: var(--ink); color: var(--cream);
+        font: inherit; font-size: 16px; font-weight: 650;
+        padding: 13px 28px; border: none; border-radius: 999px; cursor: pointer;
+        transition: background 0.2s ease, transform 0.2s ease;
+      }
+      .btn:hover { background: var(--rust); transform: translateY(-1px); }
+      .btn[disabled] { opacity: 0.55; cursor: default; transform: none; background: var(--ink); }
+      .mini-btn {
+        font: inherit; font-size: 14.5px; font-weight: 600;
+        background: transparent; color: var(--ink);
+        border: 1.5px solid var(--line); border-radius: 999px;
+        padding: 8px 18px; cursor: pointer;
+      }
+      .mini-btn:hover { border-color: var(--rust); color: var(--rust); }
+      .mini-btn[disabled] { opacity: 0.5; cursor: default; }
+
+      /* The race card */
+      .race-card {
+        margin-top: 34px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: clamp(20px, 3vw, 30px);
+        box-shadow: 0 2px 14px rgba(29, 26, 20, 0.05);
+      }
+      .controls { display: flex; flex-wrap: wrap; gap: 18px 28px; align-items: flex-end; }
+      .seg { border: none; margin: 0; padding: 0; min-width: 0; }
+      .seg legend { padding: 0; margin-bottom: 8px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+      .seg .opts { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 999px; background: var(--cream-deep); }
+      .seg input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+      .seg label { padding: 8px 16px; border-radius: 999px; font-size: 15px; font-weight: 500; color: var(--ink-soft); cursor: pointer; white-space: nowrap; }
+      .seg input:checked + label { background: var(--card); color: var(--ink); box-shadow: 0 1px 4px rgba(29, 26, 20, 0.14); }
+      .seg input:focus-visible + label { outline: 2px solid var(--rust); outline-offset: 2px; }
+      .scenario-desc { margin: 18px 0 0; color: var(--ink-soft); font-size: 16px; max-width: 46em; }
+
+      .arena { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 22px; margin-top: 24px; align-items: stretch; }
+      .lanes { display: grid; gap: 14px; }
+      .lane {
+        position: relative;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px 18px 16px;
+        background: var(--cream);
+        min-height: 148px;
+        transition: border-color 0.3s ease;
+      }
+      .lane.won { border-color: var(--green); }
+      .lane.lost { border-color: var(--red); }
+      .lane-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; align-items: baseline; }
+      .agent { font-weight: 650; font-size: 17px; }
+      .agent small { font-weight: 400; color: var(--muted); font-size: 14px; margin-left: 6px; }
+      .lane-job { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+      .track { position: relative; height: 10px; border-radius: 999px; background: var(--cream-deep); margin: 16px 172px 8px 0; overflow: hidden; }
+      .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--ink); border-radius: 999px; }
+      .lane.lost .fill { background: var(--red); }
+      .lane.won .fill { background: var(--green); }
+      .milestones { display: flex; justify-content: space-between; margin-right: 172px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+      .lane-status { margin: 10px 172px 0 0; font-size: 15px; color: var(--ink-soft); min-height: 3.2em; }
+      .lane-status code { color: var(--ink); }
+      .stamp-slot { position: absolute; right: 18px; top: 50%; transform: translateY(-38%); pointer-events: none; }
+
+      /* The stamp: the site's one signature interaction */
+      .stamp { font-family: "Fraunces", Georgia, serif; font-weight: 700; font-size: 26px; letter-spacing: .06em; padding: 6px 18px; border: 3px solid; border-radius: 8px; transform: rotate(-8deg); display: inline-block; }
+      .stamp.accept { color: var(--green); border-color: var(--green); }
+      .stamp.reject { color: var(--red); border-color: var(--red); }
+      .stamp.plain { color: var(--muted); border-color: var(--muted); font-size: 20px; }
+      .stamp.show { animation: stampIn .45s cubic-bezier(.2, 1.4, .4, 1) both; }
+      @keyframes stampIn { 0% { opacity: 0; transform: scale(2.4) rotate(-14deg); } 60% { opacity: 1; transform: scale(.94) rotate(-8deg); } 100% { opacity: 1; transform: scale(1) rotate(-8deg); } }
+
+      /* The barrier */
+      .barrier { border: 2px solid var(--ink); border-radius: 16px; padding: 16px 18px; background: var(--card); display: flex; flex-direction: column; }
+      .barrier.off { border-style: dashed; border-color: var(--line); }
+      .barrier h3 { margin: 0; font-family: "Fraunces", Georgia, serif; font-weight: 600; font-size: 20px; }
+      .barrier .sub { margin: 2px 0 12px; font-size: 13.5px; color: var(--muted); }
+      .bfacts { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 14px; margin: 0 0 12px; }
+      .bfacts dt { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding-top: 2px; }
+      .bfacts dd { margin: 0; font-family: var(--mono); font-size: 13px; color: var(--ink); }
+      .lock { display: inline-block; padding: 0 10px; border-radius: 999px; border: 1px solid var(--line); }
+      .lock.held { border-color: var(--rust); color: var(--rust); }
+      .tip.moved { color: var(--rust); font-weight: 600; }
+      .checking { margin: 4px 0 6px; font-size: 13.5px; font-weight: 600; min-height: 1.4em; }
+      .checks { list-style: none; margin: 0; padding: 0; font-size: 14px; }
+      .checks li { display: grid; grid-template-columns: 20px 1fr; gap: 6px; padding: 6px 0; border-top: 1px dashed var(--line); opacity: 0; transform: translateX(-8px); transition: opacity .25s ease, transform .25s ease; }
+      .checks li.in { opacity: 1; transform: none; }
+      .checks .ok { color: var(--green); font-weight: 700; }
+      .checks .no { color: var(--red); font-weight: 700; }
+      .checks code { font-size: 12px; color: var(--ink-soft); }
+      .checks li.fail code { color: var(--red); }
+      .barrier .off-note { margin: auto 0 0; font-size: 14px; color: var(--muted); }
+
+      .outcome { margin-top: 20px; border-radius: 14px; padding: 16px 20px; border: 1px solid var(--line); background: var(--cream); min-height: 60px; }
+      .outcome.good { border-color: var(--green); background: var(--green-soft); }
+      .outcome.bad { border-color: var(--red); background: var(--red-soft); }
+      .outcome strong { display: block; font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 21px; margin-bottom: 2px; }
+      .outcome p { margin: 0; color: var(--ink-soft); font-size: 15.5px; max-width: 52em; }
+      .race-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-top: 20px; }
+      .runs { font-size: 14px; color: var(--muted); }
+
+      /* Receipt chain */
+      .section { margin-top: clamp(40px, 7vw, 64px); }
+      .section h2 { margin: 0 0 8px; font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: clamp(26px, 4vw, 36px); letter-spacing: -0.015em; }
+      .section h2 em { font-style: italic; color: var(--rust); }
+      .section > p { margin: 0 0 18px; color: var(--ink-soft); max-width: 44em; }
+      .chain { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+      .chain li { position: relative; border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--card); font-size: 14px; }
+      .chain li:not(:last-child)::after { content: ""; position: absolute; left: 30px; bottom: -13px; width: 2px; height: 12px; background: var(--line); }
+      .chain .rhead { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; }
+      .chain .seq { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+      .chain .dec { font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; padding: 1px 10px; border-radius: 999px; border: 1px solid currentColor; }
+      .chain .dec.exec { color: var(--green); }
+      .chain .dec.deny { color: var(--red); }
+      .chain .what { font-weight: 600; }
+      .chain .meta { margin-top: 6px; font-family: var(--mono); font-size: 12px; color: var(--muted); word-break: break-all; }
+      .chain .meta b { font-weight: 500; color: var(--ink-soft); }
+      .chain .vres { margin-left: auto; font-family: var(--mono); font-size: 12px; }
+      .chain .vres.ok { color: var(--green); }
+      .chain .vres.no { color: var(--red); }
+      .chain-empty { color: var(--muted); font-size: 15px; border: 1px dashed var(--line); border-radius: 14px; padding: 16px; }
+      .chain-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-top: 16px; }
+      .verify-result { font-size: 15px; font-weight: 500; }
+      .verify-result.ok { color: var(--green); }
+      .verify-result.no { color: var(--red); }
+
+      /* Rules */
+      .rules { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .rules li { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; }
+      .rules h3 { margin: 0 0 6px; font-size: 17px; font-weight: 650; }
+      .rules p { margin: 0; color: var(--ink-soft); font-size: 15.5px; }
+      .rules .where { display: inline-block; margin-top: 10px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; padding: 1px 9px; border-radius: 999px; border: 1px solid currentColor; }
+      .rules .where.public { color: var(--green); }
+      .rules .where.beta { color: var(--rust); }
+      .honest { margin: 22px 0 0; padding: 16px 20px; border-left: 3px solid var(--rust); background: var(--card); border-radius: 0 12px 12px 0; color: var(--ink-soft); font-size: 15.5px; max-width: 52em; }
+      .next { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px 22px; }
+
+      @media (max-width: 860px) {
+        .arena { grid-template-columns: 1fr; }
+        .rules { grid-template-columns: 1fr; }
+      }
+      @media (max-width: 560px) {
+        .track, .milestones, .lane-status { margin-right: 0; }
+        .lane { padding-bottom: 66px; }
+        .stamp-slot { top: auto; bottom: 12px; right: 14px; transform: none; }
+        .stamp { font-size: 22px; }
+        .seg label { padding: 8px 12px; font-size: 14.5px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .stamp.show { animation: none; }
+        .checks li { transition: none; }
+        .btn { transition: none; }
+      }
+    </style>
+    <script>
+      /* theme: set before first paint to avoid a flash. The js class turns on
+         script-only layouts, like the phone menu. */
+      try { (function () {
+        var d = document.documentElement;
+        d.classList.add("js");
+        var t = null;
+        try { t = localStorage.getItem("synthe-theme"); } catch (e) {}
+        var dark = t ? t === "dark" : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        d.setAttribute("data-theme", dark ? "dark" : "light");
+      })(); } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="page">
+      <header class="site-head">
+        <a class="wordmark" href="/"><svg class="wordmark-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</a>
+        <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="topnav">Menu</button>
+        <nav class="topnav" id="topnav" aria-label="Main">
+          <a href="/race.html" aria-current="page">Race</a>
+          <a href="/forge.html">Forge</a>
+          <a href="/playground.html">Playground</a>
+          <a href="/tamper.html">Tamper</a>
+          <a href="/docs.html">Docs</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+          <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
+        </nav>
+      </header>
+      <main id="main">
+        <div class="hero">
+          <p class="kicker">Demo · runs in this tab</p>
+          <h1>Two agents. One change. <em>Exactly one commit.</em></h1>
+          <p class="lede">Two coding agents try to ship at the same moment. Synthe checks each one at the moment of commit, lets exactly one through, and signs a receipt for both, so later you can prove what happened and why.</p>
+        </div>
+
+        <section class="race-card" aria-labelledby="race-h">
+          <h2 id="race-h" class="sr-only">The race</h2>
+          <div class="controls">
+            <fieldset class="seg">
+              <legend>Scenario</legend>
+              <div class="opts">
+                <input type="radio" id="sc-branch" name="scenario" value="branch" checked /><label for="sc-branch">Two jobs, one branch</label>
+                <input type="radio" id="sc-same" name="scenario" value="same" /><label for="sc-same">Same job, sent twice</label>
+              </div>
+            </fieldset>
+            <fieldset class="seg">
+              <legend>Barrier</legend>
+              <div class="opts">
+                <input type="radio" id="md-with" name="mode" value="with" checked /><label for="md-with">With Synthe</label>
+                <input type="radio" id="md-without" name="mode" value="without" /><label for="md-without">Without Synthe</label>
+              </div>
+            </fieldset>
+            <button class="btn" type="button" id="race-go">Start the race</button>
+          </div>
+          <p class="scenario-desc" id="scenario-desc"></p>
+
+          <div class="arena">
+            <div class="lanes">
+              <div class="lane" id="lane-a">
+                <div class="lane-head"><span class="agent">Agent A <small>coding agent</small></span><span class="lane-job" id="job-a"></span></div>
+                <div class="track" aria-hidden="true"><div class="fill" id="fill-a"></div></div>
+                <div class="milestones" aria-hidden="true"><span>Claim</span><span>Work</span><span>Propose</span></div>
+                <p class="lane-status" id="status-a">Ready.</p>
+                <div class="stamp-slot" id="stamp-a"></div>
+              </div>
+              <div class="lane" id="lane-b">
+                <div class="lane-head"><span class="agent">Agent B <small>coding agent</small></span><span class="lane-job" id="job-b"></span></div>
+                <div class="track" aria-hidden="true"><div class="fill" id="fill-b"></div></div>
+                <div class="milestones" aria-hidden="true"><span>Claim</span><span>Work</span><span>Propose</span></div>
+                <p class="lane-status" id="status-b">Ready.</p>
+                <div class="stamp-slot" id="stamp-b"></div>
+              </div>
+            </div>
+            <div class="barrier" id="barrier">
+              <h3 id="barrier-title">Synthe</h3>
+              <p class="sub" id="barrier-sub">The commit barrier. It holds the GitHub token.</p>
+              <dl class="bfacts">
+                <dt>Branch</dt><dd><span>agent/docs</span> at <span class="tip" id="tip">a1f3c9e</span></dd>
+                <dt>Lock</dt><dd><span class="lock" id="lock">open</span></dd>
+              </dl>
+              <p class="checking" id="checking"></p>
+              <ul class="checks" id="checks"></ul>
+              <p class="off-note" id="off-note" hidden>No barrier. Each agent holds its own GitHub token and pushes directly.</p>
+            </div>
+          </div>
+
+          <div class="outcome" id="outcome" role="status" aria-live="polite">
+            <p>Pick a scenario and start the race. The finish order is random, so either agent can win.</p>
+          </div>
+          <div class="race-actions">
+            <span class="runs" id="runs">No races yet.</span>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="chain-h">
+          <h2 id="chain-h">The receipt <em>chain</em></h2>
+          <p>Every push and every refusal at the barrier gets a receipt. Each one carries the hash of the receipt before it and an Ed25519 signature, made here with a demo key generated in this tab. Run a few races, then verify the whole chain.</p>
+          <ol class="chain" id="chain"></ol>
+          <div class="chain-actions">
+            <button class="mini-btn" type="button" id="verify" disabled>Verify the chain</button>
+            <button class="mini-btn" type="button" id="clear" disabled>Clear</button>
+            <span class="verify-result" id="verify-result" role="status" aria-live="polite"></span>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="rules-h">
+          <h2 id="rules-h">How the barrier <em>decides</em></h2>
+          <p>Four rules. The first two run in the public checker today. The last two are the commit broker, in design-partner beta.</p>
+          <ol class="rules">
+            <li>
+              <h3>One at a time</h3>
+              <p>Claims and commits take a lock, so two agents can never both be first. The second always sees what the first did.</p>
+              <span class="where public">Public checker</span>
+            </li>
+            <li>
+              <h3>Same job, one claim</h3>
+              <p>The first claim of an idempotency key wins. A second claim gets <code>idempotency_key_reserved</code> while the first is running, and <code>duplicate_idempotency_key</code> once it has completed, before the second agent does any work.</p>
+              <span class="where public">Public checker</span>
+            </li>
+            <li>
+              <h3>Push only if nothing moved</h3>
+              <p>Synthe pushes with compare-and-swap: only if the branch still points at the commit the agent built on. Otherwise it refuses with <code>non_fast_forward</code> and pushes nothing. The agent can rebase and propose again.</p>
+              <span class="where beta">Commit broker · beta</span>
+            </li>
+            <li>
+              <h3>A receipt either way</h3>
+              <p>Every push and every refusal is written down, chained to the receipt before it and signed. Edit or delete one and verification shows exactly where the chain breaks.</p>
+              <span class="where beta">Commit broker · beta</span>
+            </li>
+          </ol>
+          <p class="honest">This page is a model of those rules running in your browser, with a demo key made in this tab. It isn't the product, and these receipts aren't real ones. For the real checker, see the <a class="textlink" href="/receipts.html">three back-to-back runs on GitHub runners</a>: one ACCEPT, then two <code>duplicate_idempotency_key</code> refusals.</p>
+          <div class="next">
+            <a class="textlink" href="/tamper.html">Break a hash chain yourself</a>
+            <a class="textlink" href="/docs.html#commit-barrier">How the commit barrier works</a>
+            <a class="textlink" href="/#partner">Pilot the commit broker</a>
+          </div>
+        </section>
+      </main>
+      <footer class="site-foot">
+        <p class="footer-brand"><svg class="footer-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</p>
+        <p class="footer-line">The commit barrier for AI agents. Agents propose. Synthe commits. Anyone can verify.</p>
+        <nav class="footer-nav" aria-label="Footer">
+          <a href="/race.html">Race two agents</a>
+          <a href="/forge.html">Forge this handoff</a>
+          <a href="/playground.html">Playground</a>
+          <a href="/tamper.html">Tamper evidence</a>
+          <a href="/anatomy.html">Anatomy of a handoff</a>
+          <a href="/quiz.html">Do I need this?</a>
+          <a href="/docs.html">Docs</a>
+          <a href="/log.html">Changelog</a>
+          <a href="/receipts.html">Receipts</a>
+          <a href="/benchmarks.html">Benchmarks</a>
+          <a href="/status.html">Status &amp; trust</a>
+          <a href="/#partner">Design partners</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">Spec</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md">Threat model</a>
+        </nav>
+        <p class="footer-legal">Synthe is an early project. The public checker is shared under an <a href="https://github.com/rohansiddam/Synthe/blob/main/EVALUATION_LICENSE.txt">evaluation license</a>, not an open-source one.</p>
+        <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
+      </footer>
+    </div>
+    <script>
+      (function () {
+        "use strict";
+        var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var te = new TextEncoder();
+        function $(id) { return document.getElementById(id); }
+        function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+        function sleep(ms) { return new Promise(function (r) { setTimeout(r, reduceMotion ? 0 : ms); }); }
+
+        /* ---------- crypto: SHA-256 hash chain, Ed25519 signatures (WebCrypto) ---------- */
+        function hex(buf) {
+          return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ("0" + b.toString(16)).slice(-2); }).join("");
+        }
+        function b64u(buf) {
+          var s = "";
+          new Uint8Array(buf).forEach(function (b) { s += String.fromCharCode(b); });
+          return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+        }
+        function unb64u(s) {
+          s = s.replace(/-/g, "+").replace(/_/g, "/");
+          while (s.length % 4) s += "=";
+          var bin = atob(s), out = new Uint8Array(bin.length);
+          for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+          return out;
+        }
+        function canonical(v) {
+          if (v === null || typeof v !== "object") return JSON.stringify(v);
+          if (Array.isArray(v)) return "[" + v.map(canonical).join(",") + "]";
+          return "{" + Object.keys(v).sort().map(function (k) { return JSON.stringify(k) + ":" + canonical(v[k]); }).join(",") + "}";
+        }
+        function sha256hex(s) { return crypto.subtle.digest("SHA-256", te.encode(s)).then(hex); }
+
+        var DOMAIN = "synthe/demo-receipt/v1\n";
+        var GENESIS = "0000000000000000000000000000000000000000000000000000000000000000";
+        var signer = null;
+        var keyReady = crypto.subtle.generateKey({ name: "Ed25519" }, true, ["sign", "verify"]).then(function (kp) {
+          signer = { priv: kp.privateKey, pub: kp.publicKey };
+        }, function () { signer = null; });
+
+        /* ---------- receipts ---------- */
+        var chain = [];
+        var queue = Promise.resolve();
+        function addReceipt(body) {
+          queue = queue.then(function () {
+            return keyReady.then(function () {
+              body.seq = chain.length + 1;
+              body.prev = chain.length ? chain[chain.length - 1].hash : GENESIS;
+              body.at = new Date().toISOString();
+              return sha256hex(canonical(body)).then(function (h) {
+                var rec = { body: body, hash: h, sig: null };
+                if (!signer) { chain.push(rec); renderChain(); return; }
+                return crypto.subtle.sign({ name: "Ed25519" }, signer.priv, te.encode(DOMAIN + h)).then(function (sig) {
+                  rec.sig = b64u(sig);
+                  chain.push(rec);
+                  renderChain();
+                });
+              });
+            });
+          });
+          return queue;
+        }
+        function short(h) { return h.slice(0, 8) + "…" + h.slice(-4); }
+        function renderChain(results) {
+          var ol = $("chain");
+          if (!chain.length) {
+            ol.innerHTML = '<li class="chain-empty">No receipts yet. Start a race with Synthe as the barrier.</li>';
+            $("verify").disabled = true;
+            $("clear").disabled = true;
+            return;
+          }
+          ol.innerHTML = chain.map(function (rec, i) {
+            var b = rec.body;
+            var exec = b.decision === "EXECUTED";
+            var what = exec
+              ? "git_push " + esc(b.target) + " " + esc(b.base) + " → " + esc(b.pushed)
+              : "git_push " + esc(b.target) + " refused: <code>" + esc(b.reason) + "</code>";
+            var v = results && results[i];
+            var vres = v ? (v.ok ? '<span class="vres ok">✓ ' + (v.unsigned ? "hash chain intact" : "verified") + "</span>" : '<span class="vres no">✕ ' + esc(v.why) + "</span>") : "";
+            return '<li><div class="rhead"><span class="seq">#' + b.seq + '</span><span class="dec ' + (exec ? "exec" : "deny") + '">' + b.decision +
+              '</span><span class="what">' + what + "</span>" + vres + "</div>" +
+              '<div class="meta"><b>' + esc(b.agent) + "</b> · " + esc(b.handoff) + " · prev " + short(b.prev) + " · hash " + short(rec.hash) +
+              " · " + (rec.sig ? "Ed25519 " + rec.sig.slice(0, 10) + "…" : "unsigned: this browser has no Ed25519") + "</div></li>";
+          }).join("");
+          $("verify").disabled = false;
+          $("clear").disabled = false;
+        }
+        function verifyChain() {
+          var prev = GENESIS, p = Promise.resolve(), results = [];
+          chain.forEach(function (rec) {
+            p = p.then(function () {
+              return sha256hex(canonical(rec.body)).then(function (h) {
+                var why = null;
+                if (h !== rec.hash) why = "hash mismatch";
+                else if (rec.body.prev !== prev) why = "broken link";
+                prev = rec.hash;
+                if (why || !signer || !rec.sig) { results.push({ ok: !why, why: why, unsigned: !why }); return; }
+                return crypto.subtle.verify({ name: "Ed25519" }, signer.pub, unb64u(rec.sig), te.encode(DOMAIN + rec.hash)).then(function (ok) {
+                  results.push({ ok: ok, why: ok ? null : "bad signature" });
+                });
+              });
+            });
+          });
+          return p.then(function () { return results; });
+        }
+        $("verify").addEventListener("click", function () {
+          verifyChain().then(function (results) {
+            renderChain(results);
+            var bad = results.filter(function (r) { return !r.ok; }).length;
+            var out = $("verify-result");
+            out.className = "verify-result " + (bad ? "no" : "ok");
+            var unsigned = results.some(function (r) { return r.unsigned; });
+            out.textContent = bad
+              ? bad + " of " + results.length + " receipts failed verification."
+              : unsigned
+                ? "Hash chain intact across all " + results.length + " receipts. Signatures need a browser with Ed25519."
+                : "All " + results.length + " receipts verified: every hash recomputed, every link intact, every signature valid.";
+          });
+        });
+        $("clear").addEventListener("click", function () {
+          chain = [];
+          $("verify-result").textContent = "";
+          renderChain();
+        });
+
+        /* ---------- the race ---------- */
+        var BASE = "a1f3c9e";
+        var COMMITS = { A: "7c2d41b", B: "4e9b0aa" };
+        var MERGED = "e58d2f1";
+        var DESCS = {
+          branch: "Two different jobs, both approved: Agent A fixes the install steps in <code>docs/setup.md</code>, Agent B adds a troubleshooting section to the same file. Both build on commit <code>a1f3c9e</code> and push to <code>agent/docs</code> at about the same moment.",
+          same: "An orchestrator retried, so Agent A and Agent B both received the same signed job, with the same idempotency key: update <code>docs/setup.md</code> on <code>agent/docs</code>."
+        };
+        var running = false, raceNo = 0, stats = { races: 0, commits: 0, refusals: 0 };
+
+        function scenario() { return document.querySelector('input[name="scenario"]:checked').value; }
+        function mode() { return document.querySelector('input[name="mode"]:checked').value; }
+        function lane(id) {
+          return { id: id, el: $("lane-" + id.toLowerCase()), fill: $("fill-" + id.toLowerCase()), status: $("status-" + id.toLowerCase()), stamp: $("stamp-" + id.toLowerCase()), job: $("job-" + id.toLowerCase()) };
+        }
+        var L = { A: lane("A"), B: lane("B") };
+
+        function setStatus(l, html) { l.status.innerHTML = html; }
+        function move(l, pct, ms) {
+          l.fill.style.transition = reduceMotion || !ms ? "none" : "width " + ms + "ms linear";
+          l.fill.style.width = pct + "%";
+        }
+        function stamp(l, kind, text) {
+          l.stamp.innerHTML = "";
+          var s = document.createElement("span");
+          s.className = "stamp " + kind;
+          s.textContent = text;
+          l.stamp.appendChild(s);
+          if (!reduceMotion) { void s.offsetWidth; s.classList.add("show"); }
+        }
+        function setLock(who) {
+          var lock = $("lock");
+          lock.textContent = who ? "held by Agent " + who : "open";
+          lock.className = "lock" + (who ? " held" : "");
+        }
+        function setTip(sha, moved) {
+          var t = $("tip");
+          t.textContent = sha;
+          t.className = "tip" + (moved ? " moved" : "");
+        }
+        function checksFor(who) {
+          $("checking").textContent = who ? "Checking Agent " + who : "";
+          $("checks").innerHTML = "";
+        }
+        function addCheck(ok, text, code) {
+          var li = document.createElement("li");
+          if (!ok) li.className = "fail";
+          li.innerHTML = '<span class="' + (ok ? "ok" : "no") + '" aria-hidden="true">' + (ok ? "✓" : "✕") + "</span><span>" + text + (code ? " <code>" + code + "</code>" : "") + "</span>";
+          $("checks").appendChild(li);
+          if (reduceMotion) { li.classList.add("in"); return Promise.resolve(); }
+          void li.offsetWidth;
+          li.classList.add("in");
+          return sleep(260);
+        }
+        function outcome(kind, title, text) {
+          var o = $("outcome");
+          o.className = "outcome" + (kind ? " " + kind : "");
+          o.innerHTML = "<strong>" + title + "</strong><p>" + text + "</p>";
+        }
+        function updateRuns() {
+          $("runs").textContent = stats.races
+            ? "Races in this tab: " + stats.races + " · commits through the barrier: " + stats.commits + " · refusals: " + stats.refusals
+            : "No races yet.";
+        }
+        function reset() {
+          ["A", "B"].forEach(function (k) {
+            var l = L[k];
+            l.el.className = "lane";
+            move(l, 0, 0);
+            l.stamp.innerHTML = "";
+            setStatus(l, "Ready.");
+          });
+          setLock(null);
+          setTip(BASE, false);
+          checksFor(null);
+          var withS = mode() === "with";
+          $("barrier").className = "barrier" + (withS ? "" : " off");
+          $("barrier-title").textContent = withS ? "Synthe" : "No barrier";
+          $("barrier-sub").textContent = withS ? "The commit barrier. It holds the GitHub token." : "Agents push to GitHub themselves.";
+          $("off-note").hidden = withS;
+          $("lock").parentNode.previousElementSibling.hidden = !withS;
+          $("lock").parentNode.hidden = !withS;
+          $("scenario-desc").innerHTML = DESCS[scenario()];
+        }
+        function timings() {
+          var a = 1500 + Math.random() * 800, b = 1500 + Math.random() * 800;
+          if (Math.abs(a - b) < 180) { if (a < b) b = a + 180; else a = b + 180; }
+          return { A: a, B: b };
+        }
+
+        async function raceBranch(withS, t, keys) {
+          var order = t.A < t.B ? ["A", "B"] : ["B", "A"];
+          var first = order[0], second = order[1];
+          ["A", "B"].forEach(function (k) {
+            setStatus(L[k], "Claimed <code>" + keys[k] + "</code>. Working on <code>docs/setup.md</code>.");
+            move(L[k], 100, t[k]);
+          });
+          await sleep(t[first]);
+          if (!withS) {
+            setStatus(L[first], "Pushed <code>" + BASE + " → " + COMMITS[first] + "</code> with its own token.");
+            setTip(COMMITS[first], true);
+            stamp(L[first], "plain", "PUSHED");
+            await sleep(Math.max(0, t[second] - t[first]));
+            setStatus(L[second], "GitHub refused the push: the branch moved. It rebased onto <code>" + COMMITS[first] + "</code> and pushed again.");
+            await sleep(700);
+            setTip(MERGED, true);
+            stamp(L[second], "plain", "PUSHED");
+            outcome("bad", "Both pushed. Nobody reviewed the result.",
+              "Agent " + second + " rebased its change onto Agent " + first + "'s and pushed the combination. What's on <code>agent/docs</code> now was never approved as a whole, and there are no receipts: nothing records who approved what.");
+            return;
+          }
+          setStatus(L[first], "At the barrier. Proposing <code>" + COMMITS[first] + "</code> on <code>" + BASE + "</code>.");
+          setLock(first);
+          var arrived = Date.now(), gap = t[second] - t[first];
+          var waitTimer = setTimeout(function () {
+            if ($("lock").classList.contains("held")) setStatus(L[second], "At the barrier. Waiting for the lock.");
+          }, reduceMotion ? 0 : gap);
+          checksFor(first);
+          await addCheck(true, "Signature valid");
+          await addCheck(true, "Approved for <code>agent/docs</code>");
+          await addCheck(true, "Paths allowed: <code>docs/**</code>");
+          await addCheck(true, "Branch still at <code>" + BASE + "</code>");
+          setTip(COMMITS[first], true);
+          L[first].el.className = "lane won";
+          stamp(L[first], "accept", "ACCEPT");
+          setStatus(L[first], "Pushed <code>" + BASE + " → " + COMMITS[first] + "</code>. Confirmed on GitHub.");
+          addReceipt({ decision: "EXECUTED", effect: "git_push", target: "agent/docs", agent: "agent-" + first.toLowerCase(), handoff: keys[first], base: BASE, pushed: COMMITS[first] });
+          stats.commits++;
+          setLock(null);
+          await sleep(Math.max(250, gap - (Date.now() - arrived)));
+          clearTimeout(waitTimer);
+          setStatus(L[second], "At the barrier. Proposing <code>" + COMMITS[second] + "</code> on <code>" + BASE + "</code>.");
+          setLock(second);
+          checksFor(second);
+          await addCheck(true, "Signature valid");
+          await addCheck(true, "Approved for <code>agent/docs</code>");
+          await addCheck(true, "Paths allowed: <code>docs/**</code>");
+          await addCheck(false, "Branch moved to " + COMMITS[first] + ".", "non_fast_forward");
+          L[second].el.className = "lane lost";
+          stamp(L[second], "reject", "REJECT");
+          setStatus(L[second], "Refused: <code>non_fast_forward</code>. Nothing pushed. It can rebase and propose again.");
+          addReceipt({ decision: "DENIED", effect: "git_push", target: "agent/docs", agent: "agent-" + second.toLowerCase(), handoff: keys[second], base: BASE, reason: "non_fast_forward" });
+          stats.refusals++;
+          setLock(null);
+          outcome("good", "Exactly one commit landed.",
+            "Agent " + first + "'s change is on <code>agent/docs</code>. Agent " + second + " got a signed refusal with the reason, and its change can be rebased and approved on its own. Two receipts, chained below.");
+        }
+
+        async function raceSame(withS, t, key) {
+          var claimA = 150 + Math.random() * 300, claimB = 150 + Math.random() * 300;
+          if (Math.abs(claimA - claimB) < 60) claimB = claimA + 60;
+          var first = claimA < claimB ? "A" : "B", second = first === "A" ? "B" : "A";
+          if (!withS) {
+            ["A", "B"].forEach(function (k) { setStatus(L[k], "Nothing to claim. Doing the whole job."); move(L[k], 100, t[k]); });
+            var f2 = t.A < t.B ? "A" : "B", s2 = f2 === "A" ? "B" : "A";
+            await sleep(t[f2]);
+            setStatus(L[f2], "Pushed <code>" + BASE + " → " + COMMITS[f2] + "</code> with its own token.");
+            setTip(COMMITS[f2], true);
+            stamp(L[f2], "plain", "PUSHED");
+            await sleep(Math.max(0, t[s2] - t[f2]));
+            setStatus(L[s2], "Did the same job again, rebased and pushed its own version of the same fix.");
+            await sleep(600);
+            setTip(MERGED, true);
+            stamp(L[s2], "plain", "PUSHED");
+            outcome("bad", "The job ran twice.",
+              "Both agents did the whole job and both pushed. Agents rarely write the same change twice, so you get two overlapping versions of one fix, twice the cost, and no record of which one you approved.");
+            return;
+          }
+          ["A", "B"].forEach(function (k) { setStatus(L[k], "Claiming <code>" + key + "</code>…"); move(L[k], 9, Math.min(claimA, claimB)); });
+          await sleep(Math.min(claimA, claimB) + 120);
+          setStatus(L[first], "Claimed <code>" + key + "</code>. Working.");
+          L[second].el.className = "lane lost";
+          stamp(L[second], "reject", "REJECT");
+          setStatus(L[second], "Refused at claim: <code>idempotency_key_reserved</code>. No work done.");
+          stats.refusals++;
+          move(L[first], 100, t[first]);
+          await sleep(t[first]);
+          setStatus(L[first], "At the barrier. Proposing <code>" + COMMITS[first] + "</code> on <code>" + BASE + "</code>.");
+          setLock(first);
+          checksFor(first);
+          await addCheck(true, "Signature valid");
+          await addCheck(true, "Approved for <code>agent/docs</code>");
+          await addCheck(true, "Holds the claim on <code>" + key + "</code>");
+          await addCheck(true, "Branch still at <code>" + BASE + "</code>");
+          setTip(COMMITS[first], true);
+          L[first].el.className = "lane won";
+          stamp(L[first], "accept", "ACCEPT");
+          setStatus(L[first], "Pushed <code>" + BASE + " → " + COMMITS[first] + "</code>. Confirmed on GitHub.");
+          addReceipt({ decision: "EXECUTED", effect: "git_push", target: "agent/docs", agent: "agent-" + first.toLowerCase(), handoff: key, base: BASE, pushed: COMMITS[first] });
+          stats.commits++;
+          setLock(null);
+          outcome("good", "The job ran once.",
+            "Agent " + second + " was refused when it tried to claim the job, before it did any work. The claim ledger answered it directly; only actions at the barrier get receipts, so there is one receipt below.");
+        }
+
+        $("race-go").addEventListener("click", async function () {
+          if (running) return;
+          running = true;
+          var go = $("race-go");
+          go.disabled = true;
+          document.querySelectorAll(".seg input").forEach(function (i) { i.disabled = true; });
+          reset();
+          raceNo++;
+          stats.races++;
+          var n = String(raceNo).padStart(3, "0");
+          var withS = mode() === "with";
+          var t = timings();
+          outcome("", "Racing…", "Both agents start at the same moment.");
+          try {
+            if (scenario() === "branch") {
+              var keys = { A: "docs:install-steps:r" + n, B: "docs:troubleshooting:r" + n };
+              L.A.job.textContent = keys.A;
+              L.B.job.textContent = keys.B;
+              await raceBranch(withS, t, keys);
+            } else {
+              var key = "docs:setup-refresh:r" + n;
+              L.A.job.textContent = key;
+              L.B.job.textContent = key;
+              await raceSame(withS, t, key);
+            }
+            await queue;
+          } finally {
+            updateRuns();
+            go.textContent = "Race again";
+            go.disabled = false;
+            document.querySelectorAll(".seg input").forEach(function (i) { i.disabled = false; });
+            running = false;
+          }
+        });
+        document.querySelectorAll(".seg input").forEach(function (i) {
+          i.addEventListener("change", function () {
+            if (running) return;
+            reset();
+            $("race-go").textContent = "Start the race";
+            outcome("", "Ready.", mode() === "with"
+              ? "Synthe holds the only GitHub token. Agents can propose, not push."
+              : "Each agent holds its own GitHub token, the way most setups work today.");
+          });
+        });
+
+        reset();
+        renderChain();
+      })();
+    </script>
+  </body>
+</html>

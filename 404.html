@@ -5,27 +5,34 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="description" content="Every Synthe performance and proof claim, with the source that backs it." />
-    <link rel="canonical" href="https://synthe.live/benchmarks.html" />
+    <meta name="description" content="This page isn't on synthe.live." />
+    <meta name="robots" content="noindex" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <title>Benchmarks · Synthe</title>
-    <meta property="og:title" content="Benchmarks · Synthe" />
-    <meta property="og:description" content="Every Synthe performance and proof claim, with the source that backs it." />
-    <meta property="og:image" content="https://synthe.live/og-image.png" />
-    <meta property="og:url" content="https://synthe.live/benchmarks.html" />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Synthe" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <title>Page not found · Synthe</title>
     <link rel="preload" href="/fonts/fraunces-normal-400-650-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/site.css" />
     <script src="/site.js" defer></script>
     <style>
       :root {
-        --cream: #f5efe2; --cream-deep: #e9dfc8; --ink: #2b2118; --ink-soft: #4e4436;
-        --muted: #675c4c; --line: #dacdaf; --rust: #8a1919; --green: #286920; --red: #b3401f;
+        --cream: #f5efe2;
+        --cream-deep: #e9dfc8;
+        --ink: #2b2118;
+        --ink-soft: #4e4436;
+        --muted: #675c4c;
+        --line: #dacdaf;
+        --rust: #8a1919;
+        --rust-deep: #6b1212;
+        --green: #286920;
+        --green-soft: #e3ebda;
+        --red-soft: #f0e0d3;
+        --red: #b3401f;
+        --term-bg: #2b2118;
+        --term-cream: #f0e6d2;
+        --term-green: #7fb069;
+        --term-amber: #d99a5b;
         --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
             --card: #fbf7ec;
 }
@@ -38,47 +45,48 @@
         --muted: #a8a094;
         --line: #38352f;
         --rust: #ec5358;
-        --green: #7fb069; --red: #f2555a;
+        --rust-deep: #ef6a52;
+        --green: #7fb069;
+        --green-soft: #161d17;
+        --red-soft: #241a16;
+        --red: #f2555a;
               --card: #1a1917;
 }
       html[data-theme="dark"] body {
         background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23f2ede4'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
       }
 
-      body { transition: background-color .25s ease, color .25s ease; }
       * { box-sizing: border-box; }
       html { -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; overflow-x: clip; }
-      html { scrollbar-width: thin; scrollbar-color: rgba(43, 33, 24, 0.35) transparent; }
-      ::-webkit-scrollbar { width: 10px; }
-      ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: rgba(43, 33, 24, 0.28); border-radius: 8px; border: 2px solid var(--cream); }
       body {
         overflow-x: clip; margin: 0; color: var(--ink);
         font-family: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased;
         background-color: var(--cream);
-        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23241d14'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23f2ede4'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
         background-size: 480px 480px;
+        transition: background-color .25s ease, color .25s ease;
       }
-      .page { max-width: 900px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
-
-      .hero { margin-top: clamp(40px, 7vw, 72px); }
-      .hero h1 { margin: 0; font-family: "Fraunces", Georgia, serif; font-size: clamp(36px, 6vw, 56px); font-weight: 500; letter-spacing: -0.02em; }
-      .hero h1 em { font-style: italic; color: var(--rust); }
-      .lede { color: var(--ink-soft); max-width: 38em; font-size: 18px; }
-      table.bench { width: 100%; border-collapse: collapse; margin-top: 32px; font-size: 15.5px; }
-      table.bench th { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rust); text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--line); }
-      table.bench td { padding: 16px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
-      table.bench td.metric { font-family: "Fraunces", Georgia, serif; font-size: 24px; font-weight: 500; white-space: nowrap; }
-      table.bench td.metric small { display: block; font-family: var(--mono); font-size: 11.5px; color: var(--muted); letter-spacing: 0.06em; margin-top: 4px; }
-      table.bench td.ev { color: var(--ink-soft); }
-      table.bench td.ev code { font-family: var(--mono); font-size: 0.82em; background: var(--cream-deep); padding: 1px 6px; border-radius: 5px; }
-      .textlink { font-size: 15px; font-weight: 500; color: var(--rust); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; white-space: nowrap; }
-      .note { font-size: 14px; color: var(--muted); margin-top: 24px; max-width: 44em; }
-
       a:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
-      @media (max-width: 640px) { table.bench td.metric { white-space: normal; } }
-
+      .textlink { color: var(--rust); font-weight: 500; text-decoration: none; border-bottom: 1px solid currentColor; }
+      .textlink:hover { color: var(--rust-deep); }
+      .page { max-width: 1060px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
+      .lost { margin-top: clamp(48px, 9vw, 96px); max-width: 720px; position: relative; }
+      .lost .kicker { margin: 0 0 14px; font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rust); }
+      .lost h1 { margin: 0; font-family: "Fraunces", Georgia, serif; font-size: clamp(40px, 7vw, 68px); font-weight: 500; line-height: 1.05; letter-spacing: -0.02em; }
+      .lost h1 em { font-style: italic; color: var(--rust); }
+      .lost p { color: var(--ink-soft); font-size: 18px; max-width: 34em; margin: 18px 0 0; }
+      .lost code { font-family: var(--mono); font-size: 0.85em; background: var(--cream-deep); padding: 2px 8px; border-radius: 6px; color: var(--ink); }
+      .stamp { font-family: "Fraunces", Georgia, serif; font-weight: 700; font-size: 30px; letter-spacing: .06em; padding: 8px 22px; border: 3px solid; border-radius: 8px; transform: rotate(-8deg); display: inline-block; margin-top: 30px; }
+      .stamp.reject { color: var(--red); border-color: var(--red); }
+      .stamp.show { animation: stampIn .45s cubic-bezier(.2, 1.4, .4, 1) both; }
+      @keyframes stampIn { 0% { opacity: 0; transform: scale(2.4) rotate(-14deg); } 60% { opacity: 1; transform: scale(.94) rotate(-8deg); } 100% { opacity: 1; transform: scale(1) rotate(-8deg); } }
+      .ways { list-style: none; margin: 34px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 12px; }
+      .ways a { display: inline-block; padding: 11px 22px; border-radius: 999px; border: 1.5px solid var(--line); color: var(--ink); text-decoration: none; font-weight: 600; }
+      .ways a:hover { border-color: var(--rust); color: var(--rust); }
+      .ways a.primary { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+      .ways a.primary:hover { background: var(--rust); border-color: var(--rust); color: var(--cream); }
+      @media (prefers-reduced-motion: reduce) { .stamp.show { animation: none; } }
     </style>
     <script>
       /* theme: set before first paint to avoid a flash. The js class turns on
@@ -110,39 +118,17 @@
         </nav>
       </header>
       <main id="main">
-        <div class="hero">
-          <h1>Bench<em>marks</em></h1>
-          <p class="lede">Every number on this site, with the measurement behind it. Re-run any of them yourself. The numbers live in one file, <code>facts.json</code>, and a scheduled check compares them with the public repo.</p>
+        <div class="lost">
+          <p class="kicker">404 · page not found</p>
+          <h1>No receipt for <em>that page.</em></h1>
+          <p>There's nothing at this address, so nothing happened. If a link on synthe.live brought you here, tell us at <a class="textlink" href="mailto:info@synthe.live">info@synthe.live</a> and we'll fix it.</p>
+          <span class="stamp reject show" aria-hidden="true">REJECT</span>
+          <ul class="ways">
+            <li><a class="primary" href="/">Go to the homepage</a></li>
+            <li><a href="/race.html">Race two agents</a></li>
+            <li><a href="/docs.html">Read the docs</a></li>
+          </ul>
         </div>
-        <table class="bench">
-          <tr><th>Metric</th><th>Evidence</th><th>Source</th></tr>
-          <tr>
-            <td class="metric"><span data-fact="clone_to_accept_s">1.5</span> s<small>TO FIRST ACCEPT</small></td>
-            <td class="ev">Fresh <code>git clone</code> to <code>ACCEPT</code> in 1.505 s, timed October 2026. Python 3 only, no install step. Command: <code>python3 src/handoff_check.py examples/valid.json --registry examples/registry.json --workspace . --ledger ledger.json</code>, exit code 0.</td>
-            <td><a class="textlink" href="/#proof">The commands</a></td>
-          </tr>
-          <tr>
-            <td class="metric"><span data-fact="runner_accepts">1</span> of <span data-fact="runner_runs">3</span><small>RUNS ACCEPTED</small></td>
-            <td class="ev">The same handoff dispatched <span data-fact="runner_runs">3</span> times, back to back, on real GitHub runners: exactly one <code>ACCEPT</code> flipped to <code>COMPLETED</code>; the other <span data-fact="runner_duplicates">2</span> were refused with <code>duplicate_idempotency_key</code>.</td>
-            <td><a class="textlink" href="https://github.com/rohansiddam/Synthe/actions/runs/36913336715">Runs</a></td>
-          </tr>
-          <tr>
-            <td class="metric"><span data-fact="attacks_rejected">8</span> of <span data-fact="attacks_shipped">8</span><small>ATTACKS REJECTED</small></td>
-            <td class="ev">The repo ships one valid signed packet and <span data-fact="attacks_shipped">8</span> attacks in <code>examples/v03/packets/</code>. Each attack lands on a named reason code; none pass.</td>
-            <td><a class="textlink" href="https://github.com/rohansiddam/Synthe/tree/main/examples/v03/packets">Examples</a></td>
-          </tr>
-          <tr>
-            <td class="metric"><span data-fact="tests_passed">57</span><small>PUBLIC TESTS</small></td>
-            <td class="ev">The public checker's test suite passes on <code>main</code> at commit <span data-fact="checker_commit">15f1527</span>, re-run on <span data-fact="facts_checked_on">October 6, 2026</span>. Command: <code>python3 -m pytest -q</code>.</td>
-            <td><a class="textlink" href="https://github.com/rohansiddam/Synthe/tree/main/tests">Tests</a></td>
-          </tr>
-          <tr>
-            <td class="metric">Ed25519<small>SIGNATURES</small></td>
-            <td class="ev">Packets are signed with Ed25519 over domain-separated canonical JSON (<code>synthe/handoff-signature/v1</code>). The <a class="textlink" href="playground.html">playground</a> signs in your browser; the real checker verifies those signatures.</td>
-            <td><a class="textlink" href="https://github.com/rohansiddam/Synthe/blob/main/src/synthe_crypto.py">synthe_crypto.py</a></td>
-          </tr>
-        </table>
-        <p class="note">What is not here: throughput or latency percentiles under load. The checker is a local gate, not a hosted service, so there is no fleet to benchmark. If you measure it in your setup, send the numbers and they will be listed with your method.</p>
       </main>
       <footer class="site-foot">
         <p class="footer-brand"><svg class="footer-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</p>
@@ -168,5 +154,6 @@
         <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
       </footer>
     </div>
+
   </body>
 </html>

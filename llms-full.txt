@@ -1,72 +1,64 @@
 # Synthe: the complete reference for language models
 
-> Synthe validates every handoff between AI agents before the receiver acts. ACCEPT or REJECT, with a reason.
+> Synthe is the commit barrier for AI agents. Agents propose. Synthe commits. Anyone can verify.
 
 ## What Synthe is
 
-When one AI agent hands work to another, the handoff is usually a blob of text taken on trust. Synthe replaces that with a typed packet and a gate: the sender ships a typed JSON packet, and the receiver checks it before acting. The check covers the packet's signature against a registry of agent identities, the hashes of the artifacts it references, the approvals covering the actions it declares, and whether the same handoff was already claimed.
+Agents increasingly act on real systems: they push code, write to databases, send messages. Most setups hand each agent a credential and trust it. Synthe takes the credential away. It holds the credentials for real-world actions itself (today: a GitHub token for `git push`), and agents propose actions instead of performing them.
 
-- ACCEPT: the handoff is valid. The claim is recorded with an idempotency key, so the same handoff can never be claimed twice, even across restarts.
-- REJECT: the handoff is invalid. The verdict names a machine-readable reason code, so the sender knows exactly what to fix.
+When an agent proposes an action, Synthe decides at the moment of commit, not when the plan was written:
 
-## The packet
+1. Claim. The receiving agent claims a typed, signed handoff. The checker validates it and records the claim under its idempotency key, so the same work can't be claimed twice.
+2. Work and propose. The agent does the work and proposes the effect, for example a push of its commits to an approved branch.
+3. Re-check at commit. Synthe checks the signed handoff and the human approval again, inspects every path the change touches against the agent's allowed paths, and waits for any upstream handoffs to complete.
+4. Compare and swap. Synthe pushes only if the branch still points where the approval saw it. If anything moved, it pushes nothing and refuses with `non_fast_forward`.
+5. Confirm and receipt. Synthe confirms the effect on the remote and signs a hash-chained receipt. Every refusal gets a receipt too.
 
-A handoff is a typed JSON packet: who sends, who receives, what was done, what evidence backs it, and what the receiver may do next. Nothing free-form.
+## What is public, and what is in beta
 
-## The registry
+- Public, under an evaluation license: the handoff checker (Python 3, no dependencies), its spec, threat model, tests, example packets and a GitHub Action. https://github.com/rohansiddam/Synthe
+- Design-partner beta: the commit broker, which holds the credentials, performs the action and writes receipts. git_push ships first.
 
-Each receiver holds a registry of agent identities and public keys. A packet's signature is verified against the registry before anything else is checked.
+## The public checker
 
-## The ledger
+A handoff is a typed JSON packet: who sends, who receives, what to do, what evidence backs it, and what the receiver may do next. The checker runs seven checks in a fixed order: structure, identity and signature, duplicates and conflicts, freshness, authority, artifacts, evidence. A broken structure stops it at once; after that it reports every problem, and the verdict takes its state from the first.
 
-Every ACCEPT is recorded with an idempotency key. A replayed handoff is rejected as a duplicate.
+- ACCEPT records a claim under the idempotency key. A second claim is refused with idempotency_key_reserved while the first runs, and duplicate_idempotency_key once it has completed.
+- REJECT names machine-readable reason codes, each with a state that says who acts: invalid, blocked, incomplete, stale, duplicate, conflicting, unknown.
+- Approvals are signed by a human, bound to one handoff, can pin the exact target of an action (approval_params_mismatch), and can arrive after work starts.
+- depends_on makes a handoff wait for others to complete; exclusive_paths refuses overlapping live claims (claim_conflict).
 
-## Approvals
-
-Actions a packet declares must be covered by a signed approval. A bad or missing approval is a REJECT with the reason named, not a silent pass.
+Complete reason codes: https://synthe.live/docs.html#reasons and section 10 of SPEC.md.
 
 ## Quickstart
 
-Clone the repo and run the checker against the example packets. Two minutes, no dependencies beyond Python 3. Timed October 2026: 1.5 seconds from a fresh clone to ACCEPT.
-
 ```
 git clone https://github.com/rohansiddam/Synthe.git && cd Synthe
-python3 src/handoff_check.py examples/v03/packets/valid-signed.json --registry examples/v03/registry.json --workspace examples/v03/workspace
+python3 src/handoff_check.py examples/valid.json --registry examples/registry.json --workspace . --ledger ledger.json
 ```
 
-Output: ACCEPT, claim recorded. Run the same command again and it is rejected as a duplicate.
+The output is a JSON verdict with "decision": "ACCEPT". Run the same command again and the second claim is refused as a duplicate (idempotency_key_reserved). Exit code 0 means ACCEPT, 2 means REJECT.
 
-Exit code 0 means ACCEPT, 2 means REJECT.
+## Evidence
 
-## Reason codes
+- Exactly once on real GitHub runners: the same handoff was dispatched three times, back to back, on October 1, 2026. Exactly one run got ACCEPT and completed; the other two were refused with duplicate_idempotency_key.
+  - https://github.com/rohansiddam/Synthe/actions/runs/36913336715 (ACCEPT)
+  - https://github.com/rohansiddam/Synthe/actions/runs/36913571379 (duplicate refused)
+  - https://github.com/rohansiddam/Synthe/actions/runs/36913698021 (duplicate refused)
+- The repo ships one valid signed packet and eight attacks (tampered after signing, spoofed sender, self-granted authority, forged approval, replayed approval, exceeds receiver policy, paraphrased "verbatim" evidence, undeclared actions). The checker rejects all eight, each with a named reason code.
+- Current test counts and every other number: https://synthe.live/benchmarks.html
 
-Every verdict names its reason. Codes include:
+## What Synthe can't do
 
-- signature_invalid: the packet was altered after signing, or the sender is spoofed.
-- duplicate_idempotency_key: the same handoff was already accepted and completed.
-- handoff_expired: the handoff arrived after its validity window.
-- artifact_hash_mismatch: a referenced artifact changed after the handoff was made.
-- evidence_hash_mismatch / evidence_not_verbatim: quoted evidence does not match the pinned hash.
-- approval_missing / approval_unsigned / approval_signature_invalid: the declared actions are not covered by a valid signed approval.
-- authority_exceeds_receiver_policy: the handoff asks for more authority than the receiver's policy allows.
-- incomplete: a field the receiver needs is absent.
-- planned_actions_missing: the packet takes actions it never declared up front.
+- An action a human approved will do exactly what was approved. Synthe narrows a compromised sender to that one action; it can't remove it.
+- Receipts prove which key and which connector acted, not which model wrote the work.
+- Synthe is only a barrier if agents can't go around it. Agents that still hold their own push rights can bypass it.
+- On a shared machine in same-user dev mode it is a seatbelt, not a wall, and its receipts say so.
+- Not proven yet: whether models stop when refused, speed against real GitHub pushes, and macOS isolation.
 
-The complete list is in SPEC.md in the repo.
+## What Synthe is not
 
-## Attacks
-
-The repo ships one valid signed packet and eight attack packets: tampered after signing, spoofed sender, self-granted authority, forged approval, replayed approval, exceeds receiver policy, paraphrased "verbatim" evidence, and undeclared actions. The checker rejects all eight, each with a named reason code. The keys in examples/v03/test-keys/ are public test keys; bring your own keys for real use.
-
-## Proven on real runners
-
-Three runs were dispatched back to back on real GitHub runners on October 1, 2026. Exactly one got ACCEPT and flipped to COMPLETED. The other two were both rejected as duplicates, with code duplicate_idempotency_key, checked against the completed entry rather than the claim-time snapshot.
-
-- Run #12 (the ACCEPT run): https://github.com/rohansiddam/Synthe/actions/runs/36913336715
-- Run #13 (duplicate REJECT): https://github.com/rohansiddam/Synthe/actions/runs/36913571379
-- Run #14 (duplicate REJECT): https://github.com/rohansiddam/Synthe/actions/runs/36913698021
-
-Stats: 3 real-runner runs, 1 accept / 2 duplicate rejects, 8 of 8 attacks rejected, 45 tests green.
+Not an orchestrator or agent framework, not a model provider, not a blockchain, not tamper-proof (it is tamper-evident), and not a certificate: it produces the evidence auditors and underwriters ask for; it doesn't make anyone certified, compliant or insured.
 
 ## Who builds it
 
@@ -74,24 +66,22 @@ Co-founders Rohan Siddamsettiwar and Rishab Ramalingam, out of the University of
 
 ## License and cost
 
-Synthe is an early project, shared under an evaluation license. Nothing to evaluate: copy it, run it against your own agent workflows, and see. Running Synthe does not change your code's license; the evaluation license covers Synthe's code, not yours.
-
-## Framework compatibility
-
-Any framework works. The checker is dependency-free Python and a handoff is just JSON. If your agents can emit JSON, they can send handoffs. Framework and model logos on synthe.live are shown for compatibility only; no endorsement is implied.
+The public checker is shared under an evaluation license: you may run it on your own agent workflows, but not redistribute it, publish forks, or build it into a product without written permission. It is not open source. Running it doesn't change your code's license. There is no price list yet; evaluating the public checker costs nothing.
 
 ## Source links
 
 - Site: https://synthe.live/
-- Docs: https://synthe.live/docs.html
-- Changelog: https://synthe.live/log.html
-- Forge this handoff (in-browser adversarial playground): https://synthe.live/forge.html
+- How it works and docs: https://synthe.live/docs.html
+- Race two agents (browser demo): https://synthe.live/race.html
+- Forge this handoff: https://synthe.live/forge.html
 - Contract playground: https://synthe.live/playground.html
-- Tamper-evidence demo: https://synthe.live/tamper.html
-- First notarization ceremony: https://synthe.live/ceremony.html
-- Public receipts: https://synthe.live/receipts.html
+- Tamper evidence: https://synthe.live/tamper.html
+- Anatomy of a handoff: https://synthe.live/anatomy.html
+- Receipts: https://synthe.live/receipts.html
+- Benchmarks: https://synthe.live/benchmarks.html
 - Status and trust: https://synthe.live/status.html
+- Changelog: https://synthe.live/log.html
 - Repo: https://github.com/rohansiddam/Synthe
 - Spec: https://github.com/rohansiddam/Synthe/blob/main/SPEC.md
 - Threat model: https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md
-- README: https://github.com/rohansiddam/Synthe/blob/main/README.md
+- Evaluation license: https://github.com/rohansiddam/Synthe/blob/main/EVALUATION_LICENSE.txt

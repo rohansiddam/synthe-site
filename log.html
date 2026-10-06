@@ -2,23 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="color-scheme" content="light" />
-    <meta name="description" content="The Synthe changelog: what shipped and when." />
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="favicon-32x32.png" type="image/png" sizes="32x32" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-    <title>Synthe changelog</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..650;1,9..144,400..650&family=IBM+Plex+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
-      rel="stylesheet"
-    />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="What shipped on Synthe, when, and the receipts behind it." />
+    <link rel="canonical" href="https://synthe.live/log.html" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>Changelog · Synthe</title>
+    <meta property="og:title" content="Changelog · Synthe" />
+    <meta property="og:description" content="What shipped on Synthe, when, and the receipts behind it." />
+    <meta property="og:image" content="https://synthe.live/og-image.png" />
+    <meta property="og:url" content="https://synthe.live/log.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Synthe" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="/fonts/fraunces-normal-400-650-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/site.css" />
+    <script src="/site.js" defer></script>
     <style>
       :root {
         --cream: #f5efe2;
@@ -49,15 +52,13 @@
       html[data-theme="dark"] body {
         background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23f2ede4'%20stroke-width%3D'1'%3E%3Cpath%20d%3D'M-16%2C18L0%2C24L16%2C30L32%2C30L48%2C24L64%2C18L80%2C18L96%2C24L112%2C30L128%2C30L144%2C24L160%2C18L176%2C18L192%2C24L208%2C30L224%2C30L240%2C24L256%2C18L272%2C18L288%2C24L304%2C30L320%2C30L336%2C24L352%2C18L368%2C18L384%2C24L400%2C30L416%2C30L432%2C24L448%2C18L464%2C18L480%2C24L496%2C30'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C72L0%2C78L16%2C78L32%2C72L48%2C66L64%2C66L80%2C72L96%2C78L112%2C78L128%2C72L144%2C66L160%2C66L176%2C72L192%2C78L208%2C78L224%2C72L240%2C66L256%2C66L272%2C72L288%2C78L304%2C78L320%2C72L336%2C66L352%2C66L368%2C72L384%2C78L400%2C78L416%2C72L432%2C66L448%2C66L464%2C72L480%2C78L496%2C78'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C126L0%2C126L16%2C119L32%2C114L48%2C114L64%2C121L80%2C126L96%2C126L112%2C119L128%2C114L144%2C114L160%2C121L176%2C126L192%2C126L208%2C119L224%2C114L240%2C114L256%2C121L272%2C126L288%2C126L304%2C119L320%2C114L336%2C114L352%2C121L368%2C126L384%2C126L400%2C119L416%2C114L432%2C114L448%2C121L464%2C126L480%2C126L496%2C119'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C173L0%2C167L16%2C161L32%2C163L48%2C169L64%2C175L80%2C173L96%2C167L112%2C161L128%2C163L144%2C169L160%2C175L176%2C173L192%2C167L208%2C161L224%2C163L240%2C169L256%2C175L272%2C173L288%2C167L304%2C161L320%2C163L336%2C169L352%2C175L368%2C173L384%2C167L400%2C161L416%2C163L432%2C169L448%2C175L464%2C173L480%2C167L496%2C161'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C215L0%2C209L16%2C211L32%2C217L48%2C223L64%2C221L80%2C215L96%2C209L112%2C211L128%2C217L144%2C223L160%2C221L176%2C215L192%2C209L208%2C211L224%2C217L240%2C223L256%2C221L272%2C215L288%2C209L304%2C211L320%2C217L336%2C223L352%2C221L368%2C215L384%2C209L400%2C211L416%2C217L432%2C223L448%2C221L464%2C215L480%2C209L496%2C211'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C257L0%2C259L16%2C266L32%2C271L48%2C269L64%2C262L80%2C257L96%2C259L112%2C266L128%2C271L144%2C269L160%2C262L176%2C257L192%2C259L208%2C266L224%2C271L240%2C269L256%2C262L272%2C257L288%2C259L304%2C266L320%2C271L336%2C269L352%2C262L368%2C257L384%2C259L400%2C266L416%2C271L432%2C269L448%2C262L464%2C257L480%2C259L496%2C266'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C307L0%2C314L16%2C319L32%2C317L48%2C310L64%2C305L80%2C307L96%2C314L112%2C319L128%2C317L144%2C310L160%2C305L176%2C307L192%2C314L208%2C319L224%2C317L240%2C310L256%2C305L272%2C307L288%2C314L304%2C319L320%2C317L336%2C310L352%2C305L368%2C307L384%2C314L400%2C319L416%2C317L432%2C310L448%2C305L464%2C307L480%2C314L496%2C319'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C363L0%2C367L16%2C364L32%2C357L48%2C353L64%2C356L80%2C363L96%2C367L112%2C364L128%2C357L144%2C353L160%2C356L176%2C363L192%2C367L208%2C364L224%2C357L240%2C353L256%2C356L272%2C363L288%2C367L304%2C364L320%2C357L336%2C353L352%2C356L368%2C363L384%2C367L400%2C364L416%2C357L432%2C353L448%2C356L464%2C363L480%2C367L496%2C364'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C415L0%2C412L16%2C405L32%2C401L48%2C404L64%2C411L80%2C415L96%2C412L112%2C405L128%2C401L144%2C404L160%2C411L176%2C415L192%2C412L208%2C405L224%2C401L240%2C404L256%2C411L272%2C415L288%2C412L304%2C405L320%2C401L336%2C404L352%2C411L368%2C415L384%2C412L400%2C405L416%2C401L432%2C404L448%2C411L464%2C415L480%2C412L496%2C405'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C460L0%2C453L16%2C449L32%2C452L48%2C459L64%2C463L80%2C460L96%2C453L112%2C449L128%2C452L144%2C459L160%2C463L176%2C460L192%2C453L208%2C449L224%2C452L240%2C459L256%2C463L272%2C460L288%2C453L304%2C449L320%2C452L336%2C459L352%2C463L368%2C460L384%2C453L400%2C449L416%2C452L432%2C459L448%2C463L464%2C460L480%2C453L496%2C449'%20stroke-opacity%3D'0.05'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
       }
-      .theme-toggle { background: none; border: none; padding: 10px 12px; margin: -10px -12px -10px 6px; font: inherit; font-size: 15px; color: var(--muted); cursor: pointer; white-space: nowrap; }
-      .theme-toggle:hover { color: var(--rust); }
-      .theme-toggle:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
+
       html { scrollbar-gutter: stable; }
       body { transition: background-color .25s ease, color .25s ease; }
       * { box-sizing: border-box; }
       body {
         margin: 0;
-        font-family: "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased;
+        font-family: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased;
         background-color: var(--cream);
         background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23241d14'%20stroke-width%3D'1'%3E%3Cpath%20d%3D'M-16%2C18L0%2C24L16%2C30L32%2C30L48%2C24L64%2C18L80%2C18L96%2C24L112%2C30L128%2C30L144%2C24L160%2C18L176%2C18L192%2C24L208%2C30L224%2C30L240%2C24L256%2C18L272%2C18L288%2C24L304%2C30L320%2C30L336%2C24L352%2C18L368%2C18L384%2C24L400%2C30L416%2C30L432%2C24L448%2C18L464%2C18L480%2C24L496%2C30'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C72L0%2C78L16%2C78L32%2C72L48%2C66L64%2C66L80%2C72L96%2C78L112%2C78L128%2C72L144%2C66L160%2C66L176%2C72L192%2C78L208%2C78L224%2C72L240%2C66L256%2C66L272%2C72L288%2C78L304%2C78L320%2C72L336%2C66L352%2C66L368%2C72L384%2C78L400%2C78L416%2C72L432%2C66L448%2C66L464%2C72L480%2C78L496%2C78'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C126L0%2C126L16%2C119L32%2C114L48%2C114L64%2C121L80%2C126L96%2C126L112%2C119L128%2C114L144%2C114L160%2C121L176%2C126L192%2C126L208%2C119L224%2C114L240%2C114L256%2C121L272%2C126L288%2C126L304%2C119L320%2C114L336%2C114L352%2C121L368%2C126L384%2C126L400%2C119L416%2C114L432%2C114L448%2C121L464%2C126L480%2C126L496%2C119'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C173L0%2C167L16%2C161L32%2C163L48%2C169L64%2C175L80%2C173L96%2C167L112%2C161L128%2C163L144%2C169L160%2C175L176%2C173L192%2C167L208%2C161L224%2C163L240%2C169L256%2C175L272%2C173L288%2C167L304%2C161L320%2C163L336%2C169L352%2C175L368%2C173L384%2C167L400%2C161L416%2C163L432%2C169L448%2C175L464%2C173L480%2C167L496%2C161'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C215L0%2C209L16%2C211L32%2C217L48%2C223L64%2C221L80%2C215L96%2C209L112%2C211L128%2C217L144%2C223L160%2C221L176%2C215L192%2C209L208%2C211L224%2C217L240%2C223L256%2C221L272%2C215L288%2C209L304%2C211L320%2C217L336%2C223L352%2C221L368%2C215L384%2C209L400%2C211L416%2C217L432%2C223L448%2C221L464%2C215L480%2C209L496%2C211'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C257L0%2C259L16%2C266L32%2C271L48%2C269L64%2C262L80%2C257L96%2C259L112%2C266L128%2C271L144%2C269L160%2C262L176%2C257L192%2C259L208%2C266L224%2C271L240%2C269L256%2C262L272%2C257L288%2C259L304%2C266L320%2C271L336%2C269L352%2C262L368%2C257L384%2C259L400%2C266L416%2C271L432%2C269L448%2C262L464%2C257L480%2C259L496%2C266'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C307L0%2C314L16%2C319L32%2C317L48%2C310L64%2C305L80%2C307L96%2C314L112%2C319L128%2C317L144%2C310L160%2C305L176%2C307L192%2C314L208%2C319L224%2C317L240%2C310L256%2C305L272%2C307L288%2C314L304%2C319L320%2C317L336%2C310L352%2C305L368%2C307L384%2C314L400%2C319L416%2C317L432%2C310L448%2C305L464%2C307L480%2C314L496%2C319'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C363L0%2C367L16%2C364L32%2C357L48%2C353L64%2C356L80%2C363L96%2C367L112%2C364L128%2C357L144%2C353L160%2C356L176%2C363L192%2C367L208%2C364L224%2C357L240%2C353L256%2C356L272%2C363L288%2C367L304%2C364L320%2C357L336%2C353L352%2C356L368%2C363L384%2C367L400%2C364L416%2C357L432%2C353L448%2C356L464%2C363L480%2C367L496%2C364'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C415L0%2C412L16%2C405L32%2C401L48%2C404L64%2C411L80%2C415L96%2C412L112%2C405L128%2C401L144%2C404L160%2C411L176%2C415L192%2C412L208%2C405L224%2C401L240%2C404L256%2C411L272%2C415L288%2C412L304%2C405L320%2C401L336%2C404L352%2C411L368%2C415L384%2C412L400%2C405L416%2C401L432%2C404L448%2C411L464%2C415L480%2C412L496%2C405'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C460L0%2C453L16%2C449L32%2C452L48%2C459L64%2C463L80%2C460L96%2C453L112%2C449L128%2C452L144%2C459L160%2C463L176%2C460L192%2C453L208%2C449L224%2C452L240%2C459L256%2C463L272%2C460L288%2C453L304%2C449L320%2C452L336%2C459L352%2C463L368%2C460L384%2C453L400%2C449L416%2C452L432%2C459L448%2C463L464%2C460L480%2C453L496%2C449'%20stroke-opacity%3D'0.05'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
         background-size: 480px 480px;
@@ -66,7 +67,6 @@
         line-height: 1.6;
       }
       .page { max-width: 780px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px 80px; }
-
 
       h1 {
         font-family: "Fraunces", Georgia, serif;
@@ -96,55 +96,55 @@
         margin: 8px 0 6px;
       }
       .entries p { margin: 0; color: var(--ink-soft); max-width: 38em; }
-      footer {
-        margin-top: 80px;
-        padding-top: 24px;
-        border-top: 1px solid var(--line);
-        color: var(--ink-soft);
-        font-size: 15px;
-      }
-      footer a { color: var(--ink-soft); }
-      footer a:hover { color: var(--rust); }
+
       a:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
       .textlink { color: var(--rust); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; font-weight: 500; }
       .textlink:hover { color: var(--ink); }
-          /* standard site header: identical on every page */
-      .footer-brand { display: flex; align-items: center; gap: 10px; font-family: "Fraunces", Georgia, serif; font-size: 20px; color: var(--ink); margin: 0 0 12px; }
-      .footer-logo { width: 22px; height: 24px; }
-      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px max(24px, calc(50vw - 530px)); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; background: var(--cream); margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
-      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
-      .wordmark-logo { width: 26px; height: 28px; flex: none; }
-      .topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
-      .topnav a { margin-left: 18px; color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; }
-      .topnav a:hover { color: var(--rust); }
+
     </style>
-      <script>
-      /* theme: set before first paint to avoid a flash */
+    <script>
+      /* theme: set before first paint to avoid a flash. The js class turns on
+         script-only layouts, like the phone menu. */
       try { (function () {
+        var d = document.documentElement;
+        d.classList.add("js");
         var t = null;
         try { t = localStorage.getItem("synthe-theme"); } catch (e) {}
         var dark = t ? t === "dark" : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
-        document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        d.setAttribute("data-theme", dark ? "dark" : "light");
       })(); } catch (e) {}
     </script>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <div class="page">
-            <header class="site-head">
+      <header class="site-head">
         <a class="wordmark" href="/"><svg class="wordmark-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</a>
-        <nav class="topnav">
-          <a href="forge.html">Forge</a>
-          <a href="playground.html">Playground</a>
-          <a href="tamper.html">Tamper</a>
-          <a href="docs.html">Docs</a>
+        <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="topnav">Menu</button>
+        <nav class="topnav" id="topnav" aria-label="Main">
+          <a href="/race.html">Race</a>
+          <a href="/forge.html">Forge</a>
+          <a href="/playground.html">Playground</a>
+          <a href="/tamper.html">Tamper</a>
+          <a href="/docs.html">Docs</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
           <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
         </nav>
       </header>
-      <main>
+      <main id="main">
         <h1>Change<em>log</em></h1>
         <p class="lede" style="color: var(--ink-soft); max-width: 38em; margin: -24px 0 40px;">What shipped, why it matters, and the receipts.</p>
         <ul class="entries">
+          <li>
+            <span class="date">October 6, 2026</span>
+            <h2>The site leads with the commit barrier</h2>
+            <p>synthe.live now says what Synthe is: the commit barrier for AI agents. Agents propose, Synthe commits, anyone can verify. New: <a class="textlink" href="/race.html">race two agents for one commit</a>, a docs section on <a class="textlink" href="/docs.html#commit-barrier">how the barrier works</a> with the complete reason-code list, and honest limits on the <a class="textlink" href="/status.html#limits">status page</a>. The site now loads nothing from anyone else: fonts are self-hosted, and every number comes from one file that is checked against the public repo.</p>
+          </li>
+          <li>
+            <span class="date">October 5, 2026</span>
+            <h2>Public checker v0.5</h2>
+            <p>Approvals can pin the exact target of an action, like a branch, so they can't be pointed somewhere else (<span style="font-family: var(--mono); font-size: 0.9em;">approval_params_mismatch</span>). Approvals can arrive after work starts, and nothing commits without one. Handoffs can wait for other handoffs to finish (<span style="font-family: var(--mono); font-size: 0.9em;">depends_on</span>), and a receiver can refuse overlapping work (<span style="font-family: var(--mono); font-size: 0.9em;">claim_conflict</span>). <span data-fact="tests_passed">57</span> public tests pass. <a class="textlink" href="https://github.com/rohansiddam/Synthe/pull/2">The pull request</a></p>
+          </li>
           <li>
             <span class="date">October 2, 2026</span>
             <h2>The site becomes a proving ground</h2>
@@ -162,34 +162,34 @@
           </li>
           <li>
             <span class="date">September 30, 2026</span>
-            <h2>The checker is open source</h2>
-            <p>Spec, checker, GitHub Action, and tests all in the open at <a class="textlink" href="https://github.com/rohansiddam/Synthe">github.com/rohansiddam/Synthe</a>. Read the rules before you trust them.</p>
+            <h2>The checker goes public</h2>
+            <p>Spec, checker, GitHub Action and tests are public at <a class="textlink" href="https://github.com/rohansiddam/Synthe">github.com/rohansiddam/Synthe</a>, under an evaluation license. Read the rules before you trust them.</p>
           </li>
         </ul>
       </main>
-      <footer>
+      <footer class="site-foot">
         <p class="footer-brand"><svg class="footer-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</p>
-        <p><a href="/">Back to synthe.live</a> · <a href="forge.html">Forge</a> · <a href="playground.html">Playground</a> · <a href="docs.html">Docs</a> · Shared under an evaluation license.</p>
+        <p class="footer-line">The commit barrier for AI agents. Agents propose. Synthe commits. Anyone can verify.</p>
+        <nav class="footer-nav" aria-label="Footer">
+          <a href="/race.html">Race two agents</a>
+          <a href="/forge.html">Forge this handoff</a>
+          <a href="/playground.html">Playground</a>
+          <a href="/tamper.html">Tamper evidence</a>
+          <a href="/anatomy.html">Anatomy of a handoff</a>
+          <a href="/quiz.html">Do I need this?</a>
+          <a href="/docs.html">Docs</a>
+          <a href="/log.html">Changelog</a>
+          <a href="/receipts.html">Receipts</a>
+          <a href="/benchmarks.html">Benchmarks</a>
+          <a href="/status.html">Status &amp; trust</a>
+          <a href="/#partner">Design partners</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">Spec</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md">Threat model</a>
+        </nav>
+        <p class="footer-legal">Synthe is an early project. The public checker is shared under an <a href="https://github.com/rohansiddam/Synthe/blob/main/EVALUATION_LICENSE.txt">evaluation license</a>, not an open-source one.</p>
+        <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
       </footer>
     </div>
-      <script>
-      /* theme toggle wiring */
-      (function () {
-        var b = document.getElementById("theme-toggle");
-        if (!b) return;
-        function paint() {
-          var dark = document.documentElement.getAttribute("data-theme") === "dark";
-          b.textContent = dark ? "Light" : "Dark";
-          b.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
-        }
-        b.addEventListener("click", function () {
-          var dark = document.documentElement.getAttribute("data-theme") !== "dark";
-          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-          try { localStorage.setItem("synthe-theme", dark ? "dark" : "light"); } catch (e) {}
-          paint();
-        });
-        paint();
-      })();
-    </script>
   </body>
 </html>

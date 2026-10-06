@@ -2,28 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="color-scheme" content="light" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="description" content="Public receipts: every Synthe claim links to the run that proves it." />
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="favicon-32x32.png" type="image/png" sizes="32x32" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="canonical" href="https://synthe.live/receipts.html" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <title>Receipts · Synthe</title>
     <meta property="og:title" content="Receipts · Synthe" />
     <meta property="og:description" content="Every Synthe claim links to the run that proves it." />
     <meta property="og:image" content="https://synthe.live/og-image.png" />
+    <meta property="og:url" content="https://synthe.live/receipts.html" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Synthe" />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..650;1,9..144,400..650&family=IBM+Plex+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preload" href="/fonts/fraunces-normal-400-650-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/site.css" />
+    <script src="/site.js" defer></script>
     <style>
       :root {
         --cream: #f5efe2; --cream-deep: #e9dfc8; --ink: #2b2118; --ink-soft: #4e4436;
@@ -46,9 +44,7 @@
       html[data-theme="dark"] body {
         background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23f2ede4'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
       }
-      .theme-toggle { background: none; border: none; padding: 10px 12px; margin: -10px -12px -10px 6px; font: inherit; font-size: 15px; color: var(--muted); cursor: pointer; white-space: nowrap; }
-      .theme-toggle:hover { color: var(--rust); }
-      .theme-toggle:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
+
       body { transition: background-color .25s ease, color .25s ease; }
       * { box-sizing: border-box; }
       html { -webkit-text-size-adjust: 100%; scrollbar-gutter: stable; overflow-x: clip; }
@@ -58,14 +54,13 @@
       ::-webkit-scrollbar-thumb { background: rgba(43, 33, 24, 0.28); border-radius: 8px; border: 2px solid var(--cream); }
       body {
         overflow-x: clip; margin: 0; color: var(--ink);
-        font-family: "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-family: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased;
         background-color: var(--cream);
         background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23241d14'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
         background-size: 480px 480px;
       }
       .page { max-width: 780px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
-
 
       .hero { margin-top: clamp(40px, 7vw, 72px); }
       .hero h1 { margin: 0; font-family: "Fraunces", Georgia, serif; font-size: clamp(36px, 6vw, 56px); font-weight: 500; letter-spacing: -0.02em; }
@@ -87,56 +82,51 @@
       .ledger div { padding: 10px 16px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 16px; background: var(--card); }
       .ledger div:last-child { border-bottom: none; }
       .ledger .ok { color: var(--green); font-weight: 600; }
-      footer { margin-top: clamp(56px, 10vw, 92px); padding-top: 26px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: baseline; }
-      footer p { margin: 0; }
-      footer .colophon { font-family: "Fraunces", Georgia, serif; font-style: italic; }
-      footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
-      footer a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
-      footer a:hover { color: var(--rust); }
+
       a:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
-          /* standard site header: identical on every page */
-      .footer-brand { display: flex; align-items: center; gap: 10px; font-family: "Fraunces", Georgia, serif; font-size: 20px; color: var(--ink); margin: 0 0 12px; }
-      .footer-logo { width: 22px; height: 24px; }
-      .site-head { display: flex; align-items: center; justify-content: space-between; padding: 22px max(24px, calc(50vw - 530px)); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 50; background: var(--cream); margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw); }
-      .wordmark { font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
-      .wordmark-logo { width: 26px; height: 28px; flex: none; }
-      .topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
-      .topnav a { margin-left: 18px; color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; }
-      .topnav a:hover { color: var(--rust); }
+
+      .note-lede { font-size: 16px; margin-top: 10px; }
     </style>
-      <script>
-      /* theme: set before first paint to avoid a flash */
+    <script>
+      /* theme: set before first paint to avoid a flash. The js class turns on
+         script-only layouts, like the phone menu. */
       try { (function () {
+        var d = document.documentElement;
+        d.classList.add("js");
         var t = null;
         try { t = localStorage.getItem("synthe-theme"); } catch (e) {}
         var dark = t ? t === "dark" : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
-        document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+        d.setAttribute("data-theme", dark ? "dark" : "light");
       })(); } catch (e) {}
     </script>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <div class="page">
-            <header class="site-head">
+      <header class="site-head">
         <a class="wordmark" href="/"><svg class="wordmark-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</a>
-        <nav class="topnav">
-          <a href="forge.html">Forge</a>
-          <a href="playground.html">Playground</a>
-          <a href="tamper.html">Tamper</a>
-          <a href="docs.html">Docs</a>
+        <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="topnav">Menu</button>
+        <nav class="topnav" id="topnav" aria-label="Main">
+          <a href="/race.html">Race</a>
+          <a href="/forge.html">Forge</a>
+          <a href="/playground.html">Playground</a>
+          <a href="/tamper.html">Tamper</a>
+          <a href="/docs.html">Docs</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
           <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
         </nav>
       </header>
-      <main>
+      <main id="main">
         <div class="hero">
           <h1>Re<em>ceipts</em></h1>
           <p class="lede">Synthe makes claims with receipts attached. Every entry below links to the run, file, or measurement behind it. No claim without a source.</p>
+          <p class="lede note-lede">These are receipts for the claims on this site. The commit broker's own signed receipts, one for every push and every refusal, are part of the design-partner beta. The <a class="textlink" href="/race.html">race demo</a> shows what they look like.</p>
         </div>
 
         <div class="receipt">
           <span class="stampline">Accepted</span>
           <p class="date">October 1, 2026 · GitHub Actions</p>
-          <h2>Exactly-once on a real runner</h2>
+          <h2>Exactly once on a real runner</h2>
           <p>One handoff dispatched to a real GitHub runner: <code>ACCEPT</code>, claim recorded, flipped to <code>COMPLETED</code>. Exit code 0.</p>
           <p><a class="textlink" href="https://github.com/rohansiddam/Synthe/actions/runs/36913336715">Open the run</a></p>
         </div>
@@ -151,16 +141,24 @@
 
         <div class="receipt">
           <span class="stampline">Accepted</span>
-          <p class="date">October 2, 2026 · measured locally</p>
-          <h2>1.5 seconds to first ACCEPT</h2>
-          <p>Fresh clone to <code>ACCEPT</code> in 1.505 seconds: <code>git clone</code>, then <code>python3 src/handoff_check.py examples/valid.json --registry examples/registry.json --workspace . --ledger ledger.json</code>. Python 3 only, no install step. Re-run the timing yourself; the command is on the <a class="textlink" href="/">homepage</a>.</p>
+          <p class="date">October 2026 · measured locally</p>
+          <h2><span data-fact="clone_to_accept_s">1.5</span> seconds to first ACCEPT</h2>
+          <p>Fresh clone to <code>ACCEPT</code> in 1.505 seconds: <code>git clone</code>, then <code>python3 src/handoff_check.py examples/valid.json --registry examples/registry.json --workspace . --ledger ledger.json</code>. Python 3 only, no install step. Re-run the timing yourself; the command is on the <a class="textlink" href="/#proof">homepage</a>.</p>
         </div>
 
         <div class="receipt">
-          <span class="stampline red">Rejected · 8 of 8</span>
+          <span class="stampline red">Rejected · <span data-fact="attacks_rejected">8</span> of <span data-fact="attacks_shipped">8</span></span>
           <p class="date">Shipped in the repo · reproducible</p>
-          <h2>Eight attacks, eight REJECTs</h2>
-          <p><code>examples/v03/packets/</code> ships one valid signed packet and eight attacks. Run the loop from the homepage and watch each verdict land with its reason code. Or attack a handoff yourself in the <a class="textlink" href="forge.html">forge</a>.</p>
+          <h2>Every shipped attack, refused</h2>
+          <p><code>examples/v03/packets/</code> ships one valid signed packet and <span data-fact="attacks_shipped">8</span> attacks. Run the loop from the <a class="textlink" href="/#breakit">homepage</a> and watch each verdict land with its reason code. Or attack a handoff yourself in the <a class="textlink" href="/forge.html">forge</a>.</p>
+        </div>
+
+        <div class="receipt">
+          <span class="stampline">Passed</span>
+          <p class="date">Checked <span data-fact="facts_checked_on">October 6, 2026</span> · public repo, commit <span data-fact="checker_commit">15f1527</span></p>
+          <h2><span data-fact="tests_passed">57</span> public tests pass</h2>
+          <p>The public checker's test suite, v<span data-fact="checker_version">0.5</span>, passes on <code>main</code>. Clone the repo and run <code>python3 -m pytest -q</code> to see the same result. The numbers on this site are re-checked against the repo by a scheduled job, and any change arrives as a pull request a human reviews.</p>
+          <p><a class="textlink" href="https://github.com/rohansiddam/Synthe/tree/main/tests">The tests</a> · <a class="textlink" href="https://github.com/rohansiddam/Synthe/pull/2">The v0.5 pull request</a></p>
         </div>
 
         <div class="demo-strip">
@@ -173,39 +171,29 @@
           </div>
         </div>
       </main>
-      <footer>
+      <footer class="site-foot">
         <p class="footer-brand"><svg class="footer-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</p>
-        <p>Synthe is an early project, shared under an evaluation license.</p>
-        <nav>
-          <a href="/">Home</a>
-          <a href="forge.html">Forge this handoff</a>
-          <a href="playground.html">Playground</a>
-          <a href="docs.html">Docs</a>
-          <a href="log.html">Changelog</a>
-          <a href="status.html">Status &amp; trust</a>
+        <p class="footer-line">The commit barrier for AI agents. Agents propose. Synthe commits. Anyone can verify.</p>
+        <nav class="footer-nav" aria-label="Footer">
+          <a href="/race.html">Race two agents</a>
+          <a href="/forge.html">Forge this handoff</a>
+          <a href="/playground.html">Playground</a>
+          <a href="/tamper.html">Tamper evidence</a>
+          <a href="/anatomy.html">Anatomy of a handoff</a>
+          <a href="/quiz.html">Do I need this?</a>
+          <a href="/docs.html">Docs</a>
+          <a href="/log.html">Changelog</a>
+          <a href="/receipts.html">Receipts</a>
+          <a href="/benchmarks.html">Benchmarks</a>
+          <a href="/status.html">Status &amp; trust</a>
+          <a href="/#partner">Design partners</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">Spec</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md">Threat model</a>
         </nav>
+        <p class="footer-legal">Synthe is an early project. The public checker is shared under an <a href="https://github.com/rohansiddam/Synthe/blob/main/EVALUATION_LICENSE.txt">evaluation license</a>, not an open-source one.</p>
         <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
       </footer>
     </div>
-      <script>
-      /* theme toggle wiring */
-      (function () {
-        var b = document.getElementById("theme-toggle");
-        if (!b) return;
-        function paint() {
-          var dark = document.documentElement.getAttribute("data-theme") === "dark";
-          b.textContent = dark ? "Light" : "Dark";
-          b.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
-        }
-        b.addEventListener("click", function () {
-          var dark = document.documentElement.getAttribute("data-theme") !== "dark";
-          document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-          try { localStorage.setItem("synthe-theme", dark ? "dark" : "light"); } catch (e) {}
-          paint();
-        });
-        paint();
-      })();
-    </script>
   </body>
 </html>
