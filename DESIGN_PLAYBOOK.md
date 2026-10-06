@@ -249,7 +249,7 @@ Every page follows the same pattern. To add dark mode to a new page, copy it exa
 - **`tools/check_site.py`** is the pre-ship gate (CI runs it on every push and pull request): facts, identical header and footer, shared head, no third-party loads, no em dashes, working links and anchors, sitemap, CSP meta vs. `_headers`. It warns while the Formspree form ID is unset.
 - **`.github/workflows/refresh-facts.yml`** runs the refresh every Monday and opens a pull request when something changed. It never publishes by itself.
 - **Security headers:** every page carries the CSP as a `<meta>` tag; `_headers` carries the same CSP plus HSTS, `frame-ancestors`, `nosniff`, referrer and permissions policies for when the site moves to Cloudflare Pages (`HOSTING.md`). Change both together.
-- **The partner form** posts to Formspree once the form ID replaces `YOUR_FORM_ID` in `index.html`; until then it falls back to the visitor's email app. If you change where it posts, update the CSP (`connect-src`, `form-action`) and the "Your data" section of `status.html`.
+- **The partner form** opens the visitor's email app (its `action` is a `mailto:` link, so it works without JavaScript too). Setting a Formspree form ID in `data-formspree` makes it post to Formspree instead; then the privacy lines under the form and on `status.html` must say so, and `check_site.py` fails until they do. If the form ever posts somewhere else, update the CSP (`connect-src`, `form-action`) as well.
 - **Adding a page:** copy the head, header and footer from an existing page, add it to `sitemap.xml` (or mark it `noindex`), add it to the footer on every page if it belongs there, and run `check_site.py`.
 
 ## 10. Page inventory

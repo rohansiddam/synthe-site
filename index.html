@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io mailto:; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
     <meta name="description" content="Agents propose. Synthe commits. Anyone can verify. Synthe holds the credentials for real-world actions, re-checks each one against a signed, human-approved plan at the moment of commit, and signs a receipt for every allow and every deny." />
@@ -1099,7 +1099,7 @@
           <p class="kicker">Design partners</p>
           <h2 id="partner-h">Pilot Synthe with <em>your agents</em></h2>
           <p class="blockintro">We're working with a small number of teams that run two or more agents against real systems. Tell us where to reach you and what your agents do, and we'll set up a pilot.</p>
-          <form class="partner-form" id="partner-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" data-fallback-email="info@synthe.live">
+          <form class="partner-form" id="partner-form" action="mailto:info@synthe.live?subject=Design%20partner%20request" method="post" enctype="text/plain" data-formspree="" data-fallback-email="info@synthe.live">
             <div class="field">
               <label for="partner-email">Work email</label>
               <input type="email" id="partner-email" name="email" placeholder="you@company.com" required autocomplete="email" maxlength="254" />
@@ -1116,7 +1116,7 @@
             <button class="btn" type="submit" id="partner-submit">Request access</button>
           </form>
           <p class="trynote form-note" id="partner-note" role="status" aria-live="polite"></p>
-          <p class="trynote">We read every request and use your email only to reply. The form is delivered by <a class="textlink" href="https://formspree.io/legal/privacy-policy/">Formspree</a>, which keeps a copy. Prefer plain email? Write to <a class="textlink" href="mailto:info@synthe.live">info@synthe.live</a>.</p>
+          <p class="trynote">Requesting access opens your email app with your request ready to send. Nothing is stored or sent on its own. Prefer to write it yourself? Email <a class="textlink" href="mailto:info@synthe.live">info@synthe.live</a>.</p>
         </section>
       </main>
 
@@ -1313,12 +1313,14 @@
         revealStagger(".catchledger", ".catchrow");
         revealStagger(".foryou-grid", ".foryou-card");
 
-        /* Design-partner form. Posts to Formspree when a form ID is set in the form's
-           action; until then it falls back to a drafted email, so nothing is lost. */
+        /* Design-partner form. Opens a drafted email by default. Once a Formspree form ID
+           is set in data-formspree, it posts there instead (see HOSTING.md). */
         var form = document.getElementById("partner-form");
         var note = document.getElementById("partner-note");
         var submit = document.getElementById("partner-submit");
-        var configured = form.getAttribute("action").indexOf("YOUR_FORM_ID") === -1;
+        var formspreeId = (form.getAttribute("data-formspree") || "").trim();
+        var configured = /^[A-Za-z0-9]+$/.test(formspreeId);
+        var endpoint = "https://formspree.io/f/" + formspreeId;
         var fallback = form.getAttribute("data-fallback-email");
         function mailtoFallback(email, agents) {
           var body = "Hi,\n\nI'd like to pilot Synthe with my agents.\n\nMy email: " + email + "\n" +
@@ -1342,7 +1344,7 @@
           submit.disabled = true;
           submit.textContent = "Sending…";
           note.textContent = "";
-          fetch(form.getAttribute("action"), {
+          fetch(endpoint, {
             method: "POST",
             body: new FormData(form),
             headers: { Accept: "application/json" }

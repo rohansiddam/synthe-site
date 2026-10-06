@@ -5,10 +5,12 @@ The site is plain static files: no build step. Today it is served by GitHub Page
 ## Before you publish a change
 
 1. `python3 tools/check_site.py` must pass (CI runs it on every push and pull request).
-2. The design-partner form needs a Formspree form ID. Create a form at formspree.io (send
-   submissions to info@synthe.live), then replace `YOUR_FORM_ID` in the form's `action` in
-   `index.html`. Until then the form opens the visitor's email app instead, and
-   `check_site.py` prints a warning.
+2. The design-partner form opens the visitor's email app today, so nothing goes to a third
+   party. To switch to Formspree: create a form at formspree.io (send submissions to
+   info@synthe.live), put its ID in `data-formspree` on the form in `index.html`, and change
+   the two privacy lines that describe the form (under the form on the homepage, and "The
+   partner form" on `status.html`) to say submissions go to Formspree, which keeps a copy.
+   `check_site.py` fails if those lines and the form disagree.
 
 ## Why move to Cloudflare Pages
 

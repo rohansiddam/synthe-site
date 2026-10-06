@@ -12,7 +12,8 @@ It fails (exit 1) when:
   - an internal link or #anchor points nowhere
   - sitemap.xml and the indexable pages disagree
   - the CSP <meta> tag and the CSP in _headers disagree
-It warns (exit 0) when the design-partner form still has no Formspree form ID.
+  - the design-partner form's privacy copy doesn't match where the form sends data
+It warns (exit 0) while the form uses the email fallback (no Formspree form ID yet).
 """
 from __future__ import annotations
 
@@ -162,10 +163,33 @@ for p in PAGES:
     if m and hdr_csp and m.group(1).strip() != hdr_csp:
         err(f"{p.name}: CSP meta tag differs from _headers")
 
-# 8. Formspree form ID
-if "formspree.io/f/YOUR_FORM_ID" in text(SITE / "index.html"):
-    warn("index.html: the design-partner form still has no Formspree form ID (YOUR_FORM_ID). "
-         "It falls back to opening the visitor's email app. See HOSTING.md.")
+# 8. The design-partner form: its privacy copy must match where it sends data.
+#    data-formspree="" -> the form opens the visitor's email app; nothing goes to a third party.
+#    data-formspree="<id>" -> the form posts to Formspree, and the copy must say so.
+def visible(html: str) -> str:
+    return re.sub(r"<script.*?</script>|<style.*?</style>|<!--.*?-->", "", html, flags=re.S)
+
+
+index_html = text(SITE / "index.html")
+fs = re.search(r'id="partner-form"[^>]*data-formspree="([^"]*)"', index_html)
+if not fs:
+    err("index.html: the partner form has no data-formspree attribute")
+else:
+    form_id = fs.group(1).strip()
+    copy = {name: visible(text(SITE / name)) for name in ("index.html", "status.html")}
+    if not form_id:
+        warn("index.html: the partner form uses the email fallback (no Formspree form ID). See HOSTING.md.")
+        for name, html in copy.items():
+            if "Formspree" in html:
+                err(f"{name}: copy mentions Formspree, but the form sends nothing there (data-formspree is empty)")
+    else:
+        if not re.fullmatch(r"[A-Za-z0-9]+", form_id):
+            err(f"index.html: data-formspree '{form_id}' doesn't look like a Formspree form ID")
+        for name, html in copy.items():
+            if "Formspree" not in html:
+                err(f"{name}: the form posts to Formspree, so this page's privacy copy must say so")
+            if "Nothing is stored or sent on its own" in html:
+                err(f"{name}: still says nothing is sent, but the form posts to Formspree")
 
 for w in warnings:
     print(f"::warning::{w}" if IN_CI else f"warning: {w}")
