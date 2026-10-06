@@ -58,7 +58,7 @@ The output is a JSON verdict with "decision": "ACCEPT". Run the same command aga
 
 ## What Synthe is not
 
-Not an orchestrator or agent framework, not a model provider, not a blockchain, not tamper-proof (it is tamper-evident), and not a certificate: it produces the evidence auditors and underwriters ask for; it doesn't make anyone certified, compliant or insured.
+Not an endorsement by any company named on synthe.live (the names show compatibility only), not an orchestrator or agent framework, not a model provider, not a blockchain, not tamper-proof (it is tamper-evident), and not a certificate: it produces the evidence auditors and underwriters ask for; it doesn't make anyone certified, compliant or insured.
 
 ## Who builds it
 
@@ -71,7 +71,8 @@ The public checker is shared under an evaluation license: you may run it on your
 ## Source links
 
 - Site: https://synthe.live/
-- How it works and docs: https://synthe.live/docs.html
+- How it works: https://synthe.live/how.html
+- Docs: https://synthe.live/docs.html
 - Race two agents (browser demo): https://synthe.live/race.html
 - Forge this handoff: https://synthe.live/forge.html
 - Contract playground: https://synthe.live/playground.html

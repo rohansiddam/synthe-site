@@ -18,7 +18,7 @@ The site sells one thing: **Synthe, the commit barrier for AI agents.** Use thes
 |---|---|
 | Category (titles, social card, footer) | The commit barrier for AI agents |
 | Motto (under every headline that names Synthe) | Agents propose. Synthe commits. Anyone can verify. |
-| Homepage headline | Your agents never hold the keys. |
+| Homepage headline | Synthe is the bouncer for your AI agents. Every action gets *checked* at the door. (The italic word rotates: checked, verified, screened.) |
 
 Rules for copy that describes the product (they come from the strategy's scope; the strategy wins if they ever differ):
 
@@ -130,20 +130,35 @@ The mark is an inline SVG of the Synthe stamp glyph, carried directly in the HTM
   <a class="wordmark" href="/"><svg class="wordmark-logo" viewBox="0 0 275 290" aria-hidden="true">...</svg>Synthe</a>
   <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="topnav">Menu</button>
   <nav class="topnav" id="topnav" aria-label="Main">
-    <a href="/race.html">Race</a>
-    <a href="/forge.html">Forge</a>
-    <a href="/playground.html">Playground</a>
-    <a href="/tamper.html">Tamper</a>
+    <a href="/how.html">How it works</a>
+    <details class="nav-group">
+      <summary>Demos</summary>
+      <div class="nav-panel">
+        <a href="/race.html"><strong>Race two agents</strong><span>Two agents, one change, exactly one commit.</span></a>
+        <!-- Forge, Playground, Tamper evidence, Anatomy of a handoff -->
+      </div>
+    </details>
     <a href="/docs.html">Docs</a>
+    <details class="nav-group">
+      <summary>Proof</summary>
+      <div class="nav-panel"><!-- Receipts, Benchmarks, Status & trust, Changelog --></div>
+    </details>
     <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+    <a class="nav-cta" href="/#partner">Become a design partner</a>
     <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
   </nav>
 </header>
 ```
+- Labels name what people are looking for, never our nicknames: the four demo names live inside "Demos", each with a one-line description (information scent, section 12).
+- The groups are native `<details>` disclosures, the pattern the W3C ARIA guide recommends for site navigation (not `role="menu"`). They open without JavaScript; `site.js` keeps one open at a time, closes on Escape (focus returns to the group) and on a click outside, and marks the group that holds the current page.
+- "Become a design partner" is the one call to action, and it is always in the header.
 - Links are root-absolute (`/race.html`), so the header works on any path, including the 404 page.
-- The current page's link carries `aria-current="page"` and shows in rust. That attribute is the only allowed difference between pages.
-- The CSS lives in `site.css`, not in pages. Do not add, remove, or reorder nav items on one page; change the header everywhere at once.
-- **Phone menu:** at 720px and below, the nav collapses behind the Menu button into a panel under the header. It only collapses when JavaScript runs (the head script adds a `js` class to `<html>`); without JavaScript the nav simply wraps, so every link stays reachable. `site.js` handles open, close on link click, close on Escape and close on outside click.
+- The current page's link carries `aria-current="page"`. That attribute is the only allowed difference between pages.
+- The CSS lives in `site.css`. Change the header everywhere at once (the round-2 generator is the model: one function writes it for every page).
+- **Phone menu:** at 900px and below, the nav collapses behind a button labeled "Menu" (not an icon alone) into a panel under the header, where the groups become accordions and the call to action is a full-width button. It only collapses when JavaScript runs (the head script adds a `js` class to `<html>`); without JavaScript the nav simply wraps.
+
+### "On this page" and Back to top
+Pages longer than about four screens (How it works, Docs) carry a sticky `<nav class="page-toc" aria-label="On this page">` under the header: a label, then links whose text matches the headings they jump to. `site.js` marks the section in view with `aria-current="true"`. Target headings or sections get `data-toc-target` so they land below the sticky bars. `site.js` also adds one labeled "Back to top" button, bottom right, on any page taller than four screens, shown once the reader is 1.5 screens down.
 
 ### Skip link
 `<a class="skip-link" href="#main">Skip to content</a>` is the first thing in `<body>`, and every page's `<main>` has `id="main"`.
@@ -191,8 +206,11 @@ Used for "How this works" explainers. `var(--card)` background, `--line` border,
 ### Footer (identical on every page; CI enforces it)
 Logo and brand line, the category line and motto, one nav of whole links (`flex-wrap: wrap` + `white-space: nowrap`, so no link wraps mid-phrase), the license line ("not an open-source one"), and the colophon in italic serif ("From the Greek synthēkē, meaning agreement."). CSS lives in `site.css`.
 
-### Marquee (homepage)
-Text-only scrolling tape, `var(--ink)` band with `--cream` text, level (the old -1.2deg tilt was removed), mono uppercase 13px, dots in rust. It lists real ways to connect, never vendor or framework logos.
+### Marquee (homepage trust strip)
+Right under the hero: "Works with any stack that emits JSON", then a scrolling tape of company names (LangChain, LangGraph, CrewAI, OpenAI, Anthropic, Google, Meta, Microsoft, Hugging Face, Vercel, Cloudflare) on a `var(--ink)` band, mono uppercase 14px, dots in rust, level. Names only, no logo files: several owners restrict their marks (Microsoft and OpenAI had theirs pulled from Simple Icons at their request). The note "Names shown for compatibility only. No endorsement implied." sits under it, next to the **Pause motion** button. The tape pauses on hover; screen readers get the list once, as plain text.
+
+### Rotating headline word
+One word in the homepage headline rotates (checked, verified, screened), looping every 7.5 s. Screen readers hear only "checked" (an `sr-only` copy; the animation is `aria-hidden`). It stops for reduced motion and with the Pause motion button.
 
 ### Terminal blocks
 Already-dark panels (`--term-bg`), green/amber mono text. Untouched by theme. Transcripts show real output; shorten it with `…` and say "Output shortened". Copy buttons copy the commands only (`.cmd` spans), never the output.
@@ -231,7 +249,8 @@ Every page follows the same pattern. To add dark mode to a new page, copy it exa
 
 - Functional interactions may use client-side JS and CSS transitions. Decorative work must add **no network requests and no JavaScript** (the marquee's one-line loop copy is the exception).
 - Scene changes crossfade + slight rise (`opacity`/`translateY`, ~0.45s). Stagger reveals at ~70-90ms.
-- `@media (prefers-reduced-motion: reduce)` must kill transitions and animations (instant swaps). The race demo then jumps straight to each result.
+- `@media (prefers-reduced-motion: reduce)` must kill transitions and animations (instant swaps).
+- Anything that moves by itself for more than 5 seconds next to other content needs a pause control (WCAG 2.2.2, Level A). The site has one, **Pause motion**: it adds `motion-paused` to `<html>`, which pauses every decorative animation, and the choice is remembered (`localStorage["synthe-motion"]`, applied by the head script before first paint). The race demo then jumps straight to each result.
 - No sound. No emojis in UI chrome.
 
 ## 8. Copy voice
@@ -250,19 +269,22 @@ Every page follows the same pattern. To add dark mode to a new page, copy it exa
 - **`.github/workflows/refresh-facts.yml`** runs the refresh every Monday and opens a pull request when something changed. It never publishes by itself.
 - **Security headers:** every page carries the CSP as a `<meta>` tag; `_headers` carries the same CSP plus HSTS, `frame-ancestors`, `nosniff`, referrer and permissions policies for when the site moves to Cloudflare Pages (`HOSTING.md`). Change both together.
 - **The partner form** opens the visitor's email app (its `action` is a `mailto:` link, so it works without JavaScript too). Setting a Formspree form ID in `data-formspree` makes it post to Formspree instead; then the privacy lines under the form and on `status.html` must say so, and `check_site.py` fails until they do. If the form ever posts somewhere else, update the CSP (`connect-src`, `form-action`) as well.
+- **Asset versions:** pages link `/site.css?v=<hash>` and `/site.js?v=<hash>`. After editing either file, run `python3 tools/stamp.py`; `check_site.py` fails on an old version. Without this, a browser could pair new pages with an old cached stylesheet (GitHub Pages caches for 10 minutes) and break the header.
+- **Local preview:** `python3 tools/serve.py` serves the site at http://127.0.0.1:8790 with caching off.
 - **Adding a page:** copy the head, header and footer from an existing page, add it to `sitemap.xml` (or mark it `noindex`), add it to the footer on every page if it belongs there, and run `check_site.py`.
 
 ## 10. Page inventory
 
 | Page | What it is |
 |---|---|
-| `/` (index) | Homepage: hero, marquee of ways to connect, how it works, what it stops (with the attack stepper), proof, who it's for, demos, updates, FAQ, design-partner form |
+| `/` (index) | Homepage, about 6 screens: hero (bouncer headline), trust strip, how it works (four steps), demos, proof, who it's for, FAQ accordion, final call to action with the partner form |
+| `how.html` | How it works, in detail: the commit path, without and with Synthe, what it stops, the attack loop and stepper, run it yourself, what it can't stop |
 | `race.html` | Race two agents for one commit: claim and compare-and-swap rules, signed and hash-chained demo receipts, chain verification |
 | `forge.html` | Adversarial playground: 6 attacks on a signed handoff, five checks in the real checker's order, inline verdicts |
 | `playground.html` | Click-through story: sign a real Ed25519 handoff, then sabotage it 5 ways |
 | `tamper.html` | Hash-chain demo: edit/delete/reorder/forge entries, find the broken block |
 | `anatomy.html` | CSS-only scrollytelling of a handoff's anatomy |
-| `docs.html` | Docs: the commit barrier, quickstart, check order, concepts, the complete reason-code reference |
+| `docs.html` | Docs: the commit barrier, quickstart, check order, concepts, the complete reason-code reference, with the sticky "On this page" bar |
 | `log.html` | Benefit-led changelog with proof links |
 | `quiz.html` | "Do I need a commit barrier?" quiz |
 | `receipts.html` | Source-linked proof claims; sample ledger labeled demo |
@@ -272,7 +294,9 @@ Every page follows the same pattern. To add dark mode to a new page, copy it exa
 
 ## 11. Pitfalls checklist (check before shipping)
 
+- [ ] `python3 tools/stamp.py` run after any edit to `site.css` or `site.js`
 - [ ] `python3 tools/check_site.py` passes
+- [ ] Homepage still about 6 screens at 1440x900 and about 9 on a phone; new detail goes to a deeper page with a link, not onto the homepage
 - [ ] No `rgba(255,255,255,X)` card backgrounds (use `var(--card)`)
 - [ ] No large `var(--green)` fills; large brand fills hardcode `#6b1212` in both modes
 - [ ] Header and footer identical on every page (only `aria-current` differs)
@@ -281,7 +305,36 @@ Every page follows the same pattern. To add dark mode to a new page, copy it exa
 - [ ] Logo mark present next to the wordmark and in the footer on every page; favicon linked
 - [ ] Watermark stroke updated in both light and dark copies
 - [ ] Toggle present, label flips, choice persists, no flash on reload; phone menu opens and closes
-- [ ] Reduced-motion fallback present
+- [ ] Reduced-motion fallback present, and moving content has the Pause motion control
 - [ ] No em dashes in copy
 - [ ] Public vs. beta labeled; no "open source"; no certified/compliant claims
 - [ ] Demos labeled honestly; no fabricated usage, receipts or benchmarks
+
+## 12. Navigation and page length: the research behind the structure
+
+The October 2026 restructure (homepage from 10.8 to 5.8 screens at 1440x900, 17.4 to 8.9 on a phone) follows these findings. Keep them when adding content.
+
+| Finding | Source | Rule on this site |
+|---|---|---|
+| 57% of viewing time is above the fold; 74% in the first two screenfuls | [NN/g, Scrolling and Attention](https://www.nngroup.com/articles/scrolling-and-attention/) (120 users, 130,000 fixations) | The first two screens carry the value proposition, the call to action, the trust strip and how it works. Demos sit in the first half. |
+| Users decide in about 10 seconds whether a page is worth their time | [NN/g, How Long Do Users Stay](https://www.nngroup.com/articles/how-long-do-users-stay-on-web-pages/) | The hero says what Synthe is in one headline and one lede. |
+| Visual appeal is judged in about 50 ms | [Lindgaard et al. 2006](https://www.semanticscholar.org/paper/Attention-web-designers:-You-have-50-milliseconds-a-Lindgaard-Fernandes/f9715b117c57d4e7064afe1c1cb95d5bf4cc1831) | Clean, quiet hero; one signature interaction. |
+| People scroll when there is a reason; signposts help; avoid false floors | [NN/g, Page Fold Manifesto](https://www.nngroup.com/articles/page-fold-manifesto/) | Each homepage section is a summary with a link to go deeper. |
+| Show essentials first, defer the rest; no more than two levels | [NN/g, Progressive Disclosure](https://www.nngroup.com/articles/progressive-disclosure/) | Homepage, then a detail page (How it works, Docs). Nothing deeper. |
+| Split distantly related topics across pages; long pages get an "On this page" index | [NN/g, In-Page Links](https://www.nngroup.com/articles/in-page-links-content-navigation/) | Sticky "On this page" on How it works and Docs. |
+| People scan headings (layer-cake); descriptive headings make that work | [NN/g, Layer-Cake Pattern](https://www.nngroup.com/articles/layer-cake-pattern-scanning/) | Every section heading states its point. |
+| Link labels must predict what's behind them; clever names mislead | [NN/g, Information Scent](https://www.nngroup.com/articles/information-scent/) | Nav says How it works, Demos, Docs, Proof, not Race, Forge, Tamper. |
+| Hidden navigation is used less and found slower, desktop and mobile | [NN/g, hidden vs visible navigation](https://www.nngroup.com/articles/find-navigation-mobile-even-hamburger/) (179 users) | Visible nav on desktop; the phone button is labeled "Menu". |
+| Site navigation dropdowns should be simple disclosures, not ARIA menus | [W3C ARIA APG, disclosure navigation](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/examples/disclosure-navigation/) | `<details>` groups with Escape and outside-click handling. |
+| Sticky headers give quick access to navigation; keep them compact and opaque | [NN/g, Sticky Headers](https://www.nngroup.com/articles/sticky-headers/) | One sticky header with the call to action; no other floating bars. |
+| FAQs work well as accordions with a caret or plus icon | [NN/g, Accordions on Desktop](https://www.nngroup.com/articles/accordions-on-desktop/) | Homepage FAQ is an accordion. |
+| Back to Top for pages longer than four screens, labeled, bottom right | [NN/g, Back to Top](https://www.nngroup.com/articles/back-to-top/) | `site.js` adds it on long pages only. |
+| Auto-moving content is often ignored and annoys; give control | [NN/g, Auto-Forwarding](https://www.nngroup.com/articles/auto-forwarding/) | Only two small motions (one word, one tape), both pausable. |
+| Moving content over 5 seconds needs a pause, stop or hide control (Level A) | [WCAG 2.2.2](https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html) | The Pause motion button, remembered across pages. |
+| Developer-tool pages: hero, trust strip, features, proof, FAQ, final call to action; scrolling logo strips save vertical space; "no salesy BS" | [Evil Martians, 100+ devtool landing pages](https://evilmartians.com/chronicles/we-studied-100-devtool-landing-pages-here-is-what-actually-works-in-2025) | That is the homepage order. |
+| B2B buyers rank pricing first and need enough product detail to judge fit | [NN/g, B2B usability](https://www.nngroup.com/articles/b2b-usability/), [B2B vs B2C](https://www.nngroup.com/articles/b2b-vs-b2c/) | The FAQ answers cost plainly; How it works and Docs carry the detail. |
+| 50 to 75 characters per line read best | [Baymard, line length](https://baymard.com/blog/line-length-readability) | Body text measures stay around 38 to 46em. |
+| Long pages win for complex, unfamiliar products; short ones for simple, familiar ones | [CXL, long vs short pages](https://cxl.com/blog/long-form-or-short-form/) | The full story exists (How it works, Docs), one click from a short homepage. |
+
+Budgets `check_site.py` watches: the homepage's main text stays under 900 words (warning).
+

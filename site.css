@@ -114,10 +114,11 @@
 }
 .skip-link:focus { top: 12px; }
 
-/* Header */
+/* Header: visible navigation with two disclosure groups (Demos, Proof) and a persistent CTA.
+   Research behind it: DESIGN_PLAYBOOK.md section 12. */
 .site-head {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  padding: 22px max(24px, calc(50vw - 530px));
+  padding: 16px max(24px, calc(50vw - 530px));
   border-bottom: 1px solid var(--line);
   position: sticky; top: 0; z-index: 50;
   background: var(--cream);
@@ -128,19 +129,53 @@
   text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
 }
 .wordmark-logo { width: 26px; height: 28px; flex: none; }
-.topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
-.topnav a { margin-left: 18px; color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; }
-.topnav a:hover, .topnav a[aria-current="page"] { color: var(--rust); }
+.topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 8px 22px; }
+.topnav > a, .nav-group > summary {
+  color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; cursor: pointer;
+}
+.topnav > a:hover, .topnav > a[aria-current="page"],
+.nav-group > summary:hover, .nav-group[open] > summary, .nav-group.has-current > summary { color: var(--rust); }
+
+/* Disclosure groups: native <details>, so they open without JavaScript too. site.js closes
+   the other group, closes on Escape and on a click outside. */
+.nav-group { position: relative; }
+.nav-group > summary { list-style: none; display: inline-flex; align-items: center; gap: 7px; padding: 6px 0; }
+.nav-group > summary::-webkit-details-marker { display: none; }
+.nav-group > summary::after {
+  content: ""; width: 6px; height: 6px; margin-top: -3px;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg); transition: transform .15s ease;
+}
+.nav-group[open] > summary::after { transform: rotate(-135deg); margin-top: 3px; }
+.nav-panel {
+  position: absolute; top: calc(100% + 14px); left: -16px; z-index: 60;
+  width: 320px; padding: 8px; display: grid; gap: 2px;
+  background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+  box-shadow: 0 18px 40px rgba(29, 26, 20, 0.14);
+}
+.nav-panel a { display: block; padding: 10px 12px; border-radius: 10px; color: var(--ink); text-decoration: none; }
+.nav-panel a:hover, .nav-panel a:focus-visible { background: var(--cream-deep); }
+.nav-panel strong { display: block; font-weight: 600; font-size: 15px; }
+.nav-panel span { display: block; font-size: 13.5px; line-height: 1.45; color: var(--muted); margin-top: 1px; }
+.nav-panel a[aria-current="page"] strong { color: var(--rust); }
+
+/* The one persistent call to action */
+.topnav > a.nav-cta {
+  background: var(--ink); color: var(--cream);
+  padding: 9px 18px; border-radius: 999px; font-weight: 650;
+  transition: background 0.2s ease;
+}
+.topnav > a.nav-cta:hover { background: var(--rust); color: var(--cream); }
 
 /* Theme toggle: looks like a nav link, but a 40px tap target */
 .theme-toggle {
-  background: none; border: none; padding: 10px 12px; margin: -10px -12px -10px 6px;
+  background: none; border: none; padding: 10px 12px; margin: -10px -12px -10px -6px;
   font: inherit; font-size: 15px; color: var(--muted); cursor: pointer; white-space: nowrap;
 }
 .theme-toggle:hover { color: var(--rust); }
 
-/* Phone menu button: only shown on narrow screens, and only when JavaScript runs.
-   Without JavaScript the nav simply wraps, so every link stays reachable. */
+/* Phone menu button: shown on narrow screens, and only when JavaScript runs.
+   Labeled "Menu", not an icon alone. Without JavaScript the nav simply wraps. */
 .nav-toggle {
   display: none;
   background: none; border: 1.5px solid var(--line); border-radius: 999px;
@@ -148,30 +183,63 @@
   color: var(--ink); cursor: pointer;
 }
 .nav-toggle:hover { border-color: var(--rust); color: var(--rust); }
-.theme-toggle:focus-visible, .nav-toggle:focus-visible, .skip-link:focus-visible {
+.theme-toggle:focus-visible, .nav-toggle:focus-visible, .skip-link:focus-visible,
+.nav-group > summary:focus-visible, .nav-panel a:focus-visible, .topnav > a:focus-visible {
   outline: 2px solid var(--rust); outline-offset: 2px;
 }
 
-@media (max-width: 720px) {
-  .site-head { padding-top: 14px; padding-bottom: 14px; }
+@media (max-width: 900px) {
+  .site-head { padding-top: 12px; padding-bottom: 12px; }
   .js .nav-toggle { display: inline-flex; }
   .js .topnav {
     display: none;
     position: absolute; top: 100%; left: 0; right: 0;
-    flex-direction: column; align-items: stretch; flex-wrap: nowrap;
+    flex-direction: column; align-items: stretch; flex-wrap: nowrap; gap: 0;
     background: var(--cream);
     border-bottom: 1px solid var(--line);
-    padding: 4px 24px 12px;
+    padding: 4px 24px 18px;
     box-shadow: 0 18px 30px rgba(29, 26, 20, 0.08);
+    max-height: calc(100vh - 64px); overflow-y: auto;
   }
   .js .site-head.nav-open .topnav { display: flex; }
-  .js .topnav a { margin: 0; padding: 13px 0; font-size: 17px; border-top: 1px solid var(--line); }
-  .js .topnav a:first-child { border-top: none; }
-  .js .topnav .theme-toggle {
-    margin: 0; padding: 13px 0; text-align: left; font-size: 17px;
-    border-top: 1px solid var(--line);
-  }
+  .js .topnav > a, .js .nav-group > summary { padding: 13px 0; font-size: 17px; border-top: 1px solid var(--line); }
+  .js .topnav > a:first-child { border-top: none; }
+  .js .nav-group > summary { display: flex; justify-content: space-between; }
+  .js .nav-panel { position: static; width: auto; box-shadow: none; border: none; background: transparent; padding: 0 0 8px; }
+  .js .nav-panel a { padding: 9px 12px; }
+  .js .topnav > a.nav-cta { margin-top: 14px; padding: 13px; text-align: center; border-top: none; }
+  .js .topnav .theme-toggle { margin: 6px 0 0; padding: 12px 0; text-align: left; font-size: 17px; }
 }
+
+/* "On this page": a sticky in-page index for long pages, marking the section in view.
+   Labels match the headings they jump to. */
+.page-toc {
+  position: sticky; top: var(--head-h, 66px); z-index: 40;
+  display: flex; align-items: center; gap: 4px 20px; overflow-x: auto; scrollbar-width: none;
+  margin: 24px calc(50% - 50vw) 0; padding: 10px max(24px, calc(50vw - 530px));
+  background: var(--cream); border-bottom: 1px solid var(--line);
+  font-size: 14.5px; white-space: nowrap;
+}
+.page-toc::-webkit-scrollbar { display: none; }
+.page-toc-label { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.page-toc a { color: var(--ink-soft); text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; }
+.page-toc a:hover, .page-toc a[aria-current="true"] { color: var(--rust); border-bottom-color: currentColor; }
+[data-toc-target] { scroll-margin-top: calc(var(--head-h, 66px) + 64px); }
+
+/* Back to top: one labeled, stationary button on pages longer than four screens. */
+.to-top {
+  position: fixed; right: 18px; bottom: 18px; z-index: 45;
+  font: inherit; font-size: 14px; font-weight: 600;
+  background: var(--card); color: var(--ink);
+  border: 1.5px solid var(--line); border-radius: 999px; padding: 9px 16px;
+  box-shadow: 0 8px 24px rgba(29, 26, 20, 0.12); cursor: pointer;
+}
+.to-top:hover { border-color: var(--rust); color: var(--rust); }
+.to-top[hidden] { display: none; }
+
+/* Decorative motion (the headline's rotating word, the marquee) pauses on request, and
+   stays still for anyone who prefers reduced motion. WCAG 2.2.2 Pause, Stop, Hide. */
+.motion-paused .rotator-inner, .motion-paused .marquee-track { animation-play-state: paused !important; }
 
 /* Footer */
 .site-foot {

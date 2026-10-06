@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io mailto:; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="How the Synthe commit barrier works: the commit path, what it stops, the attacks the public checker refuses, how to run it yourself, and what it can't stop." />
+    <link rel="canonical" href="https://synthe.live/how.html" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>How it works · Synthe</title>
+    <meta property="og:title" content="How it works · Synthe" />
+    <meta property="og:description" content="How the Synthe commit barrier works: the commit path, what it stops, the attacks the public checker refuses, how to run it yourself, and what it can't stop." />
+    <meta property="og:image" content="https://synthe.live/og-image.png" />
+    <meta property="og:url" content="https://synthe.live/how.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Synthe" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="/fonts/fraunces-normal-400-650-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/site.css?v=7c7e9c83" />
+    <script src="/site.js?v=0106cb96" defer></script>
+    <style>
+      :root {
+        --cream: #f5efe2;
+        --cream-deep: #e9dfc8;
+        --ink: #2b2118;
+        --ink-soft: #4e4436;
+        --muted: #675c4c;
+        --line: #dacdaf;
+        --rust: #8a1919;
+        --rust-deep: #6b1212;
+        --green: #286920;
+        --green-soft: #e3ebda;
+        --red-soft: #f0e0d3;
+        --red: #b3401f;
+        --term-bg: #2b2118;
+        --term-cream: #f0e6d2;
+        --term-green: #7fb069;
+        --term-amber: #d99a5b;
+        --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+            --card: #fbf7ec;
+}
+      html[data-theme="dark"] {
+        color-scheme: dark;
+        --cream: #0e0d0c;
+        --cream-deep: #161513;
+        --ink: #f2ede4;
+        --ink-soft: #d6cec0;
+        --muted: #a8a094;
+        --line: #38352f;
+        --rust: #ec5358;
+        --rust-deep: #ef6a52;
+        --green: #7fb069;
+        --green-soft: #161d17;
+        --red-soft: #241a16;
+        --red: #f2555a;
+              --card: #1a1917;
+}
+      html[data-theme="dark"] body {
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23f2ede4'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+      }
+
+      body { transition: background-color .25s ease, color .25s ease; }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scrollbar-gutter: stable; overflow-x: clip; }
+      html { scrollbar-width: thin; scrollbar-color: rgba(43, 33, 24, 0.35) transparent; }
+      body {
+        overflow-x: clip; margin: 0; color: var(--ink);
+        font-family: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+        background-color: var(--cream);
+        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23f2ede4'%20stroke-width%3D'1'%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+        background-size: 480px 480px;
+      }
+      a:focus-visible, button:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
+      code { font-family: var(--mono); font-size: 0.88em; }
+      .page { max-width: 1060px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
+
+      .kicker { margin: 0 0 12px; font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rust); }
+      .hero { margin-top: clamp(32px, 5vw, 56px); max-width: 760px; }
+      .hero h1 { margin: 0; font-family: "Fraunces", Georgia, serif; font-size: clamp(36px, 6vw, 58px); font-weight: 500; line-height: 1.06; letter-spacing: -0.02em; }
+      .hero h1 em { font-style: italic; color: var(--rust); }
+      .lede { color: var(--ink-soft); max-width: 38em; font-size: 18px; margin: 16px 0 0; }
+      .textlink { color: var(--rust); font-weight: 500; text-decoration: none; border-bottom: 1px solid currentColor; }
+      .textlink:hover { color: var(--rust-deep); }
+
+      section.block { border-top: 1px solid var(--line); margin-top: clamp(36px, 6vw, 56px); padding-top: clamp(32px, 5vw, 48px); }
+      section.block:first-of-type { border-top: none; margin-top: 24px; }
+      h2 { margin: 0 0 16px; font-family: "Fraunces", Georgia, serif; font-size: clamp(28px, 4vw, 38px); font-weight: 500; line-height: 1.12; letter-spacing: -0.015em; }
+      h2 em { font-style: italic; color: var(--rust); }
+      .blockintro { margin: 0 0 22px; font-size: 17px; color: var(--ink-soft); max-width: 40em; }
+      .trynote { margin: 16px 0 0; font-size: 15px; color: var(--ink-soft); max-width: 46em; }
+      .trynote code, .blockintro code { background: var(--cream-deep); padding: 2px 7px; border-radius: 6px; }
+
+      /* The commit path, step by step */
+      .flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .flow li { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 22px 22px 24px; }
+      .flow .num { font-family: "Fraunces", Georgia, serif; font-style: italic; font-size: 30px; line-height: 1; color: var(--rust); }
+      .flow h3 { margin: 12px 0 6px; font-size: 18px; font-weight: 650; }
+      .flow p { margin: 0; font-size: 15.5px; line-height: 1.6; color: var(--ink-soft); }
+      .flow .where { display: inline-block; margin-top: 12px; font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; padding: 1px 9px; border-radius: 999px; border: 1px solid currentColor; }
+      .flow .where.public { color: var(--green); }
+      .flow .where.beta { color: var(--rust); }
+
+      /* Without / with */
+      .change { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+      .change .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 24px; }
+      .change .card.good { background: #6b1212; border-color: #6b1212; }
+      .change .label { display: block; font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+      .change .card.good .label { color: #d9b596; }
+      .change p { margin: 0; font-size: 16px; line-height: 1.6; color: var(--ink-soft); }
+      .change .card.good p { color: #ecdfc9; }
+
+      /* What it stops: ledger rows */
+      .catchledger { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+      .catchrow { display: grid; grid-template-columns: 52px 1fr auto; gap: 20px; align-items: center; padding: 18px 6px; border-bottom: 1px solid var(--line); }
+      .catchrow:hover { background: var(--card); box-shadow: inset 3px 0 0 var(--rust); }
+      .catch-index { font-family: "Fraunces", Georgia, serif; font-size: 24px; color: var(--rust); }
+      .catch-main .name { display: block; font-weight: 650; font-size: 17px; }
+      .catch-main .desc { display: block; color: var(--ink-soft); font-size: 15px; margin-top: 4px; max-width: 40em; line-height: 1.55; }
+      .catch-code { font-family: var(--mono); font-size: 12.5px; background: #2b2118; color: #f5efe2; padding: 8px 14px; border-radius: 9px; white-space: nowrap; }
+      .catch-code .rej { color: #f2555a; font-weight: 600; margin-right: 8px; }
+      .beta-tag { display: inline-block; vertical-align: 2px; margin-left: 8px; font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rust); border: 1px solid currentColor; border-radius: 999px; padding: 0 8px; line-height: 1.7; }
+
+      /* Terminal blocks (already dark, untouched by theme) */
+      .terminal { background: var(--term-bg); color: var(--term-cream); border-radius: 18px; padding: 22px 24px; font-family: var(--mono); font-size: 13.5px; line-height: 1.75; overflow-x: auto; box-shadow: 0 18px 44px rgba(43, 33, 24, 0.22); }
+      .terminal p { margin: 0; overflow-wrap: anywhere; }
+      .terminal p + p { margin-top: 14px; }
+      .terminal .cmd { color: var(--term-cream); }
+      .terminal .prompt { color: #a8a094; }
+      .terminal .accept { color: var(--term-green); font-weight: 500; }
+      .terminal .reject, .terminal .rej { color: var(--term-amber); font-weight: 500; }
+      .terminal .dim { color: #a8a094; }
+      .terminal pre { margin: 14px 0 0; font: inherit; color: var(--term-cream); white-space: pre; }
+      .term-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; min-height: 24px; }
+      .term-bar .dots { display: inline-flex; gap: 8px; }
+      .term-bar .dots i { width: 11px; height: 11px; border-radius: 50%; background: #2a2019; }
+      .term-bar .dots i:nth-child(1) { background: #c25a44; }
+      .term-bar .dots i:nth-child(2) { background: #d9a45b; }
+      .term-bar .dots i:nth-child(3) { background: #7fb069; }
+      .copybtn { font-family: var(--mono); font-size: 12px; color: #a8a094; background: transparent; border: 1px solid #4e4436; border-radius: 8px; padding: 5px 12px; cursor: pointer; }
+      .copybtn:hover { color: var(--term-cream); border-color: #a8a094; }
+      .caret::after { content: "▍"; color: #ec5358; animation: blink 1s steps(1) infinite; }
+      @keyframes blink { 50% { opacity: 0; } }
+
+      /* Attack stepper */
+      .simulator { margin-top: 24px; }
+      .sim-label { margin: 0; font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); }
+      .sim-bar { display: flex; align-items: stretch; gap: 12px; margin: 14px 0 18px; }
+      .sim-nav { flex: 0 0 auto; width: 54px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); font-size: 24px; line-height: 1; cursor: pointer; color: var(--ink); }
+      .sim-nav:hover { border-color: var(--rust); color: var(--rust); }
+      .sim-current { flex: 1; border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px; background: var(--card); transition: opacity 0.2s ease, transform 0.2s ease; }
+      .sim-current.no-trans { transition: none; }
+      .sim-current.out-left, .sim-current.in-left { opacity: 0; transform: translateX(-18px); }
+      .sim-current.out-right, .sim-current.in-right { opacity: 0; transform: translateX(18px); }
+      #sim-output { transition: opacity 0.18s ease; min-height: 92px; }
+      #sim-output.fading { opacity: 0; }
+      .sim-count { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rust); }
+      .sim-name { display: block; font-family: "Fraunces", Georgia, serif; font-size: clamp(20px, 3vw, 26px); margin-top: 6px; }
+      .sim-desc { display: block; color: var(--ink-soft); font-size: 15px; margin-top: 4px; }
+
+      /* Limits */
+      .limits { list-style: none; margin: 0; padding: 0; max-width: 46em; }
+      .limits li { padding: 14px 0; border-top: 1px solid var(--line); }
+      .limits li:last-child { border-bottom: 1px solid var(--line); }
+      .limits strong { display: block; font-size: 16.5px; }
+      .limits span { display: block; color: var(--ink-soft); font-size: 15.5px; margin-top: 2px; }
+      .next { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 10px 22px; }
+
+      @media (max-width: 760px) {
+        .flow, .change { grid-template-columns: 1fr; }
+        .catchrow { grid-template-columns: 40px 1fr; gap: 14px; }
+        .catch-code { grid-column: 2; justify-self: start; white-space: normal; word-break: break-all; }
+        .terminal { padding: 18px 16px; font-size: 12.5px; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .caret::after { animation: none; }
+        .sim-nav, .sim-current { transition: none; }
+      }
+    </style>
+    <script>
+      /* theme and motion: set before first paint to avoid a flash. The js class turns on
+         script-only layouts, like the phone menu. */
+      try { (function () {
+        var d = document.documentElement;
+        d.classList.add("js");
+        var t = null, m = null;
+        try { t = localStorage.getItem("synthe-theme"); m = localStorage.getItem("synthe-motion"); } catch (e) {}
+        var dark = t ? t === "dark" : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        d.setAttribute("data-theme", dark ? "dark" : "light");
+        if (m === "paused") d.classList.add("motion-paused");
+      })(); } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="page">
+      <header class="site-head">
+        <a class="wordmark" href="/"><svg class="wordmark-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</a>
+        <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="topnav">Menu</button>
+        <nav class="topnav" id="topnav" aria-label="Main">
+          <a href="/how.html" aria-current="page">How it works</a>
+          <details class="nav-group">
+            <summary>Demos</summary>
+            <div class="nav-panel">
+              <a href="/race.html"><strong>Race two agents</strong><span>Two agents, one change, exactly one commit.</span></a>
+              <a href="/forge.html"><strong>Forge this handoff</strong><span>Attack a signed handoff six ways.</span></a>
+              <a href="/playground.html"><strong>Playground</strong><span>Sign a real handoff, then break it.</span></a>
+              <a href="/tamper.html"><strong>Tamper evidence</strong><span>Break a hash chain and find where.</span></a>
+              <a href="/anatomy.html"><strong>Anatomy of a handoff</strong><span>One handoff, from draft to ledger.</span></a>
+            </div>
+          </details>
+          <a href="/docs.html">Docs</a>
+          <details class="nav-group">
+            <summary>Proof</summary>
+            <div class="nav-panel">
+              <a href="/receipts.html"><strong>Receipts</strong><span>Every claim, linked to the run behind it.</span></a>
+              <a href="/benchmarks.html"><strong>Benchmarks</strong><span>Every number on the site and its source.</span></a>
+              <a href="/status.html"><strong>Status &amp; trust</strong><span>What's public, what isn't proven, your data.</span></a>
+              <a href="/log.html"><strong>Changelog</strong><span>What shipped, and when.</span></a>
+            </div>
+          </details>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+          <a class="nav-cta" href="/#partner">Become a design partner</a>
+          <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
+        </nav>
+      </header>
+      <main id="main">
+        <div class="hero">
+          <p class="kicker">How it works</p>
+          <h1>How Synthe <em>works</em></h1>
+          <p class="lede">Synthe sits between your agents and the systems they change. Here is the path every action takes, what it refuses, and how to check the public part yourself.</p>
+        </div>
+
+        <nav class="page-toc" aria-label="On this page">
+          <span class="page-toc-label">On this page</span>
+          <a href="#path">The commit path</a>
+          <a href="#compare">Without Synthe, and with it</a>
+          <a href="#stops">What it stops</a>
+          <a href="#breakit">Try to break it</a>
+          <a href="#run">Run it yourself</a>
+          <a href="#limits">What it can't stop</a>
+        </nav>
+
+        <section class="block" id="path" data-toc-target aria-labelledby="path-h">
+          <h2 id="path-h">The commit <em>path</em></h2>
+          <p class="blockintro">An agent never touches the credential. It hands Synthe a signed proposal, and Synthe decides at the last possible moment, when the action is about to happen.</p>
+          <ol class="flow">
+            <li>
+              <span class="num" aria-hidden="true">1</span>
+              <h3>Propose</h3>
+              <p>The agent sends a typed, signed handoff instead of a blob of text: who it is, what it plans to do, and the exact files it relied on, pinned by hash.</p>
+              <span class="where public">Public checker</span>
+            </li>
+            <li>
+              <span class="num" aria-hidden="true">2</span>
+              <h3>Approve</h3>
+              <p>A human signs the plan. The approval names the exact target, like the branch to push to, so nobody can point it somewhere else later. It can arrive after the work starts; nothing commits without it.</p>
+              <span class="where public">Public checker</span>
+            </li>
+            <li>
+              <span class="num" aria-hidden="true">3</span>
+              <h3>Re-check at commit</h3>
+              <p>When the agent is ready, Synthe checks everything again: the signature, the approval, every path the change touches against the agent's allowed paths, and that nothing moved since the check.</p>
+              <span class="where beta">Commit broker · beta</span>
+            </li>
+            <li>
+              <span class="num" aria-hidden="true">4</span>
+              <h3>Commit once, receipt always</h3>
+              <p>Synthe performs the action itself, exactly once, confirms it landed, and signs a hash-chained receipt. A refusal gets a receipt too, with the reason.</p>
+              <span class="where beta">Commit broker · beta</span>
+            </li>
+          </ol>
+        </section>
+
+        <section class="block" id="compare" data-toc-target aria-labelledby="compare-h">
+          <h2 id="compare-h">Without Synthe, <em>and with it</em></h2>
+          <div class="change">
+            <div class="card">
+              <span class="label">Without Synthe</span>
+              <p>Each agent holds a token that can push, deploy or send. A retried task runs twice. An agent acts on files that changed after you approved the plan. When something goes wrong, nothing records who approved what.</p>
+            </div>
+            <div class="card good">
+              <span class="label">With Synthe</span>
+              <p>Agents hold no production credentials. Every action is checked against a signed approval at the moment it happens, runs once, and leaves a signed receipt, whether it was allowed or refused.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="block" id="stops" data-toc-target aria-labelledby="stops-h">
+          <h2 id="stops-h">What it <em>stops</em></h2>
+          <p class="blockintro">Every refusal names its reason, in plain words for you and as a code your tools can read.</p>
+          <ul class="catchledger">
+            <li class="catchrow">
+              <span class="catch-index" aria-hidden="true">01</span>
+              <div class="catch-main"><span class="name">Work done twice</span><span class="desc">A retried or duplicated handoff tries to run again. The second claim is refused, so the work runs once.</span></div>
+              <code class="catch-code"><span class="rej">REJECT</span>duplicate_idempotency_key</code>
+            </li>
+            <li class="catchrow">
+              <span class="catch-index" aria-hidden="true">02</span>
+              <div class="catch-main"><span class="name">Stale files</span><span class="desc">A file the plan relied on changed after it was signed. Its pinned hash no longer matches.</span></div>
+              <code class="catch-code"><span class="rej">REJECT</span>artifact_hash_mismatch</code>
+            </li>
+            <li class="catchrow">
+              <span class="catch-index" aria-hidden="true">03</span>
+              <div class="catch-main"><span class="name">Actions nobody approved</span><span class="desc">The plan includes an action that needs a human's signature, and there isn't one.</span></div>
+              <code class="catch-code"><span class="rej">REJECT</span>approval_missing</code>
+            </li>
+            <li class="catchrow">
+              <span class="catch-index" aria-hidden="true">04</span>
+              <div class="catch-main"><span class="name">An approval pointed somewhere else</span><span class="desc">The human approved a push to one branch. The agent asks to push to another.</span></div>
+              <code class="catch-code"><span class="rej">REJECT</span>approval_params_mismatch</code>
+            </li>
+            <li class="catchrow">
+              <span class="catch-index" aria-hidden="true">05</span>
+              <div class="catch-main"><span class="name">Authority nobody gave</span><span class="desc">The handoff asks for more than the receiver's policy allows. Authority can only narrow as work passes along.</span></div>
+              <code class="catch-code"><span class="rej">REJECT</span>authority_exceeds_receiver_policy</code>
+            </li>
+            <li class="catchrow">
+              <span class="catch-index" aria-hidden="true">06</span>
+              <div class="catch-main"><span class="name">A branch that moved <span class="beta-tag">Beta</span></span><span class="desc">Another push landed first. Synthe pushes only if the branch is still where the approval saw it, and pushes nothing otherwise.</span></div>
+              <code class="catch-code"><span class="rej">REJECT</span>non_fast_forward</code>
+            </li>
+          </ul>
+          <p class="trynote">Every code, with who should act on it: <a class="textlink" href="/docs.html#reasons">the reason-code reference</a>.</p>
+        </section>
+
+        <section class="block" id="breakit" data-toc-target aria-labelledby="breakit-h">
+          <h2 id="breakit-h">Try to break the <em>public checker</em></h2>
+          <p class="blockintro">The repo ships one valid signed packet and <span data-fact="attacks_shipped">8</span> attacks. Run them all, or step through them below.</p>
+          <div class="terminal" role="group" aria-label="Shell loop that runs the checker over every example packet and prints each verdict.">
+            <div class="term-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><button class="copybtn" type="button">Copy</button></div>
+            <p><span class="prompt">$ </span><span class="cmd">for f in examples/v03/packets/*.json; do</span><br />
+            <span class="prompt">&gt; </span><span class="cmd">  python3 src/handoff_check.py "$f" --registry examples/v03/registry.json --workspace examples/v03/workspace --dry-run \</span><br />
+            <span class="prompt">&gt; </span><span class="cmd">  | python3 -c 'import json,sys; v=json.load(sys.stdin); print(sys.argv[1].ljust(31), v["decision"], *[r["code"] for r in v.get("reasons", [])][:1])' "$(basename "$f" .json)"</span><br />
+            <span class="prompt">&gt; </span><span class="cmd">done</span></p>
+<pre><span class="dim">attack-exceeds-receiver-policy </span> <span class="reject">REJECT</span> authority_exceeds_receiver_policy
+<span class="dim">attack-forged-approval         </span> <span class="reject">REJECT</span> approval_unsigned
+<span class="dim">attack-paraphrased-verbatim    </span> <span class="reject">REJECT</span> evidence_hash_mismatch
+<span class="dim">attack-replayed-approval       </span> <span class="reject">REJECT</span> approval_signature_invalid
+<span class="dim">attack-self-granted-authority  </span> <span class="reject">REJECT</span> approval_missing
+<span class="dim">attack-spoofed-sender          </span> <span class="reject">REJECT</span> signature_invalid
+<span class="dim">attack-tampered-after-signing  </span> <span class="reject">REJECT</span> signature_invalid
+<span class="dim">attack-undeclared-actions      </span> <span class="reject">REJECT</span> planned_actions_missing
+<span class="dim">valid-signed                   </span> <span class="accept">ACCEPT</span></pre>
+          </div>
+          <div class="simulator" id="simulator">
+            <p class="sim-label">Step through the attacks</p>
+            <div class="sim-bar">
+              <button type="button" class="sim-nav" id="sim-prev" aria-label="Previous attack">&#8592;</button>
+              <div class="sim-current">
+                <span class="sim-count" id="sim-count">Attack 1 of 8</span>
+                <span class="sim-name" id="sim-name">Tampered after signing</span>
+                <span class="sim-desc" id="sim-desc">The packet was altered after the signature was made, so the signature no longer matches.</span>
+              </div>
+              <button type="button" class="sim-nav" id="sim-next" aria-label="Next attack">&#8594;</button>
+            </div>
+            <div class="terminal sim-terminal" role="group" aria-label="The checker's verdict for the selected attack.">
+              <div class="term-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+              <div class="term-body" id="sim-output" aria-live="polite"><p><span class="dim">Use the arrows to step through the attacks.</span></p></div>
+            </div>
+          </div>
+          <p class="trynote">The keys in <code>examples/v03/test-keys/</code> are public test keys. Bring your own keys for real use.</p>
+        </section>
+
+        <section class="block" id="run" data-toc-target aria-labelledby="run-h">
+          <h2 id="run-h">Run it <em>yourself</em></h2>
+          <p class="blockintro">Two minutes, nothing to install beyond Python 3.</p>
+          <div class="terminal" role="group" aria-label="Quickstart: clone the public checker, claim a valid handoff, then see the same handoff refused as a duplicate.">
+            <div class="term-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><button class="copybtn" type="button">Copy</button></div>
+            <p><span class="prompt">$ </span><span class="cmd">git clone https://github.com/rohansiddam/Synthe.git &amp;&amp; cd Synthe</span></p>
+            <p><span class="prompt">$ </span><span class="cmd">python3 src/handoff_check.py examples/valid.json --registry examples/registry.json --workspace . --ledger ledger.json</span><br />
+            <span class="dim">{ "decision": </span><span class="accept">"ACCEPT"</span><span class="dim">, "handoff_id": "h-0001", "claim": { … } }</span></p>
+            <p><span class="prompt">$ </span><span class="cmd">python3 src/handoff_check.py examples/valid.json --registry examples/registry.json --workspace . --ledger ledger.json</span><br />
+            <span class="dim">{ "decision": </span><span class="reject">"REJECT"</span><span class="dim">, "state": "duplicate", "reasons": [{ "code": "idempotency_key_reserved", … }] }</span></p>
+          </div>
+          <p class="trynote">Timed in October 2026: <span data-fact="clone_to_accept_s">1.5</span> seconds from a fresh clone to ACCEPT. Exit code <code>0</code> means ACCEPT, <code>2</code> means REJECT. Output shortened here; the checker prints the full JSON verdict. More in the <a class="textlink" href="/docs.html#getting-started">docs</a>.</p>
+        </section>
+
+        <section class="block" id="limits" data-toc-target aria-labelledby="limits-h">
+          <h2 id="limits-h">What it <em>can't stop</em></h2>
+          <ul class="limits">
+            <li><strong>An approved action doing what was approved.</strong><span>Synthe narrows a compromised sender to the one action a human approved; it can't remove that action.</span></li>
+            <li><strong>Which model wrote the work.</strong><span>Receipts prove which key and which connector acted, not which model produced the bytes.</span></li>
+            <li><strong>Agents that go around it.</strong><span>If an agent still holds its own push rights, the barrier is optional. Take those credentials away.</span></li>
+          </ul>
+          <p class="trynote">The full list, and what we haven't proven yet, is on the <a class="textlink" href="/status.html#limits">status page</a>.</p>
+          <div class="next">
+            <a class="textlink" href="/race.html">Race two agents for one commit</a>
+            <a class="textlink" href="/docs.html">Read the docs</a>
+            <a class="textlink" href="/#partner">Become a design partner</a>
+          </div>
+        </section>
+      </main>
+      <footer class="site-foot">
+        <p class="footer-brand"><svg class="footer-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</p>
+        <p class="footer-line">The commit barrier for AI agents. Agents propose. Synthe commits. Anyone can verify.</p>
+        <nav class="footer-nav" aria-label="Footer">
+          <a href="/how.html">How it works</a>
+          <a href="/race.html">Race two agents</a>
+          <a href="/forge.html">Forge this handoff</a>
+          <a href="/playground.html">Playground</a>
+          <a href="/tamper.html">Tamper evidence</a>
+          <a href="/anatomy.html">Anatomy of a handoff</a>
+          <a href="/quiz.html">Do I need this?</a>
+          <a href="/docs.html">Docs</a>
+          <a href="/log.html">Changelog</a>
+          <a href="/receipts.html">Receipts</a>
+          <a href="/benchmarks.html">Benchmarks</a>
+          <a href="/status.html">Status &amp; trust</a>
+          <a href="/#partner">Design partners</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">Spec</a>
+          <a href="https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md">Threat model</a>
+        </nav>
+        <p class="footer-legal">Synthe is an early project. The public checker is shared under an <a href="https://github.com/rohansiddam/Synthe/blob/main/EVALUATION_LICENSE.txt">evaluation license</a>, not an open-source one.</p>
+        <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
+      </footer>
+    </div>
+    <script>
+      (function () {
+        "use strict";
+        var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        /* Copy buttons copy the commands only, never the output. */
+        document.querySelectorAll(".copybtn").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var term = btn.closest(".terminal");
+            var text = Array.prototype.map.call(term.querySelectorAll(".cmd"), function (c) { return c.textContent; }).join("\n");
+            function done() { btn.textContent = "Copied"; setTimeout(function () { btn.textContent = "Copy"; }, 1500); }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(done, done);
+            } else {
+              var ta = document.createElement("textarea");
+              ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+              document.body.appendChild(ta); ta.select();
+              try { document.execCommand("copy"); } catch (e) {}
+              document.body.removeChild(ta); done();
+            }
+          });
+        });
+
+        /* Attack stepper: the eight attacks the public repo ships, with the verdicts
+           the checker actually returns for them (state and first reason code). */
+        var attacks = [
+          { name: "Tampered after signing", desc: "The packet was altered after the signature was made, so the signature no longer matches.", file: "attack-tampered-after-signing.json", state: "invalid", code: "signature_invalid" },
+          { name: "Spoofed sender", desc: "The packet claims to come from an agent it isn't. The signature check fails.", file: "attack-spoofed-sender.json", state: "invalid", code: "signature_invalid" },
+          { name: "Self-granted authority", desc: "The sender granted itself authority that no approval covers.", file: "attack-self-granted-authority.json", state: "blocked", code: "approval_missing" },
+          { name: "Forged approval", desc: "The attached approval was typed in, never signed by the approver.", file: "attack-forged-approval.json", state: "blocked", code: "approval_unsigned" },
+          { name: "Replayed approval", desc: "An approval lifted from a different handoff and reused here.", file: "attack-replayed-approval.json", state: "blocked", code: "approval_signature_invalid" },
+          { name: "Exceeds receiver policy", desc: "The handoff asks for more authority than the receiver's policy allows.", file: "attack-exceeds-receiver-policy.json", state: "blocked", code: "authority_exceeds_receiver_policy" },
+          { name: "Paraphrased “verbatim” evidence", desc: "Evidence quoted loosely where the receiver required it word for word, so the pinned hash doesn't match.", file: "attack-paraphrased-verbatim.json", state: "stale", code: "evidence_hash_mismatch" },
+          { name: "Undeclared actions", desc: "The packet doesn't declare the actions it plans to take, and the receiver requires them.", file: "attack-undeclared-actions.json", state: "invalid", code: "planned_actions_missing" }
+        ];
+        var simOutput = document.getElementById("sim-output");
+        var simCount = document.getElementById("sim-count");
+        var simName = document.getElementById("sim-name");
+        var simDesc = document.getElementById("sim-desc");
+        var simCurrent = document.querySelector(".sim-current");
+        var simIndex = 0, simTimer = null, simAutoRan = false;
+        function verdictHTML(a) {
+          return '<p><span class="rej">REJECT</span> <span class="dim">' + a.state + " · </span>" + a.code + "</p>";
+        }
+        function simVerdict(i) {
+          var cmd = "python3 src/handoff_check.py examples/v03/packets/" + attacks[i].file +
+            " --registry examples/v03/registry.json --workspace examples/v03/workspace --dry-run";
+          if (simTimer) { clearInterval(simTimer); clearTimeout(simTimer); simTimer = null; }
+          simOutput.innerHTML = '<p><span class="prompt">$ </span><span class="cmd" id="sim-cmd"></span><span class="caret"></span></p>';
+          var cmdEl = document.getElementById("sim-cmd");
+          var caret = simOutput.querySelector(".caret");
+          if (reduceMotion) {
+            cmdEl.textContent = cmd;
+            caret.remove();
+            simOutput.insertAdjacentHTML("beforeend", verdictHTML(attacks[i]));
+            return;
+          }
+          var n = 0;
+          simTimer = setInterval(function () {
+            n += 3;
+            cmdEl.textContent = cmd.slice(0, n);
+            if (n >= cmd.length) {
+              clearInterval(simTimer);
+              simTimer = setTimeout(function () {
+                caret.remove();
+                simOutput.insertAdjacentHTML("beforeend", verdictHTML(attacks[i]));
+              }, 300);
+            }
+          }, 14);
+        }
+        function renderSim(i, dir, instant) {
+          simIndex = (i + attacks.length) % attacks.length;
+          function swap() {
+            simCount.textContent = "Attack " + (simIndex + 1) + " of " + attacks.length;
+            simName.textContent = attacks[simIndex].name;
+            simDesc.textContent = attacks[simIndex].desc;
+            simVerdict(simIndex);
+          }
+          if (instant || reduceMotion) { swap(); return; }
+          var outCls = dir < 0 ? "out-right" : "out-left";
+          var inCls = dir < 0 ? "in-left" : "in-right";
+          simCurrent.classList.add(outCls);
+          simOutput.classList.add("fading");
+          setTimeout(function () {
+            swap();
+            simCurrent.classList.add("no-trans");
+            simCurrent.classList.remove(outCls);
+            simCurrent.classList.add(inCls);
+            void simCurrent.offsetWidth;
+            simCurrent.classList.remove("no-trans");
+            simCurrent.classList.remove(inCls);
+            simOutput.classList.remove("fading");
+          }, 200);
+        }
+        document.getElementById("sim-prev").addEventListener("click", function () { renderSim(simIndex - 1, -1); });
+        document.getElementById("sim-next").addEventListener("click", function () { renderSim(simIndex + 1, 1); });
+        var simEl = document.getElementById("simulator");
+        if ("IntersectionObserver" in window) {
+          new IntersectionObserver(function (entries, obs) {
+            if (entries[0].isIntersecting && !simAutoRan) {
+              simAutoRan = true;
+              renderSim(0, 1, true);
+              obs.disconnect();
+            }
+          }, { threshold: 0.3 }).observe(simEl);
+        } else {
+          renderSim(0, 1, true);
+        }
+      })();
+    </script>
+  </body>
+</html>

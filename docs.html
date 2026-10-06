@@ -20,8 +20,8 @@
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="preload" href="/fonts/fraunces-normal-400-650-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/site.css" />
-    <script src="/site.js" defer></script>
+    <link rel="stylesheet" href="/site.css?v=7c7e9c83" />
+    <script src="/site.js?v=0106cb96" defer></script>
     <style>
       :root {
         --cream: #f5efe2;
@@ -198,15 +198,16 @@
       }
     </style>
     <script>
-      /* theme: set before first paint to avoid a flash. The js class turns on
+      /* theme and motion: set before first paint to avoid a flash. The js class turns on
          script-only layouts, like the phone menu. */
       try { (function () {
         var d = document.documentElement;
         d.classList.add("js");
-        var t = null;
-        try { t = localStorage.getItem("synthe-theme"); } catch (e) {}
+        var t = null, m = null;
+        try { t = localStorage.getItem("synthe-theme"); m = localStorage.getItem("synthe-motion"); } catch (e) {}
         var dark = t ? t === "dark" : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
         d.setAttribute("data-theme", dark ? "dark" : "light");
+        if (m === "paused") d.classList.add("motion-paused");
       })(); } catch (e) {}
     </script>
   </head>
@@ -217,12 +218,29 @@
         <a class="wordmark" href="/"><svg class="wordmark-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</a>
         <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="topnav">Menu</button>
         <nav class="topnav" id="topnav" aria-label="Main">
-          <a href="/race.html">Race</a>
-          <a href="/forge.html">Forge</a>
-          <a href="/playground.html">Playground</a>
-          <a href="/tamper.html">Tamper</a>
+          <a href="/how.html">How it works</a>
+          <details class="nav-group">
+            <summary>Demos</summary>
+            <div class="nav-panel">
+              <a href="/race.html"><strong>Race two agents</strong><span>Two agents, one change, exactly one commit.</span></a>
+              <a href="/forge.html"><strong>Forge this handoff</strong><span>Attack a signed handoff six ways.</span></a>
+              <a href="/playground.html"><strong>Playground</strong><span>Sign a real handoff, then break it.</span></a>
+              <a href="/tamper.html"><strong>Tamper evidence</strong><span>Break a hash chain and find where.</span></a>
+              <a href="/anatomy.html"><strong>Anatomy of a handoff</strong><span>One handoff, from draft to ledger.</span></a>
+            </div>
+          </details>
           <a href="/docs.html" aria-current="page">Docs</a>
+          <details class="nav-group">
+            <summary>Proof</summary>
+            <div class="nav-panel">
+              <a href="/receipts.html"><strong>Receipts</strong><span>Every claim, linked to the run behind it.</span></a>
+              <a href="/benchmarks.html"><strong>Benchmarks</strong><span>Every number on the site and its source.</span></a>
+              <a href="/status.html"><strong>Status &amp; trust</strong><span>What's public, what isn't proven, your data.</span></a>
+              <a href="/log.html"><strong>Changelog</strong><span>What shipped, and when.</span></a>
+            </div>
+          </details>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+          <a class="nav-cta" href="/#partner">Become a design partner</a>
           <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
         </nav>
       </header>
@@ -231,20 +249,18 @@
         <p class="lede">How the commit barrier works, and everything you need to check your first handoff with the public checker. The full spec and threat model live in the repo.</p>
         <p><span class="version-badge">Checker v<span data-fact="checker_version">0.5</span> · packet schema 0.1 · docs October 2026</span></p>
 
-        <nav class="toc" aria-label="On this page">
-          <p>On this page</p>
-          <ol>
-            <li><a href="#commit-barrier">The commit barrier</a></li>
-            <li><a href="#getting-started">Getting started</a></li>
-            <li><a href="#check-order">The check order</a></li>
-            <li><a href="#concepts">Core concepts</a></li>
-            <li><a href="#reasons">Reason codes</a></li>
-            <li><a href="#try-interactive">Try it interactively</a></li>
-            <li><a href="#references">Full references</a></li>
-          </ol>
+        <nav class="page-toc" aria-label="On this page">
+          <span class="page-toc-label">On this page</span>
+          <a href="#commit-barrier">The commit barrier</a>
+          <a href="#getting-started">Getting started</a>
+          <a href="#check-order">The check order</a>
+          <a href="#concepts">Core concepts</a>
+          <a href="#reasons">Reason codes</a>
+          <a href="#try-interactive">Try it interactively</a>
+          <a href="#references">Full references</a>
         </nav>
 
-        <h2 id="commit-barrier">The commit <em>barrier</em></h2>
+        <h2 id="commit-barrier" data-toc-target>The commit <em>barrier</em></h2>
         <p>Synthe sits between your agents and the systems they change. Agents never hold the credentials for real-world actions; Synthe does. An agent proposes an action, and Synthe decides at the moment of commit, not when the plan was written.</p>
         <ol class="check-order commit-path">
           <li><div><strong>Claim</strong><span>The receiving agent claims a signed handoff. The checker validates it and records the claim under its idempotency key, so the same work can't be claimed twice.</span></div></li>
@@ -259,7 +275,7 @@
         </div>
         <p>What it can't do: an action a human approved will do exactly what was approved, and receipts prove which key and connector acted, not which model wrote the work. Synthe is only a barrier if agents can't go around it, so take their own credentials away. The full list is on the <a class="textlink" href="/status.html#limits">status page</a>. To watch the rules play out, <a class="textlink" href="/race.html">race two agents for one commit</a>.</p>
 
-        <h2 id="getting-started">Getting <em>started</em></h2>
+        <h2 id="getting-started" data-toc-target>Getting <em>started</em></h2>
         <p>Clone the public checker and run it against the example packets. Two minutes, nothing to install beyond Python 3.</p>
         <div class="terminal" role="group" aria-label="Quickstart: clone the checker and claim the example signed handoff.">
           <div class="term-bar"><button class="copybtn" type="button">Copy</button></div>
@@ -269,7 +285,7 @@
         </div>
         <p class="small">Output shortened. Exit code <code>0</code> means ACCEPT, <code>2</code> means REJECT. Run the same command again and the second claim is refused with <code>idempotency_key_reserved</code>. Leave out <code>--ledger</code> to check a packet without claiming it.</p>
 
-        <h2 id="check-order">The check <em>order</em></h2>
+        <h2 id="check-order" data-toc-target>The check <em>order</em></h2>
         <p>The checker always runs these seven checks in the same order. If the structure is broken it stops right there. Otherwise it keeps going and reports every problem it finds, and the verdict takes its state from the first one, so the earliest broken link comes first.</p>
         <ol class="check-order">
           <li><div><strong>Structure</strong><span>Required fields, types, full-length hashes, and declared actions when the receiver requires them. <code>missing_field:id</code>, <code>bad_schema_version</code>, <code>planned_actions_missing</code></span></div></li>
@@ -281,7 +297,7 @@
           <li><div><strong>Evidence</strong><span>Required evidence is present, verbatim quotes are marked verbatim, and pinned evidence matches its file. <code>evidence_not_verbatim</code>, <code>evidence_hash_mismatch</code></span></div></li>
         </ol>
 
-        <h2 id="concepts">Core <em>concepts</em></h2>
+        <h2 id="concepts" data-toc-target>Core <em>concepts</em></h2>
         <div class="concept">
           <h3>The packet</h3>
           <p>A handoff is a typed JSON packet: who sends, who receives, what to do, what evidence backs it, and what the receiver may do next. Nothing free-form.</p>
@@ -303,7 +319,7 @@
           <p>At the commit barrier, every push and every refusal is written as a receipt that carries the hash of the one before it and a signature. Change or delete one and verification shows where the chain breaks. Receipts are part of the commit broker beta.</p>
         </div>
 
-        <h2 id="reasons">Reason <em>codes</em></h2>
+        <h2 id="reasons" data-toc-target>Reason <em>codes</em></h2>
         <p>Every REJECT names its reasons. Each one has a state that says who should act. This is the complete list for the public checker v<span data-fact="checker_version">0.5</span>, from section 10 of the spec.</p>
         <div class="table-wrap">
         <table class="reason-table">
@@ -382,7 +398,7 @@
         </table>
         </div>
 
-        <h2 id="try-interactive">Try it <em>interactively</em></h2>
+        <h2 id="try-interactive" data-toc-target>Try it <em>interactively</em></h2>
         <p>Every check above runs in your browser, no install needed.</p>
         <div class="demolinks">
           <a href="/race.html"><strong>Race two agents</strong><span>Two agents, one change, exactly one commit.</span></a>
@@ -391,7 +407,7 @@
           <a href="/tamper.html"><strong>Tamper evidence</strong><span>Break a hash chain and find where.</span></a>
         </div>
 
-        <h2 id="references">Full <em>references</em></h2>
+        <h2 id="references" data-toc-target>Full <em>references</em></h2>
         <div class="doclinks">
           <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">SPEC.md</a>
           <a href="https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md">THREAT_MODEL.md</a>
@@ -403,6 +419,7 @@
         <p class="footer-brand"><svg class="footer-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</p>
         <p class="footer-line">The commit barrier for AI agents. Agents propose. Synthe commits. Anyone can verify.</p>
         <nav class="footer-nav" aria-label="Footer">
+          <a href="/how.html">How it works</a>
           <a href="/race.html">Race two agents</a>
           <a href="/forge.html">Forge this handoff</a>
           <a href="/playground.html">Playground</a>
