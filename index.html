@@ -149,7 +149,7 @@
     </script>
     <link rel="preload" href="/fonts/fraunces-normal-400-650-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/site.css?v=7c7e9c83" />
+    <link rel="stylesheet" href="/site.css?v=f2274738" />
     <script src="/site.js?v=0106cb96" defer></script>
     <style>
       :root {
@@ -243,15 +243,15 @@
         text-wrap: balance;
       }
       /* The rotating word: decorative, paused by the motion control or reduced motion.
-         Screen readers get the first word only. */
-      .rotator {
-        display: inline-block;
-        overflow: hidden;
-        height: 1.12em;
-        vertical-align: bottom;
-        min-width: 4.2em;
-      }
-      .rotator-inner { display: inline-block; animation: rotate-word 7.5s ease-in-out infinite; }
+         Screen readers get the first word only. Until the script measures the words (or
+         without script) only the first word shows, at its own width. Once measured, the slot
+         keeps the widest word's width so the headline never re-wraps, the visible part trims
+         to the word on show, and "at the door." slides left to meet it, so a short word never
+         leaves a gap. --gap0..2 hold how much narrower each word is than the slot. The 0.2em
+         clip margins leave room for the italic d, which leans about 0.15em past its box. */
+      .rotator-group { display: inline-block; white-space: nowrap; }
+      .rotator { display: inline-block; height: 1.12em; vertical-align: bottom; }
+      .rotator-inner { display: inline-block; }
       .rotator-inner span {
         display: block;
         height: 1.12em;
@@ -260,11 +260,30 @@
         color: var(--rust);
         white-space: nowrap;
       }
+      .rotator-inner span + span { display: none; }
+      .rotator-after { display: inline-block; }
+      .rotator-group.is-measuring .rotator-inner span,
+      .rotator-group.is-live .rotator-inner span { display: block; }
+      .rotator-group.is-live .rotator { width: var(--slot); animation: rotate-clip 7.5s ease-in-out infinite; }
+      .rotator-group.is-live .rotator-inner { animation: rotate-word 7.5s ease-in-out infinite; }
+      .rotator-group.is-live .rotator-after { animation: rotate-follow 7.5s ease-in-out infinite; }
       @keyframes rotate-word {
         0%, 28%   { transform: translateY(0); }
         33%, 61%  { transform: translateY(-1.12em); }
         66%, 94%  { transform: translateY(-2.24em); }
         100%      { transform: translateY(-3.36em); }
+      }
+      @keyframes rotate-clip {
+        0%, 28%   { clip-path: inset(0 calc(var(--gap0) - 0.2em) 0 -0.2em); }
+        33%, 61%  { clip-path: inset(0 calc(var(--gap1) - 0.2em) 0 -0.2em); }
+        66%, 94%  { clip-path: inset(0 calc(var(--gap2) - 0.2em) 0 -0.2em); }
+        100%      { clip-path: inset(0 calc(var(--gap0) - 0.2em) 0 -0.2em); }
+      }
+      @keyframes rotate-follow {
+        0%, 28%   { transform: translateX(calc(-1 * var(--gap0))); }
+        33%, 61%  { transform: translateX(calc(-1 * var(--gap1))); }
+        66%, 94%  { transform: translateX(calc(-1 * var(--gap2))); }
+        100%      { transform: translateX(calc(-1 * var(--gap0))); }
       }
       .lede {
         margin: clamp(18px, 3vw, 26px) 0 0;
@@ -507,7 +526,7 @@
       .partner-form { display: grid; gap: 16px; max-width: 560px; margin-top: 4px; }
       .partner-form .field { display: grid; gap: 6px; }
       .partner-form label { font-size: 14.5px; font-weight: 600; color: #f5efe2; }
-      .partner-form .optional { font-weight: 400; color: #a8a094; margin-left: 4px; }
+      .partner-form .optional { font-weight: 400; color: #a8a094; }
       .partner-form input[type="email"], .partner-form textarea {
         width: 100%;
         font: inherit;
@@ -541,8 +560,10 @@
 
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
-        .rotator-inner { animation: none; }
-        .rotator-inner span:nth-child(n+2) { display: none; }
+        .rotator-group.is-live .rotator { width: auto; }
+        .rotator-group.is-live .rotator, .rotator-group.is-live .rotator-inner,
+        .rotator-group.is-live .rotator-after { animation: none; }
+        .rotator-group.is-live .rotator-inner span + span { display: none; }
         .marquee-track { animation: none; }
         .btn, .feature-card, .demo-card { transition: none; }
       }
@@ -598,7 +619,7 @@
       <main id="main">
         <div class="hero">
           <p class="kicker">The commit barrier for AI agents</p>
-          <h1>Synthe is the bouncer for your AI agents. Every action gets <span class="rotator"><span class="sr-only">checked</span><span class="rotator-inner" aria-hidden="true"><span>checked</span><span>verified</span><span>screened</span><span>checked</span></span></span> at the door.</h1>
+          <h1>Synthe is the bouncer for your AI agents. Every action gets <span class="rotator-group"><span class="rotator"><span class="sr-only">checked</span><span class="rotator-inner" aria-hidden="true"><span>checked</span><span>verified</span><span>screened</span><span>checked</span></span></span> <span class="rotator-after">at the door.</span></span></h1>
           <p class="lede"><strong>Agents propose. Synthe commits. Anyone can verify.</strong> Synthe holds the credentials for real-world actions, starting with <code>git push</code>. It re-checks each action against a signed, human-approved plan at the moment of commit, acts exactly once if nothing has changed, and signs a receipt for every allow and every deny.</p>
           <div class="cta-row">
             <a class="btn" href="#partner">Become a design partner</a>
@@ -787,6 +808,41 @@
         /* Marquee: duplicate the tape once for a seamless loop. */
         var track = document.getElementById("marquee-track");
         if (track) track.innerHTML += track.innerHTML;
+
+        /* Rotating headline word (see the .rotator CSS): measure the words once the italic font
+           is in, then start the three animations together. Fraunces changes shape with size,
+           so measure again whenever the headline's font size changes. */
+        var rotator = document.querySelector(".rotator-group");
+        if (rotator && !reduceMotion) {
+          var fittedAt = 0;
+          var fitRotator = function (force) {
+            var size = parseFloat(getComputedStyle(rotator).fontSize);
+            if (!force && (!fittedAt || size === fittedAt)) return;
+            fittedAt = size;
+            rotator.classList.remove("is-live");
+            rotator.classList.add("is-measuring");
+            var widths = Array.prototype.map.call(rotator.querySelectorAll(".rotator-inner span"), function (s) {
+              var r = document.createRange();
+              r.selectNodeContents(s);
+              return r.getBoundingClientRect().width / size;
+            });
+            var slot = Math.max.apply(null, widths);
+            rotator.style.setProperty("--slot", slot.toFixed(4) + "em");
+            for (var k = 0; k < 3; k++) rotator.style.setProperty("--gap" + k, (slot - widths[k]).toFixed(4) + "em");
+            rotator.classList.remove("is-measuring");
+            void rotator.offsetWidth; /* restart the animations in step */
+            rotator.classList.add("is-live");
+          };
+          var fontIn = document.fonts && document.fonts.load
+            ? document.fonts.load("italic 500 40px Fraunces").then(function () { return document.fonts.ready; })
+            : Promise.resolve();
+          fontIn.then(function () { fitRotator(true); }, function () { fitRotator(true); });
+          var resizeTimer;
+          window.addEventListener("resize", function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () { fitRotator(false); }, 150);
+          });
+        }
 
         /* Staggered fade-up reveals. */
         function revealStagger(containerSel, itemSel) {

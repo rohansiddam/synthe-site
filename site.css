@@ -104,6 +104,11 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+/* ---------- Text shared by every page ---------- */
+
+/* Headings and card titles wrap into even lines, so none ends on one lonely word. */
+h1, h2, h3, h4, .feature-title, .panel-h { text-wrap: balance; }
+
 /* ---------- Site chrome: identical on every page ---------- */
 
 .skip-link {
@@ -239,7 +244,8 @@
 
 /* Decorative motion (the headline's rotating word, the marquee) pauses on request, and
    stays still for anyone who prefers reduced motion. WCAG 2.2.2 Pause, Stop, Hide. */
-.motion-paused .rotator-inner, .motion-paused .marquee-track { animation-play-state: paused !important; }
+.motion-paused .rotator, .motion-paused .rotator-inner, .motion-paused .rotator-after,
+.motion-paused .marquee-track { animation-play-state: paused !important; }
 
 /* Footer */
 .site-foot {
