@@ -17,7 +17,8 @@ When an agent proposes an action, Synthe decides at the moment of commit, not wh
 ## What is public, and what is in beta
 
 - Public, under an evaluation license: the handoff checker (Python 3, no dependencies), its spec, threat model, tests, example packets and a GitHub Action. https://github.com/rohansiddam/Synthe
-- Design-partner beta: the commit broker, which holds the credentials, performs the action and writes receipts. git_push ships first.
+- Design-partner beta: the commit broker, which holds the credentials, performs the action and writes receipts. git_push ships first, with an OpenClaw plugin and a one-command setup on macOS.
+- Proven in beta (October 7, 2026, a real Mac with real GitHub): the broker ran as its own user and the agent in its own account with no GitHub access; the setup check passed all 8 checks; a live red team of 33 attacks from the agent's account was refused or contained, each refusal with a signed receipt.
 
 ## The public checker
 
@@ -54,7 +55,7 @@ The output is a JSON verdict with "decision": "ACCEPT". Run the same command aga
 - Receipts prove which key and which connector acted, not which model wrote the work.
 - Synthe is only a barrier if agents can't go around it. Agents that still hold their own push rights can bypass it.
 - On a shared machine in same-user dev mode it is a seatbelt, not a wall, and its receipts say so.
-- Not proven yet: whether models stop when refused, speed against real GitHub pushes, and macOS isolation.
+- Not proven yet: speed against real GitHub pushes, a timed setup by someone new, and model behavior beyond a first run (one OpenClaw agent followed the rules and stopped for approval).
 
 ## What Synthe is not
 
@@ -62,7 +63,7 @@ Not an endorsement by any company named on synthe.live (the names show compatibi
 
 ## Who builds it
 
-Co-founders Rohan Siddamsettiwar and Rishab Ramalingam, out of the University of Utah's Sandbox startup community. Contact: info@synthe.live. Design-partner pilots are open.
+Co-founders Rohan Siddamsettiwar and Rishab Ramalingam, out of the University of Utah's Sandbox startup community. Contact: rohansiddam@synthe.live. Design-partner pilots are open.
 
 ## License and cost
 
