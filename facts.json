@@ -1,10 +1,10 @@
 {
   "_about": "Every number on synthe.live comes from this file. tools/facts.py refresh re-measures the public checker; tools/facts.py apply writes the values into each page's data-fact spans; tools/check_site.py fails CI when a page disagrees.",
   "checker_repo": "https://github.com/rohansiddam/Synthe",
-  "checker_commit": "15f1527",
+  "checker_commit": "91148ef",
   "checker_version": "0.5",
-  "facts_checked_on": "2026-10-06",
-  "tests_passed": 57,
+  "facts_checked_on": "2026-10-08",
+  "tests_passed": 753,
   "attacks_shipped": 8,
   "attacks_rejected": 8,
   "runner_runs": 3,
@@ -18,13 +18,15 @@
     "runner_duplicates": "Same three runs.",
     "runner_date": "Same three runs.",
     "clone_to_accept_s": "Fresh git clone to ACCEPT, 1.505 s, timed by hand in October 2026. Re-measured at 0.78 s on 2026-10-06; the site keeps the slower figure.",
-    "beta_verified_date": "Design-partner beta broker, verified on macOS with real GitHub: synthe-openclaw docs/OPENCLAW_RESULTS.md (private until the broker is published).",
+    "beta_verified_date": "Commit broker, verified on macOS with real GitHub: docs/OPENCLAW_RESULTS.md in rohansiddam/Synthe (public since 2026-10-07).",
     "beta_doctor_checks": "synthe-init doctor in the agent's account: ENFORCED, all 8 checks PASS (same source).",
     "beta_redteam_attacks": "scripts/redteam_live.py, live against the ENFORCED broker: docs/REDTEAM.md and /Users/Shared/synthe-redteam-report.json.",
-    "beta_redteam_refused": "Same run: 33 passed, 0 failed; re-verified independently with git ls-remote and the broker's published key."
+    "beta_redteam_refused": "Same run: 33 passed, 0 failed; re-verified independently with git ls-remote and the broker's published key.",
+    "v05_tests_passed": "Public tests passing at checker v0.5 (rohansiddam/Synthe PR #2, 15f1527), for the October 5 changelog entry. History: never refreshed."
   },
   "beta_verified_date": "2026-10-07",
   "beta_doctor_checks": 8,
   "beta_redteam_attacks": 33,
-  "beta_redteam_refused": 33
+  "beta_redteam_refused": 33,
+  "v05_tests_passed": 57
 }
