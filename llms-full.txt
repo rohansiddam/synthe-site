@@ -16,8 +16,8 @@ When an agent proposes an action, Synthe decides at the moment of commit, not wh
 
 ## What is public, and what is in beta
 
-- Public, under an evaluation license: the handoff checker (Python 3, no dependencies), its spec, threat model, tests, example packets and a GitHub Action. https://github.com/rohansiddam/Synthe
-- Design-partner beta: the commit broker, which holds the credentials, performs the action and writes receipts. git_push ships first, with an OpenClaw plugin and a one-command setup on macOS.
+- Public, open source under Apache-2.0: the handoff checker (Python 3, no dependencies), its spec, threat model, tests, example packets, a GitHub Action, and everything you install (client, setup, approval tool, OpenClaw plugin and skill). https://github.com/rohansiddam/Synthe
+- Public beta, source-available under FSL-1.1: the commit broker, which holds the credentials, performs the action and writes receipts. git_push ships first, with an OpenClaw plugin and a one-command setup on macOS.
 - Proven in beta (October 7, 2026, a real Mac with real GitHub): the broker ran as its own user and the agent in its own account with no GitHub access; the setup check passed all 8 checks; a live red team of 33 attacks from the agent's account was refused or contained, each refusal with a signed receipt.
 
 ## The public checker
@@ -67,7 +67,7 @@ Co-founders Rohan Siddamsettiwar and Rishab Ramalingam, out of the University of
 
 ## License and cost
 
-The public checker is shared under an evaluation license: you may run it on your own agent workflows, but not redistribute it, publish forks, or build it into a product without written permission. It is not open source. Running it doesn't change your code's license. There is no price list yet; evaluating the public checker costs nothing.
+The spec, checker and everything you install are open source under Apache-2.0. The commit broker is source-available under FSL-1.1: anyone may read, audit and run it, but not offer it as a competing commercial service, and each version becomes Apache-2.0 two years after its release. Running Synthe doesn't change your code's license. There is no price list yet; running Synthe yourself costs nothing.
 
 ## Source links
 
@@ -86,4 +86,4 @@ The public checker is shared under an evaluation license: you may run it on your
 - Repo: https://github.com/rohansiddam/Synthe
 - Spec: https://github.com/rohansiddam/Synthe/blob/main/SPEC.md
 - Threat model: https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md
-- Evaluation license: https://github.com/rohansiddam/Synthe/blob/main/EVALUATION_LICENSE.txt
+- Licensing: https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md

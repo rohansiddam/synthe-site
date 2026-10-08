@@ -154,6 +154,11 @@
         <p class="lede" style="color: var(--ink-soft); max-width: 38em; margin: -24px 0 40px;">What shipped, why it matters, and the receipts.</p>
         <ul class="entries">
           <li>
+            <span class="date">October 7, 2026</span>
+            <h2>The commit broker goes public</h2>
+            <p>Synthe v0.7 is public: the commit broker that holds the credentials, a one-command setup that makes it enforced on macOS (the broker as its own user, the agent in its own account with no GitHub access), an OpenClaw plugin, and a plain <span style="font-family: var(--mono); font-size: 0.9em;">git push</span> from any agent that becomes a proposal you approve. The spec, checker and everything you install are open source under Apache-2.0; the broker is source-available under FSL-1.1. <a class="textlink" href="https://github.com/rohansiddam/Synthe/pull/3">The pull request</a> · <a class="textlink" href="https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md">How it's licensed</a></p>
+          </li>
+          <li>
             <span class="date">October 6, 2026</span>
             <h2>The site leads with the commit barrier</h2>
             <p>synthe.live now says what Synthe is: the commit barrier for AI agents. Agents propose, Synthe commits, anyone can verify. New: <a class="textlink" href="/race.html">race two agents for one commit</a>, a docs section on <a class="textlink" href="/docs.html#commit-barrier">how the barrier works</a> with the complete reason-code list, and honest limits on the <a class="textlink" href="/status.html#limits">status page</a>. The site now loads nothing from anyone else: fonts are self-hosted, and every number comes from one file that is checked against the public repo.</p>
@@ -161,7 +166,7 @@
           <li>
             <span class="date">October 5, 2026</span>
             <h2>Public checker v0.5</h2>
-            <p>Approvals can pin the exact target of an action, like a branch, so they can't be pointed somewhere else (<span style="font-family: var(--mono); font-size: 0.9em;">approval_params_mismatch</span>). Approvals can arrive after work starts, and nothing commits without one. Handoffs can wait for other handoffs to finish (<span style="font-family: var(--mono); font-size: 0.9em;">depends_on</span>), and a receiver can refuse overlapping work (<span style="font-family: var(--mono); font-size: 0.9em;">claim_conflict</span>). <span data-fact="tests_passed">57</span> public tests pass. <a class="textlink" href="https://github.com/rohansiddam/Synthe/pull/2">The pull request</a></p>
+            <p>Approvals can pin the exact target of an action, like a branch, so they can't be pointed somewhere else (<span style="font-family: var(--mono); font-size: 0.9em;">approval_params_mismatch</span>). Approvals can arrive after work starts, and nothing commits without one. Handoffs can wait for other handoffs to finish (<span style="font-family: var(--mono); font-size: 0.9em;">depends_on</span>), and a receiver can refuse overlapping work (<span style="font-family: var(--mono); font-size: 0.9em;">claim_conflict</span>). <span data-fact="v05_tests_passed">57</span> public tests pass. <a class="textlink" href="https://github.com/rohansiddam/Synthe/pull/2">The pull request</a></p>
           </li>
           <li>
             <span class="date">October 2, 2026</span>
@@ -206,7 +211,7 @@
           <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">Spec</a>
           <a href="https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md">Threat model</a>
         </nav>
-        <p class="footer-legal">Synthe is an early project. The public checker is shared under an <a href="https://github.com/rohansiddam/Synthe/blob/main/EVALUATION_LICENSE.txt">evaluation license</a>, not an open-source one.</p>
+        <p class="footer-legal">Synthe is an early project. The spec, checker and everything you install are open source under Apache-2.0; the commit broker is source-available under FSL-1.1. <a href="https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md">How it's licensed</a>.</p>
         <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
       </footer>
     </div>

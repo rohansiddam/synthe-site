@@ -95,7 +95,8 @@ def refresh(facts: dict, synthe: Path) -> dict:
     tests = run([sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider"], synthe)
     summary = tests.stdout.strip().splitlines()[-1] if tests.stdout.strip() else ""
     passed = re.search(r"(\d+) passed", summary)
-    if tests.returncode != 0 or not passed or re.search(r"failed|error", summary):
+    # "38 xfailed" (expected failures, documented limits) isn't a failure; "2 failed" or an error is.
+    if tests.returncode != 0 or not passed or re.search(r"\b\d+ (failed|errors?)\b", summary):
         raise SystemExit(f"the checker's tests did not pass cleanly: {summary or tests.stderr[-400:]}")
 
     packets = synthe / "examples" / "v03" / "packets"

@@ -23,7 +23,7 @@ The site sells one thing: **Synthe, the commit barrier for AI agents.** Use thes
 Rules for copy that describes the product (they come from the strategy's scope; the strategy wins if they ever differ):
 
 - **Label public vs. beta every time.** The handoff checker, spec, tests and GitHub Action are public. The commit broker (credential custody, compare-and-swap, receipts) is in design-partner beta. Use the `Public today` / `Design-partner beta` tags (section 5).
-- **Never say open source.** The code is public under an evaluation license that forbids redistribution and forks.
+- **Say open source only for the Apache-2.0 parts** (spec, checker, everything you install). The commit broker is source-available under FSL-1.1: never call it open source. (Changed 2026-10-07, when the code went public.)
 - **Never say certified, compliant, insured or "gap-free".** Synthe produces the evidence auditors and underwriters ask for.
 - **Only our own numbers, and only through `facts.json`** (section 9). No borrowed speed claims. Commit-path performance numbers stay off the site until the founders decide to publish them.
 - **Don't name the MCP server, the A2A adapter or the Lab** on the site until their public scope is decided (decision D7). Say "agent connectors come with the design-partner beta".
@@ -204,7 +204,7 @@ Radio inputs in a `<fieldset>` with a mono uppercase `<legend>`. The options sit
 Used for "How this works" explainers. `var(--card)` background, `--line` border, pointer cursor on summary.
 
 ### Footer (identical on every page; CI enforces it)
-Logo and brand line, the category line and motto, one nav of whole links (`flex-wrap: wrap` + `white-space: nowrap`, so no link wraps mid-phrase), the license line ("not an open-source one"), and the colophon in italic serif ("From the Greek synthēkē, meaning agreement."). CSS lives in `site.css`.
+Logo and brand line, the category line and motto, one nav of whole links (`flex-wrap: wrap` + `white-space: nowrap`, so no link wraps mid-phrase), the license line (Apache-2.0 for what you install, FSL-1.1 source-available for the broker, linking LICENSING.md), and the colophon in italic serif ("From the Greek synthēkē, meaning agreement."). CSS lives in `site.css`.
 
 ### Marquee (homepage trust strip)
 Right under the hero: "Works with any stack that emits JSON", then a scrolling tape of company names (LangChain, LangGraph, CrewAI, OpenAI, Anthropic, Google, Meta, Microsoft, Hugging Face, Vercel, Cloudflare) on a `var(--ink)` band, mono uppercase 14px, dots in rust, level. Names only, no logo files: several owners restrict their marks (Microsoft and OpenAI had theirs pulled from Simple Icons at their request). The note "Names shown for compatibility only. No endorsement implied." sits under it, next to the **Pause motion** button. The tape pauses on hover; screen readers get the list once, as plain text.
@@ -307,7 +307,7 @@ Every page follows the same pattern. To add dark mode to a new page, copy it exa
 - [ ] Toggle present, label flips, choice persists, no flash on reload; phone menu opens and closes
 - [ ] Reduced-motion fallback present, and moving content has the Pause motion control
 - [ ] No em dashes in copy
-- [ ] Public vs. beta labeled; no "open source"; no certified/compliant claims
+- [ ] Public vs. beta labeled; "open source" only for the Apache-2.0 parts, never the broker; no certified/compliant claims
 - [ ] Demos labeled honestly; no fabricated usage, receipts or benchmarks
 
 ## 12. Navigation and page length: the research behind the structure
