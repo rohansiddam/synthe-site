@@ -1,6 +1,6 @@
 # Security contact for synthe.live and the Synthe checker (https://github.com/rohansiddam/Synthe).
 # Please email first and give us a chance to fix a flaw before you publish it.
-Contact: mailto:info@synthe.live
+Contact: mailto:rohansiddam@synthe.live
 Expires: 2027-10-01T00:00:00.000Z
 Preferred-Languages: en
 Canonical: https://synthe.live/.well-known/security.txt

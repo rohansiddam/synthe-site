@@ -12,7 +12,7 @@ Preview locally with `python3 tools/serve.py` (http://127.0.0.1:8790, caching of
    Then `python3 tools/check_site.py` must pass (CI runs it on every push and pull request).
 2. The design-partner form opens the visitor's email app today, so nothing goes to a third
    party. To switch to Formspree: create a form at formspree.io (send submissions to
-   info@synthe.live), put its ID in `data-formspree` on the form in `index.html`, and change
+   rohansiddam@synthe.live), put its ID in `data-formspree` on the form in `index.html`, and change
    the two privacy lines that describe the form (under the form on the homepage, and "The
    partner form" on `status.html`) to say submissions go to Formspree, which keeps a copy.
    `check_site.py` fails if those lines and the form disagree.
