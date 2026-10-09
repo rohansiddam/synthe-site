@@ -5,12 +5,12 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io mailto:; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="description" content="Synthe is the bouncer for your AI agents: the commit barrier that holds the credentials for real-world actions, re-checks each one against a signed, human-approved plan at the moment of commit, and signs a receipt for every allow and every deny." />
+    <meta name="description" content="Synthe is the commit barrier for AI agents. Agents propose, you approve, and Synthe commits exactly that change, once, with a signed receipt anyone can verify." />
     <link rel="canonical" href="https://synthe.live/" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <title>Synthe: the commit barrier for AI agents</title>
+    <title>Synthe: let AI agents ship without the keys</title>
     <meta property="og:title" content="Synthe: the commit barrier for AI agents" />
     <meta property="og:description" content="Agents propose. Synthe commits. Anyone can verify. Your agents never hold the keys." />
     <meta property="og:image" content="https://synthe.live/og-image.png" />
@@ -22,551 +22,231 @@
     <meta property="og:site_name" content="Synthe" />
     <meta name="twitter:card" content="summary_large_image" />
     <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
     {
-      "@context": "https://schema.org",
-      "@graph": [
+      "@type": "Organization",
+      "@id": "https://synthe.live/#org",
+      "name": "Synthe",
+      "url": "https://synthe.live/",
+      "logo": "https://synthe.live/apple-touch-icon.png",
+      "email": "rohansiddam@synthe.live",
+      "description": "The commit barrier for AI agents. Agents propose. Synthe commits. Anyone can verify.",
+      "founder": [
         {
-          "@type": "Organization",
-          "@id": "https://synthe.live/#org",
-          "name": "Synthe",
-          "url": "https://synthe.live/",
-          "logo": "https://synthe.live/apple-touch-icon.png",
-          "email": "rohansiddam@synthe.live",
-          "description": "The commit barrier for AI agents. Agents propose. Synthe commits. Anyone can verify.",
-          "founder": [
-            {
-              "@type": "Person",
-              "name": "Rohan Siddamsettiwar"
-            },
-            {
-              "@type": "Person",
-              "name": "Rishab Ramalingam"
-            }
-          ],
-          "sameAs": [
-            "https://github.com/rohansiddam/Synthe"
-          ]
+          "@type": "Person",
+          "name": "Rohan Siddamsettiwar"
         },
         {
-          "@type": "WebSite",
-          "@id": "https://synthe.live/#site",
-          "url": "https://synthe.live/",
-          "name": "Synthe",
-          "publisher": {
-            "@id": "https://synthe.live/#org"
+          "@type": "Person",
+          "name": "Rishab Ramalingam"
+        }
+      ],
+      "sameAs": [
+        "https://github.com/rohansiddam/Synthe"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://synthe.live/#site",
+      "url": "https://synthe.live/",
+      "name": "Synthe",
+      "publisher": {
+        "@id": "https://synthe.live/#org"
+      }
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "name": "Synthe handoff checker",
+      "description": "Checks a typed, signed agent-to-agent handoff before the receiver acts: signatures, approvals, pinned evidence, and an exactly-once claim ledger.",
+      "codeRepository": "https://github.com/rohansiddam/Synthe",
+      "programmingLanguage": "Python",
+      "license": "https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md",
+      "author": {
+        "@id": "https://synthe.live/#org"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What does Synthe actually hold?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The only credential that can push: a GitHub token in a file only the broker's own OS user can read. Your agents hold none, not even to read the repository."
           }
         },
         {
-          "@type": "SoftwareSourceCode",
-          "name": "Synthe handoff checker",
-          "description": "Checks a typed, signed agent-to-agent handoff before the receiver acts: signatures, approvals, pinned evidence, and an exactly-once claim ledger.",
-          "codeRepository": "https://github.com/rohansiddam/Synthe",
-          "programmingLanguage": "Python",
-          "license": "https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md",
-          "author": {
-            "@id": "https://synthe.live/#org"
+          "@type": "Question",
+          "name": "Is it open source?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Mostly. The spec, the checker, the clients and the integrations are open source under Apache-2.0. The commit broker is source-available under FSL-1.1-ALv2: you can read, audit and run it, but not sell it as a competing service, and each version becomes Apache-2.0 two years after its release. Synthe's hosted and internal code is separate."
           }
         },
         {
-          "@type": "FAQPage",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "What does Synthe actually hold?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "The credentials for real-world actions. Today that means a GitHub token for git push. We plan to add more kinds of actions, starting with database writes and email. Your agents get a narrow way to propose an action, never the credential itself."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "What's public, and what's in beta?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "All of Synthe's code is public on GitHub. The handoff checker, its spec, threat model, tests and GitHub Action are stable. The commit broker, which holds the credentials and performs the action, is public and in beta: macOS first, with an OpenClaw plugin and a one-command setup. Design partners get help setting it up and shape what comes next."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Is it open source?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Mostly. The spec, the checker and everything you install are open source under Apache-2.0. The commit broker is source-available under FSL-1.1: you can read, audit and run it, but not sell it as a competing service, and each version becomes Apache-2.0 two years after its release."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "What does it cost?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "There's no price list yet. Running Synthe yourself costs nothing. If you want to pilot it with your team, talk to us."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Does running Synthe change my code's license?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "No. Synthe's licenses cover Synthe's code, not yours. Checking your handoffs changes nothing about how your own code is licensed."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Which agents does it work with?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Any agent that can emit JSON can send a handoff to the public checker, from the command line, from Python, or in a GitHub Action. For pushes, the beta has an OpenClaw plugin, and a plain git push from any agent becomes a proposal you approve."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Do my agents have to trust each other?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "No, that is the point. The receiver verifies the packet's signature against its registry and pins the evidence hashes before acting. Trust the check, not the sender."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "What can't Synthe stop?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "An action a human approved will do exactly what was approved; Synthe narrows a compromised agent to that one action, but can't remove it. Receipts prove which key and connector acted, not which model wrote the work. And Synthe is only a barrier if your agents can't go around it, so take their own credentials away. The full list is on the status page."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Who is building Synthe?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Co-founders Rohan Siddamsettiwar and Rishab Ramalingam, out of the University of Utah's Sandbox startup community. We built it after watching our own agents do work twice, act on stale files and take actions nobody approved."
-              }
-            }
-          ]
+          "@type": "Question",
+          "name": "What can't Synthe stop?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It doesn't stop prompt injection, and it can't tell whether approved code is good: if a person approves the wrong change, Synthe pushes exactly that change. It only controls the credentials and remotes it's configured for, so an agent's account must hold no other credentials. Receipts prove which key acted, not which model wrote the work."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which agents does it work with?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Claude Code and OpenClaw through plugins, and any agent through a plain git push or the MCP server. Git pushes are the first action Synthe performs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does it cost?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Running Synthe yourself costs nothing. If you'd like help piloting it with your team, talk to us."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Who is building Synthe?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Co-founders Rohan Siddamsettiwar and Rishab Ramalingam, out of the University of Utah's Sandbox startup community."
+          }
         }
       ]
     }
+  ]
+}
     </script>
-    <link rel="preload" href="/fonts/fraunces-normal-400-650-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/site.css?v=f2274738" />
-    <script src="/site.js?v=0106cb96" defer></script>
+    <link rel="stylesheet" href="/site.css?v=b3f42f20" />
+    <script src="/site.js?v=e1625afa" defer></script>
     <style>
-      :root {
-        --cream: #f5efe2;
-        --cream-deep: #e9dfc8;
-        --card: #fbf7ec;
-        --ink: #2b2118;
-        --ink-soft: #4e4436;
-        --muted: #675c4c;
-        --line: #dacdaf;
-        --rust: #8a1919;
-        --rust-deep: #6b1212;
-        --green: #286920;
-        --green-soft: #e3ebda;
-        --red-soft: #f0e0d3;
-        --red: #b3401f;
-        --term-bg: #2b2118;
-        --term-cream: #f0e6d2;
-        --term-green: #7fb069;
-        --term-amber: #d99a5b;
-        --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-      }
-      html[data-theme="dark"] {
-        color-scheme: dark;
-        --cream: #0e0d0c;
-        --cream-deep: #161513;
-        --card: #1a1917;
-        --ink: #f2ede4;
-        --ink-soft: #d6cec0;
-        --muted: #a8a094;
-        --line: #38352f;
-        --rust: #ec5358;
-        --rust-deep: #ef6a52;
-        --green: #7fb069;
-        --green-soft: #161d17;
-        --red-soft: #241a16;
-        --red: #f2555a;
-      }
-      html[data-theme="dark"] body {
-        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23f2ede4'%20stroke-width%3D'1'%3E%3Cpath%20d%3D'M-16%2C18L0%2C24L16%2C30L32%2C30L48%2C24L64%2C18L80%2C18L96%2C24L112%2C30L128%2C30L144%2C24L160%2C18L176%2C18L192%2C24L208%2C30L224%2C30L240%2C24L256%2C18L272%2C18L288%2C24L304%2C30L320%2C30L336%2C24L352%2C18L368%2C18L384%2C24L400%2C30L416%2C30L432%2C24L448%2C18L464%2C18L480%2C24L496%2C30'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C72L0%2C78L16%2C78L32%2C72L48%2C66L64%2C66L80%2C72L96%2C78L112%2C78L128%2C72L144%2C66L160%2C66L176%2C72L192%2C78L208%2C78L224%2C72L240%2C66L256%2C66L272%2C72L288%2C78L304%2C78L320%2C72L336%2C66L352%2C66L368%2C72L384%2C78L400%2C78L416%2C72L432%2C66L448%2C66L464%2C72L480%2C78L496%2C78'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C126L0%2C126L16%2C119L32%2C114L48%2C114L64%2C121L80%2C126L96%2C126L112%2C119L128%2C114L144%2C114L160%2C121L176%2C126L192%2C126L208%2C119L224%2C114L240%2C114L256%2C121L272%2C126L288%2C126L304%2C119L320%2C114L336%2C114L352%2C121L368%2C126L384%2C126L400%2C119L416%2C114L432%2C114L448%2C121L464%2C126L480%2C126L496%2C119'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C173L0%2C167L16%2C161L32%2C163L48%2C169L64%2C175L80%2C173L96%2C167L112%2C161L128%2C163L144%2C169L160%2C175L176%2C173L192%2C167L208%2C161L224%2C163L240%2C169L256%2C175L272%2C173L288%2C167L304%2C161L320%2C163L336%2C169L352%2C175L368%2C173L384%2C167L400%2C161L416%2C163L432%2C169L448%2C175L464%2C173L480%2C167L496%2C161'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C215L0%2C209L16%2C211L32%2C217L48%2C223L64%2C221L80%2C215L96%2C209L112%2C211L128%2C217L144%2C223L160%2C221L176%2C215L192%2C209L208%2C211L224%2C217L240%2C223L256%2C221L272%2C215L288%2C209L304%2C211L320%2C217L336%2C223L352%2C221L368%2C215L384%2C209L400%2C211L416%2C217L432%2C223L448%2C221L464%2C215L480%2C209L496%2C211'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C257L0%2C259L16%2C266L32%2C271L48%2C269L64%2C262L80%2C257L96%2C259L112%2C266L128%2C271L144%2C269L160%2C262L176%2C257L192%2C259L208%2C266L224%2C271L240%2C269L256%2C262L272%2C257L288%2C259L304%2C266L320%2C271L336%2C269L352%2C262L368%2C257L384%2C259L400%2C266L416%2C271L432%2C269L448%2C262L464%2C257L480%2C259L496%2C266'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C307L0%2C314L16%2C319L32%2C317L48%2C310L64%2C305L80%2C307L96%2C314L112%2C319L128%2C317L144%2C310L160%2C305L176%2C307L192%2C314L208%2C319L224%2C317L240%2C310L256%2C305L272%2C307L288%2C314L304%2C319L320%2C317L336%2C310L352%2C305L368%2C307L384%2C314L400%2C319L416%2C317L432%2C310L448%2C305L464%2C307L480%2C314L496%2C319'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C363L0%2C367L16%2C364L32%2C357L48%2C353L64%2C356L80%2C363L96%2C367L112%2C364L128%2C357L144%2C353L160%2C356L176%2C363L192%2C367L208%2C364L224%2C357L240%2C353L256%2C356L272%2C363L288%2C367L304%2C364L320%2C357L336%2C353L352%2C356L368%2C363L384%2C367L400%2C364L416%2C357L432%2C353L448%2C356L464%2C363L480%2C367L496%2C364'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C415L0%2C412L16%2C405L32%2C401L48%2C404L64%2C411L80%2C415L96%2C412L112%2C405L128%2C401L144%2C404L160%2C411L176%2C415L192%2C412L208%2C405L224%2C401L240%2C404L256%2C411L272%2C415L288%2C412L304%2C405L320%2C401L336%2C404L352%2C411L368%2C415L384%2C412L400%2C405L416%2C401L432%2C404L448%2C411L464%2C415L480%2C412L496%2C405'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C460L0%2C453L16%2C449L32%2C452L48%2C459L64%2C463L80%2C460L96%2C453L112%2C449L128%2C452L144%2C459L160%2C463L176%2C460L192%2C453L208%2C449L224%2C452L240%2C459L256%2C463L272%2C460L288%2C453L304%2C449L320%2C452L336%2C459L352%2C463L368%2C460L384%2C453L400%2C449L416%2C452L432%2C459L448%2C463L464%2C460L480%2C453L496%2C449'%20stroke-opacity%3D'0.05'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
-      }
+      .page { padding: 0; }
+      .page > .site-foot { max-width: 1120px; margin-left: auto; margin-right: auto; padding-left: 24px; padding-right: 24px; }
+      .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+      main { font-size: 17px; line-height: 1.6; }
+      a { color: inherit; }
+      code, pre { font-family: var(--mono); }
+      .textlink { color: var(--human-text); font-weight: 500; text-decoration: none; border-bottom: 1px solid currentColor; }
 
-      * { box-sizing: border-box; }
-      html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scrollbar-gutter: stable; overflow-x: clip; }
-      html { scrollbar-width: thin; scrollbar-color: rgba(43, 33, 24, 0.35) transparent; }
-      ::-webkit-scrollbar { width: 10px; }
-      ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: rgba(43, 33, 24, 0.28); border-radius: 8px; border: 2px solid var(--cream); }
-      ::-webkit-scrollbar-thumb:hover { background: rgba(43, 33, 24, 0.45); }
-      body {
-        overflow-x: clip;
-        margin: 0;
-        color: var(--ink);
-        font-family: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        font-size: 17px;
-        line-height: 1.6;
-        -webkit-font-smoothing: antialiased;
-        background-color: var(--cream);
-        background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'480'%20height%3D'480'%20viewBox%3D'0%200%20480%20480'%3E%3Cg%20fill%3D'none'%20stroke%3D'%23241d14'%20stroke-width%3D'1'%3E%3Cpath%20d%3D'M-16%2C18L0%2C24L16%2C30L32%2C30L48%2C24L64%2C18L80%2C18L96%2C24L112%2C30L128%2C30L144%2C24L160%2C18L176%2C18L192%2C24L208%2C30L224%2C30L240%2C24L256%2C18L272%2C18L288%2C24L304%2C30L320%2C30L336%2C24L352%2C18L368%2C18L384%2C24L400%2C30L416%2C30L432%2C24L448%2C18L464%2C18L480%2C24L496%2C30'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C72L0%2C78L16%2C78L32%2C72L48%2C66L64%2C66L80%2C72L96%2C78L112%2C78L128%2C72L144%2C66L160%2C66L176%2C72L192%2C78L208%2C78L224%2C72L240%2C66L256%2C66L272%2C72L288%2C78L304%2C78L320%2C72L336%2C66L352%2C66L368%2C72L384%2C78L400%2C78L416%2C72L432%2C66L448%2C66L464%2C72L480%2C78L496%2C78'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C126L0%2C126L16%2C119L32%2C114L48%2C114L64%2C121L80%2C126L96%2C126L112%2C119L128%2C114L144%2C114L160%2C121L176%2C126L192%2C126L208%2C119L224%2C114L240%2C114L256%2C121L272%2C126L288%2C126L304%2C119L320%2C114L336%2C114L352%2C121L368%2C126L384%2C126L400%2C119L416%2C114L432%2C114L448%2C121L464%2C126L480%2C126L496%2C119'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C173L0%2C167L16%2C161L32%2C163L48%2C169L64%2C175L80%2C173L96%2C167L112%2C161L128%2C163L144%2C169L160%2C175L176%2C173L192%2C167L208%2C161L224%2C163L240%2C169L256%2C175L272%2C173L288%2C167L304%2C161L320%2C163L336%2C169L352%2C175L368%2C173L384%2C167L400%2C161L416%2C163L432%2C169L448%2C175L464%2C173L480%2C167L496%2C161'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C215L0%2C209L16%2C211L32%2C217L48%2C223L64%2C221L80%2C215L96%2C209L112%2C211L128%2C217L144%2C223L160%2C221L176%2C215L192%2C209L208%2C211L224%2C217L240%2C223L256%2C221L272%2C215L288%2C209L304%2C211L320%2C217L336%2C223L352%2C221L368%2C215L384%2C209L400%2C211L416%2C217L432%2C223L448%2C221L464%2C215L480%2C209L496%2C211'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C257L0%2C259L16%2C266L32%2C271L48%2C269L64%2C262L80%2C257L96%2C259L112%2C266L128%2C271L144%2C269L160%2C262L176%2C257L192%2C259L208%2C266L224%2C271L240%2C269L256%2C262L272%2C257L288%2C259L304%2C266L320%2C271L336%2C269L352%2C262L368%2C257L384%2C259L400%2C266L416%2C271L432%2C269L448%2C262L464%2C257L480%2C259L496%2C266'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C307L0%2C314L16%2C319L32%2C317L48%2C310L64%2C305L80%2C307L96%2C314L112%2C319L128%2C317L144%2C310L160%2C305L176%2C307L192%2C314L208%2C319L224%2C317L240%2C310L256%2C305L272%2C307L288%2C314L304%2C319L320%2C317L336%2C310L352%2C305L368%2C307L384%2C314L400%2C319L416%2C317L432%2C310L448%2C305L464%2C307L480%2C314L496%2C319'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C363L0%2C367L16%2C364L32%2C357L48%2C353L64%2C356L80%2C363L96%2C367L112%2C364L128%2C357L144%2C353L160%2C356L176%2C363L192%2C367L208%2C364L224%2C357L240%2C353L256%2C356L272%2C363L288%2C367L304%2C364L320%2C357L336%2C353L352%2C356L368%2C363L384%2C367L400%2C364L416%2C357L432%2C353L448%2C356L464%2C363L480%2C367L496%2C364'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C415L0%2C412L16%2C405L32%2C401L48%2C404L64%2C411L80%2C415L96%2C412L112%2C405L128%2C401L144%2C404L160%2C411L176%2C415L192%2C412L208%2C405L224%2C401L240%2C404L256%2C411L272%2C415L288%2C412L304%2C405L320%2C401L336%2C404L352%2C411L368%2C415L384%2C412L400%2C405L416%2C401L432%2C404L448%2C411L464%2C415L480%2C412L496%2C405'%20stroke-opacity%3D'0.05'%2F%3E%3Cpath%20d%3D'M-16%2C460L0%2C453L16%2C449L32%2C452L48%2C459L64%2C463L80%2C460L96%2C453L112%2C449L128%2C452L144%2C459L160%2C463L176%2C460L192%2C453L208%2C449L224%2C452L240%2C459L256%2C463L272%2C460L288%2C453L304%2C449L320%2C452L336%2C459L352%2C463L368%2C460L384%2C453L400%2C449L416%2C452L432%2C459L448%2C463L464%2C460L480%2C453L496%2C449'%20stroke-opacity%3D'0.05'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'80'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'240'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'80'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'240'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'22'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'38'%20stroke-opacity%3D'0.055'%2F%3E%3Ccircle%20cx%3D'400'%20cy%3D'400'%20r%3D'54'%20stroke-opacity%3D'0.055'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
-        background-size: 480px 480px;
-        transition: background-color .25s ease, color .25s ease;
-      }
-      a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
-      code { font-family: var(--mono); font-size: 0.88em; }
+      .hero { position: relative; overflow: hidden; padding: 84px 0 72px; }
+      .hero .wrap { position: relative; z-index: 1; display: grid; grid-template-columns: 1.1fr .9fr; gap: 56px; align-items: center; }
+      @media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; gap: 40px; } .hero { padding: 44px 0 48px; } }
+      .hero h1 { font-size: clamp(38px, 5.4vw, 64px); line-height: 1.04; margin: 0 0 22px; }
+      .lede { font-size: clamp(18px, 1.6vw, 21px); color: var(--muted); margin: 0 0 30px; max-width: 34em; }
+      .lede b { color: var(--ink); font-weight: 600; }
+      .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+      .meta { margin: 22px 0 0; font: 13px/1.5 var(--mono); color: var(--faint); }
 
-      .page {
-        max-width: 1060px;
-        margin: 0 auto;
-        padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px);
-        position: relative;
-      }
+      .clasp { background: var(--card); border: 1px solid var(--line); padding: 22px; clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 29px, 100% 100%, 0 100%); }
+      .clasp .tag { font: 12px/1 var(--mono); color: var(--faint); display: flex; justify-content: space-between; margin-bottom: 14px; }
+      .step { display: flex; align-items: center; gap: 10px; font: 14px/1.4 var(--mono); padding: 10px 12px; border: 1px solid var(--line); opacity: .38; transition: opacity .45s, border-color .45s, background .45s; }
+      .step.on { opacity: 1; }
+      .step .dot { width: 9px; height: 9px; flex: none; }
+      .step.agent .dot { background: var(--agent); } .step.human .dot { background: var(--human); }
+      .step.agent.on { border-color: var(--line2); } .step.human.on { border-color: var(--human); background: var(--human-bg); }
+      .step b { font-weight: 500; }
+      .stage { display: grid; place-items: center; height: 190px; }
+      .stage .mark { width: 150px; height: 158px; }
+      .receipt-line { font: 13px/1.5 var(--mono); color: var(--ok); margin: 12px 0 0; min-height: 20px; opacity: 0; transform: translateY(4px); transition: opacity .4s, transform .4s; }
+      .receipt-line.on { opacity: 1; transform: none; }
+      .replay { background: none; border: 0; color: var(--faint); font: 12px var(--mono); cursor: pointer; padding: 0; }
+      .replay:hover { color: var(--ink); }
 
-      .kicker {
-        margin: 0 0 14px;
-        font-family: var(--mono);
-        font-size: 12.5px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--rust);
-      }
+      .sect { padding: 88px 0; }
+      .sect h2 { font-size: clamp(28px, 3.4vw, 40px); line-height: 1.1; margin: 0 0 16px; max-width: 22em; }
+      .sub { color: var(--muted); max-width: 40em; margin: 0 0 40px; }
+      .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      @media (max-width: 860px) { .grid3 { grid-template-columns: 1fr; } }
+      .card2 { background: var(--card); border: 1px solid var(--line); padding: 24px; clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut-y), 100% 100%, 0 100%); }
+      .card2 h3 { font-size: 19px; margin: 14px 0 8px; letter-spacing: -.01em; }
+      .card2 p { margin: 0; color: var(--muted); font-size: 16px; }
+      .card2 .mark { width: 34px; height: 36px; }
+      .risk { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+      .risk li { display: flex; gap: 12px; align-items: baseline; font-size: 18px; }
+      .risk li::before { content: ""; width: 12px; height: 2px; background: var(--human); flex: none; transform: rotate(calc(-1 * var(--slot))); translate: 0 -5px; }
+      .two { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+      @media (max-width: 860px) { .two { grid-template-columns: 1fr; gap: 28px; } }
+      .answer { font-size: 22px; line-height: 1.35; letter-spacing: -.01em; margin: 0; }
+      .answer strong { font-weight: 600; color: var(--human-text); }
 
-      /* Hero: the value proposition has about ten seconds (NN/g), so it stays short. */
-      .hero { margin-top: clamp(36px, 6vw, 72px); max-width: 900px; }
-      .hero h1 {
-        margin: 0;
-        font-family: "Fraunces", Georgia, serif;
-        font-size: clamp(40px, 6.2vw, 68px);
-        font-weight: 500;
-        line-height: 1.04;
-        letter-spacing: -0.022em;
-        text-wrap: balance;
-      }
-      /* The rotating word: decorative, paused by the motion control or reduced motion.
-         Screen readers get the first word only. Until the script measures the words (or
-         without script) only the first word shows, at its own width. Once measured, the slot
-         keeps the widest word's width so the headline never re-wraps, the visible part trims
-         to the word on show, and "at the door." slides left to meet it, so a short word never
-         leaves a gap. --gap0..2 hold how much narrower each word is than the slot. The 0.2em
-         clip margins leave room for the italic d, which leans about 0.15em past its box. */
-      .rotator-group { display: inline-block; white-space: nowrap; }
-      .rotator { display: inline-block; height: 1.12em; vertical-align: bottom; }
-      .rotator-inner { display: inline-block; }
-      .rotator-inner span {
-        display: block;
-        height: 1.12em;
-        line-height: 1.12;
-        font-style: italic;
-        color: var(--rust);
-        white-space: nowrap;
-      }
-      .rotator-inner span + span { display: none; }
-      .rotator-after { display: inline-block; }
-      .rotator-group.is-measuring .rotator-inner span,
-      .rotator-group.is-live .rotator-inner span { display: block; }
-      .rotator-group.is-live .rotator { width: var(--slot); animation: rotate-clip 7.5s ease-in-out infinite; }
-      .rotator-group.is-live .rotator-inner { animation: rotate-word 7.5s ease-in-out infinite; }
-      .rotator-group.is-live .rotator-after { animation: rotate-follow 7.5s ease-in-out infinite; }
-      @keyframes rotate-word {
-        0%, 28%   { transform: translateY(0); }
-        33%, 61%  { transform: translateY(-1.12em); }
-        66%, 94%  { transform: translateY(-2.24em); }
-        100%      { transform: translateY(-3.36em); }
-      }
-      @keyframes rotate-clip {
-        0%, 28%   { clip-path: inset(0 calc(var(--gap0) - 0.2em) 0 -0.2em); }
-        33%, 61%  { clip-path: inset(0 calc(var(--gap1) - 0.2em) 0 -0.2em); }
-        66%, 94%  { clip-path: inset(0 calc(var(--gap2) - 0.2em) 0 -0.2em); }
-        100%      { clip-path: inset(0 calc(var(--gap0) - 0.2em) 0 -0.2em); }
-      }
-      @keyframes rotate-follow {
-        0%, 28%   { transform: translateX(calc(-1 * var(--gap0))); }
-        33%, 61%  { transform: translateX(calc(-1 * var(--gap1))); }
-        66%, 94%  { transform: translateX(calc(-1 * var(--gap2))); }
-        100%      { transform: translateX(calc(-1 * var(--gap0))); }
-      }
-      .lede {
-        margin: clamp(18px, 3vw, 26px) 0 0;
-        max-width: 38em;
-        font-size: clamp(17px, 2.1vw, 19px);
-        line-height: 1.65;
-        color: var(--ink-soft);
-      }
-      .lede strong { color: var(--ink); font-weight: 650; }
-      .lede code { background: var(--cream-deep); padding: 2px 7px; border-radius: 6px; color: var(--ink); }
-      .cta-row { margin-top: clamp(22px, 3.5vw, 30px); display: flex; flex-wrap: wrap; align-items: center; gap: 14px 26px; }
-      .btn {
-        display: inline-block;
-        background: var(--ink);
-        color: var(--cream);
-        font: inherit;
-        font-size: 16px;
-        font-weight: 650;
-        text-decoration: none;
-        padding: 14px 30px;
-        border: none;
-        border-radius: 999px;
-        cursor: pointer;
-        transition: background 0.2s ease, transform 0.2s ease;
-      }
-      .btn:hover { background: var(--rust); transform: translateY(-1px); }
-      .btn[disabled] { opacity: 0.6; cursor: default; transform: none; }
-      .textlink { font-weight: 500; color: var(--rust); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
-      .cta-row .textlink { font-size: 16px; }
-      .textlink:hover { color: var(--rust-deep); }
-      .availability { margin: 20px 0 0; font-size: 14.5px; color: var(--muted); line-height: 2; }
-      .avail-tag {
-        display: inline-block;
-        font-family: var(--mono);
-        font-size: 11.5px;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        padding: 1px 9px;
-        border: 1px solid currentColor;
-        border-radius: 999px;
-        margin-right: 6px;
-        line-height: 1.7;
-      }
-      .avail-tag.public { color: var(--green); }
-      .avail-tag.beta { color: var(--rust); margin-left: 12px; }
+      .install { background: var(--bg2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+      .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 24px; flex-wrap: wrap; }
+      .tab { background: none; border: 0; border-bottom: 2px solid transparent; color: var(--muted); font: 600 15px var(--sans); padding: 12px 16px; cursor: pointer; margin-bottom: -1px; }
+      .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--human); }
+      .tab:focus-visible, .copy:focus-visible, .link:focus-visible, .mini:focus-visible, .replay:focus-visible { outline: 2px solid var(--human); outline-offset: 2px; }
+      .pane { display: grid; gap: 18px; max-width: 780px; }
+      .pane[hidden] { display: none; }
+      .cmdrow p { margin: 0 0 8px; color: var(--muted); font-size: 15px; }
+      .cmd { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--line); padding: 12px 12px 12px 16px; font: 14px/1.5 var(--mono); overflow-x: auto; }
+      .cmd code { flex: 1; white-space: pre; }
+      .copy { display: inline-flex; align-items: center; gap: 8px; background: none; border: 1px solid var(--line2); color: var(--ink); font: 500 13px var(--mono); padding: 7px 10px; cursor: pointer; flex: none; }
+      .copy .mark { width: 14px; height: 15px; }
+      .copy.done { border-color: var(--ok); color: var(--ok); }
+      .note { font-size: 14px; color: var(--faint); margin: 0; }
+      .term { background: var(--card); border: 1px solid var(--line); padding: 16px; font: 13.5px/1.65 var(--mono); color: var(--muted); white-space: pre-wrap; margin: 0; }
+      .term .h { color: var(--human-text); } .term .o { color: var(--ink); }
+      .works { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; padding: 0; list-style: none; }
+      .works li { font: 13px var(--mono); border: 1px solid var(--line); padding: 6px 10px; color: var(--muted); }
 
-      /* Trust strip: company names on a scrolling tape, right under the hero. */
-      .trust { margin-top: clamp(36px, 6vw, 56px); }
-      .marquee-kicker {
-        max-width: none;
-        margin: 0 0 16px;
-        text-align: center;
-        font-family: var(--mono);
-        font-size: 12px;
-        font-weight: 400;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--muted);
-      }
-      .marquee {
-        margin-left: calc(50% - 50vw);
-        margin-right: calc(50% - 50vw);
-        background: var(--ink);
-        color: var(--cream);
-        overflow: hidden;
-        padding: 14px 0;
-        box-shadow: 0 10px 30px rgba(43, 33, 24, 0.18);
-      }
-      .marquee-track { display: inline-flex; white-space: nowrap; animation: marquee-scroll 34s linear infinite; will-change: transform; }
-      .marquee:hover .marquee-track { animation-play-state: paused; }
-      .marquee-track span { font-family: var(--mono); font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; padding: 0 26px; }
-      .marquee-track .dot { color: var(--rust); padding: 0; }
-      @keyframes marquee-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-      .trust-foot { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 18px; margin-top: 14px; }
-      .compat-note { margin: 0; font-size: 13.5px; color: var(--muted); }
-      .motion-toggle {
-        background: none; border: 1px solid var(--line); border-radius: 999px;
-        padding: 4px 12px; font: inherit; font-size: 13px; color: var(--muted); cursor: pointer;
-      }
-      .motion-toggle:hover { border-color: var(--rust); color: var(--rust); }
+      .chainbox { background: var(--card); border: 1px solid var(--line); padding: 28px 24px 22px; }
+      .chain { display: flex; align-items: center; justify-content: center; margin: 0 -6px; }
+      .joint { flex: 1; max-width: 46px; min-width: 10px; height: 2px; margin-bottom: 26px; background: var(--line2); transform: rotate(calc(-1 * (90deg - var(--slot)))); transition: background .35s; position: relative; overflow: hidden; }
+      .joint::after { content: ""; position: absolute; inset: 0; background: var(--ok); transform: scaleX(var(--j, 0)); transform-origin: left; transition: transform .35s var(--ease-out); }
+      .joint.stale { background: repeating-linear-gradient(90deg, var(--faint) 0 4px, transparent 4px 8px); }
+      .joint.stale::after, .joint.cut::after { transform: scaleX(0); }
+      .joint.cut { background: none; }
+      .link { background: none; border: 0; padding: 6px; cursor: pointer; color: var(--ink); display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 0 1 84px; min-width: 0; }
+      .link .mark { width: 100%; max-width: 74px; height: auto; aspect-ratio: 355/370; transition: transform .35s var(--ease-out); }
+      .link:hover .mark, .link:focus-visible .mark { transform: translateY(-3px); }
+      .link .num { font: 12px var(--mono); color: var(--faint); transition: color .3s; }
+      .link.sel .num { color: var(--ink); }
+      .track { height: 2px; background: var(--line); margin: 4px 6px 18px; position: relative; overflow: hidden; }
+      .track i { position: absolute; inset: 0; background: var(--ok); transform-origin: left; transform: scaleX(var(--p, 0)); transition: transform .9s var(--ease-out); }
+      .track.broken i { background: var(--human); }
+      .detail { display: grid; grid-template-columns: auto 1fr; gap: 4px 18px; font: 13px/1.6 var(--mono); color: var(--muted); min-height: 96px; margin: 0; }
+      .detail dt { color: var(--faint); } .detail dd { margin: 0; color: var(--ink); overflow-wrap: anywhere; }
+      .cstatus { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); font: 13px var(--mono); }
+      .cstatus .s { color: var(--ok); } .cstatus .s.bad { color: var(--human-text); }
+      .mini { background: none; border: 1px solid var(--line2); color: var(--ink); font: 500 13px var(--mono); padding: 7px 12px; cursor: pointer; }
+      .mini:disabled { opacity: .45; cursor: default; }
+      .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
+      @media (max-width: 700px) { .stats { grid-template-columns: 1fr; } }
+      .stat { border-top: 1px solid var(--line2); padding-top: 14px; }
+      .stat b { display: block; font-size: 30px; letter-spacing: -.02em; font-weight: 650; }
+      .stat > span { color: var(--muted); font-size: 15px; }
+      .illus { font: 12px var(--mono); color: var(--faint); margin: 12px 0 0; }
 
-      /* Sections: short, each with a heading that states its point (layer-cake scanning). */
-      section.block { border-top: 1px solid var(--line); margin-top: clamp(40px, 6vw, 64px); padding-top: clamp(36px, 5.5vw, 56px); scroll-margin-top: 80px; }
-      h2 {
-        margin: 0 0 18px;
-        font-family: "Fraunces", Georgia, serif;
-        font-size: clamp(30px, 4.4vw, 42px);
-        font-weight: 500;
-        line-height: 1.1;
-        letter-spacing: -0.015em;
-        max-width: 20em;
-      }
-      h2 em { font-style: italic; color: var(--rust); }
-      .blockintro { margin: 0 0 24px; font-size: 17.5px; line-height: 1.6; color: var(--ink-soft); max-width: 38em; }
-      .trynote { margin: 18px 0 0; font-size: 15px; color: var(--ink-soft); max-width: 44em; }
+      .demo { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+      .faq details { border-top: 1px solid var(--line); padding: 18px 0; }
+      .faq details:last-of-type { border-bottom: 1px solid var(--line); }
+      .faq summary { cursor: pointer; font-weight: 600; font-size: 18px; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq summary::after { content: "+"; color: var(--muted); } .faq details[open] summary::after { content: "\2212"; }
+      .faq details p { color: var(--muted); margin: 12px 0 0; max-width: 46em; }
 
-      /* How it works: four steps, one line each, then a clear way to go deeper */
-      .flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-      .flow li {
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        padding: 20px 20px 22px;
-        position: relative;
-        transition: opacity 0.45s ease, transform 0.45s ease;
-      }
-      .flow li.pre { opacity: 0; transform: translateY(22px); }
-      .flow li.in { opacity: 1; transform: translateY(0); }
-      .flow .num { font-family: "Fraunces", Georgia, serif; font-style: italic; font-size: 28px; line-height: 1; color: var(--rust); }
-      .flow h3 { margin: 12px 0 6px; font-size: 17.5px; font-weight: 650; line-height: 1.3; }
-      .flow p { margin: 0; font-size: 15.5px; line-height: 1.55; color: var(--ink-soft); }
-      .flow li + li::before { content: ""; position: absolute; left: -13px; top: 32px; width: 10px; height: 1.5px; background: var(--rust); }
-      .more { margin: 22px 0 0; font-size: 16px; }
-      .more-note { color: var(--muted); font-size: 15px; margin-left: 8px; }
-
-      /* Demos: the strongest material, now in the first half of the page */
-      .feature-card {
-        display: grid;
-        gap: 8px;
-        background: var(--card);
-        border: 1.5px solid var(--line);
-        border-radius: 18px;
-        padding: clamp(22px, 3.5vw, 32px);
-        text-decoration: none;
-        color: var(--ink);
-        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-      }
-      .feature-card:hover { transform: translateY(-2px); border-color: var(--rust); box-shadow: 0 14px 32px rgba(43, 33, 24, 0.12); }
-      .feature-card .label, .demo-card .label { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rust); }
-      .feature-title { font-family: "Fraunces", Georgia, serif; font-size: clamp(24px, 3.4vw, 32px); line-height: 1.15; }
-      .feature-title em { font-style: italic; color: var(--rust); }
-      .feature-desc { color: var(--ink-soft); font-size: 16.5px; max-width: 40em; }
-      .feature-cta { margin-top: 4px; font-weight: 650; color: var(--rust); }
-      .demo-grid { list-style: none; margin: 16px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-      .demo-card {
-        display: grid;
-        gap: 8px;
-        height: 100%;
-        background: var(--card);
-        border: 1.5px solid var(--line);
-        border-radius: 16px;
-        padding: 20px 22px;
-        text-decoration: none;
-        color: var(--ink);
-        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-      }
-      .demo-card:hover { transform: translateY(-2px); border-color: var(--rust); box-shadow: 0 14px 32px rgba(43, 33, 24, 0.12); }
-      .demo-desc { color: var(--ink-soft); font-size: 15.5px; line-height: 1.55; }
-
-      /* Proof panel: large brand fill stays deep brick in both modes */
-      .proof-panel {
-        background: #6b1212;
-        color: #ecdfc9;
-        border-radius: 26px;
-        padding: clamp(28px, 5vw, 48px);
-        box-shadow: 0 18px 44px rgba(107, 18, 18, 0.28);
-      }
-      .panel-kicker { margin: 0 0 14px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #d9b596; }
-      .proof-panel .panel-h { margin: 0 0 14px; font-family: "Fraunces", Georgia, serif; font-size: clamp(28px, 4vw, 38px); font-weight: 500; color: #f5efe2; }
-      .proof-panel .panel-h em { font-style: italic; color: #ec5358; }
-      .proof-panel p { margin: 0; max-width: 40em; font-size: 17px; line-height: 1.65; color: #ecdfc9; }
-      .proof-panel code { background: rgba(255, 255, 255, 0.12); padding: 2px 8px; border-radius: 6px; color: #f5efe2; }
-      .runlinks { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px 12px; }
-      .runlinks a {
-        color: #f5efe2;
-        background: rgba(255, 255, 255, 0.1);
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 500;
-        padding: 9px 16px;
-        border-radius: 999px;
-        border: 1px solid rgba(255, 255, 255, 0.22);
-        transition: background 0.2s ease;
-      }
-      .runlinks a:hover { background: rgba(255, 255, 255, 0.2); }
-      .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 24px; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.16); text-align: center; }
-      .stats > div { display: flex; flex-direction: column; gap: 6px; }
-      .stat-num { font-family: "Fraunces", Georgia, serif; font-size: clamp(26px, 4vw, 36px); color: #f5efe2; }
-      .stat-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #d9b596; }
-      .proof-panel .panel-foot { margin-top: 22px; font-size: 14.5px; color: #d9b596; }
-      .panel-foot a { color: #f5efe2; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(255, 255, 255, 0.4); }
-
-      /* Who it's for */
-      .foryou-grid { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 0; padding: 0; }
-      .foryou-card {
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        background: var(--card);
-        padding: 26px 26px;
-        transition: opacity 0.45s ease, transform 0.45s ease;
-      }
-      .foryou-card.pre { opacity: 0; transform: translateY(26px); }
-      .foryou-card.in { opacity: 1; transform: translateY(0); }
-      .foryou-index { font-family: "Fraunces", Georgia, serif; font-size: 32px; color: var(--rust); display: block; line-height: 1; }
-      .foryou-card .name { display: block; font-weight: 650; font-size: 19px; margin-top: 12px; line-height: 1.3; }
-      .foryou-card .desc { display: block; color: var(--ink-soft); font-size: 16px; margin-top: 8px; line-height: 1.6; }
-
-      /* FAQ: an accordion, so the questions scan in one screen and answers open on demand */
-      .faq { max-width: 48em; border-top: 1px solid var(--line); }
-      .faq-item { border-bottom: 1px solid var(--line); }
-      .faq-item > summary {
-        list-style: none;
-        cursor: pointer;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 18px;
-        padding: 15px 4px;
-        font-family: "Fraunces", Georgia, serif;
-        font-size: 20px;
-        font-weight: 500;
-        letter-spacing: -0.01em;
-      }
-      .faq-item > summary::-webkit-details-marker { display: none; }
-      .faq-item > summary::after { content: "+"; flex: none; font-family: var(--mono); font-size: 22px; line-height: 1; color: var(--rust); transition: transform 0.2s ease; }
-      .faq-item[open] > summary::after { transform: rotate(45deg); }
-      .faq-item > summary:hover { color: var(--rust); }
-      .faq-a { padding: 0 4px 18px; }
-      .faq-a p { margin: 0; max-width: 42em; color: var(--ink-soft); font-size: 16px; line-height: 1.6; }
-      .faq-a code { background: var(--cream-deep); padding: 1px 6px; border-radius: 5px; }
-
-      /* Final call to action: a dark panel that stands apart, with the form inside */
-      .final-cta {
-        margin-top: clamp(44px, 7vw, 72px);
-        background: #2b2118;
-        color: #f0e6d2;
-        border-radius: 26px;
-        padding: clamp(28px, 5vw, 52px);
-        box-shadow: 0 18px 44px rgba(43, 33, 24, 0.22);
-        scroll-margin-top: 90px;
-      }
-      html[data-theme="dark"] .final-cta { border: 1px solid #38352f; }
-      .final-cta .kicker { color: #f2555a; }
-      .final-cta h2 { color: #f5efe2; }
-      .final-cta h2 em { color: #ec5358; }
-      .final-cta .blockintro { color: #d6cec0; }
-      .final-cta .trynote { color: #d6cec0; }
-      .final-cta .textlink { color: #f5efe2; }
-      .final-cta .textlink:hover { color: #ffffff; }
+      .partner { padding: 88px 0; border-top: 1px solid var(--line); }
       .partner-form { display: grid; gap: 16px; max-width: 560px; margin-top: 4px; }
       .partner-form .field { display: grid; gap: 6px; }
-      .partner-form label { font-size: 14.5px; font-weight: 600; color: #f5efe2; }
-      .partner-form .optional { font-weight: 400; color: #a8a094; }
-      .partner-form input[type="email"], .partner-form textarea {
-        width: 100%;
-        font: inherit;
-        font-size: 16px;
-        padding: 13px 18px;
-        border-radius: 14px;
-        border: 1px solid #4e4436;
-        background: #f5efe2;
-        color: #2b2118;
-      }
-      .partner-form input[type="email"] { border-radius: 999px; padding: 13px 22px; }
+      .partner-form label { font-size: 14.5px; font-weight: 600; }
+      .partner-form .optional { font-weight: 400; color: var(--muted); }
+      .partner-form input[type="email"], .partner-form textarea { font: inherit; font-size: 16px; color: var(--ink); background: var(--card); border: 1px solid var(--line2); padding: 12px 14px; }
       .partner-form textarea { resize: vertical; min-height: 92px; }
-      .partner-form input:focus-visible, .partner-form textarea:focus-visible { outline: 2px solid #ec5358; outline-offset: 2px; }
-      .partner-form .btn { justify-self: start; background: #f5efe2; color: #2b2118; }
-      .partner-form .btn:hover { background: #ffffff; color: #8a1919; }
-      .partner-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-      .form-note { min-height: 1.6em; font-weight: 500; }
+      .partner-form input:focus-visible, .partner-form textarea:focus-visible { outline: 2px solid var(--human); outline-offset: 2px; }
+      .partner-form .btn2 { justify-self: start; }
+      .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+      .trynote { font-size: 14px; color: var(--muted); margin: 14px 0 0; max-width: 46em; }
 
-      @media (max-width: 960px) {
-        .flow { grid-template-columns: 1fr 1fr; }
-        .flow li + li::before { display: none; }
-      }
-      @media (max-width: 720px) {
-        body { font-size: 16px; }
-        .flow, .demo-grid, .foryou-grid { grid-template-columns: 1fr; }
-        .stats { grid-template-columns: repeat(2, 1fr); gap: 20px 12px; }
-        .avail-tag.beta { margin-left: 0; }
-        .more-note { display: block; margin: 6px 0 0; }
-        .faq-item > summary { font-size: 18px; }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        html { scroll-behavior: auto; }
-        .rotator-group.is-live .rotator { width: auto; }
-        .rotator-group.is-live .rotator, .rotator-group.is-live .rotator-inner,
-        .rotator-group.is-live .rotator-after { animation: none; }
-        .rotator-group.is-live .rotator-inner span + span { display: none; }
-        .marquee-track { animation: none; }
-        .btn, .feature-card, .demo-card { transition: none; }
-      }
+      .final { text-align: center; padding: 96px 0 40px; }
+      .final h2 { font-size: clamp(28px, 3.4vw, 40px); line-height: 1.1; margin: 0 auto 18px; max-width: 22em; }
+      .final .ctas { justify-content: center; }
+      @media (prefers-reduced-motion: reduce) { .step, .receipt-line, .joint, .joint::after, .track i, .link .mark { transition: none !important; } }
     </style>
     <script>
       /* theme and motion: set before first paint to avoid a flash. The js class turns on
@@ -584,177 +264,190 @@
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+      <defs>
+        <path id="hA" d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/>
+        <path id="hB" d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/>
+        <g id="mk0" style="fill:var(--ink)"><use href="#hA"/><use href="#hB"/></g>
+        <g id="mk1"><use href="#hA" style="fill:var(--agent)"/><use href="#hB" style="fill:var(--human)"/></g>
+        <pattern id="lat" width="520" height="560" patternUnits="userSpaceOnUse" patternTransform="scale(.3)">
+          <use href="#mk0" transform="translate(10 10)"/><use href="#mk0" transform="translate(270 290)"/>
+          <use href="#mk0" transform="translate(-250 290)"/><use href="#mk0" transform="translate(270 -270)"/><use href="#mk0" transform="translate(-250 -270)"/>
+        </pattern>
+        <pattern id="latg" width="520" height="560" patternUnits="userSpaceOnUse" patternTransform="scale(.3)">
+          <use href="#mk1" transform="translate(10 10)"/><use href="#mk1" transform="translate(270 290)"/>
+          <use href="#mk1" transform="translate(-250 290)"/><use href="#mk1" transform="translate(270 -270)"/><use href="#mk1" transform="translate(-250 -270)"/>
+        </pattern>
+      </defs>
+    </svg>
     <div class="page">
       <header class="site-head">
-        <a class="wordmark" href="/"><svg class="wordmark-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</a>
+        <a class="wordmark" href="/"><svg class="mark wordmark-logo open" viewBox="0 0 275 290" aria-hidden="true"><path class="half a" d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/><path class="half b" d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/></svg>Synthe</a>
         <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="topnav">Menu</button>
         <nav class="topnav" id="topnav" aria-label="Main">
           <a href="/how.html">How it works</a>
-          <details class="nav-group">
-            <summary>Demos</summary>
-            <div class="nav-panel">
-              <a href="/race.html"><strong>Race two agents</strong><span>Two agents, one change, exactly one commit.</span></a>
-              <a href="/forge.html"><strong>Forge this handoff</strong><span>Attack a signed handoff six ways.</span></a>
-              <a href="/playground.html"><strong>Playground</strong><span>Sign a real handoff, then break it.</span></a>
-              <a href="/tamper.html"><strong>Tamper evidence</strong><span>Break a hash chain and find where.</span></a>
-              <a href="/anatomy.html"><strong>Anatomy of a handoff</strong><span>One handoff, from draft to ledger.</span></a>
-            </div>
-          </details>
+          <a href="/status.html">Security</a>
           <a href="/docs.html">Docs</a>
-          <details class="nav-group">
-            <summary>Proof</summary>
-            <div class="nav-panel">
-              <a href="/receipts.html"><strong>Receipts</strong><span>Every claim, linked to the run behind it.</span></a>
-              <a href="/benchmarks.html"><strong>Benchmarks</strong><span>Every number on the site and its source.</span></a>
-              <a href="/status.html"><strong>Status &amp; trust</strong><span>What's public, what isn't proven, your data.</span></a>
-              <a href="/log.html"><strong>Changelog</strong><span>What shipped, and when.</span></a>
-            </div>
-          </details>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
-          <a class="nav-cta" href="/#partner">Become a design partner</a>
-          <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
+          <button class="flip" id="theme-toggle" type="button" aria-label="Switch theme"><svg class="flip-mark" viewBox="0 0 275 290" aria-hidden="true"><path class="a" d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/><path class="b" d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/></svg></button>
+          <a class="nav-cta" href="/#install"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><path class="half a" d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/><path class="half b" d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/></svg>Install</a>
         </nav>
       </header>
-
-      <main id="main">
-        <div class="hero">
-          <p class="kicker">The commit barrier for AI agents</p>
-          <h1>Synthe is the bouncer for your AI agents. Every action gets <span class="rotator-group"><span class="rotator"><span class="sr-only">checked</span><span class="rotator-inner" aria-hidden="true"><span>checked</span><span>verified</span><span>screened</span><span>checked</span></span></span> <span class="rotator-after">at the door.</span></span></h1>
-          <p class="lede"><strong>Agents propose. Synthe commits. Anyone can verify.</strong> Synthe holds the credentials for real-world actions, starting with <code>git push</code>. It re-checks each action against a signed, human-approved plan at the moment of commit, acts exactly once if nothing has changed, and signs a receipt for every allow and every deny.</p>
-          <div class="cta-row">
-            <a class="btn" href="#partner">Become a design partner</a>
-            <a class="textlink" href="/race.html">Race two agents for one commit</a>
+    <main id="main">
+      <div class="hero">
+        <svg class="lattice" aria-hidden="true"><rect width="100%" height="100%" fill="url(#lat)"/></svg>
+        <div class="lattice-glow" aria-hidden="true"><svg><rect width="100%" height="100%" fill="url(#latg)"/></svg></div>
+        <div class="wrap">
+          <div>
+            <h1>Let AI agents ship code without handing them the keys.</h1>
+            <p class="lede"><b>Agents propose. You approve. Synthe commits.</b> Synthe holds the only credential, pushes exactly the change you approved, once, and signs a receipt anyone can verify.</p>
+            <div class="ctas">
+              <a class="btn2 primary" href="#install"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>Install</a>
+              <a class="btn2" href="#how">How it works</a>
+            </div>
+            <p class="meta">Public beta · macOS and Linux · Claude Code, OpenClaw or any git push</p>
           </div>
-          <p class="availability"><span class="avail-tag public">Public today</span> the checker, its spec and tests <span class="avail-tag beta">Public beta</span> the commit broker, with an OpenClaw plugin and one-command Mac setup</p>
+          <div class="clasp" role="group" aria-label="Illustration: an agent proposes a push, you approve it, and Synthe commits it">
+            <div class="tag"><span>illustration</span><button class="replay" id="replay" type="button">replay</button></div>
+            <div class="step agent" id="s-prop"><span class="dot"></span><span><b>agent</b> proposes push · agent/fix-login · 2 files</span></div>
+            <div class="stage"><svg class="mark open" id="hero-mark" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg></div>
+            <div class="step human" id="s-appr"><span class="dot"></span><span><b>you</b> read the broker's diff · approve with Touch ID</span></div>
+            <p class="receipt-line" id="s-rcpt" aria-live="polite">committed once · receipt #42 signed</p>
+          </div>
         </div>
+      </div>
 
-        <section class="trust" aria-labelledby="trust-h">
-          <h2 class="marquee-kicker" id="trust-h">Works with any stack that emits JSON</h2>
-          <div class="marquee" aria-hidden="true">
-            <div class="marquee-track" id="marquee-track">
-              <span>LangChain</span><span class="dot">•</span>
-              <span>LangGraph</span><span class="dot">•</span>
-              <span>CrewAI</span><span class="dot">•</span>
-              <span>OpenAI</span><span class="dot">•</span>
-              <span>Anthropic</span><span class="dot">•</span>
-              <span>Google</span><span class="dot">•</span>
-              <span>Meta</span><span class="dot">•</span>
-              <span>Microsoft</span><span class="dot">•</span>
-              <span>Hugging Face</span><span class="dot">•</span>
-              <span>Vercel</span><span class="dot">•</span>
-              <span>Cloudflare</span><span class="dot">•</span>
+      <hr class="slot" />
+
+      <section class="sect" aria-labelledby="problem-h">
+        <div class="wrap two">
+          <div>
+            <p class="eyebrow">The problem</p>
+            <h2 id="problem-h">An agent with a token can push anything.</h2>
+            <ul class="risk">
+              <li>Straight to main, at 3 a.m.</li>
+              <li>Over someone else's work.</li>
+              <li>With no record of who said yes.</li>
+            </ul>
+          </div>
+          <p class="answer">With Synthe, <strong>agents hold no credentials at all.</strong> They can only propose. The broker runs as its own user, holds the only token, and acts only on a change a person approved.</p>
+        </div>
+      </section>
+
+      <hr class="slot" />
+
+      <section class="sect" id="how" aria-labelledby="how-h">
+        <div class="wrap">
+          <p class="eyebrow">How it works</p>
+          <h2 id="how-h">Two halves. It only ships when they meet.</h2>
+          <p class="sub">The mark is the system: the agent's half proposes, your half approves, and the change goes through only when both lock. <a class="textlink" href="/how.html">How it works, step by step</a></p>
+          <div class="grid3">
+            <div class="card2">
+              <svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB" style="opacity:.18"/></svg>
+              <h3>The agent proposes</h3>
+              <p>It works on its own branch and proposes the push, through the plugin or a plain git push. It never holds a GitHub token, not even to read.</p>
+            </div>
+            <div class="card2">
+              <svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA" style="opacity:.18"/><use class="half b" href="#hB"/></svg>
+              <h3>You approve</h3>
+              <p>You see the broker's own diff, not the agent's summary, and approve with Touch ID or your passphrase. The approval names that exact commit.</p>
+            </div>
+            <div class="card2">
+              <svg class="mark " viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>
+              <h3>Synthe commits once</h3>
+              <p>It re-checks everything at the moment of commit, pushes exactly that change if nothing moved, and signs a receipt. Refusals get receipts too.</p>
             </div>
           </div>
-          <p class="sr-only">Works with LangChain, LangGraph, CrewAI, OpenAI, Anthropic, Google, Meta, Microsoft, Hugging Face, Vercel, Cloudflare, and any other stack that emits JSON.</p>
-          <div class="trust-foot">
-            <p class="compat-note">Names shown for compatibility only. No endorsement implied.</p>
-            <button class="motion-toggle" id="motion-toggle" type="button">Pause motion</button>
+        </div>
+      </section>
+
+      <section class="sect install" id="install" aria-labelledby="install-h">
+        <div class="wrap">
+          <p class="eyebrow">Install</p>
+          <h2 id="install-h">Set it up once. Every push after that goes through you.</h2>
+          <p class="sub">Setup asks for your approval passphrase, your GitHub token (hidden) and your admin password, then puts the agent in its own account with no credentials.</p>
+          <div class="tabs" role="tablist" aria-label="Choose your agent">
+            <button class="tab" role="tab" aria-selected="true" aria-controls="p-cc" id="t-cc" type="button">Claude Code</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="p-oc" id="t-oc" type="button">OpenClaw</button>
+            <button class="tab" role="tab" aria-selected="false" aria-controls="p-any" id="t-any" type="button">Any agent</button>
           </div>
-        </section>
-
-        <section class="block" id="how" aria-labelledby="how-h">
-          <p class="kicker">How it works</p>
-          <h2 id="how-h">Agents propose. <em>Synthe commits.</em></h2>
-          <p class="blockintro">Most agents hold a token that can push, deploy or send. With Synthe they don't. They hand Synthe a signed proposal, and Synthe decides at the moment the action would happen.</p>
-          <ol class="flow">
-            <li>
-              <span class="num" aria-hidden="true">1</span>
-              <h3>Propose</h3>
-              <p>The agent sends a typed, signed handoff, with the files it relied on pinned by hash.</p>
-            </li>
-            <li>
-              <span class="num" aria-hidden="true">2</span>
-              <h3>Approve</h3>
-              <p>A human signs the plan. The approval names the exact target, like the branch.</p>
-            </li>
-            <li>
-              <span class="num" aria-hidden="true">3</span>
-              <h3>Re-check at commit</h3>
-              <p>Synthe checks the signature, the approval, the allowed paths, and that nothing moved.</p>
-            </li>
-            <li>
-              <span class="num" aria-hidden="true">4</span>
-              <h3>Commit once, receipt always</h3>
-              <p>Synthe acts exactly once and signs a receipt, for a refusal too.</p>
-            </li>
-          </ol>
-          <p class="more"><a class="textlink" href="/how.html">How it works, step by step</a> <span class="more-note">What it stops, the attacks it refuses, and how to run it yourself.</span></p>
-        </section>
-
-        <section class="block" id="demos" aria-labelledby="demos-h">
-          <p class="kicker">Interactive</p>
-          <h2 id="demos-h">Try it in <em>your browser</em></h2>
-          <p class="blockintro">No install, no server. Each demo runs entirely in this tab.</p>
-          <a class="feature-card" href="/race.html">
-            <span class="label">New · Race two agents</span>
-            <span class="feature-title">Two agents. One change. <em>Exactly one commit.</em></span>
-            <span class="feature-desc">Two agents try to ship at the same moment. Watch the commit barrier let exactly one through, refuse the other with a reason, and sign a receipt for both.</span>
-            <span class="feature-cta">Run the race <span aria-hidden="true">&#8594;</span></span>
-          </a>
-          <ul class="demo-grid">
-            <li><a class="demo-card" href="/forge.html"><span class="label">Forge this handoff</span><span class="demo-desc">Attack a signed handoff six ways. Each attack lands on a different reason code.</span></a></li>
-            <li><a class="demo-card" href="/playground.html"><span class="label">Contract playground</span><span class="demo-desc">Sign a real Ed25519 handoff, then break it five ways.</span></a></li>
-            <li><a class="demo-card" href="/tamper.html"><span class="label">Tamper evidence</span><span class="demo-desc">Edit, delete or reorder a hash-chained log and see which block breaks.</span></a></li>
-          </ul>
-        </section>
-
-        <section class="block" id="proof" aria-labelledby="proof-h">
-          <div class="proof-panel">
-            <p class="panel-kicker">Recorded on real GitHub runners · <span data-fact="runner_date">October 1, 2026</span></p>
-            <h2 class="panel-h" id="proof-h">Exactly once, on <em>real runners</em></h2>
-            <p>We dispatched the same handoff <span data-fact="runner_runs">3</span> times, back to back, on real GitHub runners. Exactly one run got ACCEPT and completed. The other <span data-fact="runner_duplicates">2</span> were refused as duplicates with <code>duplicate_idempotency_key</code>.</p>
-            <div class="runlinks">
-              <a href="https://github.com/rohansiddam/Synthe/actions/runs/36913336715">Run #12: ACCEPT</a>
-              <a href="https://github.com/rohansiddam/Synthe/actions/runs/36913571379">Run #13: duplicate refused</a>
-              <a href="https://github.com/rohansiddam/Synthe/actions/runs/36913698021">Run #14: duplicate refused</a>
-            </div>
-            <div class="stats" aria-label="Synthe by the numbers">
-              <div><span class="stat-num"><span data-fact="runner_accepts">1</span> of <span data-fact="runner_runs">3</span></span><span class="stat-label">runs accepted</span></div>
-              <div><span class="stat-num"><span data-fact="runner_duplicates">2</span></span><span class="stat-label">duplicates refused</span></div>
-              <div><span class="stat-num"><span data-fact="attacks_rejected">8</span> of <span data-fact="attacks_shipped">8</span></span><span class="stat-label">shipped attacks refused</span></div>
-              <div><span class="stat-num"><span data-fact="tests_passed">753</span></span><span class="stat-label">public tests passing</span></div>
-            </div>
-            <p class="panel-foot"><a href="/how.html#run">Run it yourself in two minutes</a> · <a href="/benchmarks.html">Every number and its source</a> · Checked against the public repo on <span data-fact="facts_checked_on">October 8, 2026</span></p>
+          <div class="pane" role="tabpanel" id="p-cc" aria-labelledby="t-cc">
+            <div class="cmdrow"><p>1. Set up the broker (macOS or Linux)</p><div class="cmd"><code>curl -sSL https://synthe.live/install | bash</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
+            <div class="cmdrow"><p>2. Add the plugin in Claude Code</p><div class="cmd"><code>/plugin marketplace add rohansiddam/Synthe
+/plugin install synthe@synthe</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
+            <p class="note">Run Claude Code in the agent's account for the enforced setup. In your own account, which has your GitHub login, the plugin guides the agent but isn't a wall.</p>
           </div>
-        </section>
-
-        <section class="block" id="for" aria-labelledby="for-h">
-          <p class="kicker">Who it's for</p>
-          <h2 id="for-h">Built for two kinds of <em>teams</em></h2>
-          <ul class="foryou-grid">
-            <li class="foryou-card">
-              <span class="foryou-index" aria-hidden="true">01</span>
-              <span class="name">Engineering teams running coding agents</span>
-              <span class="desc">You run two or more coding agents and won't hand them push, deploy or database credentials. With Synthe they don't need them: agents propose, a human approves, and Synthe ships the change exactly as approved.</span>
-            </li>
-            <li class="foryou-card">
-              <span class="foryou-index" aria-hidden="true">02</span>
-              <span class="name">Teams preparing for AIUC-1 or agent insurance</span>
-              <span class="desc">Auditors and underwriters ask who approved each agent action, what ran, and what was refused. Synthe records all of it as signed receipts. It produces the evidence; it doesn't make you certified, compliant or insured.</span>
-            </li>
-          </ul>
-        </section>
-
-        <section class="block" id="faq" aria-labelledby="faq-h">
-          <h2 id="faq-h">Questions, <em>answered</em></h2>
-          <div class="faq">
-            <details class="faq-item"><summary>What does Synthe actually hold?</summary><div class="faq-a"><p>The credentials for real-world actions. Today that means a GitHub token for <code>git push</code>. We plan to add more kinds of actions, starting with database writes and email. Your agents get a narrow way to propose an action, never the credential itself.</p></div></details>
-            <details class="faq-item"><summary>What's public, and what's in beta?</summary><div class="faq-a"><p>All of Synthe's code is public on GitHub. The handoff checker, its spec, threat model, tests and GitHub Action are stable. The commit broker, which holds the credentials and performs the action, is public and in beta: macOS first, with an OpenClaw plugin and a one-command setup. Design partners get help setting it up and shape what comes next.</p></div></details>
-            <details class="faq-item"><summary>Is it open source?</summary><div class="faq-a"><p>Mostly. The spec, the checker and everything you install are open source under Apache-2.0. The commit broker is source-available under FSL-1.1: you can read, audit and run it, but not sell it as a competing service, and each version becomes Apache-2.0 two years after its release.</p></div></details>
-            <details class="faq-item"><summary>What does it cost?</summary><div class="faq-a"><p>There's no price list yet. Running Synthe yourself costs nothing. If you want to pilot it with your team, <a class="textlink" href="#partner">talk to us</a>.</p></div></details>
-            <details class="faq-item"><summary>Does running Synthe change my code's license?</summary><div class="faq-a"><p>No. Synthe's licenses cover Synthe's code, not yours. Checking your handoffs changes nothing about how your own code is licensed.</p></div></details>
-            <details class="faq-item"><summary>Which agents does it work with?</summary><div class="faq-a"><p>Any agent that can emit JSON can send a handoff to the public checker, from the command line, from Python, or in a GitHub Action. For pushes, the beta has an OpenClaw plugin, and a plain git push from any agent becomes a proposal you approve.</p></div></details>
-            <details class="faq-item"><summary>Do my agents have to trust each other?</summary><div class="faq-a"><p>No, that is the point. The receiver verifies the packet's signature against its registry and pins the evidence hashes before acting. Trust the check, not the sender.</p></div></details>
-            <details class="faq-item"><summary>What can't Synthe stop?</summary><div class="faq-a"><p>An action a human approved will do exactly what was approved; Synthe narrows a compromised agent to that one action, but can't remove it. Receipts prove which key and connector acted, not which model wrote the work. And Synthe is only a barrier if your agents can't go around it, so take their own credentials away. The full list is on the <a class="textlink" href="/status.html#limits">status page</a>.</p></div></details>
-            <details class="faq-item"><summary>Who is building Synthe?</summary><div class="faq-a"><p>Co-founders Rohan Siddamsettiwar and Rishab Ramalingam, out of the University of Utah's Sandbox startup community. We built it after watching our own agents do work twice, act on stale files and take actions nobody approved.</p></div></details>
+          <div class="pane" role="tabpanel" id="p-oc" aria-labelledby="t-oc" hidden>
+            <div class="cmdrow"><p>1. Set up the broker and the agent's account</p><div class="cmd"><code>curl -sSL https://synthe.live/install | bash</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
+            <div class="cmdrow"><p>2. Setup installs the OpenClaw plugin, skill and gateway for the agent. Chat with it there:</p><div class="cmd"><code>sudo -iu openclaw
+cd ~/repo &amp;&amp; openclaw tui</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
           </div>
-        </section>
+          <div class="pane" role="tabpanel" id="p-any" aria-labelledby="t-any" hidden>
+            <div class="cmdrow"><p>1. Set up the broker</p><div class="cmd"><code>curl -sSL https://synthe.live/install | bash</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
+            <div class="cmdrow"><p>2. In the agent's clone, a plain git push becomes a proposal</p>
+<pre class="term"><span class="o">$ git push</span>
+<span class="h">synthe:</span> agent/greet at e352ae3de01d is proposed for approval, not pushed yet.
+<span class="h">synthe:</span> A person reviews the diff and approves it with synthe-approve; then Synthe
+<span class="h">synthe:</span> pushes exactly this commit and signs a receipt.</pre></div>
+          </div>
+          <ul class="works" aria-label="Works with"><li>Claude Code</li><li>OpenClaw</li><li>Codex</li><li>Cursor</li><li>any git push</li><li>MCP</li></ul>
+        </div>
+      </section>
 
-        <section class="final-cta" id="partner" aria-labelledby="partner-h">
-          <p class="kicker">Design partners</p>
-          <h2 id="partner-h">Pilot Synthe with <em>your agents</em></h2>
-          <p class="blockintro">We're working with a small number of teams that run two or more agents against real systems. Tell us where to reach you and what your agents do, and we'll set up a pilot.</p>
-          <form class="partner-form" id="partner-form" action="mailto:rohansiddam@synthe.live?subject=Design%20partner%20request" method="post" enctype="text/plain" data-formspree="" data-fallback-email="rohansiddam@synthe.live">
+      <section class="sect" id="verify" aria-labelledby="verify-h">
+        <div class="wrap">
+          <p class="eyebrow">Anyone can verify</p>
+          <h2 id="verify-h">Every decision is a link in a chain.</h2>
+          <p class="sub">Each receipt hooks into the one before it. Change one, and the chain breaks there for everything after it. Check any chain yourself with synthe-verify.</p>
+          <div class="chainbox">
+            <div class="chain" id="chain" role="group" aria-label="Receipt chain: select a receipt to inspect it, then tamper with it"></div>
+            <div class="track" id="track"><i></i></div>
+            <dl class="detail" id="detail"></dl>
+            <div class="cstatus"><span class="s" id="cstat" aria-live="polite">7 receipts · chain verifies</span>
+              <span><button class="mini" id="tamper" type="button">Tamper with #41</button> <button class="mini" id="reverify" type="button">Verify again</button></span></div>
+            <p class="illus">Select a receipt, then tamper with it. Sample receipts: the real chain is signed by the broker's key.</p>
+          </div>
+          <div class="stats">
+            <div class="stat"><b><span data-fact="beta_doctor_checks">8</span> of 8</b><span>isolation checks pass, broker in its own account (macOS, real GitHub)</span></div>
+            <div class="stat"><b><span data-fact="beta_redteam_refused">33</span> of <span data-fact="beta_redteam_attacks">33</span></b><span>live attacks from the agent's account refused or contained</span></div>
+            <div class="stat"><b><span data-fact="tests_passed">753</span></b><span>public tests passing</span></div>
+          </div>
+          <p class="note" style="margin-top:16px"><a class="textlink" href="/status.html">Security and limits</a> · <a class="textlink" href="/receipts.html">every claim and the run behind it</a></p>
+        </div>
+      </section>
+
+      <hr class="slot" />
+
+      <section class="sect" aria-labelledby="race-h">
+        <div class="wrap demo">
+          <div><p class="eyebrow">See it</p><h2 id="race-h" style="margin:0">Two agents. One change. Exactly one commit.</h2></div>
+          <a class="btn2" href="/race.html">Run the race in your browser</a>
+        </div>
+      </section>
+
+      <section class="sect faq" style="padding-top:0" aria-labelledby="faq-h">
+        <div class="wrap two">
+          <div><p class="eyebrow">Questions</p><h2 id="faq-h">Straight answers, including the limits.</h2></div>
+          <div>
+          <details><summary>What does Synthe actually hold?</summary><p>The only credential that can push: a GitHub token in a file only the broker&#x27;s own OS user can read. Your agents hold none, not even to read the repository.</p></details>
+          <details><summary>Is it open source?</summary><p>Mostly. The spec, the checker, the clients and the integrations are open source under Apache-2.0. The commit broker is source-available under FSL-1.1-ALv2: you can read, audit and run it, but not sell it as a competing service, and each version becomes Apache-2.0 two years after its release. Synthe&#x27;s hosted and internal code is separate.</p></details>
+          <details><summary>What can&#x27;t Synthe stop?</summary><p>It doesn&#x27;t stop prompt injection, and it can&#x27;t tell whether approved code is good: if a person approves the wrong change, Synthe pushes exactly that change. It only controls the credentials and remotes it&#x27;s configured for, so an agent&#x27;s account must hold no other credentials. Receipts prove which key acted, not which model wrote the work.</p></details>
+          <details><summary>Which agents does it work with?</summary><p>Claude Code and OpenClaw through plugins, and any agent through a plain git push or the MCP server. Git pushes are the first action Synthe performs.</p></details>
+          <details><summary>What does it cost?</summary><p>Running Synthe yourself costs nothing. If you&#x27;d like help piloting it with your team, <a class="textlink" href="#partner">talk to us</a>.</p></details>
+          <details><summary>Who is building Synthe?</summary><p>Co-founders Rohan Siddamsettiwar and Rishab Ramalingam, out of the University of Utah&#x27;s Sandbox startup community.</p></details>
+          </div>
+        </div>
+      </section>
+
+      <section class="partner" id="partner" aria-labelledby="partner-h">
+        <div class="wrap two">
+          <div>
+            <p class="eyebrow">Design partners</p>
+            <h2 id="partner-h" style="font-size:clamp(28px,3.4vw,40px);line-height:1.1;margin:0 0 16px">Pilot Synthe with your team.</h2>
+            <p class="sub" style="margin:0">Running agents against real systems? Tell us what they do, and we'll help you set up a pilot.</p>
+          </div>
+          <div>
+            <form class="partner-form" id="partner-form" action="mailto:rohansiddam@synthe.live?subject=Design%20partner%20request" method="post" enctype="text/plain" data-formspree="" data-fallback-email="rohansiddam@synthe.live">
             <div class="field">
               <label for="partner-email">Work email</label>
               <input type="email" id="partner-email" name="email" placeholder="you@company.com" required autocomplete="email" maxlength="254" />
@@ -768,97 +461,152 @@
               <input type="text" id="partner-company" name="_gotcha" tabindex="-1" autocomplete="off" />
             </div>
             <input type="hidden" name="_subject" value="Design partner request from synthe.live" />
-            <button class="btn" type="submit" id="partner-submit">Request access</button>
+            <button class="btn2 primary" type="submit" id="partner-submit">Request access</button>
           </form>
-          <p class="trynote form-note" id="partner-note" role="status" aria-live="polite"></p>
-          <p class="trynote">Requesting access opens your email app with your request ready to send. Nothing is stored or sent on its own. Prefer to write it yourself? Email <a class="textlink" href="mailto:rohansiddam@synthe.live">rohansiddam@synthe.live</a>.</p>
-        </section>
-      </main>
+            <p class="trynote form-note" id="partner-note" role="status" aria-live="polite"></p>
+            <p class="trynote">Requesting access opens your email app with your request ready to send. Nothing is stored or sent on its own. Prefer to write it yourself? Email <a class="textlink" href="mailto:rohansiddam@synthe.live">rohansiddam@synthe.live</a>.</p>
+          </div>
+        </div>
+      </section>
 
+      <div class="final">
+        <div class="wrap">
+          <h2>Give your agents a way to ship that you control.</h2>
+          <div class="ctas">
+            <a class="btn2 primary" href="#install"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>Install</a>
+            <a class="btn2" href="#partner">Talk to us</a>
+          </div>
+        </div>
+      </div>
+    </main>
       <footer class="site-foot">
-        <p class="footer-brand"><svg class="footer-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</p>
-        <p class="footer-line">The commit barrier for AI agents. Agents propose. Synthe commits. Anyone can verify.</p>
+        <p class="footer-brand"><svg class="footer-logo" viewBox="0 0 275 290" aria-hidden="true"><path class="a" d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/><path class="b" d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/></svg>Synthe</p>
+        <p class="footer-line">The commit barrier for AI agents. Agents propose. You approve. Synthe commits, and anyone can verify the receipt.</p>
         <nav class="footer-nav" aria-label="Footer">
           <a href="/how.html">How it works</a>
+          <a href="/status.html">Security and limits</a>
+          <a href="/docs.html">Docs</a>
           <a href="/race.html">Race two agents</a>
           <a href="/forge.html">Forge this handoff</a>
           <a href="/playground.html">Playground</a>
           <a href="/tamper.html">Tamper evidence</a>
           <a href="/anatomy.html">Anatomy of a handoff</a>
           <a href="/quiz.html">Do I need this?</a>
-          <a href="/docs.html">Docs</a>
-          <a href="/log.html">Changelog</a>
           <a href="/receipts.html">Receipts</a>
           <a href="/benchmarks.html">Benchmarks</a>
-          <a href="/status.html">Status &amp; trust</a>
+          <a href="/log.html">Changelog</a>
           <a href="/#partner">Design partners</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
-          <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">Spec</a>
-          <a href="https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md">Threat model</a>
         </nav>
-        <p class="footer-legal">Synthe is an early project. The spec, checker and everything you install are open source under Apache-2.0; the commit broker is source-available under FSL-1.1. <a href="https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md">How it's licensed</a>.</p>
-        <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
+        <p class="footer-legal">Synthe is an early project. The spec, checker, clients and integrations are open source under Apache-2.0; the commit broker is source-available under FSL-1.1-ALv2. <a href="https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md">How it's licensed</a>. Synthe produces evidence; it doesn't make anyone certified, compliant or insured.</p>
+        <p class="colophon">From the Greek <em>synthēkē</em>, meaning agreement.</p>
       </footer>
     </div>
     <script>
       (function () {
         "use strict";
-        var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var $ = function (s) { return document.querySelector(s); };
+        var wait = function (ms) { return new Promise(function (r) { setTimeout(r, reduce ? 0 : ms); }); };
+        var markSVG = function (cls) {
+          return '<svg class="mark ' + cls + '" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>';
+        };
 
-        /* Marquee: duplicate the tape once for a seamless loop. */
-        var track = document.getElementById("marquee-track");
-        if (track) track.innerHTML += track.innerHTML;
+        /* Hero: the agent proposes, you approve, the halves lock, the receipt appears. */
+        var run = 0;
+        async function playHero() {
+          var me = ++run, mark = $("#hero-mark"), p = $("#s-prop"), a = $("#s-appr"), r = $("#s-rcpt");
+          mark.classList.add("open"); p.classList.remove("on"); a.classList.remove("on"); r.classList.remove("on");
+          await wait(500); if (me !== run) return; p.classList.add("on");
+          await wait(1100); if (me !== run) return; a.classList.add("on");
+          await wait(800); if (me !== run) return; mark.classList.remove("open");
+          await wait(650); if (me !== run) return; r.classList.add("on");
+        }
+        $("#replay").addEventListener("click", playHero);
+        playHero();
 
-        /* Rotating headline word (see the .rotator CSS): measure the words once the italic font
-           is in, then start the three animations together. Fraunces changes shape with size,
-           so measure again whenever the headline's font size changes. */
-        var rotator = document.querySelector(".rotator-group");
-        if (rotator && !reduceMotion) {
-          var fittedAt = 0;
-          var fitRotator = function (force) {
-            var size = parseFloat(getComputedStyle(rotator).fontSize);
-            if (!force && (!fittedAt || size === fittedAt)) return;
-            fittedAt = size;
-            rotator.classList.remove("is-live");
-            rotator.classList.add("is-measuring");
-            var widths = Array.prototype.map.call(rotator.querySelectorAll(".rotator-inner span"), function (s) {
-              var r = document.createRange();
-              r.selectNodeContents(s);
-              return r.getBoundingClientRect().width / size;
-            });
-            var slot = Math.max.apply(null, widths);
-            rotator.style.setProperty("--slot", slot.toFixed(4) + "em");
-            for (var k = 0; k < 3; k++) rotator.style.setProperty("--gap" + k, (slot - widths[k]).toFixed(4) + "em");
-            rotator.classList.remove("is-measuring");
-            void rotator.offsetWidth; /* restart the animations in step */
-            rotator.classList.add("is-live");
-          };
-          var fontIn = document.fonts && document.fonts.load
-            ? document.fonts.load("italic 500 40px Fraunces").then(function () { return document.fonts.ready; })
-            : Promise.resolve();
-          fontIn.then(function () { fitRotator(true); }, function () { fitRotator(true); });
-          var resizeTimer;
-          window.addEventListener("resize", function () {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function () { fitRotator(false); }, 150);
+        /* Install tabs: click or arrow keys. */
+        var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+        function pick(t) {
+          tabs.forEach(function (x) {
+            var on = x === t;
+            x.setAttribute("aria-selected", on ? "true" : "false");
+            x.tabIndex = on ? 0 : -1;
+            document.getElementById(x.getAttribute("aria-controls")).hidden = !on;
           });
         }
+        tabs.forEach(function (t, i) {
+          t.addEventListener("click", function () { pick(t); });
+          t.addEventListener("keydown", function (e) {
+            if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+            var n = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+            pick(n); n.focus();
+          });
+        });
+        pick(tabs[0]);
 
-        /* Staggered fade-up reveals. */
-        function revealStagger(containerSel, itemSel) {
-          var container = document.querySelector(containerSel);
-          if (!container || reduceMotion || !("IntersectionObserver" in window)) return;
-          var items = container.querySelectorAll(itemSel);
-          items.forEach(function (c) { c.classList.add("pre"); });
-          new IntersectionObserver(function (entries, obs) {
-            if (entries[0].isIntersecting) {
-              items.forEach(function (c, k) { setTimeout(function () { c.classList.add("in"); }, k * 90); });
-              obs.disconnect();
-            }
-          }, { threshold: 0.15 }).observe(container);
+        /* The receipt chain: links joined at the slot angle. One animation runs at a time (token),
+           so a click during the lock-in can't be undone by it. Sample data, labelled on the page. */
+        var N = 7, BASE = 38, chain = $("#chain"), track = $("#track"), detail = $("#detail"), stat = $("#cstat"), tb = $("#tamper");
+        var hex = function (n) { var h = 2166136261 ^ n, s = ""; for (var i = 0; i < 8; i++) { h = Math.imul(h ^ (h >>> 13), 16777619); s += ((h >>> 0) % 256).toString(16).padStart(2, "0"); } return s; };
+        var branches = ["agent/fix-login", "agent/docs", "agent/ci", "agent/greet", "agent/tests", "agent/api", "agent/ui"];
+        var rows = branches.map(function (b, i) { return { seq: BASE + i, decision: i === 2 ? "denied · path_outside_scope" : "executed", branch: b, hash: hex(i + 1) }; });
+        var broken = -1, sel = 3, token = 0, links = [], joints = [];
+        rows.forEach(function (r, i) {
+          if (i) { var j = document.createElement("span"); j.className = "joint"; j.setAttribute("aria-hidden", "true"); chain.appendChild(j); joints.push(j); }
+          var b = document.createElement("button");
+          b.type = "button"; b.className = "link"; b.setAttribute("aria-label", "Receipt " + r.seq);
+          b.innerHTML = markSVG("open") + '<span class="num">#' + r.seq + "</span>";
+          b.addEventListener("click", function () { select(i); });
+          b.addEventListener("mouseenter", function () { show(i); });
+          b.addEventListener("focus", function () { show(i); });
+          b.addEventListener("mouseleave", function () { show(sel); });
+          chain.appendChild(b); links.push(b);
+        });
+        var mk = function (i) { return links[i].querySelector(".mark"); };
+        function show(i) {
+          var r = rows[i], bad = broken >= 0 && i >= broken;
+          var prev = i === 0 ? "genesis" : rows[i - 1].hash.slice(0, 12) + "…";
+          var sig = bad ? (i === broken ? "altered: its hash no longer matches" : "untrusted: an earlier link is broken") : "valid · broker key";
+          detail.innerHTML = "<dt>receipt</dt><dd>#" + r.seq + " · " + r.decision + "</dd><dt>effect</dt><dd>git push · " + r.branch + "</dd>" +
+            "<dt>links to</dt><dd>" + prev + '</dd><dt>signature</dt><dd style="color:' + (bad ? "var(--human-text)" : "var(--ok)") + '">' + sig + "</dd>";
+          links.forEach(function (l, j) { l.classList.toggle("sel", j === i); });
         }
-        revealStagger(".flow", "li");
-        revealStagger(".foryou-grid", ".foryou-card");
+        function select(i) { sel = i; show(i); if (broken < 0) tb.textContent = "Tamper with #" + rows[i].seq; }
+        function setTrack(p, bad) { track.querySelector("i").style.setProperty("--p", p); track.classList.toggle("broken", !!bad); }
+        async function lockAll(fromRight) {
+          var me = ++token; broken = -1; stat.textContent = "verifying…"; stat.classList.remove("bad"); tb.disabled = false;
+          links.forEach(function (_, i) { mk(i).classList.remove("stale", "refused"); });
+          joints.forEach(function (j) { j.classList.remove("stale", "cut"); j.style.setProperty("--j", 0); });
+          var order = links.map(function (_, i) { return i; }); if (fromRight) order.reverse();
+          for (var k = 0; k < order.length; k++) {
+            var i = order[k];
+            await wait(k ? 110 : 0); if (me !== token) return;
+            mk(i).classList.remove("open"); setTrack((k + 1) / N);
+            var j = fromRight ? joints[i] : joints[i - 1]; if (j) j.style.setProperty("--j", 1);
+          }
+          await wait(320); if (me !== token) return;
+          stat.textContent = N + " receipts · chain verifies"; select(sel);
+        }
+        async function tamper(i) {
+          var me = ++token; broken = i; sel = i; show(i); setTrack(i / N, true); tb.disabled = true;
+          stat.textContent = "receipt #" + rows[i].seq + " altered · chain breaks here"; stat.classList.add("bad");
+          links.forEach(function (_, k) { if (k < i) { mk(k).classList.remove("open", "stale", "refused"); if (joints[k - 1]) joints[k - 1].style.setProperty("--j", 1); } });
+          mk(i).classList.add("refused", "open"); if (joints[i - 1]) joints[i - 1].classList.add("cut");
+          for (var k = i + 1; k < N; k++) {
+            await wait(95); if (me !== token) return;
+            mk(k).classList.add("stale", "open"); joints[k - 1].classList.add("stale");
+          }
+          stat.textContent = "receipt #" + rows[i].seq + " altered · " + (N - i - 1) + " after it untrusted";
+        }
+        tb.addEventListener("click", function () { tamper(sel); });
+        $("#reverify").addEventListener("click", function () { lockAll(true); });
+        show(sel);
+        if ("IntersectionObserver" in window) {
+          new IntersectionObserver(function (es, o) {
+            if (es.some(function (e) { return e.isIntersecting; })) { o.disconnect(); if (token === 0) lockAll(false); }
+          }, { threshold: 0.4 }).observe(chain);
+        } else { lockAll(false); }
 
         /* Design-partner form. Opens a drafted email by default. Once a Formspree form ID
            is set in data-formspree, it posts there instead (see HOSTING.md). */
@@ -891,22 +639,20 @@
           submit.disabled = true;
           submit.textContent = "Sending…";
           note.textContent = "";
-          fetch(endpoint, {
-            method: "POST",
-            body: new FormData(form),
-            headers: { Accept: "application/json" }
-          }).then(function (r) {
-            if (!r.ok) throw new Error("status " + r.status);
-            form.reset();
-            submit.textContent = "Sent";
-            note.textContent = "Thanks. We'll be in touch at " + email + ".";
-          }).catch(function () {
-            submit.disabled = false;
-            submit.textContent = "Request access";
-            note.innerHTML = 'That didn\'t go through. Please write to <a class="textlink" href="mailto:' + fallback + '">' + fallback + "</a> instead.";
-          });
+          fetch(endpoint, { method: "POST", body: new FormData(form), headers: { Accept: "application/json" } })
+            .then(function (r) {
+              if (!r.ok) throw new Error("status " + r.status);
+              form.reset();
+              submit.textContent = "Sent";
+              note.textContent = "Thanks. We'll be in touch at " + email + ".";
+            }).catch(function () {
+              submit.disabled = false;
+              submit.textContent = "Request access";
+              note.innerHTML = 'That didn\'t go through. Please write to <a class="textlink" href="mailto:' + fallback + '">' + fallback + "</a> instead.";
+            });
         });
       })();
+
     </script>
   </body>
 </html>

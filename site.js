@@ -1,27 +1,74 @@
 /* site.js: shared by every page of synthe.live.
-   Theme toggle, navigation (disclosure groups and the phone menu), the "On this page" index,
-   Back to top, and the motion pause. The theme and motion preference are applied by a small
-   inline script in each page's <head>, before first paint. See DESIGN_PLAYBOOK.md. */
+   The theme flip, the mark (the header logo locks; copy buttons lock), the lattice glow,
+   navigation (disclosure groups and the phone menu), the "On this page" index, Back to top,
+   and the motion pause. The theme and motion preference are applied by a small inline script
+   in each page's <head>, before first paint. See DESIGN_PLAYBOOK.md. */
 (function () {
   "use strict";
   var root = document.documentElement;
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* Theme toggle: flips data-theme, remembers the choice, keeps the label honest. */
+  /* Theme flip: the mark turns 180 degrees (CSS) and the theme flips. The label names the theme
+     the page is actually showing, as the stylesheet resolved it. */
   var themeBtn = document.getElementById("theme-toggle");
+  var showing = function () {
+    return getComputedStyle(root).getPropertyValue("--mode").trim() === "dark" ? "dark" : "light";
+  };
   if (themeBtn) {
     var paint = function () {
-      var dark = root.getAttribute("data-theme") === "dark";
-      themeBtn.textContent = dark ? "Light" : "Dark";
-      themeBtn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+      themeBtn.setAttribute("aria-label", showing() === "dark" ? "Switch to light mode" : "Switch to dark mode");
     };
     themeBtn.addEventListener("click", function () {
-      var dark = root.getAttribute("data-theme") !== "dark";
-      root.setAttribute("data-theme", dark ? "dark" : "light");
-      try { localStorage.setItem("synthe-theme", dark ? "dark" : "light"); } catch (e) {}
+      var next = showing() === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      try { localStorage.setItem("synthe-theme", next); } catch (e) {}
       paint();
     });
     paint();
+    window.addEventListener("load", paint);
+  }
+
+  /* The header mark starts apart and locks once the page is ready. */
+  var logo = document.querySelector(".wordmark .mark");
+  if (logo) setTimeout(function () { logo.classList.remove("open"); }, reduceMotion ? 0 : 450);
+
+  /* Copy buttons: the command goes to the clipboard and the button's mark locks for a moment. */
+  Array.prototype.forEach.call(document.querySelectorAll(".copy"), function (b) {
+    b.addEventListener("click", function () {
+      var code = b.parentElement.querySelector("code");
+      var label = b.querySelector("span");
+      var m = b.querySelector(".mark");
+      var done = function () {
+        if (m) m.classList.remove("open");
+        b.classList.add("done");
+        if (label) label.textContent = "Copied";
+        setTimeout(function () {
+          if (m) m.classList.add("open");
+          b.classList.remove("done");
+          if (label) label.textContent = "Copy";
+        }, 2200);
+      };
+      if (code && navigator.clipboard) navigator.clipboard.writeText(code.textContent).then(done, done);
+      else done();
+    });
+  });
+
+  /* The lattice glows softly where the cursor is: pointers that hover only, never with reduced motion. */
+  if (!reduceMotion && window.matchMedia && window.matchMedia("(hover: hover)").matches) {
+    Array.prototype.forEach.call(document.querySelectorAll(".lattice-glow"), function (glow) {
+      var host = glow.parentElement, raf = 0;
+      host.addEventListener("pointermove", function (e) {
+        if (raf) return;
+        raf = requestAnimationFrame(function () {
+          raf = 0;
+          var r = host.getBoundingClientRect();
+          host.style.setProperty("--mx", (e.clientX - r.left) + "px");
+          host.style.setProperty("--my", (e.clientY - r.top) + "px");
+          host.classList.add("lit");
+        });
+      });
+      host.addEventListener("pointerleave", function () { host.classList.remove("lit"); });
+    });
   }
 
   /* Header height, for sticky elements that sit under it. */
