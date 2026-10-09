@@ -18,10 +18,9 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Synthe" />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preload" href="/fonts/fraunces-normal-400-650-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/site.css?v=f2274738" />
-    <script src="/site.js?v=0106cb96" defer></script>
+    <link rel="stylesheet" href="/site.css?v=3ade757c" />
+    <script src="/site.js?v=e1625afa" defer></script>
     <style>
       :root {
         --cream: #f5efe2; --cream-deep: #e9dfc8; --ink: #2b2118; --ink-soft: #4e4436;
@@ -101,33 +100,15 @@
     <a class="skip-link" href="#main">Skip to content</a>
     <div class="page">
       <header class="site-head">
-        <a class="wordmark" href="/"><svg class="wordmark-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</a>
+        <a class="wordmark" href="/"><svg class="mark wordmark-logo open" viewBox="0 0 275 290" aria-hidden="true"><path class="half a" d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/><path class="half b" d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/></svg>Synthe</a>
         <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="topnav">Menu</button>
         <nav class="topnav" id="topnav" aria-label="Main">
           <a href="/how.html">How it works</a>
-          <details class="nav-group">
-            <summary>Demos</summary>
-            <div class="nav-panel">
-              <a href="/race.html"><strong>Race two agents</strong><span>Two agents, one change, exactly one commit.</span></a>
-              <a href="/forge.html"><strong>Forge this handoff</strong><span>Attack a signed handoff six ways.</span></a>
-              <a href="/playground.html"><strong>Playground</strong><span>Sign a real handoff, then break it.</span></a>
-              <a href="/tamper.html"><strong>Tamper evidence</strong><span>Break a hash chain and find where.</span></a>
-              <a href="/anatomy.html"><strong>Anatomy of a handoff</strong><span>One handoff, from draft to ledger.</span></a>
-            </div>
-          </details>
+          <a href="/status.html" aria-current="page">Security</a>
           <a href="/docs.html">Docs</a>
-          <details class="nav-group">
-            <summary>Proof</summary>
-            <div class="nav-panel">
-              <a href="/receipts.html"><strong>Receipts</strong><span>Every claim, linked to the run behind it.</span></a>
-              <a href="/benchmarks.html"><strong>Benchmarks</strong><span>Every number on the site and its source.</span></a>
-              <a href="/status.html" aria-current="page"><strong>Status &amp; trust</strong><span>What's public, what isn't proven, your data.</span></a>
-              <a href="/log.html"><strong>Changelog</strong><span>What shipped, and when.</span></a>
-            </div>
-          </details>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
-          <a class="nav-cta" href="/#partner">Become a design partner</a>
-          <button class="theme-toggle" id="theme-toggle" type="button">Dark</button>
+          <button class="flip" id="theme-toggle" type="button" aria-label="Switch theme"><svg class="flip-mark" viewBox="0 0 275 290" aria-hidden="true"><path class="a" d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/><path class="b" d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/></svg></button>
+          <a class="nav-cta" href="/#install"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><path class="half a" d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/><path class="half b" d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/></svg>Install</a>
         </nav>
       </header>
       <main id="main">
@@ -138,7 +119,7 @@
 
         <h2 id="status">Project <em>status</em></h2>
         <ul class="facts">
-          <li><span class="k">Stage</span><span class="v"><strong>Early.</strong> Synthe is the commit barrier for AI agents. All of its code is public at <a class="textlink" href="https://github.com/rohansiddam/Synthe">github.com/rohansiddam/Synthe</a>. The spec, checker and everything you install are open source under Apache-2.0. The commit broker is source-available under FSL-1.1 and in beta, with design partners helping shape it (<a class="textlink" href="https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md">how it's licensed</a>).</span></li>
+          <li><span class="k">Stage</span><span class="v"><strong>Early.</strong> Synthe is the commit barrier for AI agents. Its checker, integrations and commit broker are published at <a class="textlink" href="https://github.com/rohansiddam/Synthe">github.com/rohansiddam/Synthe</a>. The spec, checker, clients and integrations are open source under Apache-2.0. The commit broker is source-available under FSL-1.1 and in beta, with design partners helping shape it (<a class="textlink" href="https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md">how it's licensed</a>).</span></li>
           <li><span class="k">Public today</span><span class="v">The checker, v<span data-fact="checker_version">0.5</span>: signed handoffs, approvals that pin their target, pinned evidence, wait-for dependencies, exclusive paths, and an exactly-once claim ledger. <span data-fact="tests_passed">753</span> public tests pass.</span></li>
           <li><span class="k">Public beta</span><span class="v">The commit broker, public since October 7, 2026. It holds the credentials, re-checks each action at the moment of commit, pushes with compare-and-swap, and signs a receipt for every allow and every deny. <code>git_push</code> ships first.</span></li>
           <li><span class="k">Proven in beta</span><span class="v">On <span data-fact="beta_verified_date">October 7, 2026</span>, on a real Mac with real GitHub: the broker ran as its own hidden user and the agent in its own account with no GitHub access, and the setup check passed all <span data-fact="beta_doctor_checks">8</span> of its checks. A live red team of <span data-fact="beta_redteam_attacks">33</span> attacks from the agent's account was refused or contained (<span data-fact="beta_redteam_refused">33</span> of <span data-fact="beta_redteam_attacks">33</span>), each refusal with a signed receipt.</span></li>
@@ -183,28 +164,26 @@
         <p class="body">Found a flaw in the checker, the broker or the threat model? Email <a class="textlink" href="mailto:rohansiddam@synthe.live">rohansiddam@synthe.live</a> first, and give us a chance to fix it before you publish. For anything that isn't a security issue, <a class="textlink" href="https://github.com/rohansiddam/Synthe/issues">GitHub issues</a> are fine. Our <a class="textlink" href="/.well-known/security.txt">security.txt</a> says the same.</p>
       </main>
       <footer class="site-foot">
-        <p class="footer-brand"><svg class="footer-logo" viewBox="0 0 275 290" aria-hidden="true"><g fill="currentColor"><path d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/><path d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/></g></svg>Synthe</p>
-        <p class="footer-line">The commit barrier for AI agents. Agents propose. Synthe commits. Anyone can verify.</p>
+        <p class="footer-brand"><svg class="footer-logo" viewBox="0 0 275 290" aria-hidden="true"><path class="a" d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/><path class="b" d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/></svg>Synthe</p>
+        <p class="footer-line">The commit barrier for AI agents. Agents propose. You approve. Synthe commits, and anyone can verify the receipt.</p>
         <nav class="footer-nav" aria-label="Footer">
           <a href="/how.html">How it works</a>
+          <a href="/status.html">Security and limits</a>
+          <a href="/docs.html">Docs</a>
           <a href="/race.html">Race two agents</a>
           <a href="/forge.html">Forge this handoff</a>
           <a href="/playground.html">Playground</a>
           <a href="/tamper.html">Tamper evidence</a>
           <a href="/anatomy.html">Anatomy of a handoff</a>
           <a href="/quiz.html">Do I need this?</a>
-          <a href="/docs.html">Docs</a>
-          <a href="/log.html">Changelog</a>
           <a href="/receipts.html">Receipts</a>
           <a href="/benchmarks.html">Benchmarks</a>
-          <a href="/status.html">Status &amp; trust</a>
+          <a href="/log.html">Changelog</a>
           <a href="/#partner">Design partners</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
-          <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">Spec</a>
-          <a href="https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md">Threat model</a>
         </nav>
-        <p class="footer-legal">Synthe is an early project. The spec, checker and everything you install are open source under Apache-2.0; the commit broker is source-available under FSL-1.1. <a href="https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md">How it's licensed</a>.</p>
-        <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
+        <p class="footer-legal">Synthe is an early project. The spec, checker, clients and integrations are open source under Apache-2.0; the commit broker is source-available under FSL-1.1-ALv2. <a href="https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md">How it's licensed</a>. Synthe produces evidence; it doesn't make anyone certified, compliant or insured.</p>
+        <p class="colophon">From the Greek <em>synthēkē</em>, meaning agreement.</p>
       </footer>
     </div>
   </body>

@@ -2,6 +2,21 @@
 
 How synthe.live looks, why it looks that way, and the exact tokens and patterns to use when changing it. Read this before touching any page, and run `python3 tools/check_site.py` before you ship.
 
+## 0. The 2026-10 redesign (this section wins over anything older below)
+
+The site moved from an archival, editorial look to a product site built on one idea: **the mark is the system.** The logo is two identical hooked halves, one turned 180 degrees, that interlock to form the S. The agent's half (ink) proposes; your half (coral) approves; a change ships only when both lock. *Synthe* comes from *synthēkē*, agreement.
+
+- **One palette, defined once.** `site.css` sets every token under `html:root` (and `html:root[data-theme=...]`), which outranks the `:root` blocks pages still carry. The old page names (`--cream`, `--ink`, `--rust`...) map onto it. New pages use the new names: `--bg --bg2 --card --line --line2 --ink --ink-soft --muted --faint --agent --human --human-text --human-bg --ok --mode`.
+- **Two colors carry meaning, never decoration.** `--agent` (ink) is always the agent or a proposal; `--human` (coral) is always the person or an approval. Locked, both. Don't use coral for emphasis words in headings (the old italic accent is switched off globally).
+- **Type:** Hanken Grotesk for everything, headings 650; IBM Plex Mono for code, eyebrows and labels (sentence case, no letter-spacing). The serif is gone: the name `Fraunces` now resolves to Hanken in `site.css`, so older page styles render in the new face. Don't preload Fraunces.
+- **The mark as state:** `.mark` with `.half.a` / `.half.b`. `open` = waiting, no class = locked (committed), `refused` = coral outline pushed apart, `stale` = dashed. Used for: the header logo (locks on load), the hero's propose, approve, commit sequence, the receipt chain, Install buttons and Copy buttons (lock on success).
+- **The slot angle (53 degrees),** the gap between the halves, is the site's only diagonal: `.slot` section dividers, the cut corner on buttons, cards and the hero card (`clip-path`), bullet ticks, the joints of the receipt chain. No other angles, no pill radii on new components.
+- **The lattice:** whole brand marks in an offset grid (an SVG pattern with corner copies so no mark is cut), fading in from the right, behind the hero only. `site.js` adds a soft glow under the cursor (`.lattice-glow`, hover-capable pointers only, never with reduced motion). The old wavy-line and circle watermark is switched off globally.
+- **Theme toggle:** `.flip`, the mark itself; it turns 180 degrees (which swaps its halves) as the theme flips. Its label names the theme the page is actually showing, read from `--mode`.
+- **Chrome:** header = logo lockup (gap 7px), How it works, Security (`status.html`), Docs, GitHub, the flip, and the one call to action, **Install** (`/#install`). Footer = brand, motto, one nav of whole links, the license line, the colophon. Both are written by `tools/apply_chrome.py` (edit it, run it, then `tools/stamp.py`) and identical on every page.
+- **Homepage story (about 6 screens):** hero (plain promise, Install, the clasp illustration) · the problem · how it works (the two halves) · install (Claude Code / OpenClaw / any agent tabs, copy buttons) · anyone can verify (the receipt chain, three `data-fact` stats) · the race demo · FAQ including limits · design partners form · final call to action. No logo strip of other companies, no rotating headline word.
+- **Motion rules stand:** every animation has a still state under `prefers-reduced-motion`; nothing auto-loops; color is never the only signal (broken links also go dashed).
+
 ## 1. Design philosophy
 
 The site's framing is **Archival Ledger & Notary Stamp**: a warm paper archive where agent actions get notarized. Think bank ledger, rubber stamps, security paper, not a SaaS dashboard.
@@ -17,13 +32,13 @@ The site sells one thing: **Synthe, the commit barrier for AI agents.** Use thes
 | Where | Line |
 |---|---|
 | Category (titles, social card, footer) | The commit barrier for AI agents |
-| Motto (under every headline that names Synthe) | Agents propose. Synthe commits. Anyone can verify. |
-| Homepage headline | Synthe is the bouncer for your AI agents. Every action gets *checked* at the door. (The italic word rotates: checked, verified, screened.) |
+| Motto (under every headline that names Synthe) | Agents propose. You approve. Synthe commits. (Older pages: "Agents propose. Synthe commits. Anyone can verify.") |
+| Homepage headline | Let AI agents ship code without handing them the keys. (Since the 2026-10 redesign; the "bouncer" line and its rotating word are retired.) |
 
 Rules for copy that describes the product (they come from the strategy's scope; the strategy wins if they ever differ):
 
 - **Label public vs. beta every time.** The handoff checker, spec, tests and GitHub Action are public. The commit broker (credential custody, compare-and-swap, receipts) is in design-partner beta. Use the `Public today` / `Design-partner beta` tags (section 5).
-- **Say open source only for the Apache-2.0 parts** (spec, checker, everything you install). The commit broker is source-available under FSL-1.1: never call it open source. (Changed 2026-10-07, when the code went public.)
+- **Say open source only for the Apache-2.0 parts** (spec, checker, clients, integrations). The commit broker is source-available under FSL-1.1: never call it open source. (Changed 2026-10-07, when the code went public.)
 - **Never say certified, compliant, insured or "gap-free".** Synthe produces the evidence auditors and underwriters ask for.
 - **Only our own numbers, and only through `facts.json`** (section 9). No borrowed speed claims. Commit-path performance numbers stay off the site until the founders decide to publish them.
 - **Don't name the MCP server, the A2A adapter or the Lab** on the site until their public scope is decided (decision D7). Say "agent connectors come with the design-partner beta".
@@ -87,14 +102,13 @@ The **Stark** theme: the archive after dark. Neutral charcoal, not blue-gray and
 
 ## 3. Typography
 
-- **Display:** `"Fraunces", Georgia, serif`: headlines, the wordmark, stamps, kickers. Weight 500 for headlines, 600-700 for stamps/wordmark. Italic is used sparingly for emphasis words inside headlines.
+- **Display (retired 2026-10, see section 0):** headlines use Hanken Grotesk at 650. `"Fraunces"` in older page styles now resolves to Hanken.
 - **Body:** `"Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`. It replaced General Sans in October 2026, because General Sans's license doesn't clearly allow its files in a public repo.
 - **Mono:** `"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace`: code, reason codes, kickers, eyebrows, small labels. Eyebrows/kickers are uppercase, letter-spacing `0.08em`-`0.14em`, 12-13px, rust or muted.
 
 **Every font is self-hosted** in `/fonts` (SIL Open Font License 1.1; licenses in `fonts/LICENSES.md`) and declared once, in `site.css`. No page loads Google Fonts, Fontshare or any other font service, so loading a page sends no request anywhere else. Each page preloads the two fonts the hero needs:
 
 ```html
-<link rel="preload" href="/fonts/fraunces-normal-400-650-latin.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="/site.css" />
 <script src="/site.js" defer></script>
@@ -104,6 +118,7 @@ Playground once shipped without its font links and silently fell back to system 
 
 ## 4. Texture
 
+- **Retired 2026-10:** the watermark below is switched off globally in `site.css`; the hero lattice of brand marks replaces it (section 0). Kept for history:
 - **The watermark** is a single inline SVG data-URI tile (lathe-like wavy lines + concentric circles), applied as `body { background-image }`. No network request, no JavaScript. Stroke color is `%23241d14` in light mode; each page carries a dark-mode override swapping the stroke to `%23f2ede4`:
   ```css
   html[data-theme="dark"] body { background-image: url("data:image/svg+xml,...stroke='%23f2ede4'..."); }
@@ -115,8 +130,8 @@ Playground once shipped without its font links and silently fell back to system 
 
 The mark is an inline SVG of the Synthe stamp glyph, carried directly in the HTML (no `<img>` tag, no request).
 
-- **`fill="currentColor"` everywhere.** The glyph inherits `--ink`, so it adapts to the theme automatically. Never hardcode a fill color on it.
-- **Nav wordmark:** mark sits directly left of the "Synthe" text, `.wordmark-logo { width: 26px; height: 28px; flex: none; }`. Optically centered on the wordmark cap height; check the alignment by eye in both themes whenever the wordmark size changes.
+- **Two halves, two roles (since 2026-10):** path `.a` (top) takes `--agent`, path `.b` (bottom) takes `--human`. Never hardcode a hex fill; both tokens adapt to the theme.
+- **Nav wordmark:** mark sits 7px left of the "Synthe" text, `.wordmark-logo { width: 20px; height: 21px; flex: none; }`, viewBox `0 0 275 290` (tight; `overflow: visible` lets the halves part). Optically centered on the wordmark cap height; check the alignment by eye in both themes whenever the wordmark size changes.
 - **Footer:** same glyph at `.footer-logo { width: 22px; height: 24px; }`, next to the brand line.
 - **Favicon:** `/favicon.svg` linked on every page via `<link rel="icon" href="/favicon.svg" type="image/svg+xml">`.
 - **Social card:** `og-image.png` (2240 x 1120), with the logo and "Synthe" locked up on one line, the category line "The commit barrier for AI agents" beneath in brick italic, the motto under it, and a terminal card on the right. Its source is `tools/og-image.html`; render it with headless Chrome (the command is in that file) against the local server so the self-hosted fonts load.

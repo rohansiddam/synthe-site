@@ -1,48 +1,7 @@
-/* site.css: shared by every page of synthe.live.
+/* site.css: shared by every page of synthe.live (the 2026-10 redesign).
    - Webfonts, self-hosted (SIL Open Font License 1.1; texts in fonts/). No request leaves the site for type.
-   - The site chrome: skip link, header with the phone menu, footer.
-   Color tokens, the watermark and page layouts stay in each page's own <style>.
-   See DESIGN_PLAYBOOK.md before changing anything here. */
-
-/* Fraunces italic 400 650 latin-ext */
-@font-face {
-  font-family: 'Fraunces';
-  font-style: italic;
-  font-weight: 400 650;
-  font-display: swap;
-  src: url(/fonts/fraunces-italic-400-650-latin-ext.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-/* Fraunces italic 400 650 latin */
-@font-face {
-  font-family: 'Fraunces';
-  font-style: italic;
-  font-weight: 400 650;
-  font-display: swap;
-  src: url(/fonts/fraunces-italic-400-650-latin.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-/* Fraunces normal 400 650 latin-ext */
-@font-face {
-  font-family: 'Fraunces';
-  font-style: normal;
-  font-weight: 400 650;
-  font-display: swap;
-  src: url(/fonts/fraunces-normal-400-650-latin-ext.woff2) format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-
-/* Fraunces normal 400 650 latin */
-@font-face {
-  font-family: 'Fraunces';
-  font-style: normal;
-  font-weight: 400 650;
-  font-display: swap;
-  src: url(/fonts/fraunces-normal-400-650-latin.woff2) format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+   - One palette and type for every page, the mark, buttons, the slot diagonal, the lattice, the chrome.
+   Page-specific layout stays in each page's own <style>. See DESIGN_PLAYBOOK.md before changing anything here. */
 
 /* Hanken Grotesk normal 400 700 latin-ext */
 @font-face {
@@ -104,176 +63,209 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* ---------- Text shared by every page ---------- */
+/* Pages written before the 2026-10 redesign name "Fraunces" in their own styles. The redesign drops
+   the serif: that name now resolves to Hanken Grotesk, so those pages change without being rewritten. */
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/hanken-grotesk-normal-400-700-latin.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Fraunces';
+  font-style: italic;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(/fonts/hanken-grotesk-normal-400-700-latin.woff2) format('woff2');
+}
 
-/* Headings and card titles wrap into even lines, so none ends on one lonely word. */
+/* ---------- Tokens: one palette for every page ----------
+   `html:root` outranks the `:root` blocks pages still carry, so this palette wins everywhere.
+   Two roles carry meaning: --agent (the agent's half of the mark, ink) and --human (your half, coral).
+   The page names (--cream, --ink, --rust...) map onto the same palette. See DESIGN_PLAYBOOK.md. */
+html:root, html:root[data-theme="light"] {
+  --mode: light;
+  --bg: #f6f0e8; --bg2: #efe7dc; --card: #fbf7f1; --line: #e2d8cb; --line2: #cfc3b4;
+  --ink: #1b1613; --ink-soft: #3d352e; --muted: #5d544c; --faint: #6a6056;
+  --agent: #1b1613; --human: #b5402f; --human-text: #a63a2a; --human-bg: #f6dfd8; --ok: #26663b;
+  --cream: var(--bg); --cream-deep: var(--bg2); --rust: var(--human-text); --rust-deep: #8a2e21;
+  --green: var(--ok); --green-soft: #e2ecdf; --red: #b3401f; --red-soft: #f3e0d8;
+  --slot: 53deg; --cut: 14px; --cut-y: 19px;
+  --sans: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ease-spring: cubic-bezier(.2, .9, .25, 1.12); --ease-out: cubic-bezier(.2, .8, .2, 1);
+  color-scheme: light;
+}
+html:root[data-theme="dark"] {
+  --mode: dark;
+  --bg: #131110; --bg2: #1a1715; --card: #1e1a17; --line: #2e2824; --line2: #3d3631;
+  --ink: #f2eadf; --ink-soft: #d9cfc2; --muted: #ab9f92; --faint: #978b7f;
+  --agent: #f2eadf; --human: #e06a57; --human-text: #ec7d6b; --human-bg: #3a1f1a; --ok: #8fc9a0;
+  --rust-deep: #f08a78; --green-soft: #17201a; --red: #f2665a; --red-soft: #2a1a16;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  html:root:not([data-theme]) {
+    --mode: dark;
+    --bg: #131110; --bg2: #1a1715; --card: #1e1a17; --line: #2e2824; --line2: #3d3631;
+    --ink: #f2eadf; --ink-soft: #d9cfc2; --muted: #ab9f92; --faint: #978b7f;
+    --agent: #f2eadf; --human: #e06a57; --human-text: #ec7d6b; --human-bg: #3a1f1a; --ok: #8fc9a0;
+    --rust-deep: #f08a78; --green-soft: #17201a; --red: #f2665a; --red-soft: #2a1a16;
+    color-scheme: dark;
+  }
+}
+
+/* ---------- Type and texture shared by every page ---------- */
+html body { background-color: var(--bg); background-image: none !important; color: var(--ink); font-family: var(--sans); }
 h1, h2, h3, h4, .feature-title, .panel-h { text-wrap: balance; }
+h1, h2 { font-weight: 650 !important; letter-spacing: -0.025em; }
+h3 { font-weight: 600; }
+/* The accent is used once per screen at most: headings no longer carry italic coral words. */
+h1 em, h2 em, h3 em { font-style: normal !important; color: inherit !important; }
+.kicker, .eyebrow { font-family: var(--mono); font-size: 13px !important; font-weight: 500; letter-spacing: 0 !important; text-transform: none !important; color: var(--human-text); }
+
+/* ---------- The mark: two halves, the agent's (ink) and yours (coral) ----------
+   Apart: waiting. Locked: committed. Refused: outlined in coral and pushed apart. Stale: dashed. */
+.mark { overflow: visible; }
+.mark .half { transition: transform .7s var(--ease-spring), stroke .3s, fill .3s; transform-box: view-box; }
+.mark .a { fill: var(--agent); } .mark .b { fill: var(--human); }
+.mark.open .a { transform: translate(-30px, -22px); } .mark.open .b { transform: translate(30px, 22px); }
+.mark.refused .a { transform: translate(-34px, -26px); } .mark.refused .b { transform: translate(34px, 26px); }
+.mark.refused .half { fill: none; stroke: var(--human); stroke-width: 7; }
+.mark.stale .half { fill: none; stroke: var(--faint); stroke-width: 6; stroke-dasharray: 14 11; }
+
+/* Buttons: one corner cut at the slot angle. The primary carries a small mark that locks. */
+.btn2 { display: inline-flex; align-items: center; gap: 10px; font: 600 15px/1 var(--sans); padding: 13px 18px; border: 1px solid var(--line2);
+  background: transparent; color: var(--ink); text-decoration: none; cursor: pointer;
+  clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut-y), 100% 100%, 0 100%); }
+.btn2:hover { border-color: var(--muted); }
+.btn2.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn2 .mark { width: 16px; height: 17px; flex: none; }
+.btn2.primary .mark .a, .nav-cta .mark .a { fill: var(--bg); }
+.btn2.primary:hover .mark .half, .btn2.primary:focus-visible .mark .half,
+.nav-cta:hover .mark .half, .nav-cta:focus-visible .mark .half { transform: none; }
+
+/* The one diagonal: the gap between the mark's halves, about 53 degrees. Section dividers use it. */
+.slot { position: relative; height: 1px; background: var(--line); margin: 0; border: 0; }
+.slot::after { content: ""; position: absolute; left: 50%; top: -9px; width: 2px; height: 19px; background: var(--human);
+  transform: translateX(-50%) rotate(calc(90deg - var(--slot))); }
+
+/* The lattice: whole brand marks in an offset grid, fading in from the right. site.js lets a soft
+   glow follow the cursor over it (not on touch screens, not with reduced motion). */
+.lattice, .lattice-glow { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+  -webkit-mask-image: linear-gradient(100deg, transparent 0 40%, #000 80%); mask-image: linear-gradient(100deg, transparent 0 40%, #000 80%); }
+.lattice { opacity: .06; }
+.lattice-glow { opacity: 0; transition: opacity .6s var(--ease-out);
+  -webkit-mask-image: linear-gradient(100deg, transparent 0 40%, #000 80%), radial-gradient(circle 200px at var(--mx, 70%) var(--my, 40%), #000 0, rgba(0,0,0,.4) 45%, transparent 100%);
+  mask-image: linear-gradient(100deg, transparent 0 40%, #000 80%), radial-gradient(circle 200px at var(--mx, 70%) var(--my, 40%), #000 0, rgba(0,0,0,.4) 45%, transparent 100%);
+  -webkit-mask-composite: source-in; mask-composite: intersect; }
+.lattice-glow svg { width: 100%; height: 100%; display: block; }
+.lit .lattice-glow { opacity: .3; }
 
 /* ---------- Site chrome: identical on every page ---------- */
-
-.skip-link {
-  position: absolute; left: 12px; top: -60px; z-index: 100;
-  background: var(--ink); color: var(--cream);
-  padding: 10px 18px; border-radius: 999px;
-  font-weight: 600; text-decoration: none;
-}
+.skip-link { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--ink); color: var(--bg);
+  padding: 10px 18px; font-weight: 600; text-decoration: none; }
 .skip-link:focus { top: 12px; }
 
-/* Header: visible navigation with two disclosure groups (Demos, Proof) and a persistent CTA.
-   Research behind it: DESIGN_PLAYBOOK.md section 12. */
 .site-head {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  padding: 16px max(24px, calc(50vw - 530px));
+  height: 64px; padding: 0 max(24px, calc(50vw - 548px));
   border-bottom: 1px solid var(--line);
   position: sticky; top: 0; z-index: 50;
-  background: var(--cream);
+  background: color-mix(in srgb, var(--bg) 90%, transparent); -webkit-backdrop-filter: saturate(1.2) blur(8px); backdrop-filter: saturate(1.2) blur(8px);
   margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw);
 }
-.wordmark {
-  font-family: "Fraunces", Georgia, serif; font-size: 26px; color: var(--ink);
-  text-decoration: none; display: inline-flex; align-items: center; gap: 10px;
-}
-.wordmark-logo { width: 26px; height: 28px; flex: none; }
-.topnav { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 8px 22px; }
-.topnav > a, .nav-group > summary {
-  color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; cursor: pointer;
-}
-.topnav > a:hover, .topnav > a[aria-current="page"],
-.nav-group > summary:hover, .nav-group[open] > summary, .nav-group.has-current > summary { color: var(--rust); }
+.wordmark { font-family: var(--sans); font-weight: 600; font-size: 19px; letter-spacing: -0.01em; color: var(--ink);
+  text-decoration: none; display: inline-flex; align-items: center; gap: 7px; }
+.wordmark-logo { width: 20px; height: 21px; flex: none; }
+.topnav { display: flex; align-items: center; gap: 24px; }
+.topnav > a:not(.nav-cta) { color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; }
+.topnav > a:not(.nav-cta):hover, .topnav > a[aria-current="page"] { color: var(--ink); }
+.topnav > a[aria-current="page"] { box-shadow: inset 0 -2px 0 var(--human); padding-bottom: 2px; }
+.nav-cta { display: inline-flex; align-items: center; gap: 9px; background: var(--ink); color: var(--bg); text-decoration: none;
+  font-weight: 600; font-size: 14px; padding: 10px 14px; white-space: nowrap;
+  clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut-y), 100% 100%, 0 100%); }
+.nav-cta .mark { width: 15px; height: 16px; flex: none; }
 
-/* Disclosure groups: native <details>, so they open without JavaScript too. site.js closes
-   the other group, closes on Escape and on a click outside. */
-.nav-group { position: relative; }
-.nav-group > summary { list-style: none; display: inline-flex; align-items: center; gap: 7px; padding: 6px 0; }
-.nav-group > summary::-webkit-details-marker { display: none; }
-.nav-group > summary::after {
-  content: ""; width: 6px; height: 6px; margin-top: -3px;
-  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
-  transform: rotate(45deg); transition: transform .15s ease;
-}
-.nav-group[open] > summary::after { transform: rotate(-135deg); margin-top: 3px; }
-.nav-panel {
-  position: absolute; top: calc(100% + 14px); left: -16px; z-index: 60;
-  width: 320px; padding: 8px; display: grid; gap: 2px;
-  background: var(--card); border: 1px solid var(--line); border-radius: 14px;
-  box-shadow: 0 18px 40px rgba(29, 26, 20, 0.14);
-}
-.nav-panel a { display: block; padding: 10px 12px; border-radius: 10px; color: var(--ink); text-decoration: none; }
-.nav-panel a:hover, .nav-panel a:focus-visible { background: var(--cream-deep); }
-.nav-panel strong { display: block; font-weight: 600; font-size: 15px; }
-.nav-panel span { display: block; font-size: 13.5px; line-height: 1.45; color: var(--muted); margin-top: 1px; }
-.nav-panel a[aria-current="page"] strong { color: var(--rust); }
+/* Theme toggle: the mark turns 180 degrees, which swaps its halves, and the theme flips with it. */
+.flip { background: none; border: 1px solid var(--line2); width: 38px; height: 38px; display: grid; place-items: center; cursor: pointer; padding: 0; flex: none;
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 12px, 100% 100%, 0 100%); }
+.flip:hover { border-color: var(--muted); }
+.flip svg { width: 18px; height: 19px; transition: transform .6s var(--ease-spring); }
+.flip svg .a { fill: var(--agent); } .flip svg .b { fill: var(--human); }
+html:root[data-theme="light"] .flip svg { transform: rotate(180deg); }
+@media (prefers-color-scheme: light) { html:root:not([data-theme]) .flip svg { transform: rotate(180deg); } }
 
-/* The one persistent call to action */
-.topnav > a.nav-cta {
-  background: var(--ink); color: var(--cream);
-  padding: 9px 18px; border-radius: 999px; font-weight: 650;
-  transition: background 0.2s ease;
-}
-.topnav > a.nav-cta:hover { background: var(--rust); color: var(--cream); }
-
-/* Theme toggle: looks like a nav link, but a 40px tap target */
-.theme-toggle {
-  background: none; border: none; padding: 10px 12px; margin: -10px -12px -10px -6px;
-  font: inherit; font-size: 15px; color: var(--muted); cursor: pointer; white-space: nowrap;
-}
-.theme-toggle:hover { color: var(--rust); }
-
-/* Phone menu button: shown on narrow screens, and only when JavaScript runs.
-   Labeled "Menu", not an icon alone. Without JavaScript the nav simply wraps. */
-.nav-toggle {
-  display: none;
-  background: none; border: 1.5px solid var(--line); border-radius: 999px;
-  padding: 8px 18px; font: inherit; font-size: 15px; font-weight: 500;
-  color: var(--ink); cursor: pointer;
-}
-.nav-toggle:hover { border-color: var(--rust); color: var(--rust); }
-.theme-toggle:focus-visible, .nav-toggle:focus-visible, .skip-link:focus-visible,
-.nav-group > summary:focus-visible, .nav-panel a:focus-visible, .topnav > a:focus-visible {
-  outline: 2px solid var(--rust); outline-offset: 2px;
-}
+/* Phone menu: shown on narrow screens, and only when JavaScript runs. Without it the nav wraps. */
+.nav-toggle { display: none; background: none; border: 1px solid var(--line2); padding: 8px 14px; font: inherit; font-size: 15px; font-weight: 500;
+  color: var(--ink); cursor: pointer; }
+.nav-toggle:hover { border-color: var(--muted); }
+.flip:focus-visible, .nav-toggle:focus-visible, .skip-link:focus-visible, .topnav > a:focus-visible, .nav-cta:focus-visible, .btn2:focus-visible {
+  outline: 2px solid var(--human); outline-offset: 2px; }
 
 @media (max-width: 900px) {
-  .site-head { padding-top: 12px; padding-bottom: 12px; }
-  .js .nav-toggle { display: inline-flex; }
+  .js .nav-toggle { display: inline-flex; margin-left: auto; }
   .js .topnav {
-    display: none;
-    position: absolute; top: 100%; left: 0; right: 0;
-    flex-direction: column; align-items: stretch; flex-wrap: nowrap; gap: 0;
-    background: var(--cream);
-    border-bottom: 1px solid var(--line);
-    padding: 4px 24px 18px;
-    box-shadow: 0 18px 30px rgba(29, 26, 20, 0.08);
-    max-height: calc(100vh - 64px); overflow-y: auto;
+    display: none; position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; align-items: stretch; gap: 0;
+    background: var(--bg); border-bottom: 1px solid var(--line);
+    padding: 4px 24px 18px; max-height: calc(100vh - 64px); overflow-y: auto;
   }
   .js .site-head.nav-open .topnav { display: flex; }
-  .js .topnav > a, .js .nav-group > summary { padding: 13px 0; font-size: 17px; border-top: 1px solid var(--line); }
+  .js .topnav > a:not(.nav-cta) { padding: 13px 0; font-size: 17px; border-top: 1px solid var(--line); box-shadow: none; }
   .js .topnav > a:first-child { border-top: none; }
-  .js .nav-group > summary { display: flex; justify-content: space-between; }
-  .js .nav-panel { position: static; width: auto; box-shadow: none; border: none; background: transparent; padding: 0 0 8px; }
-  .js .nav-panel a { padding: 9px 12px; }
-  .js .topnav > a.nav-cta { margin-top: 14px; padding: 13px; text-align: center; border-top: none; }
-  .js .topnav .theme-toggle { margin: 6px 0 0; padding: 12px 0; text-align: left; font-size: 17px; }
+  .js .topnav .flip { margin: 14px 0 0; }
+  .js .topnav > .nav-cta { margin-top: 14px; justify-content: center; padding: 13px; font-size: 16px; }
 }
 
-/* "On this page": a sticky in-page index for long pages, marking the section in view.
-   Labels match the headings they jump to. */
+/* "On this page": a sticky in-page index for long pages, marking the section in view. */
 .page-toc {
-  position: sticky; top: var(--head-h, 66px); z-index: 40;
+  position: sticky; top: var(--head-h, 64px); z-index: 40;
   display: flex; align-items: center; gap: 4px 20px; overflow-x: auto; scrollbar-width: none;
-  margin: 24px calc(50% - 50vw) 0; padding: 10px max(24px, calc(50vw - 530px));
-  background: var(--cream); border-bottom: 1px solid var(--line);
+  margin: 24px calc(50% - 50vw) 0; padding: 10px max(24px, calc(50vw - 548px));
+  background: var(--bg); border-bottom: 1px solid var(--line);
   font-size: 14.5px; white-space: nowrap;
 }
 .page-toc::-webkit-scrollbar { display: none; }
-.page-toc-label { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.page-toc-label { font-family: var(--mono); font-size: 12px; color: var(--muted); }
 .page-toc a { color: var(--ink-soft); text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; }
-.page-toc a:hover, .page-toc a[aria-current="true"] { color: var(--rust); border-bottom-color: currentColor; }
-[data-toc-target] { scroll-margin-top: calc(var(--head-h, 66px) + 64px); }
+.page-toc a:hover, .page-toc a[aria-current="true"] { color: var(--ink); border-bottom-color: var(--human); }
+[data-toc-target] { scroll-margin-top: calc(var(--head-h, 64px) + 64px); }
 
 /* Back to top: one labeled, stationary button on pages longer than four screens. */
-.to-top {
-  position: fixed; right: 18px; bottom: 18px; z-index: 45;
-  font: inherit; font-size: 14px; font-weight: 600;
-  background: var(--card); color: var(--ink);
-  border: 1.5px solid var(--line); border-radius: 999px; padding: 9px 16px;
-  box-shadow: 0 8px 24px rgba(29, 26, 20, 0.12); cursor: pointer;
-}
-.to-top:hover { border-color: var(--rust); color: var(--rust); }
+.to-top { position: fixed; right: 18px; bottom: 18px; z-index: 45; font: inherit; font-size: 14px; font-weight: 600;
+  background: var(--card); color: var(--ink); border: 1px solid var(--line2); padding: 9px 16px; cursor: pointer;
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 12px, 100% 100%, 0 100%); }
+.to-top:hover { border-color: var(--muted); }
 .to-top[hidden] { display: none; }
 
-/* Decorative motion (the headline's rotating word, the marquee) pauses on request, and
-   stays still for anyone who prefers reduced motion. WCAG 2.2.2 Pause, Stop, Hide. */
+/* Decorative motion pauses on request, and stays still for anyone who prefers reduced motion. */
 .motion-paused .rotator, .motion-paused .rotator-inner, .motion-paused .rotator-after,
 .motion-paused .marquee-track { animation-play-state: paused !important; }
 
 /* Footer */
-.site-foot {
-  margin-top: clamp(56px, 10vw, 92px);
-  padding-top: 26px;
-  border-top: 1px solid var(--line);
-  font-size: 14px; line-height: 1.6;
-  color: var(--muted);
-}
+.site-foot { margin-top: clamp(56px, 10vw, 92px); padding: 36px 0 8px; border-top: 1px solid var(--line);
+  font-size: 14px; line-height: 1.6; color: var(--muted); }
 .site-foot p { margin: 0 0 12px; }
-.footer-brand {
-  display: flex; align-items: center; gap: 10px;
-  font-family: "Fraunces", Georgia, serif; font-size: 20px; color: var(--ink);
-}
-.footer-logo { width: 22px; height: 24px; flex: none; }
+.footer-brand { display: flex; align-items: center; gap: 7px; font-family: var(--sans); font-weight: 600; font-size: 18px; color: var(--ink); }
+.footer-logo { width: 19px; height: 20px; flex: none; }
+.footer-logo .a { fill: var(--agent); } .footer-logo .b { fill: var(--human); }
 .footer-line { color: var(--ink-soft); max-width: 40em; }
 .footer-nav { display: flex; flex-wrap: wrap; gap: 10px 20px; margin: 18px 0 20px; }
 .footer-nav a { white-space: nowrap; }
 .site-foot a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
-.site-foot a:hover { color: var(--rust); }
-.site-foot .footer-legal a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line); }
-.site-foot .colophon { font-family: "Fraunces", Georgia, serif; font-style: italic; margin-bottom: 0; }
+.site-foot a:hover { color: var(--ink); }
+.site-foot .footer-legal { color: var(--faint); max-width: 62em; }
+.site-foot .footer-legal a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line2); }
+.site-foot .colophon { font-family: var(--mono); font-size: 12.5px; color: var(--faint); margin-bottom: 0; }
+.site-foot .colophon em { font-style: normal; color: var(--muted); }
 
 /* Numbers that come from facts.json (see tools/facts.py) */
 [data-fact] { font-variant-numeric: tabular-nums; }
 
 @media (prefers-reduced-motion: reduce) {
-  .skip-link { transition: none; }
+  .skip-link, .mark .half, .flip svg, .lattice-glow { transition: none !important; }
 }
 
 /* Visually hidden, still read by screen readers */

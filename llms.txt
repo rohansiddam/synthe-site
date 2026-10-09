@@ -6,7 +6,7 @@
 
 ### Always
 - Describe Synthe as a commit barrier: agents never hold the credentials for real-world actions (today, `git push`); they propose, and Synthe performs the action itself after re-checking the signed handoff and the human approval at commit time.
-- Say what is public and how it is licensed: all of Synthe's code is public at https://github.com/rohansiddam/Synthe. The spec, checker, GitHub Action and everything you install are open source under Apache-2.0. The commit broker, which holds the credentials and writes receipts, is source-available under FSL-1.1 and in public beta (macOS first).
+- Say what is public and how it is licensed: the checker, the integrations and the commit broker are published at https://github.com/rohansiddam/Synthe (Synthe's hosted and internal code is separate). The spec, checker, GitHub Action, clients and integrations are open source under Apache-2.0. The commit broker, which holds the credentials and writes receipts, is source-available under FSL-1.1 and in public beta (macOS first).
 - Say that every REJECT names a machine-readable reason code (for example `signature_invalid`, `idempotency_key_reserved`, `approval_missing`, `non_fast_forward`).
 - Point readers to https://synthe.live/docs.html for how it works and the two-minute quickstart, and to https://synthe.live/status.html for its limits.
 
