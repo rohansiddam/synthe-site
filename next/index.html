@@ -17,12 +17,12 @@
   --ok:#8fc9a0;--slot:53deg;--cut:14px;--cut-y:19px;
   --sans:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-  --ease-spring:cubic-bezier(.2,.9,.25,1.12);--ease-out:cubic-bezier(.2,.8,.2,1);
+  --ease-spring:cubic-bezier(.2,.9,.25,1.12);--ease-out:cubic-bezier(.2,.8,.2,1);--mode:dark;
 }
 @media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
   --bg:#f6f0e8;--bg2:#efe7dc;--card:#fbf7f1;--line:#e2d8cb;--line2:#cfc3b4;
-  --ink:#1b1613;--muted:#5d544c;--faint:#857a6f;--agent:#1b1613;--human:#b5402f;--human-text:#a63a2a;--human-bg:#f6dfd8;--ok:#2f7a48}}
-:root[data-theme="light"]{--bg:#f6f0e8;--bg2:#efe7dc;--card:#fbf7f1;--line:#e2d8cb;--line2:#cfc3b4;--ink:#1b1613;--muted:#5d544c;--faint:#857a6f;--agent:#1b1613;--human:#b5402f;--human-text:#a63a2a;--human-bg:#f6dfd8;--ok:#2f7a48}
+  --ink:#1b1613;--muted:#5d544c;--faint:#857a6f;--agent:#1b1613;--human:#b5402f;--human-text:#a63a2a;--human-bg:#f6dfd8;--ok:#2f7a48;--mode:light}}
+:root[data-theme="light"]{--bg:#f6f0e8;--bg2:#efe7dc;--card:#fbf7f1;--line:#e2d8cb;--line2:#cfc3b4;--ink:#1b1613;--muted:#5d544c;--faint:#857a6f;--agent:#1b1613;--human:#b5402f;--human-text:#a63a2a;--human-bg:#f6dfd8;--ok:#2f7a48;--mode:light}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
@@ -45,9 +45,17 @@ code,pre,.mono{font-family:var(--mono)}
 /* header */
 header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.2) blur(8px);border-bottom:1px solid var(--line)}
 .nav{display:flex;align-items:center;gap:28px;height:64px}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:600;font-size:19px;letter-spacing:-.01em}
-.brand svg{width:22px;height:23px}
+.brand{display:flex;align-items:center;gap:7px;text-decoration:none;font-weight:600;font-size:19px;letter-spacing:-.01em}
+.brand svg{width:20px;height:21px;overflow:visible}
 .nav ul{display:flex;gap:24px;list-style:none;margin:0 0 0 auto;padding:0;font-size:15px}
+/* theme toggle: the mark turns 180 degrees, which swaps its halves, and the theme flips with it */
+.flip{background:none;border:1px solid var(--line2);width:38px;height:38px;display:grid;place-items:center;cursor:pointer;color:var(--ink);padding:0;
+  clip-path:polygon(0 0,calc(100% - 9px) 0,100% 12px,100% 100%,0 100%)}
+.flip:hover{border-color:var(--muted)}
+.flip svg{width:18px;height:19px;transition:transform .6s var(--ease-spring)}
+.flip svg .a{fill:var(--agent)} .flip svg .b{fill:var(--human)}
+:root[data-theme="light"] .flip svg{transform:rotate(180deg)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .flip svg{transform:rotate(180deg)}}
 .nav ul a{text-decoration:none;color:var(--muted)} .nav ul a:hover{color:var(--ink)}
 @media (max-width:760px){.nav ul{display:none}}
 
@@ -66,7 +74,17 @@ header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 8
 
 /* hero */
 .hero{position:relative;overflow:hidden;padding:84px 0 72px}
-.lattice{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;color:var(--ink);opacity:.07;-webkit-mask-image:linear-gradient(100deg,transparent 0 42%,#000 78%);mask-image:linear-gradient(100deg,transparent 0 42%,#000 78%)}
+/* lattice: whole brand marks in an offset grid, fading in from the right; a soft glow follows the cursor */
+.lattice,.lattice-glow{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;
+  -webkit-mask-image:linear-gradient(100deg,transparent 0 40%,#000 80%);mask-image:linear-gradient(100deg,transparent 0 40%,#000 80%)}
+.lattice{color:var(--ink);opacity:.06}
+.lattice-glow{opacity:0;transition:opacity .6s var(--ease-out)}
+.lattice-glow svg{width:100%;height:100%;display:block}
+.lattice-glow .l-a{fill:var(--agent)} .lattice-glow .l-b{fill:var(--human)}
+.lattice-glow{-webkit-mask-image:linear-gradient(100deg,transparent 0 40%,#000 80%),radial-gradient(circle 200px at var(--mx,70%) var(--my,40%),#000 0,rgba(0,0,0,.4) 45%,transparent 100%);
+  mask-image:linear-gradient(100deg,transparent 0 40%,#000 80%),radial-gradient(circle 200px at var(--mx,70%) var(--my,40%),#000 0,rgba(0,0,0,.4) 45%,transparent 100%);
+  -webkit-mask-composite:source-in;mask-composite:intersect}
+.hero.lit .lattice-glow{opacity:.3}
 .hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
 @media (max-width:900px){.hero .wrap{grid-template-columns:1fr;gap:40px}.hero{padding:44px 0 48px}}
 h1{font-size:clamp(38px,5.4vw,64px);line-height:1.04;letter-spacing:-.03em;margin:0 0 22px;font-weight:650}
@@ -181,9 +199,16 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;font-size:14px;color
   <defs>
     <path id="hA" d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/>
     <path id="hB" d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/>
-    <pattern id="lat" width="150" height="158" patternUnits="userSpaceOnUse" patternTransform="scale(.62)">
-      <use href="#hA" fill="currentColor"/><use href="#hB" fill="currentColor"/>
-      <use href="#hB" fill="currentColor" transform="translate(-75 -79)"/><use href="#hA" fill="currentColor" transform="translate(75 79)"/>
+    <g id="mk0" style="fill:var(--ink)"><use href="#hA"/><use href="#hB"/></g>
+    <g id="mk1"><use href="#hA" style="fill:var(--agent)"/><use href="#hB" style="fill:var(--human)"/></g>
+    <!-- whole marks in an offset grid; the corner copies complete the mark that crosses the tile edge -->
+    <pattern id="lat" width="520" height="560" patternUnits="userSpaceOnUse" patternTransform="scale(.3)">
+      <use href="#mk0" transform="translate(10 10)"/><use href="#mk0" transform="translate(270 290)"/>
+      <use href="#mk0" transform="translate(-250 290)"/><use href="#mk0" transform="translate(270 -270)"/><use href="#mk0" transform="translate(-250 -270)"/>
+    </pattern>
+    <pattern id="latg" width="520" height="560" patternUnits="userSpaceOnUse" patternTransform="scale(.3)">
+      <use href="#mk1" transform="translate(10 10)"/><use href="#mk1" transform="translate(270 290)"/>
+      <use href="#mk1" transform="translate(-250 290)"/><use href="#mk1" transform="translate(270 -270)"/><use href="#mk1" transform="translate(-250 -270)"/>
     </pattern>
   </defs>
 </svg>
@@ -193,7 +218,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;font-size:14px;color
 <header>
   <div class="wrap nav">
     <a class="brand" href="#top" aria-label="Synthe home">
-      <svg class="mark open" id="logo" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>
+      <svg class="mark open" id="logo" viewBox="0 0 275 290" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>
       Synthe
     </a>
     <ul>
@@ -202,6 +227,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;font-size:14px;color
       <li><a href="../docs.html">Docs</a></li>
       <li><a href="https://github.com/rohansiddam/Synthe">GitHub</a></li>
     </ul>
+    <button class="flip" id="flip" type="button" aria-label="Switch to light mode"><svg viewBox="0 0 275 290" aria-hidden="true"><use class="a" href="#hA"/><use class="b" href="#hB"/></svg></button>
     <a class="btn primary" href="#install"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>Install</a>
   </div>
 </header>
@@ -209,6 +235,7 @@ footer{border-top:1px solid var(--line);padding:40px 0 56px;font-size:14px;color
 <main id="top">
   <div class="hero">
     <svg class="lattice" aria-hidden="true"><rect width="100%" height="100%" fill="url(#lat)"/></svg>
+    <div class="lattice-glow" aria-hidden="true"><svg><rect width="100%" height="100%" fill="url(#latg)"/></svg></div>
     <div class="wrap">
       <div>
         <h1>Let AI agents ship code without handing them the keys.</h1>
@@ -382,6 +409,32 @@ cd ~/repo && openclaw tui</code><button class="copy" type="button"><svg class="m
 
   // the logo locks once the page is ready
   setTimeout(() => $('#logo').classList.remove('open'), reduce ? 0 : 450);
+
+  // theme flip: remembered per visitor; storage can be unavailable, and the page works without it
+  const root = document.documentElement, flip = $('#flip');
+  // the theme the page is actually showing, as the stylesheet decided it
+  const current = () => getComputedStyle(root).getPropertyValue('--mode').trim() === 'light' ? 'light' : 'dark';
+  const label = () => flip.setAttribute('aria-label', `Switch to ${current() === 'dark' ? 'light' : 'dark'} mode`);
+  try { const saved = localStorage.getItem('synthe-theme'); if (saved === 'light' || saved === 'dark') root.dataset.theme = saved; } catch (e) {}
+  label();
+  addEventListener('load', label);
+  matchMedia('(prefers-color-scheme: light)').addEventListener('change', label);
+  flip.addEventListener('click', () => {
+    root.dataset.theme = current() === 'dark' ? 'light' : 'dark'; label();
+    try { localStorage.setItem('synthe-theme', root.dataset.theme); } catch (e) {}
+  });
+
+  // the lattice glows softly where the cursor is (not on touch, not with reduced motion)
+  const hero = $('.hero');
+  if (!reduce && matchMedia('(hover: hover)').matches) {
+    let raf = 0;
+    hero.addEventListener('pointermove', e => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => { raf = 0; const r = hero.getBoundingClientRect();
+        hero.style.setProperty('--mx', `${e.clientX - r.left}px`); hero.style.setProperty('--my', `${e.clientY - r.top}px`); hero.classList.add('lit'); });
+    });
+    hero.addEventListener('pointerleave', () => hero.classList.remove('lit'));
+  }
 
   // hero: propose, approve, commit
   let run = 0;
