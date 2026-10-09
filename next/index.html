@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Synthe: let AI agents ship without the keys</title>
+<meta name="description" content="Agents propose. You approve. Synthe commits, exactly once, and signs a receipt anyone can verify.">
+<style>
+@font-face{font-family:'Hanken Grotesk';src:url('../fonts/hanken-grotesk-normal-400-700-latin.woff2') format('woff2');font-weight:400 700;font-display:swap}
+@font-face{font-family:'IBM Plex Mono';src:url('../fonts/ibm-plex-mono-normal-400-latin.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'IBM Plex Mono';src:url('../fonts/ibm-plex-mono-normal-500-latin.woff2') format('woff2');font-weight:500;font-display:swap}
+:root{
+  --bg:#131110;--bg2:#1a1715;--card:#1e1a17;--line:#2e2824;--line2:#3d3631;
+  --ink:#f2eadf;--muted:#ab9f92;--faint:#7d7268;
+  --agent:#f2eadf;--human:#e06a57;--human-text:#ec7d6b;--human-bg:#3a1f1a;
+  --ok:#8fc9a0;--slot:53deg;--cut:14px;--cut-y:19px;
+  --sans:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --ease-spring:cubic-bezier(.2,.9,.25,1.12);--ease-out:cubic-bezier(.2,.8,.2,1);
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#f6f0e8;--bg2:#efe7dc;--card:#fbf7f1;--line:#e2d8cb;--line2:#cfc3b4;
+  --ink:#1b1613;--muted:#5d544c;--faint:#857a6f;--agent:#1b1613;--human:#b5402f;--human-text:#a63a2a;--human-bg:#f6dfd8;--ok:#2f7a48}}
+:root[data-theme="light"]{--bg:#f6f0e8;--bg2:#efe7dc;--card:#fbf7f1;--line:#e2d8cb;--line2:#cfc3b4;--ink:#1b1613;--muted:#5d544c;--faint:#857a6f;--agent:#1b1613;--human:#b5402f;--human-text:#a63a2a;--human-bg:#f6dfd8;--ok:#2f7a48}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+code,pre,.mono{font-family:var(--mono)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.proto{background:var(--human-bg);color:var(--human-text);font:500 13px/1.4 var(--mono);text-align:center;padding:8px 16px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* the mark: two halves; the agent's (ink) and the human's (coral) */
+.mark .half{transition:transform .7s var(--ease-spring),opacity .4s var(--ease-out),stroke .3s,fill .3s;transform-box:view-box}
+.mark .a{fill:var(--agent)} .mark .b{fill:var(--human)}
+.mark.open .a{transform:translate(-30px,-22px)} .mark.open .b{transform:translate(30px,22px)}
+.mark.refused .a{transform:translate(-34px,-26px)} .mark.refused .b{transform:translate(34px,26px)}
+.mark.refused .half{fill:none;stroke:var(--human);stroke-width:7}
+.mark.stale .half{fill:none;stroke:var(--faint);stroke-width:6;stroke-dasharray:14 11}
+@keyframes bump{0%,100%{transform:translate(30px,22px)}35%{transform:translate(12px,9px)}65%{transform:translate(38px,28px)}}
+.mark.bounce .b{animation:bump .5s var(--ease-out)}
+
+/* header */
+header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.2) blur(8px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:28px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:600;font-size:19px;letter-spacing:-.01em}
+.brand svg{width:22px;height:23px}
+.nav ul{display:flex;gap:24px;list-style:none;margin:0 0 0 auto;padding:0;font-size:15px}
+.nav ul a{text-decoration:none;color:var(--muted)} .nav ul a:hover{color:var(--ink)}
+@media (max-width:760px){.nav ul{display:none}}
+
+/* buttons: the primary carries a small mark that locks */
+.btn{display:inline-flex;align-items:center;gap:10px;font:600 15px/1 var(--sans);padding:13px 18px;border-radius:0;border:1px solid var(--line2);background:transparent;color:var(--ink);text-decoration:none;cursor:pointer;
+  clip-path:polygon(0 0,calc(100% - var(--cut)) 0,100% var(--cut-y),100% 100%,0 100%)}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn .mark{width:16px;height:17px} .btn.primary .mark .a{fill:var(--bg)}
+.btn.primary:hover .mark .half,.btn.primary:focus-visible .mark .half{transform:none}
+.nav .btn{padding:10px 14px;font-size:14px}
+
+/* the one diagonal: the slot angle, as section dividers */
+.slot{position:relative;height:1px;background:var(--line);margin:0;border:0}
+.slot::after{content:"";position:absolute;left:50%;top:-9px;width:2px;height:19px;background:var(--human);transform:translateX(-50%) rotate(calc(90deg - var(--slot)))}
+
+/* hero */
+.hero{position:relative;overflow:hidden;padding:84px 0 72px}
+.lattice{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;color:var(--ink);opacity:.07;-webkit-mask-image:linear-gradient(100deg,transparent 0 42%,#000 78%);mask-image:linear-gradient(100deg,transparent 0 42%,#000 78%)}
+.hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
+@media (max-width:900px){.hero .wrap{grid-template-columns:1fr;gap:40px}.hero{padding:44px 0 48px}}
+h1{font-size:clamp(38px,5.4vw,64px);line-height:1.04;letter-spacing:-.03em;margin:0 0 22px;font-weight:650}
+.lede{font-size:clamp(18px,1.6vw,21px);color:var(--muted);margin:0 0 30px;max-width:34em}
+.lede b{color:var(--ink);font-weight:600}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+.meta{margin-top:22px;font:13px/1.5 var(--mono);color:var(--faint)}
+
+/* the hero clasp: proposal, approval, commit */
+.clasp{background:var(--card);border:1px solid var(--line);padding:22px;clip-path:polygon(0 0,calc(100% - 22px) 0,100% 29px,100% 100%,0 100%)}
+.clasp .tag{font:12px/1 var(--mono);color:var(--faint);display:flex;justify-content:space-between;margin-bottom:14px}
+.step{display:flex;align-items:center;gap:10px;font:14px/1.4 var(--mono);padding:10px 12px;border:1px solid var(--line);opacity:.38;transition:opacity .45s,border-color .45s,background .45s}
+.step.on{opacity:1}
+.step .dot{width:9px;height:9px;flex:none}
+.step.agent .dot{background:var(--agent)} .step.human .dot{background:var(--human)}
+.step.agent.on{border-color:var(--line2)} .step.human.on{border-color:var(--human);background:var(--human-bg)}
+.step b{font-weight:500}
+.stage{display:grid;place-items:center;height:190px}
+.stage .mark{width:150px;height:158px}
+.receipt{font:13px/1.5 var(--mono);color:var(--ok);margin-top:12px;min-height:20px;opacity:0;transform:translateY(4px);transition:opacity .4s,transform .4s}
+.receipt.on{opacity:1;transform:none}
+.replay{background:none;border:0;color:var(--faint);font:12px var(--mono);cursor:pointer;padding:0}
+.replay:hover{color:var(--ink)}
+
+/* sections */
+section{padding:88px 0}
+.eyebrow{font:500 13px/1 var(--mono);color:var(--human-text);margin:0 0 14px}
+h2{font-size:clamp(28px,3.4vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 16px;font-weight:650;max-width:22em}
+.sub{color:var(--muted);max-width:40em;margin:0 0 40px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media (max-width:860px){.grid3{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);padding:24px;clip-path:polygon(0 0,calc(100% - var(--cut)) 0,100% var(--cut-y),100% 100%,0 100%)}
+.card h3{font-size:19px;margin:14px 0 8px;font-weight:600;letter-spacing:-.01em}
+.card p{margin:0;color:var(--muted);font-size:16px}
+.card .mark{width:34px;height:36px}
+.risk{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.risk li{display:flex;gap:12px;align-items:baseline;font-size:18px}
+.risk li::before{content:"";width:12px;height:2px;background:var(--human);flex:none;transform:rotate(calc(-1 * var(--slot)));translate:0 -5px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+@media (max-width:860px){.two{grid-template-columns:1fr;gap:28px}}
+.answer{font-size:22px;line-height:1.35;letter-spacing:-.01em;margin:0}
+.answer em{font-style:normal;color:var(--human-text)}
+
+/* install */
+.install{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:24px;flex-wrap:wrap}
+.tab{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);font:600 15px var(--sans);padding:12px 16px;cursor:pointer;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--human)}
+.pane{display:grid;gap:18px;max-width:780px}
+.pane[hidden]{display:none}
+.cmdrow p{margin:0 0 8px;color:var(--muted);font-size:15px}
+.cmd{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);padding:12px 12px 12px 16px;font:14px/1.5 var(--mono);overflow-x:auto}
+.cmd code{flex:1;white-space:pre}
+.copy{display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid var(--line2);color:var(--ink);font:500 13px var(--mono);padding:7px 10px;cursor:pointer;flex:none}
+.copy .mark{width:14px;height:15px}
+.copy.done{border-color:var(--ok);color:var(--ok)}
+.note{font-size:14px;color:var(--faint);margin:0}
+.term{background:var(--card);border:1px solid var(--line);padding:16px;font:13.5px/1.65 var(--mono);color:var(--muted);white-space:pre-wrap;margin:0}
+.term .h{color:var(--human-text)} .term .o{color:var(--ink)}
+.works{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.works span{font:13px var(--mono);border:1px solid var(--line);padding:6px 10px;color:var(--muted)}
+
+/* the receipt chain */
+.chainbox{background:var(--card);border:1px solid var(--line);padding:28px 24px 22px}
+.chain{display:flex;align-items:center;justify-content:center;gap:0;margin:0 -6px;flex-wrap:nowrap}
+.joint{flex:1;max-width:46px;min-width:10px;height:2px;margin-bottom:26px;background:var(--line2);transform:rotate(calc(-1 * (90deg - var(--slot))));transition:background .35s;position:relative;overflow:hidden}
+.joint::after{content:"";position:absolute;inset:0;background:var(--ok);transform:scaleX(var(--j,0));transform-origin:left;transition:transform .35s var(--ease-out)}
+.joint.stale{background:repeating-linear-gradient(90deg,var(--faint) 0 4px,transparent 4px 8px)}
+.joint.stale::after,.joint.cut::after{transform:scaleX(0)}
+.joint.cut{background:none}
+.link{background:none;border:0;padding:6px;cursor:pointer;color:var(--ink);display:flex;flex-direction:column;align-items:center;gap:8px;flex:0 1 84px;min-width:0;border-radius:0}
+.link .mark{width:100%;max-width:74px;height:auto;aspect-ratio:355/370;transition:transform .35s var(--ease-out)}
+.link:hover .mark,.link:focus-visible .mark{transform:translateY(-3px)}
+.link .num{font:12px var(--mono);color:var(--faint);transition:color .3s}
+.link.sel .num{color:var(--ink)}
+.link:focus-visible{outline:2px solid var(--human);outline-offset:2px}
+.track{height:2px;background:var(--line);margin:4px 6px 18px;position:relative;overflow:hidden}
+.track i{position:absolute;inset:0;background:var(--ok);transform-origin:left;transform:scaleX(var(--p,0));transition:transform .9s var(--ease-out)}
+.track.broken i{background:var(--human)}
+.detail{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;font:13px/1.6 var(--mono);color:var(--muted);min-height:96px}
+.detail dt{color:var(--faint)} .detail dd{margin:0;color:var(--ink);overflow-wrap:anywhere}
+.status{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font:13px var(--mono)}
+.status .s{color:var(--ok)} .status .s.bad{color:var(--human-text)}
+.mini{background:none;border:1px solid var(--line2);color:var(--ink);font:500 13px var(--mono);padding:7px 12px;cursor:pointer}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+@media (max-width:700px){.stats{grid-template-columns:1fr}}
+.stat{border-top:1px solid var(--line2);padding-top:14px}
+.stat b{display:block;font-size:30px;letter-spacing:-.02em;font-weight:650}
+.stat > span{color:var(--muted);font-size:15px}
+.illus{font:12px var(--mono);color:var(--faint);margin:12px 0 0}
+
+/* demo, faq, cta, footer */
+.demo{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+details{border-top:1px solid var(--line);padding:18px 0}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-weight:600;font-size:18px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::after{content:"+";color:var(--muted)} details[open] summary::after{content:"−"}
+details p{color:var(--muted);margin:12px 0 0;max-width:46em}
+.final{text-align:center;padding:110px 0}
+.final h2{margin:0 auto 18px}
+.final .ctas{justify-content:center}
+footer{border-top:1px solid var(--line);padding:40px 0 56px;font-size:14px;color:var(--muted)}
+.foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.foot ul{display:flex;gap:18px;flex-wrap:wrap;list-style:none;margin:0;padding:0}
+.foot a{text-decoration:none} .foot a:hover{color:var(--ink)}
+.legal{margin-top:20px;color:var(--faint);max-width:60em}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important;animation:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <path id="hA" d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/>
+    <path id="hB" d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/>
+    <pattern id="lat" width="150" height="158" patternUnits="userSpaceOnUse" patternTransform="scale(.62)">
+      <use href="#hA" fill="currentColor"/><use href="#hB" fill="currentColor"/>
+      <use href="#hB" fill="currentColor" transform="translate(-75 -79)"/><use href="#hA" fill="currentColor" transform="translate(75 79)"/>
+    </pattern>
+  </defs>
+</svg>
+
+<div class="proto">Prototype · not the live site · the /install endpoint goes live once the public v0.7.1 tag and its checksum are published</div>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top" aria-label="Synthe home">
+      <svg class="mark open" id="logo" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>
+      Synthe
+    </a>
+    <ul>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#verify">Security</a></li>
+      <li><a href="../docs.html">Docs</a></li>
+      <li><a href="https://github.com/rohansiddam/Synthe">GitHub</a></li>
+    </ul>
+    <a class="btn primary" href="#install"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>Install</a>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <svg class="lattice" aria-hidden="true"><rect width="100%" height="100%" fill="url(#lat)"/></svg>
+    <div class="wrap">
+      <div>
+        <h1>Let AI agents ship code without handing them the keys.</h1>
+        <p class="lede"><b>Agents propose. You approve. Synthe commits.</b> Synthe holds the only credential, pushes exactly the change you approved, once, and signs a receipt anyone can verify.</p>
+        <div class="ctas">
+          <a class="btn primary" href="#install"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>Install</a>
+          <a class="btn" href="#how">How it works</a>
+        </div>
+        <p class="meta">Public beta · macOS and Linux · works with Claude Code, OpenClaw and any agent that runs git push</p>
+      </div>
+
+      <div class="clasp" aria-label="Illustration: an agent proposes a push, you approve it, and Synthe commits it">
+        <div class="tag"><span>illustration</span><button class="replay" id="replay" type="button">replay</button></div>
+        <div class="step agent" id="s-prop"><span class="dot"></span><span><b>agent</b> proposes push · agent/fix-login · 2 files</span></div>
+        <div class="stage"><svg class="mark open" id="hero-mark" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg></div>
+        <div class="step human" id="s-appr"><span class="dot"></span><span><b>you</b> read the broker's diff · approve with Touch ID</span></div>
+        <p class="receipt" id="s-rcpt" aria-live="polite">committed once · receipt #42 signed</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="slot">
+
+  <section>
+    <div class="wrap two">
+      <div>
+        <p class="eyebrow">The problem</p>
+        <h2>An agent with a token can push anything.</h2>
+        <ul class="risk">
+          <li>Straight to main, at 3 a.m.</li>
+          <li>Over someone else's work.</li>
+          <li>With no record of who said yes.</li>
+        </ul>
+      </div>
+      <p class="answer">With Synthe, <em>agents hold no credentials at all.</em> They can only propose. The broker runs as its own user, holds the only token, and acts only on a change a person approved.</p>
+    </div>
+  </section>
+
+  <hr class="slot">
+
+  <section id="how">
+    <div class="wrap">
+      <p class="eyebrow">How it works</p>
+      <h2>Two halves. It only ships when they meet.</h2>
+      <p class="sub">The mark is the system: the agent's half proposes, your half approves, and the change goes through only when both lock.</p>
+      <div class="grid3">
+        <div class="card">
+          <svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB" style="opacity:.18"/></svg>
+          <h3>The agent proposes</h3>
+          <p>It works on its own branch and proposes the push, through the plugin or a plain git push. It never holds a GitHub token, not even to read.</p>
+        </div>
+        <div class="card">
+          <svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA" style="opacity:.18"/><use class="half b" href="#hB"/></svg>
+          <h3>You approve</h3>
+          <p>You see the broker's own diff, not the agent's summary, and approve with Touch ID or your passphrase. The approval names that exact commit.</p>
+        </div>
+        <div class="card">
+          <svg class="mark" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>
+          <h3>Synthe commits once</h3>
+          <p>It re-checks everything at the moment of commit, pushes exactly that change if nothing moved, and signs a receipt. Refusals get receipts too.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="install" id="install">
+    <div class="wrap">
+      <p class="eyebrow">Install</p>
+      <h2>Set it up once. Every push after that goes through you.</h2>
+      <p class="sub">Setup asks for your approval passphrase, your GitHub token (hidden) and your admin password, then puts the agent in its own account with no credentials.</p>
+      <div class="tabs" role="tablist" aria-label="Choose your agent">
+        <button class="tab" role="tab" aria-selected="true" aria-controls="p-cc" id="t-cc">Claude Code</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="p-oc" id="t-oc">OpenClaw</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="p-any" id="t-any">Any agent</button>
+      </div>
+      <div class="pane" role="tabpanel" id="p-cc" aria-labelledby="t-cc">
+        <div class="cmdrow"><p>1. Set up the broker (macOS or Linux)</p><div class="cmd"><code>curl -sSL https://synthe.live/install | bash</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
+        <div class="cmdrow"><p>2. Add the plugin in Claude Code</p><div class="cmd"><code>/plugin marketplace add rohansiddam/Synthe
+/plugin install synthe@synthe</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
+        <p class="note">Run Claude Code in the agent's account for the enforced setup. In your own account, which has your GitHub login, the plugin guides the agent but isn't a wall.</p>
+      </div>
+      <div class="pane" role="tabpanel" id="p-oc" aria-labelledby="t-oc" hidden>
+        <div class="cmdrow"><p>1. Set up the broker and the agent's account</p><div class="cmd"><code>curl -sSL https://synthe.live/install | bash</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
+        <div class="cmdrow"><p>2. Setup installs the OpenClaw plugin, skill and gateway for the agent. Chat with it there:</p><div class="cmd"><code>sudo -iu openclaw
+cd ~/repo && openclaw tui</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
+      </div>
+      <div class="pane" role="tabpanel" id="p-any" aria-labelledby="t-any" hidden>
+        <div class="cmdrow"><p>1. Set up the broker</p><div class="cmd"><code>curl -sSL https://synthe.live/install | bash</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
+        <div class="cmdrow"><p>2. In the agent's clone, a plain git push becomes a proposal</p>
+<pre class="term"><span class="o">$ git push</span>
+<span class="h">synthe:</span> agent/greet at e352ae3de01d is proposed for approval, not pushed yet.
+<span class="h">synthe:</span> A person reviews the diff and approves it with synthe-approve; then Synthe
+<span class="h">synthe:</span> pushes exactly this commit and signs a receipt.</pre></div>
+      </div>
+      <div class="works" aria-label="Works with"><span>Claude Code</span><span>OpenClaw</span><span>Codex</span><span>Cursor</span><span>any git push</span><span>MCP</span></div>
+    </div>
+  </section>
+
+  <section id="verify">
+    <div class="wrap">
+      <p class="eyebrow">Anyone can verify</p>
+      <h2>Every decision is a link in a chain.</h2>
+      <p class="sub">Each receipt hooks into the one before it. Change one, and the chain breaks there, visibly, for everything after it. Check any chain yourself with synthe-verify, no Synthe code required.</p>
+      <div class="chainbox">
+        <div class="chain" id="chain" role="group" aria-label="Receipt chain: select a receipt to inspect it, or tamper with it"></div>
+        <div class="track" id="track"><i></i></div>
+        <dl class="detail" id="detail"></dl>
+        <div class="status"><span class="s" id="cstat" aria-live="polite">7 receipts · chain verifies</span>
+          <span><button class="mini" id="tamper" type="button">Tamper with #41</button> <button class="mini" id="reverify" type="button">Verify again</button></span></div>
+        <p class="illus">Select a receipt to inspect it, then tamper with it. Illustration with sample receipts. The real chain is signed by the broker's key and checked by synthe-verify.</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><b><span data-fact="beta_doctor_checks">8</span> of 8</b><span>isolation checks pass with the broker in its own account (macOS, real GitHub)</span></div>
+        <div class="stat"><b><span data-fact="beta_redteam_refused">33</span> of <span data-fact="beta_redteam_attacks">33</span></b><span>live attacks from the agent's account refused or contained, each with a receipt</span></div>
+        <div class="stat"><b><span data-fact="tests_passed">753</span></b><span>public tests passing in the published repository</span></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="slot">
+
+  <section>
+    <div class="wrap demo">
+      <div><p class="eyebrow">See it</p><h2 style="margin:0">Two agents. One change. Exactly one commit.</h2></div>
+      <a class="btn" href="../race.html">Run the race in your browser</a>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap two">
+      <div><p class="eyebrow">Questions</p><h2>Straight answers, including the limits.</h2></div>
+      <div>
+        <details><summary>What does Synthe actually hold?</summary><p>The only credential that can push: a GitHub token in a file only the broker's own OS user can read. Your agents hold none, not even to read the repository.</p></details>
+        <details><summary>Is it open source?</summary><p>The spec, checker, clients and integrations are open source under Apache-2.0. The commit broker is source-available under FSL-1.1-ALv2: you can read, audit and run it, but not sell it as a competing service, and each version becomes Apache-2.0 two years after release. Synthe's hosted and internal code is separate.</p></details>
+        <details><summary>What can't Synthe stop?</summary><p>It doesn't stop prompt injection, and it can't tell whether approved code is good: if a person approves the wrong change, Synthe pushes that change. It only controls the credentials and remotes it's configured for, so an agent's account must hold no other credentials.</p></details>
+        <details><summary>Which agents does it work with?</summary><p>Claude Code and OpenClaw through plugins, and any agent through a plain git push or the MCP server. Git pushes are the first action Synthe performs.</p></details>
+        <details><summary>What does it cost?</summary><p>Running Synthe yourself costs nothing. If you'd like help piloting it with your team, <a href="mailto:rohansiddam@synthe.live">talk to us</a>.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <hr class="slot">
+
+  <div class="final">
+    <div class="wrap">
+      <h2>Give your agents a way to ship that you control.</h2>
+      <div class="ctas">
+        <a class="btn primary" href="#install"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>Install</a>
+        <a class="btn" href="mailto:rohansiddam@synthe.live">Talk to us</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <span>Synthe · the commit barrier for AI agents</span>
+      <ul><li><a href="../docs.html">Docs</a></li><li><a href="../status.html">Status and limits</a></li><li><a href="../receipts.html">Receipts</a></li><li><a href="../benchmarks.html">Benchmarks</a></li><li><a href="../log.html">Changelog</a></li><li><a href="https://github.com/rohansiddam/Synthe">GitHub</a></li></ul>
+    </div>
+    <p class="legal">The spec, checker, clients and integrations are open source under Apache-2.0; the commit broker is source-available under FSL-1.1-ALv2. <a href="https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md">How it's licensed</a>. Synthe produces evidence; it doesn't make anyone certified, compliant or insured.</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = (s, r = document) => r.querySelector(s);
+  const wait = ms => new Promise(r => setTimeout(r, reduce ? 0 : ms));
+  const markSVG = cls => `<svg class="mark ${cls}" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>`;
+
+  // the logo locks once the page is ready
+  setTimeout(() => $('#logo').classList.remove('open'), reduce ? 0 : 450);
+
+  // hero: propose, approve, commit
+  let run = 0;
+  async function playHero() {
+    const me = ++run, mark = $('#hero-mark'), p = $('#s-prop'), a = $('#s-appr'), r = $('#s-rcpt');
+    mark.classList.add('open'); [p, a].forEach(e => e.classList.remove('on')); r.classList.remove('on');
+    await wait(500); if (me !== run) return; p.classList.add('on');
+    await wait(1100); if (me !== run) return; a.classList.add('on');
+    await wait(800); if (me !== run) return; mark.classList.remove('open');
+    await wait(650); if (me !== run) return; r.classList.add('on');
+  }
+  $('#replay').addEventListener('click', playHero);
+  playHero();
+
+  // install tabs (arrow keys move between them)
+  const tabs = [...document.querySelectorAll('.tab')];
+  function pick(t) { tabs.forEach(x => { const on = x === t; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1; $('#' + x.getAttribute('aria-controls')).hidden = !on; }); }
+  tabs.forEach((t, i) => { t.addEventListener('click', () => pick(t)); t.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; pick(n); n.focus(); } }); });
+  pick(tabs[0]);
+
+  // copy buttons: the mark locks when the command is copied
+  document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', async () => {
+    const text = b.parentElement.querySelector('code').textContent;
+    try { await navigator.clipboard.writeText(text); } catch (e) {}
+    const m = b.querySelector('.mark'), label = b.querySelector('span');
+    m.classList.remove('open'); b.classList.add('done'); label.textContent = 'Copied';
+    setTimeout(() => { m.classList.add('open'); b.classList.remove('done'); label.textContent = 'Copy'; }, 2200);
+  }));
+
+  // the receipt chain: links joined at the slot angle; one animation run at a time, so nothing races
+  const N = 7, BASE = 38, chain = $('#chain'), track = $('#track'), detail = $('#detail'), stat = $('#cstat'), tb = $('#tamper');
+  const hex = n => { let h = 2166136261 ^ n; let s = ''; for (let i = 0; i < 8; i++) { h = Math.imul(h ^ (h >>> 13), 16777619); s += ((h >>> 0) % 256).toString(16).padStart(2, '0'); } return s; };
+  const rows = [...Array(N)].map((_, i) => ({ seq: BASE + i, decision: i === 2 ? 'denied · path_outside_scope' : 'executed', branch: ['agent/fix-login', 'agent/docs', 'agent/ci', 'agent/greet', 'agent/tests', 'agent/api', 'agent/ui'][i], hash: hex(i + 1) }));
+  let broken = -1, sel = 3, token = 0;
+  const links = [], joints = [];
+  rows.forEach((r, i) => {
+    if (i) { const j = document.createElement('span'); j.className = 'joint'; j.setAttribute('aria-hidden', 'true'); chain.append(j); joints.push(j); }
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'link';
+    b.setAttribute('aria-label', `Receipt ${r.seq}`);
+    b.innerHTML = markSVG('open') + `<span class="num">#${r.seq}</span>`;
+    b.addEventListener('click', () => select(i));
+    b.addEventListener('mouseenter', () => show(i));
+    b.addEventListener('focus', () => show(i));
+    b.addEventListener('mouseleave', () => show(sel));
+    chain.append(b); links.push(b);
+  });
+  const mk = i => links[i].querySelector('.mark');
+  function show(i) {
+    const r = rows[i], bad = broken >= 0 && i >= broken;
+    const prev = i === 0 ? 'genesis' : rows[i - 1].hash.slice(0, 12) + '…';
+    detail.innerHTML = `<dt>receipt</dt><dd>#${r.seq} · ${r.decision}</dd><dt>effect</dt><dd>git push · ${r.branch}</dd>` +
+      `<dt>links to</dt><dd>${prev}</dd><dt>signature</dt><dd style="color:${bad ? 'var(--human-text)' : 'var(--ok)'}">${bad ? (i === broken ? 'altered: hash no longer matches' : 'untrusted: an earlier link is broken') : 'valid · broker key'}</dd>`;
+    links.forEach((l, j) => l.classList.toggle('sel', j === i));
+  }
+  function select(i) { sel = i; show(i); if (broken < 0) tb.textContent = `Tamper with #${rows[i].seq}`; }
+  function setTrack(p, bad) { track.querySelector('i').style.setProperty('--p', p); track.classList.toggle('broken', !!bad); }
+  async function lockAll(fromRight) {
+    const me = ++token; broken = -1; stat.textContent = 'verifying…'; stat.classList.remove('bad'); tb.disabled = false;
+    links.forEach((_, i) => mk(i).classList.remove('stale', 'refused'));
+    joints.forEach(j => { j.classList.remove('stale', 'cut'); j.style.setProperty('--j', 0); });
+    const order = links.map((_, i) => i); if (fromRight) order.reverse();
+    for (const [k, i] of order.entries()) {
+      await wait(k ? 110 : 0); if (me !== token) return;
+      mk(i).classList.remove('open'); setTrack((k + 1) / N);
+      const j = fromRight ? joints[i] : joints[i - 1]; if (j) j.style.setProperty('--j', 1);
+    }
+    await wait(320); if (me !== token) return;
+    stat.textContent = `${N} receipts · chain verifies`; select(sel);
+  }
+  async function tamper(i) {
+    const me = ++token; broken = i; sel = i; show(i); setTrack(i / N, true); tb.disabled = true;
+    stat.textContent = `receipt #${rows[i].seq} altered · chain breaks here`; stat.classList.add('bad');
+    links.forEach((_, k) => { if (k < i) { mk(k).classList.remove('open', 'stale', 'refused'); if (joints[k - 1]) joints[k - 1].style.setProperty('--j', 1); } });
+    mk(i).classList.add('refused', 'open'); if (joints[i - 1]) joints[i - 1].classList.add('cut');
+    for (let k = i + 1; k < N; k++) {
+      await wait(95); if (me !== token) return;
+      mk(k).classList.add('stale', 'open'); joints[k - 1].classList.add('stale');
+    }
+    stat.textContent = `receipt #${rows[i].seq} altered · ${N - i - 1} after it untrusted`;
+  }
+  tb.addEventListener('click', () => tamper(sel));
+  $('#reverify').addEventListener('click', () => lockAll(true));
+  show(sel);
+  // the first lock-in plays once on view, unless the visitor already did something with the chain
+  new IntersectionObserver((es, o) => { if (es.some(e => e.isIntersecting)) { o.disconnect(); if (token === 0) lockAll(false); } }, { threshold: .4 }).observe(chain);
+})();
+</script>
+</body>
+</html>
