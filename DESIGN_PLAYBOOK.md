@@ -23,7 +23,7 @@ The site sells one thing: **Synthe, the commit barrier for AI agents.** Use thes
 Rules for copy that describes the product (they come from the strategy's scope; the strategy wins if they ever differ):
 
 - **Label public vs. beta every time.** The handoff checker, spec, tests and GitHub Action are public. The commit broker (credential custody, compare-and-swap, receipts) is in design-partner beta. Use the `Public today` / `Design-partner beta` tags (section 5).
-- **Say open source only for the Apache-2.0 parts** (spec, checker, everything you install). The commit broker is source-available under FSL-1.1: never call it open source. (Changed 2026-10-07, when the code went public.)
+- **Say open source only for the Apache-2.0 parts** (spec, checker, clients, integrations). The commit broker is source-available under FSL-1.1: never call it open source. (Changed 2026-10-07, when the code went public.)
 - **Never say certified, compliant, insured or "gap-free".** Synthe produces the evidence auditors and underwriters ask for.
 - **Only our own numbers, and only through `facts.json`** (section 9). No borrowed speed claims. Commit-path performance numbers stay off the site until the founders decide to publish them.
 - **Don't name the MCP server, the A2A adapter or the Lab** on the site until their public scope is decided (decision D7). Say "agent connectors come with the design-partner beta".
