@@ -366,25 +366,25 @@
         <div class="wrap">
           <p class="eyebrow">Install</p>
           <h2 id="install-h">Set it up once. Every push after that goes through you.</h2>
-          <p class="sub">Setup asks for your approval passphrase, your GitHub token (hidden) and your admin password, then puts the agent in its own account with no credentials.</p>
+          <p class="sub">Setup asks for your passphrase, GitHub token (hidden) and admin password, then puts the agent in its own account with no credentials.</p>
           <div class="tabs" role="tablist" aria-label="Choose your agent">
             <button class="tab" role="tab" aria-selected="true" aria-controls="p-cc" id="t-cc" type="button">Claude Code</button>
             <button class="tab" role="tab" aria-selected="false" aria-controls="p-oc" id="t-oc" type="button">OpenClaw</button>
             <button class="tab" role="tab" aria-selected="false" aria-controls="p-any" id="t-any" type="button">Any agent</button>
           </div>
           <div class="pane" role="tabpanel" id="p-cc" aria-labelledby="t-cc">
-            <div class="cmdrow"><p>1. Set up the broker (macOS or Linux)</p><div class="cmd"><code>curl -sSL https://synthe.live/install | bash</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
+            <div class="cmdrow"><p>1. Get Synthe, then follow the <a class="textlink" href="https://github.com/rohansiddam/Synthe/blob/main/docs/ANY_AGENT.md">setup guide</a></p><div class="cmd"><code>git clone https://github.com/rohansiddam/Synthe ~/synthe &amp;&amp; cd ~/synthe</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
             <div class="cmdrow"><p>2. Add the plugin in Claude Code</p><div class="cmd"><code>/plugin marketplace add rohansiddam/Synthe
 /plugin install synthe@synthe</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
-            <p class="note">Run Claude Code in the agent's account for the enforced setup. In your own account, which has your GitHub login, the plugin guides the agent but isn't a wall.</p>
+            <p class="note">Run Claude Code in the agent's account to enforce it. In your own account, with your GitHub login, the plugin guides but isn't a wall.</p>
           </div>
           <div class="pane" role="tabpanel" id="p-oc" aria-labelledby="t-oc" hidden>
-            <div class="cmdrow"><p>1. Set up the broker and the agent's account</p><div class="cmd"><code>curl -sSL https://synthe.live/install | bash</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
+            <div class="cmdrow"><p>1. Get Synthe, then follow the <a class="textlink" href="https://github.com/rohansiddam/Synthe/blob/main/QUICKSTART_OPENCLAW.md#or-manual-step-by-step-install">quickstart</a></p><div class="cmd"><code>git clone https://github.com/rohansiddam/Synthe ~/synthe &amp;&amp; cd ~/synthe</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
             <div class="cmdrow"><p>2. Setup installs the OpenClaw plugin, skill and gateway for the agent. Chat with it there:</p><div class="cmd"><code>sudo -iu openclaw
 cd ~/repo &amp;&amp; openclaw tui</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
           </div>
           <div class="pane" role="tabpanel" id="p-any" aria-labelledby="t-any" hidden>
-            <div class="cmdrow"><p>1. Set up the broker</p><div class="cmd"><code>curl -sSL https://synthe.live/install | bash</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
+            <div class="cmdrow"><p>1. Get Synthe, then follow the <a class="textlink" href="https://github.com/rohansiddam/Synthe/blob/main/docs/ANY_AGENT.md">setup guide</a></p><div class="cmd"><code>git clone https://github.com/rohansiddam/Synthe ~/synthe &amp;&amp; cd ~/synthe</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div></div>
             <div class="cmdrow"><p>2. In the agent's clone, a plain git push becomes a proposal</p>
 <pre class="term"><span class="o">$ git push</span>
 <span class="h">synthe:</span> agent/greet at e352ae3de01d is proposed for approval, not pushed yet.
