@@ -16,7 +16,7 @@ When an agent proposes an action, Synthe decides at the moment of commit, not wh
 
 ## What is public, and what is in beta
 
-- Public, open source under Apache-2.0: the handoff checker (Python 3, no dependencies), its spec, threat model, tests, example packets, a GitHub Action, and everything you install (client, setup, approval tool, OpenClaw plugin and skill). https://github.com/rohansiddam/Synthe
+- Public, open source under Apache-2.0: the handoff checker (Python 3, no dependencies), its spec, threat model, tests, example packets, a GitHub Action, and the clients and integrations (client, setup, approval tool, OpenClaw plugin and skill). https://github.com/rohansiddam/Synthe
 - Public beta, source-available under FSL-1.1: the commit broker, which holds the credentials, performs the action and writes receipts. git_push ships first, with an OpenClaw plugin and a one-command setup on macOS.
 - Proven in beta (October 7, 2026, a real Mac with real GitHub): the broker ran as its own user and the agent in its own account with no GitHub access; the setup check passed all 8 checks; a live red team of 33 attacks from the agent's account was refused or contained, each refusal with a signed receipt.
 
@@ -67,7 +67,7 @@ Co-founders Rohan Siddamsettiwar and Rishab Ramalingam, out of the University of
 
 ## License and cost
 
-The spec, checker and everything you install are open source under Apache-2.0. The commit broker is source-available under FSL-1.1: anyone may read, audit and run it, but not offer it as a competing commercial service, and each version becomes Apache-2.0 two years after its release. Running Synthe doesn't change your code's license. There is no price list yet; running Synthe yourself costs nothing.
+The spec, checker, clients and integrations are open source under Apache-2.0. The commit broker is source-available under FSL-1.1: anyone may read, audit and run it, but not offer it as a competing commercial service, and each version becomes Apache-2.0 two years after its release. Running Synthe doesn't change your code's license. There is no price list yet; running Synthe yourself costs nothing.
 
 ## Source links
 

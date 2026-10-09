@@ -83,7 +83,7 @@
               "name": "What's public, and what's in beta?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "All of Synthe's code is public on GitHub. The handoff checker, its spec, threat model, tests and GitHub Action are stable. The commit broker, which holds the credentials and performs the action, is public and in beta: macOS first, with an OpenClaw plugin and a one-command setup. Design partners get help setting it up and shape what comes next."
+                "text": "The checker, the integrations and the commit broker are published on GitHub. The handoff checker, its spec, threat model, tests and GitHub Action are stable. The commit broker, which holds the credentials and performs the action, is public and in beta: macOS first, with an OpenClaw plugin and a one-command setup. Design partners get help setting it up and shape what comes next."
               }
             },
             {
@@ -91,7 +91,7 @@
               "name": "Is it open source?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Mostly. The spec, the checker and everything you install are open source under Apache-2.0. The commit broker is source-available under FSL-1.1: you can read, audit and run it, but not sell it as a competing service, and each version becomes Apache-2.0 two years after its release."
+                "text": "Mostly. The spec, the checker, the clients and the integrations are open source under Apache-2.0. The commit broker is source-available under FSL-1.1-ALv2: you can read, audit and run it, but not sell it as a competing service, and each version becomes Apache-2.0 two years after its release."
               }
             },
             {
@@ -739,8 +739,8 @@
           <h2 id="faq-h">Questions, <em>answered</em></h2>
           <div class="faq">
             <details class="faq-item"><summary>What does Synthe actually hold?</summary><div class="faq-a"><p>The credentials for real-world actions. Today that means a GitHub token for <code>git push</code>. We plan to add more kinds of actions, starting with database writes and email. Your agents get a narrow way to propose an action, never the credential itself.</p></div></details>
-            <details class="faq-item"><summary>What's public, and what's in beta?</summary><div class="faq-a"><p>All of Synthe's code is public on GitHub. The handoff checker, its spec, threat model, tests and GitHub Action are stable. The commit broker, which holds the credentials and performs the action, is public and in beta: macOS first, with an OpenClaw plugin and a one-command setup. Design partners get help setting it up and shape what comes next.</p></div></details>
-            <details class="faq-item"><summary>Is it open source?</summary><div class="faq-a"><p>Mostly. The spec, the checker and everything you install are open source under Apache-2.0. The commit broker is source-available under FSL-1.1: you can read, audit and run it, but not sell it as a competing service, and each version becomes Apache-2.0 two years after its release.</p></div></details>
+            <details class="faq-item"><summary>What's public, and what's in beta?</summary><div class="faq-a"><p>The checker, the integrations and the commit broker are published on GitHub. The handoff checker, its spec, threat model, tests and GitHub Action are stable. The commit broker, which holds the credentials and performs the action, is public and in beta: macOS first, with an OpenClaw plugin and a one-command setup. Design partners get help setting it up and shape what comes next.</p></div></details>
+            <details class="faq-item"><summary>Is it open source?</summary><div class="faq-a"><p>Mostly. The spec, the checker, the clients and the integrations are open source under Apache-2.0. The commit broker is source-available under FSL-1.1-ALv2: you can read, audit and run it, but not sell it as a competing service, and each version becomes Apache-2.0 two years after its release.</p></div></details>
             <details class="faq-item"><summary>What does it cost?</summary><div class="faq-a"><p>There's no price list yet. Running Synthe yourself costs nothing. If you want to pilot it with your team, <a class="textlink" href="#partner">talk to us</a>.</p></div></details>
             <details class="faq-item"><summary>Does running Synthe change my code's license?</summary><div class="faq-a"><p>No. Synthe's licenses cover Synthe's code, not yours. Checking your handoffs changes nothing about how your own code is licensed.</p></div></details>
             <details class="faq-item"><summary>Which agents does it work with?</summary><div class="faq-a"><p>Any agent that can emit JSON can send a handoff to the public checker, from the command line, from Python, or in a GitHub Action. For pushes, the beta has an OpenClaw plugin, and a plain git push from any agent becomes a proposal you approve.</p></div></details>
@@ -796,7 +796,7 @@
           <a href="https://github.com/rohansiddam/Synthe/blob/main/SPEC.md">Spec</a>
           <a href="https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md">Threat model</a>
         </nav>
-        <p class="footer-legal">Synthe is an early project. The spec, checker and everything you install are open source under Apache-2.0; the commit broker is source-available under FSL-1.1. <a href="https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md">How it's licensed</a>.</p>
+        <p class="footer-legal">Synthe is an early project. The spec, checker, clients and integrations are open source under Apache-2.0; the commit broker is source-available under FSL-1.1-ALv2. <a href="https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md">How it's licensed</a>.</p>
         <p class="colophon">From the Greek <em>synthēkē</em>, meaning "agreement."</p>
       </footer>
     </div>
