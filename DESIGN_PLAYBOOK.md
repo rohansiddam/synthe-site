@@ -29,11 +29,11 @@ The site's framing is **Archival Ledger & Notary Stamp**: a warm paper archive w
 
 ## 1b. What the site says
 
-The site sells one thing: **Synthe, the commit barrier for AI agents.** Use these lines word for word; don't invent new taglines.
+The site sells one thing: **Synthe, the trust layer for AI agents.** Use these lines word for word; don't invent new taglines. "Commit barrier" stays as the name of the mechanism (docs section, race demo, quiz); the category is the trust layer.
 
 | Where | Line |
 |---|---|
-| Category (titles, social card, footer) | The commit barrier for AI agents |
+| Category (titles, social card, footer) | The trust layer for AI agents |
 | Motto (under every headline that names Synthe) | Agents propose. You approve. Synthe commits. (Older pages: "Agents propose. Synthe commits. Anyone can verify.") |
 | Homepage headline | Let AI agents ship code without handing them the keys. (Since the 2026-10 redesign; the "bouncer" line and its rotating word are retired.) |
 
@@ -136,7 +136,7 @@ The mark is an inline SVG of the Synthe stamp glyph, carried directly in the HTM
 - **Nav wordmark:** mark sits 7px left of the "Synthe" text, `.wordmark-logo { width: 20px; height: 21px; flex: none; }`, viewBox `0 0 275 290` (tight; `overflow: visible` lets the halves part). Optically centered on the wordmark cap height; check the alignment by eye in both themes whenever the wordmark size changes.
 - **Footer:** same glyph at `.footer-logo { width: 22px; height: 24px; }`, next to the brand line.
 - **Favicon:** `/favicon.svg` linked on every page via `<link rel="icon" href="/favicon.svg" type="image/svg+xml">`.
-- **Social card:** `og-image.png` (2240 x 1120), with the logo and "Synthe" locked up on one line, the category line "The commit barrier for AI agents" beneath in brick italic, the motto under it, and a terminal card on the right. Its source is `tools/og-image.html`; render it with headless Chrome (the command is in that file) against the local server so the self-hosted fonts load.
+- **Social card:** `og-image.png` (2240 x 1120), with the logo and "Synthe" locked up on one line, the motto as three lines of 60px type (the last in muted ink), the category line "The trust layer for AI agents" below, and a receipt card on the right (ink, one corner cut at the slot angle, ACCEPT and REJECT rows). The mark is two-color: ink top, coral bottom. Its source is `tools/og-image.html`; render it with headless Chrome (the command is in that file) against the local server so the self-hosted fonts load.
 - The full path data lives in the page markup; when the mark needs replacing, swap the whole inline SVG on every page, not just one. `check_site.py` fails if the header or footer differs between pages.
 
 ## 5. Components

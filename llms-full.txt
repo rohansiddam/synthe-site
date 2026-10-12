@@ -1,6 +1,6 @@
 # Synthe: the complete reference for language models
 
-> Synthe is the commit barrier for AI agents. Agents propose. Synthe commits. Anyone can verify.
+> Synthe is the trust layer for AI agents. Agents propose. Synthe commits. Anyone can verify.
 
 ## What Synthe is
 

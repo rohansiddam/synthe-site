@@ -45,7 +45,7 @@ HEADER = f"""<header class="site-head">
 
 FOOTER = f"""<footer class="site-foot">
         <p class="footer-brand">{mark("footer-logo", half=False)}Synthe</p>
-        <p class="footer-line">The commit barrier for AI agents. Agents propose. You approve. Synthe commits, and anyone can verify the receipt.</p>
+        <p class="footer-line">The trust layer for AI agents. Agents propose. You approve. Synthe commits, and anyone can verify the receipt.</p>
         <nav class="footer-nav" aria-label="Footer">
           <a href="/how.html">How it works</a>
           <a href="/status.html">Security and limits</a>
