@@ -25,6 +25,11 @@ def mark(cls, box="0 0 275 290", half=True):
             f'<path class="{hc}b" d="{B}"/></svg>')
 
 
+SUN = ('<span class="opt sun"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
+       '<span class="sr-only">Light</span></span>')
+MOON = ('<span class="opt moon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>'
+        '<span class="sr-only">Dark</span></span>')
+
 HEADER = f"""<header class="site-head">
         <a class="wordmark" href="/">{mark("mark wordmark-logo open")}Synthe</a>
         <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="topnav">Menu</button>
@@ -33,7 +38,7 @@ HEADER = f"""<header class="site-head">
           <a href="/status.html">Security</a>
           <a href="/docs.html">Docs</a>
           <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
-          <button class="flip" id="theme-toggle" type="button" aria-label="Switch theme">{mark("flip-mark", half=False)}</button>
+          <button class="themeswitch" id="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Dark mode" title="Dark mode">{SUN}{MOON}</button>
           <a class="nav-cta" href="/#install">{mark("mark open", box="-40 -40 355 370")}Install</a>
         </nav>
       </header>"""
@@ -45,6 +50,8 @@ FOOTER = f"""<footer class="site-foot">
           <a href="/how.html">How it works</a>
           <a href="/status.html">Security and limits</a>
           <a href="/docs.html">Docs</a>
+          <a href="/integrations.html">Integrations</a>
+          <a href="/use-cases.html">Use cases</a>
           <a href="/race.html">Race two agents</a>
           <a href="/forge.html">Forge this handoff</a>
           <a href="/playground.html">Playground</a>

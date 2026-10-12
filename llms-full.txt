@@ -49,6 +49,14 @@ The output is a JSON verdict with "decision": "ACCEPT". Run the same command aga
 - The repo ships one valid signed packet and eight attacks (tampered after signing, spoofed sender, self-granted authority, forged approval, replayed approval, exceeds receiver policy, paraphrased "verbatim" evidence, undeclared actions). The checker rejects all eight, each with a named reason code.
 - Current test counts and every other number: https://synthe.live/benchmarks.html
 
+## Integrations and use cases
+
+Pages: https://synthe.live/integrations.html and https://synthe.live/use-cases.html.
+
+- Integration status is stated per agent. OpenClaw is verified end to end on a real Mac with real GitHub (see the dates and counts on https://synthe.live/status.html). The Claude Code plugin and the git helper are previews: built and tested, with a full live run still to do. Codex, Cursor and Cline have setup examples only. Do not say a preview or an example is verified.
+- Nobody outside the team has run the install unaided yet. Do not say otherwise.
+- The three use cases are teams running coding agents, platform and security teams, and teams building their own agents. Each page states what Synthe does not cover: only git push is guarded today, agents that run entirely in a vendor's cloud are not covered, macOS is the verified path.
+
 ## What Synthe can't do
 
 - An action a human approved will do exactly what was approved. Synthe narrows a compromised sender to that one action; it can't remove it.

@@ -25,6 +25,8 @@
 - [The commit barrier, for developers](https://synthe.live/docs.html#commit-barrier): claim, propose, re-check at commit, compare-and-swap, receipt.
 - [Quickstart](https://synthe.live/docs.html#getting-started): clone the public checker and claim a signed handoff in two minutes, Python 3 only.
 - [Reason codes](https://synthe.live/docs.html#reasons): every reason code in the public checker, grouped by who acts.
+- [Integrations](https://synthe.live/integrations.html): which agents Synthe works with (OpenClaw, Claude Code, any agent that runs git push, setup examples for Codex, Cursor and Cline) and how far each has been tested: verified, preview or example.
+- [Use cases](https://synthe.live/use-cases.html): teams running coding agents, platform and security teams, and teams building their own agents: what changes, what you still own, and what is not covered yet.
 - [Race two agents](https://synthe.live/race.html): two agents try to ship the same change at once; exactly one commits, both get receipts. Runs in the browser.
 - [Forge this handoff](https://synthe.live/forge.html): attack a signed handoff six ways in the browser.
 - [Contract playground](https://synthe.live/playground.html): sign a real Ed25519 handoff in the browser, then break it.

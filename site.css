@@ -136,7 +136,7 @@ h1 em, h2 em, h3 em { font-style: normal !important; color: inherit !important; 
 .mark.stale .half { fill: none; stroke: var(--faint); stroke-width: 6; stroke-dasharray: 14 11; }
 
 /* Buttons: one corner cut at the slot angle. The primary carries a small mark that locks. */
-.btn2 { display: inline-flex; align-items: center; gap: 10px; font: 600 15px/1 var(--sans); padding: 13px 18px; border: 1px solid var(--line2);
+.btn2 { display: inline-flex; align-items: center; gap: 8px; font: 600 16px/1 var(--sans); padding: 12px 16px; border: 1px solid var(--line2);
   background: transparent; color: var(--ink); text-decoration: none; cursor: pointer;
   clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut-y), 100% 100%, 0 100%); }
 .btn2:hover { border-color: var(--muted); }
@@ -165,7 +165,7 @@ h1 em, h2 em, h3 em { font-style: normal !important; color: inherit !important; 
 
 /* ---------- Site chrome: identical on every page ---------- */
 .skip-link { position: absolute; left: 12px; top: -60px; z-index: 100; background: var(--ink); color: var(--bg);
-  padding: 10px 18px; font-weight: 600; text-decoration: none; }
+  padding: 8px 16px; font-weight: 600; text-decoration: none; }
 .skip-link:focus { top: 12px; }
 
 .site-head {
@@ -176,32 +176,33 @@ h1 em, h2 em, h3 em { font-style: normal !important; color: inherit !important; 
   background: color-mix(in srgb, var(--bg) 90%, transparent); -webkit-backdrop-filter: saturate(1.2) blur(8px); backdrop-filter: saturate(1.2) blur(8px);
   margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw);
 }
-.wordmark { font-family: var(--sans); font-weight: 600; font-size: 19px; letter-spacing: -0.01em; color: var(--ink);
-  text-decoration: none; display: inline-flex; align-items: center; gap: 7px; }
+.wordmark { font-family: var(--sans); font-weight: 600; font-size: 20px; letter-spacing: -0.01em; color: var(--ink);
+  text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
 .wordmark-logo { width: 20px; height: 21px; flex: none; }
 .topnav { display: flex; align-items: center; gap: 24px; }
-.topnav > a:not(.nav-cta) { color: var(--muted); text-decoration: none; font-size: 15px; white-space: nowrap; }
+.topnav > a:not(.nav-cta) { color: var(--muted); text-decoration: none; font-size: 16px; white-space: nowrap; }
 .topnav > a:not(.nav-cta):hover, .topnav > a[aria-current="page"] { color: var(--ink); }
 .topnav > a[aria-current="page"] { box-shadow: inset 0 -2px 0 var(--human); padding-bottom: 2px; }
-.nav-cta { display: inline-flex; align-items: center; gap: 9px; background: var(--ink); color: var(--bg); text-decoration: none;
-  font-weight: 600; font-size: 14px; padding: 10px 14px; white-space: nowrap;
+.nav-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: var(--bg); text-decoration: none;
+  font-weight: 600; font-size: 14px; padding: 8px 12px; white-space: nowrap;
   clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut-y), 100% 100%, 0 100%); }
 .nav-cta .mark { width: 15px; height: 16px; flex: none; }
 
-/* Theme toggle: the mark turns 180 degrees, which swaps its halves, and the theme flips with it. */
-.flip { background: none; border: 1px solid var(--line2); width: 38px; height: 38px; display: grid; place-items: center; cursor: pointer; padding: 0; flex: none;
+/* Theme switch: a sun and a moon, the current mode filled. It is a setting, so it does not look like the logo. */
+.themeswitch { display: inline-flex; gap: 4px; background: none; border: 1px solid var(--line2); padding: 4px; cursor: pointer; flex: none;
   clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 12px, 100% 100%, 0 100%); }
-.flip:hover { border-color: var(--muted); }
-.flip svg { width: 18px; height: 19px; transition: transform .6s var(--ease-spring); }
-.flip svg .a { fill: var(--agent); } .flip svg .b { fill: var(--human); }
-html:root[data-theme="light"] .flip svg { transform: rotate(180deg); }
-@media (prefers-color-scheme: light) { html:root:not([data-theme]) .flip svg { transform: rotate(180deg); } }
+.themeswitch:hover { border-color: var(--muted); }
+.themeswitch .opt { display: grid; place-items: center; width: 32px; height: 28px; color: var(--faint); transition: background .2s, color .2s; }
+.themeswitch .opt svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+html:root[data-theme="light"] .themeswitch .sun, html:root[data-theme="dark"] .themeswitch .moon { background: var(--ink); color: var(--bg); }
+@media (prefers-color-scheme: light) { html:root:not([data-theme]) .themeswitch .sun { background: var(--ink); color: var(--bg); } }
+@media (prefers-color-scheme: dark) { html:root:not([data-theme]) .themeswitch .moon { background: var(--ink); color: var(--bg); } }
 
 /* Phone menu: shown on narrow screens, and only when JavaScript runs. Without it the nav wraps. */
-.nav-toggle { display: none; background: none; border: 1px solid var(--line2); padding: 8px 14px; font: inherit; font-size: 15px; font-weight: 500;
+.nav-toggle { display: none; background: none; border: 1px solid var(--line2); padding: 8px 12px; font: inherit; font-size: 16px; font-weight: 500;
   color: var(--ink); cursor: pointer; }
 .nav-toggle:hover { border-color: var(--muted); }
-.flip:focus-visible, .nav-toggle:focus-visible, .skip-link:focus-visible, .topnav > a:focus-visible, .nav-cta:focus-visible, .btn2:focus-visible {
+.themeswitch:focus-visible, .nav-toggle:focus-visible, .skip-link:focus-visible, .topnav > a:focus-visible, .nav-cta:focus-visible, .btn2:focus-visible {
   outline: 2px solid var(--human); outline-offset: 2px; }
 
 @media (max-width: 900px) {
@@ -210,22 +211,22 @@ html:root[data-theme="light"] .flip svg { transform: rotate(180deg); }
     display: none; position: absolute; top: 100%; left: 0; right: 0;
     flex-direction: column; align-items: stretch; gap: 0;
     background: var(--bg); border-bottom: 1px solid var(--line);
-    padding: 4px 24px 18px; max-height: calc(100vh - 64px); overflow-y: auto;
+    padding: 4px 24px 16px; max-height: calc(100vh - 64px); overflow-y: auto;
   }
   .js .site-head.nav-open .topnav { display: flex; }
-  .js .topnav > a:not(.nav-cta) { padding: 13px 0; font-size: 17px; border-top: 1px solid var(--line); box-shadow: none; }
+  .js .topnav > a:not(.nav-cta) { padding: 12px 0; font-size: 18px; border-top: 1px solid var(--line); box-shadow: none; }
   .js .topnav > a:first-child { border-top: none; }
-  .js .topnav .flip { margin: 14px 0 0; }
-  .js .topnav > .nav-cta { margin-top: 14px; justify-content: center; padding: 13px; font-size: 16px; }
+  .js .topnav .themeswitch { margin: 12px 0 0; align-self: flex-start; }
+  .js .topnav > .nav-cta { margin-top: 12px; justify-content: center; padding: 12px; font-size: 16px; }
 }
 
 /* "On this page": a sticky in-page index for long pages, marking the section in view. */
 .page-toc {
   position: sticky; top: var(--head-h, 64px); z-index: 40;
   display: flex; align-items: center; gap: 4px 20px; overflow-x: auto; scrollbar-width: none;
-  margin: 24px calc(50% - 50vw) 0; padding: 10px max(24px, calc(50vw - 548px));
+  margin: 24px calc(50% - 50vw) 0; padding: 8px max(24px, calc(50vw - 548px));
   background: var(--bg); border-bottom: 1px solid var(--line);
-  font-size: 14.5px; white-space: nowrap;
+  font-size: 14px; white-space: nowrap;
 }
 .page-toc::-webkit-scrollbar { display: none; }
 .page-toc-label { font-family: var(--mono); font-size: 12px; color: var(--muted); }
@@ -235,7 +236,7 @@ html:root[data-theme="light"] .flip svg { transform: rotate(180deg); }
 
 /* Back to top: one labeled, stationary button on pages longer than four screens. */
 .to-top { position: fixed; right: 18px; bottom: 18px; z-index: 45; font: inherit; font-size: 14px; font-weight: 600;
-  background: var(--card); color: var(--ink); border: 1px solid var(--line2); padding: 9px 16px; cursor: pointer;
+  background: var(--card); color: var(--ink); border: 1px solid var(--line2); padding: 8px 16px; cursor: pointer;
   clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 12px, 100% 100%, 0 100%); }
 .to-top:hover { border-color: var(--muted); }
 .to-top[hidden] { display: none; }
@@ -248,24 +249,24 @@ html:root[data-theme="light"] .flip svg { transform: rotate(180deg); }
 .site-foot { margin-top: clamp(56px, 10vw, 92px); padding: 36px 0 8px; border-top: 1px solid var(--line);
   font-size: 14px; line-height: 1.6; color: var(--muted); }
 .site-foot p { margin: 0 0 12px; }
-.footer-brand { display: flex; align-items: center; gap: 7px; font-family: var(--sans); font-weight: 600; font-size: 18px; color: var(--ink); }
+.footer-brand { display: flex; align-items: center; gap: 8px; font-family: var(--sans); font-weight: 600; font-size: 18px; color: var(--ink); }
 .footer-logo { width: 19px; height: 20px; flex: none; }
 .footer-logo .a { fill: var(--agent); } .footer-logo .b { fill: var(--human); }
 .footer-line { color: var(--ink-soft); max-width: 40em; }
-.footer-nav { display: flex; flex-wrap: wrap; gap: 10px 20px; margin: 18px 0 20px; }
+.footer-nav { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 16px 0 20px; }
 .footer-nav a { white-space: nowrap; }
 .site-foot a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
 .site-foot a:hover { color: var(--ink); }
 .site-foot .footer-legal { color: var(--faint); max-width: 62em; }
 .site-foot .footer-legal a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line2); }
-.site-foot .colophon { font-family: var(--mono); font-size: 12.5px; color: var(--faint); margin-bottom: 0; }
+.site-foot .colophon { font-family: var(--mono); font-size: 12px; color: var(--faint); margin-bottom: 0; }
 .site-foot .colophon em { font-style: normal; color: var(--muted); }
 
 /* Numbers that come from facts.json (see tools/facts.py) */
 [data-fact] { font-variant-numeric: tabular-nums; }
 
 @media (prefers-reduced-motion: reduce) {
-  .skip-link, .mark .half, .flip svg, .lattice-glow { transition: none !important; }
+  .skip-link, .mark .half, .themeswitch .opt, .lattice-glow { transition: none !important; }
 }
 
 /* Visually hidden, still read by screen readers */
