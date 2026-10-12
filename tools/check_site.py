@@ -9,6 +9,7 @@ It fails (exit 1) when:
   - a page misses the shared head: CSP, site.css, site.js, title, description, skip link, main
   - a page loads anything from another origin (scripts, styles, fonts, images)
   - outward-facing copy contains an em dash (DESIGN_PLAYBOOK.md, section 8)
+  - a px font size is off the type scale, or a padding, margin or gap is off the 4px grid
   - an internal link or #anchor points nowhere
   - sitemap.xml and the indexable pages disagree
   - the CSP <meta> tag and the CSP in _headers disagree
@@ -129,6 +130,23 @@ for p in COPY_FILES:
         for i, line in enumerate(text(p).splitlines(), 1):
             if "—" in line:
                 err(f"{p.relative_to(SITE)}:{i}: em dash in copy")
+
+# 4b. one type scale and a 4px grid (DESIGN_PLAYBOOK.md, section 0): px font sizes come from a short list, and
+# padding, margin and gap px values are multiples of 4 (1 and 2 are for hairlines). clamp() display sizes are exempt.
+TYPE_SCALE = {11, 12, 13, 14, 16, 18, 20, 24, 32}
+for p in PAGES + [SITE / "site.css"]:
+    src = text(p)
+    sizes = {float(v) for v in re.findall(r"font-size:\s*(\d+(?:\.\d+)?)px", src)}
+    sizes |= {float(v) for v in re.findall(r"font:\s*(?:[\w-]+\s+)*?(\d+(?:\.\d+)?)px", src)}
+    off = sorted(s for s in sizes if s not in TYPE_SCALE)
+    if off:
+        err(f"{p.name}: font sizes off the scale {sorted(TYPE_SCALE)}: {off}")
+    spaces = set()
+    for decl in re.findall(r"(?:padding|margin|gap)(?:-[a-z]+)?:\s*([^;}{\"]+)", src):
+        spaces |= {float(v) for v in re.findall(r"(?<![\w.#-])(\d+(?:\.\d+)?)px", decl)}
+    bad = sorted(v for v in spaces if v > 2 and v % 4)
+    if bad:
+        err(f"{p.name}: spacing off the 4px grid: {bad}")
 
 # 5. internal links and anchors
 page_ids = {p.name: ids(text(p)) for p in PAGES}

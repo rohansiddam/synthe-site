@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io mailto:; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="Who Synthe is for: teams running coding agents, platform and security teams, and teams building their own agents. What changes, what you still own, and what is not covered yet." />
+    <link rel="canonical" href="https://synthe.live/use-cases.html" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <title>Use cases · Synthe</title>
+    <meta property="og:title" content="Use cases · Synthe" />
+    <meta property="og:description" content="Who Synthe is for: teams running coding agents, platform and security teams, and teams building their own agents. What changes, what you still own, and what is not covered yet." />
+    <meta property="og:image" content="https://synthe.live/og-image.png" />
+    <meta property="og:url" content="https://synthe.live/use-cases.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Synthe" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/site.css?v=27f2e1ec" />
+    <script src="/site.js?v=7b2917d4" defer></script>
+    <style>
+      body { overflow-x: clip; margin: 0; color: var(--ink); font-family: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .page { max-width: 960px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
+      .hero { margin-top: clamp(40px, 7vw, 72px); }
+      .hero h1 { margin: 0; font-size: clamp(36px, 6vw, 56px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.06; }
+      .lede { color: var(--ink-soft); max-width: 40em; font-size: 18px; margin: 16px 0 0; }
+      .sect { margin-top: 64px; }
+      .sect > h2 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+      .sect > .sub { color: var(--muted); max-width: 42em; margin: 8px 0 24px; }
+      .textlink { font-size: 14px; font-weight: 500; color: var(--human-text); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+      .links { margin: 16px 0 0; display: flex; gap: 8px 24px; flex-wrap: wrap; align-items: center; }
+      .kind { display: inline-flex; align-items: center; gap: 8px; font: 500 12px/1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 12px; color: var(--ink); white-space: nowrap; border: 1px solid var(--ink); }
+      .kind::before { content: ""; width: 8px; height: 8px; background: currentColor; }
+      .kind.preview { border-style: dashed; border-color: var(--line2); color: var(--ink-soft); } .kind.preview::before { background: none; border: 1.5px solid currentColor; }
+      .kind.example { border-style: dotted; border-color: var(--line2); color: var(--muted); } .kind.example::before { background: none; border: 1.5px dotted currentColor; }
+      .legend { display: grid; gap: 8px; margin: 32px 0 0; padding: 0; list-style: none; max-width: 44em; font-size: 14px; color: var(--muted); }
+      .legend li { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 16px; align-items: center; }
+      .rows { border-top: 1px solid var(--line); }
+      .item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 24px; padding: 24px 0; border-bottom: 1px solid var(--line); }
+      .item h3 { margin: 0; font-size: 18px; font-weight: 600; line-height: 1.3; }
+      .item p { margin: 8px 0 0; max-width: 40em; } .item .how { color: var(--ink-soft); } .item .proof { color: var(--muted); font-size: 14px; }
+      .trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+      .trio > div { background: var(--card); border: 1px solid var(--line); padding: 24px;
+        clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut-y), 100% 100%, 0 100%); }
+      .trio h3 { margin: 0 0 8px; font: 500 12px/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
+      .trio p { margin: 0; } .trio code, .item code { font-family: var(--mono); font-size: 13px; background: var(--bg2); padding: 1px 4px; }
+      .case > h2 { margin: 0 0 16px; font-size: 24px; font-weight: 600; letter-spacing: -0.01em; }
+      .limits { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+      .limits li { padding: 16px 0; border-bottom: 1px solid var(--line); max-width: 44em; }
+      .cta { margin-top: 64px; padding: 32px; border: 1px solid var(--line2); background: var(--card); display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; justify-content: space-between; }
+      .cta p { margin: 0; font-size: 18px; max-width: 28em; }
+      @media (max-width: 760px) { .trio { grid-template-columns: 1fr; } .item { grid-template-columns: 1fr; } .legend li { grid-template-columns: 1fr; gap: 4px; } }
+    </style>
+    <script>
+      /* theme and motion: set before first paint to avoid a flash. The js class turns on
+         script-only layouts, like the phone menu. */
+      try { (function () {
+        var d = document.documentElement;
+        d.classList.add("js");
+        var t = null, m = null;
+        try { t = localStorage.getItem("synthe-theme"); m = localStorage.getItem("synthe-motion"); } catch (e) {}
+        var dark = t ? t === "dark" : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        d.setAttribute("data-theme", dark ? "dark" : "light");
+        if (m === "paused") d.classList.add("motion-paused");
+      })(); } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="page">
+      <header class="site-head">
+        <a class="wordmark" href="/"><svg class="mark wordmark-logo open" viewBox="0 0 275 290" aria-hidden="true"><path class="half a" d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/><path class="half b" d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/></svg>Synthe</a>
+        <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="topnav">Menu</button>
+        <nav class="topnav" id="topnav" aria-label="Main">
+          <a href="/how.html">How it works</a>
+          <a href="/status.html">Security</a>
+          <a href="/docs.html">Docs</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+          <button class="themeswitch" id="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Dark mode" title="Dark mode"><span class="opt sun"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span class="sr-only">Light</span></span><span class="opt moon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><span class="sr-only">Dark</span></span></button>
+          <a class="nav-cta" href="/#install"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><path class="half a" d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/><path class="half b" d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/></svg>Install</a>
+        </nav>
+      </header>
+      <main id="main">
+        <div class="hero">
+          <h1>Who it is <em>for</em></h1>
+          <p class="lede">Three situations where an agent's push is the risk. For each: what is true today, what changes with Synthe, and what stays yours.</p>
+        </div>
+        <section class="sect case" aria-labelledby="teams-running-coding-agents-h">
+          <h2 id="teams-running-coding-agents-h">Teams running coding agents</h2>
+          <div class="trio">
+            <div><h3>The situation</h3><p>Your agent has a GitHub token, so it can push anywhere that token reaches. One bad prompt or one confused loop, and the damage is already on the remote.</p></div>
+            <div><h3>With Synthe</h3><p>The agent holds no credential. When it wants to push, it proposes. You read the real diff and approve it with Touch ID. Synthe pushes exactly that commit, once, to an <code>agent/*</code> branch, and signs a receipt.</p></div>
+            <div><h3>You still own</h3><p>Reviewing and merging to main, the way you do today. Synthe never merges. It cannot make an agent write good code. It stops bad code landing without you.</p></div>
+          </div>
+          <div class="links"><a class="textlink" href="/how.html">How it works</a><a class="textlink" href="/race.html">Race two agents</a></div>
+        </section>
+        <section class="sect case" aria-labelledby="platform-and-security-teams-h">
+          <h2 id="platform-and-security-teams-h">Platform and security teams</h2>
+          <div class="trio">
+            <div><h3>The situation</h3><p>You need to say what your agents did, and prove it. Logs the agent can edit do not prove much.</p></div>
+            <div><h3>With Synthe</h3><p>Every approval and every refusal is a signed, hash-chained receipt. Anyone can check the chain with the broker's published key and a standalone verifier. The broker's code is public to read and audit.</p></div>
+            <div><h3>You still own</h3><p>The setup the wall depends on: the agent in its own account, with no credentials. Synthe produces evidence. It does not make you certified or compliant.</p></div>
+          </div>
+          <div class="links"><a class="textlink" href="/tamper.html">Tamper evidence</a><a class="textlink" href="/receipts.html">Receipts</a><a class="textlink" href="/status.html">Security and limits</a></div>
+        </section>
+        <section class="sect case" aria-labelledby="teams-building-their-own-agents-h">
+          <h2 id="teams-building-their-own-agents-h">Teams building their own agents</h2>
+          <div class="trio">
+            <div><h3>The situation</h3><p>Your agent plans well and calls its tools well. Publishing is the one step you least want it to do alone.</p></div>
+            <div><h3>With Synthe</h3><p>Your agent keeps its own planner and tools. Only its final push changes: through a plugin, a tool connection or a plain <code>git push</code>, it proposes instead of publishing.</p></div>
+            <div><h3>You still own</h3><p>Deciding what the agent may change. Setup asks for the branches and paths, and the broker refuses anything outside them.</p></div>
+          </div>
+          <div class="links"><a class="textlink" href="/integrations.html">Integrations</a><a class="textlink" href="/docs.html">Docs</a></div>
+        </section>
+        <section class="sect" aria-labelledby="notyet-h">
+          <h2 id="notyet-h">Not a fit yet</h2>
+          <p class="sub">The limits, so you do not find them out later.</p>
+          <ul class="limits">
+            <li>Synthe guards <code>git push</code> today. Sending email, deploying and other actions are not covered.</li>
+            <li>The wall is a separate account on a machine you control. An agent that runs entirely in a vendor's cloud, with no machine of yours, is not covered today.</li>
+            <li>macOS is the verified path. The Linux setup is built and tested, but has not run on a clean live Linux host yet.</li>
+            <li>Nobody outside the team has run the install unaided yet. That test is planned.</li>
+          </ul>
+        </section>
+
+        <div class="cta">
+          <p>Not sure whether it fits? Answer five questions, or talk to us.</p>
+          <span class="links" style="margin: 0"><a class="textlink" href="/quiz.html">Do I need this?</a><a class="btn2 primary" href="/#partner">Become a design partner</a></span>
+        </div>
+      </main>
+      <footer class="site-foot">
+        <p class="footer-brand"><svg class="footer-logo" viewBox="0 0 275 290" aria-hidden="true"><path class="a" d="M 135.339 35.105 119.916 56.166 65.976 129.689 75.562 201.351 C 76.765 210.340 71.240 218.418 62.432 220.185 53.895 221.859 45.295 216.549 43.298 207.725 L 32.651 127.593 C 32.196 124.170 32.576 120.045 34.689 117.171 L 83.489 50.805 113.299 10.126 C 116.532 5.714 121.004 2.677 126.682 2.564 L 196.616 1.166 C 203.544 1.028 209.471 5.555 211.787 11.932 213.849 17.594 212.818 23.577 209.138 28.271 L 95.676 182.179 89.465 135.537 144.852 60.334 163.745 34.614 Z"/><path class="b" d="M 64.894 261.544 155.983 140.236 179.779 108.392 185.927 154.879 110.451 255.747 138.531 255.614 209.078 162.002 200.172 91.235 C 199.408 85.166 200.816 79.553 205.121 75.642 209.828 71.368 216.229 70.134 221.964 72.262 228.322 74.621 231.877 79.955 232.693 86.566 L 242.414 165.286 C 242.975 169.836 241.259 173.994 238.587 177.533 L 160.448 281.001 C 157.254 285.231 152.542 288.273 147.064 288.315 L 78.043 288.836 C 73.418 288.871 69.030 287.434 65.849 284.248 59.453 277.843 59.605 268.588 64.894 261.544"/></svg>Synthe</p>
+        <p class="footer-line">The commit barrier for AI agents. Agents propose. You approve. Synthe commits, and anyone can verify the receipt.</p>
+        <nav class="footer-nav" aria-label="Footer">
+          <a href="/how.html">How it works</a>
+          <a href="/status.html">Security and limits</a>
+          <a href="/docs.html">Docs</a>
+          <a href="/integrations.html">Integrations</a>
+          <a href="/use-cases.html">Use cases</a>
+          <a href="/race.html">Race two agents</a>
+          <a href="/forge.html">Forge this handoff</a>
+          <a href="/playground.html">Playground</a>
+          <a href="/tamper.html">Tamper evidence</a>
+          <a href="/anatomy.html">Anatomy of a handoff</a>
+          <a href="/quiz.html">Do I need this?</a>
+          <a href="/receipts.html">Receipts</a>
+          <a href="/benchmarks.html">Benchmarks</a>
+          <a href="/log.html">Changelog</a>
+          <a href="/#partner">Design partners</a>
+          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+        </nav>
+        <p class="footer-legal">Synthe is an early project. The spec, checker, clients and integrations are open source under Apache-2.0; the commit broker is source-available under FSL-1.1-ALv2. <a href="https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md">How it's licensed</a>. Synthe produces evidence; it doesn't make anyone certified, compliant or insured.</p>
+        <p class="colophon">From the Greek <em>synthēkē</em>, meaning agreement.</p>
+      </footer>
+    </div>
+  </body>
+</html>

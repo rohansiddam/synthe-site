@@ -1,5 +1,5 @@
 /* site.js: shared by every page of synthe.live.
-   The theme flip, the mark (the header logo locks; copy buttons lock), the lattice glow,
+   The theme switch, the mark (the header logo locks; copy buttons lock), the lattice glow,
    navigation (disclosure groups and the phone menu), the "On this page" index, Back to top,
    and the motion pause. The theme and motion preference are applied by a small inline script
    in each page's <head>, before first paint. See DESIGN_PLAYBOOK.md. */
@@ -8,15 +8,17 @@
   var root = document.documentElement;
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* Theme flip: the mark turns 180 degrees (CSS) and the theme flips. The label names the theme
-     the page is actually showing, as the stylesheet resolved it. */
+  /* Theme switch: a sun and a moon, the current mode filled. It reports the theme the page is actually
+     showing, as the stylesheet resolved it, so it is right even before a choice is saved. */
   var themeBtn = document.getElementById("theme-toggle");
   var showing = function () {
     return getComputedStyle(root).getPropertyValue("--mode").trim() === "dark" ? "dark" : "light";
   };
   if (themeBtn) {
     var paint = function () {
-      themeBtn.setAttribute("aria-label", showing() === "dark" ? "Switch to light mode" : "Switch to dark mode");
+      var dark = showing() === "dark";
+      themeBtn.setAttribute("aria-checked", dark ? "true" : "false");
+      themeBtn.title = dark ? "Dark mode is on. Switch to light." : "Light mode is on. Switch to dark.";
     };
     themeBtn.addEventListener("click", function () {
       var next = showing() === "dark" ? "light" : "dark";
