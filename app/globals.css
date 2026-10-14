@@ -20,6 +20,7 @@
   --human-bg: #f6dfd8;
   --ok: #26663b;
   --red: #b3401f;
+  --perf-hole: #c9bda1;
   color-scheme: light;
 }
 
@@ -39,6 +40,7 @@
   --human-bg: #3a1f1a;
   --ok: #8fc9a0;
   --red: #f2665a;
+  --perf-hole: #0e0d0c;
   color-scheme: dark;
 }
 
@@ -60,6 +62,7 @@
   --color-human-bg: var(--human-bg);
   --color-ok: var(--ok);
   --color-red: var(--red);
+  --color-perf-hole: var(--perf-hole);
   --font-sans: var(--font-hanken);
   --font-mono: var(--font-plex);
 }
