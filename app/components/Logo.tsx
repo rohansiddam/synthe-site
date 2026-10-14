@@ -31,6 +31,7 @@ export function Logo({ open = true, className = "", label }: LogoProps) {
     >
       <motion.path
         d={PATH_A}
+        className="logo-half-a"
         style={{ transformBox: "view-box" }}
         fill="var(--agent)"
         initial={false}
@@ -39,6 +40,7 @@ export function Logo({ open = true, className = "", label }: LogoProps) {
       />
       <motion.path
         d={PATH_B}
+        className="logo-half-b"
         style={{ transformBox: "view-box" }}
         fill="var(--human)"
         initial={false}

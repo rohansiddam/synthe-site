@@ -42,16 +42,22 @@ export function Button({
     : {
         whileHover:
           variant === "primary"
-            ? { y: -1, filter: "brightness(1.07)" }
-            : { y: -1 },
+            ? { scale: 1.03, y: -2, filter: "brightness(1.06)" }
+            : { scale: 1.03, y: -2 },
         whileTap: { scale: 0.97 },
-        transition: { duration: 0.15, ease: "easeOut" as const },
+        transition: { type: "spring" as const, stiffness: 400, damping: 28 },
       };
 
   const label = (
     <>
       {icon && (
-        <span aria-hidden="true" className="inline-flex shrink-0 items-center">
+        <span
+          aria-hidden="true"
+          className={
+            "inline-flex shrink-0 items-center" +
+            (variant === "primary" ? " btn-icon-contrast" : "")
+          }
+        >
           {icon}
         </span>
       )}

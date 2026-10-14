@@ -95,3 +95,9 @@ h2 {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Inside a solid primary button, the logo's agent half flips to the
+   background color so the mark reads against the button fill. */
+.btn-icon-contrast .logo-half-a {
+  fill: var(--bg);
+}
