@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { VerifiedStamp } from "./VerifiedStamp";
 
 /** Paper is a physical object: cream in both themes. */
@@ -10,8 +13,9 @@ const PAPER_CRIMSON = "#b5402f";
 /**
  * A row of punched holes: page background showing through the paper.
  * Sized to tile seamlessly; the strip's field matches the paper color.
+ * Exported so the printer footer can build its own roll remnant.
  */
-function Perf({ className = "" }: { className?: string }) {
+export function Perf({ className = "" }: { className?: string }) {
   return (
     <div
       aria-hidden="true"
@@ -35,6 +39,11 @@ type ReceiptCardProps = {
   timestamp: string;
   signature: string;
   className?: string;
+  /**
+   * When true, the verified stamp mounts with a spring pop instead of
+   * rendering statically. Used by the receipt-printer footer at tear time.
+   */
+  revealStamp?: boolean;
 };
 
 /**
@@ -50,6 +59,7 @@ export function ReceiptCard({
   timestamp,
   signature,
   className = "",
+  revealStamp = false,
 }: ReceiptCardProps) {
   return (
     <div
@@ -112,7 +122,18 @@ export function ReceiptCard({
         className="relative px-7 py-4 font-mono"
         style={{ background: PAPER }}
       >
-        <VerifiedStamp signature={signature} />
+        {revealStamp ? (
+          <motion.span
+            className="inline-flex"
+            initial={{ scale: 0.4, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 420, damping: 14 }}
+          >
+            <VerifiedStamp signature={signature} />
+          </motion.span>
+        ) : (
+          <VerifiedStamp signature={signature} />
+        )}
       </div>
 
       <Perf />
