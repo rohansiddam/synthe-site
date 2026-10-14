@@ -1,56 +1,86 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+
+/** Crisp 45-degree chamfer: the signature notched corner. */
+const NOTCH = "polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%)";
 
 type ButtonProps = {
   variant?: "primary" | "secondary";
   href?: string;
   onClick?: () => void;
   children: React.ReactNode;
+  /** Optional leading mark, e.g. the Logo at small size. */
+  icon?: React.ReactNode;
   className?: string;
   type?: "button" | "submit";
 };
 
-/** Notched-corner button matching the live site's .btn2. */
 export function Button({
   variant = "secondary",
   href,
   onClick,
   children,
+  icon,
   className = "",
   type = "button",
 }: ButtonProps) {
+  const reduce = useReducedMotion();
+
   const base =
-    "inline-flex items-center gap-2 font-sans font-semibold text-base leading-none px-4 py-3 border cursor-pointer no-underline select-none";
+    "inline-flex items-center justify-center gap-2.5 font-sans font-semibold " +
+    "text-[15px] tracking-[-0.01em] leading-none px-6 py-[15px] " +
+    "no-underline select-none cursor-pointer " +
+    "focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-human";
   const styles =
     variant === "primary"
-      ? "bg-ink text-bg border-ink"
-      : "bg-transparent text-ink border-line2 hover:border-muted";
-  const notch = {
-    clipPath: "polygon(0 0, calc(100% - 14px) 0, 100% 19px, 100% 100%, 0 100%)",
-  } as const;
+      ? "bg-ink text-bg border border-ink"
+      : "bg-transparent text-ink border border-line hover:bg-human-bg/50 transition-colors duration-150";
 
-  const inner = (
-    <motion.span
-      className={`${base} ${styles} ${className}`}
-      style={notch}
-      whileTap={{ scale: 0.98 }}
-      transition={{ duration: 0.12 }}
-    >
-      {children}
-    </motion.span>
+  const motionProps = reduce
+    ? {}
+    : {
+        whileHover:
+          variant === "primary"
+            ? { y: -1, filter: "brightness(1.07)" }
+            : { y: -1 },
+        whileTap: { scale: 0.97 },
+        transition: { duration: 0.15, ease: "easeOut" as const },
+      };
+
+  const label = (
+    <>
+      {icon && (
+        <span aria-hidden="true" className="inline-flex shrink-0 items-center">
+          {icon}
+        </span>
+      )}
+      <span>{children}</span>
+    </>
   );
 
   if (href) {
     return (
-      <a href={href} onClick={onClick} style={{ textDecoration: "none" }}>
-        {inner}
-      </a>
+      <motion.a
+        href={href}
+        onClick={onClick}
+        className={`${base} ${styles} ${className}`}
+        style={{ clipPath: NOTCH }}
+        {...motionProps}
+      >
+        {label}
+      </motion.a>
     );
   }
   return (
-    <button type={type} onClick={onClick} className="bg-transparent border-0 p-0">
-      {inner}
-    </button>
+    <motion.button
+      type={type}
+      onClick={onClick}
+      className={`${base} ${styles} ${className}`}
+      style={{ clipPath: NOTCH }}
+      {...motionProps}
+    >
+      {label}
+    </motion.button>
   );
 }

@@ -52,9 +52,16 @@ export default function ComponentsPage() {
       </Section>
 
       <Section title="buttons">
-        <div className="flex flex-wrap gap-4">
-          <Button variant="primary" href="#install">
+        <div className="flex flex-wrap items-center gap-4">
+          <Button
+            variant="primary"
+            href="#install"
+            icon={<Logo open={false} className="h-[18px] w-auto" />}
+          >
             Install
+          </Button>
+          <Button variant="primary" href="#docs">
+            Read the docs
           </Button>
           <Button variant="secondary" href="#how">
             How it works
@@ -63,29 +70,44 @@ export default function ComponentsPage() {
       </Section>
 
       <Section title="terminal">
-        <Terminal
-          title="synthe install"
-          lines={[
-            { text: "git clone https://github.com/rohansiddam/Synthe ~/synthe", tone: "command" },
-            { text: "Cloning into '/home/you/synthe'... done.", tone: "dim" },
-            { text: "cd ~/synthe && ./setup", tone: "command" },
-            { text: "Broker installed. Agents propose. You approve. Synthe commits.", tone: "output" },
-          ]}
-        />
+        <div className="grid gap-6">
+          <Terminal
+            title="synthe check"
+            lines={[
+              { text: "synthe check h-2026-1042", tone: "command" },
+              { text: "resolving handoff from registry...", tone: "dim" },
+              { text: "signature binds sender, receiver, idempotency key", tone: "output" },
+              { text: "approval replay: none found", tone: "output" },
+              { text: "3 approvals bound to this handoff", tone: "output" },
+            ]}
+            status={{ verdict: "ACCEPT", detail: "h-2026-1042 verified" }}
+          />
+          <Terminal
+            title="synthe install"
+            lines={[
+              { text: "git clone https://github.com/rohansiddam/Synthe ~/synthe", tone: "command" },
+              { text: "Cloning into '/home/you/synthe'... done.", tone: "dim" },
+              { text: "cd ~/synthe && ./setup", tone: "command" },
+              { text: "Broker installed. Agents propose. You approve. Synthe commits.", tone: "output" },
+            ]}
+          />
+        </div>
       </Section>
 
-      <Section title="receipt card and verified stamp">
+      <Section title="receipt card">
         <div className="max-w-md">
           <ReceiptCard
             number="0042"
             from="agent/fix-login"
             to="main"
-            meta="2 files, approved by you, committed once"
+            meta="2 files changed, 3 approvals bound"
+            timestamp="2026-10-13 22:04 MDT"
             signature="9f2c...a1"
           />
         </div>
         <p className="mt-6 text-muted">
-          The stamp also stands alone: <VerifiedStamp />
+          The verified mark also stands alone:{" "}
+          <VerifiedStamp signature="9f2c...a1" />
         </p>
       </Section>
     </main>
