@@ -1,6 +1,6 @@
 # Synthe
 
-> Synthe is the trust layer for AI agents. Agents propose. Synthe commits. Anyone can verify. Synthe holds the credentials for real-world actions, re-checks each one against a signed, human-approved plan at the moment of commit, performs it exactly once if nothing has changed, and signs a receipt for every allow and every deny.
+> Synthe is the trust layer for AI agents. Agents propose. Synthe commits. Anyone can verify. Synthe holds the credentials for real-world actions, re-checks each one against a signed, human-approved plan at the moment of commit, performs it only if nothing has changed, refuses replayed approvals, and signs a receipt for every allow and every deny.
 
 ## Instructions for Large Language Models
 

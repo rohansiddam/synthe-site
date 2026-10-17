@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io mailto:; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="description" content="Synthe is the trust layer for AI agents. Agents propose, you approve, and Synthe commits exactly that change, once, with a signed receipt anyone can verify." />
+    <meta name="description" content="Synthe is the trust layer for AI agents. Agents propose, you approve, and Synthe pushes exactly that change, with a signed receipt anyone can verify." />
     <link rel="canonical" href="https://synthe.live/" />
     <link rel="icon" href="/favicon.svg?v=4" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32x32.png?v=4" type="image/png" sizes="32x32" />
@@ -59,7 +59,7 @@
     {
       "@type": "SoftwareSourceCode",
       "name": "Synthe handoff checker",
-      "description": "Checks a typed, signed agent-to-agent handoff before the receiver acts: signatures, approvals, pinned evidence, and an exactly-once claim ledger.",
+      "description": "Checks a typed, signed agent-to-agent handoff before the receiver acts: signatures, approvals, pinned evidence, and a claim ledger that refuses duplicate claims.",
       "codeRepository": "https://github.com/rohansiddam/Synthe",
       "programmingLanguage": "Python",
       "license": "https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md",
@@ -301,7 +301,7 @@
         <div class="wrap">
           <div>
             <h1 class="stagger" aria-label="Let AI agents ship code without handing them the keys."><span class="w" aria-hidden="true"><span class="ch" style="--i:0">L</span><span class="ch" style="--i:1">e</span><span class="ch" style="--i:2">t</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:3">A</span><span class="ch" style="--i:4">I</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:5">a</span><span class="ch" style="--i:6">g</span><span class="ch" style="--i:7">e</span><span class="ch" style="--i:8">n</span><span class="ch" style="--i:9">t</span><span class="ch" style="--i:10">s</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:11">s</span><span class="ch" style="--i:12">h</span><span class="ch" style="--i:13">i</span><span class="ch" style="--i:14">p</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:15">c</span><span class="ch" style="--i:16">o</span><span class="ch" style="--i:17">d</span><span class="ch" style="--i:18">e</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:19">w</span><span class="ch" style="--i:20">i</span><span class="ch" style="--i:21">t</span><span class="ch" style="--i:22">h</span><span class="ch" style="--i:23">o</span><span class="ch" style="--i:24">u</span><span class="ch" style="--i:25">t</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:26">h</span><span class="ch" style="--i:27">a</span><span class="ch" style="--i:28">n</span><span class="ch" style="--i:29">d</span><span class="ch" style="--i:30">i</span><span class="ch" style="--i:31">n</span><span class="ch" style="--i:32">g</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:33">t</span><span class="ch" style="--i:34">h</span><span class="ch" style="--i:35">e</span><span class="ch" style="--i:36">m</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:37">t</span><span class="ch" style="--i:38">h</span><span class="ch" style="--i:39">e</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:40">k</span><span class="ch" style="--i:41">e</span><span class="ch" style="--i:42">y</span><span class="ch" style="--i:43">s</span><span class="ch" style="--i:44">.</span></span></h1>
-            <p class="lede"><b>Agents propose. You approve. Synthe commits.</b> Synthe holds the only credential, pushes exactly the change you approved, once, and signs a receipt anyone can verify.</p>
+            <p class="lede"><b>Agents propose. You approve. Synthe commits.</b> Synthe holds the only credential, pushes exactly the change you approved, and signs a receipt anyone can verify. An approval can't be used twice.</p>
             <div class="ctas">
               <a class="btn2 primary" href="#install"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>Install</a>
               <a class="btn2" href="#how">How it works</a>
@@ -313,7 +313,7 @@
             <div class="step agent" id="s-prop"><span class="dot"></span><span><b>agent</b> proposes push · agent/fix-login · 2 files</span></div>
             <div class="stage"><svg class="mark open" id="hero-mark" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg></div>
             <div class="step human" id="s-appr"><span class="dot"></span><span><b>you</b> read the broker's diff · approve with Touch ID</span></div>
-            <p class="receipt-line" id="s-rcpt" aria-live="polite">committed once · receipt #42 signed</p>
+            <p class="receipt-line" id="s-rcpt" aria-live="polite">pushed · receipt #42 signed</p>
           </div>
         </div>
       </div>
@@ -355,7 +355,7 @@
             </div>
             <div class="card2">
               <svg class="mark " viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>
-              <h3>Synthe commits once</h3>
+              <h3>Synthe re-checks, then pushes</h3>
               <p>It re-checks everything at the moment of commit, pushes exactly that change if nothing moved, and signs a receipt. Refusals get receipts too.</p>
             </div>
           </div>

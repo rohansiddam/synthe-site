@@ -251,8 +251,8 @@
             </li>
             <li>
               <span class="num" aria-hidden="true">4</span>
-              <h3>Commit once, receipt always</h3>
-              <p>Synthe performs the action itself, exactly once, confirms it landed, and signs a hash-chained receipt. A refusal gets a receipt too, with the reason.</p>
+              <h3>Re-check, commit, receipt</h3>
+              <p>Synthe performs the action itself, only if nothing changed since you approved, and signs a hash-chained receipt. A used approval can't be replayed. A refusal gets a receipt too, with the reason.</p>
               <span class="where beta">Commit broker · beta</span>
             </li>
           </ol>
@@ -278,7 +278,7 @@
           <ul class="catchledger">
             <li class="catchrow">
               <span class="catch-index" aria-hidden="true">01</span>
-              <div class="catch-main"><span class="name">Work done twice</span><span class="desc">A retried or duplicated handoff tries to run again. The second claim is refused, so the work runs once.</span></div>
+              <div class="catch-main"><span class="name">Work done twice</span><span class="desc">A retried or duplicated handoff tries to run again. The second claim is refused with a receipt.</span></div>
               <code class="catch-code"><span class="rej">REJECT</span>duplicate_idempotency_key</code>
             </li>
             <li class="catchrow">
