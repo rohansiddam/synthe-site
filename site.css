@@ -90,7 +90,7 @@ html:root, html:root[data-theme="light"] {
   --ink: #1b1613; --ink-soft: #3d352e; --muted: #5d544c; --faint: #6a6056;
   --agent: #1b1613; --human: #b5402f; --human-text: #a63a2a; --human-bg: #f6dfd8; --ok: #26663b;
   --cream: var(--bg); --cream-deep: var(--bg2); --rust: var(--human-text); --rust-deep: #8a2e21;
-  --green: var(--ok); --green-soft: #e2ecdf; --red: #b3401f; --red-soft: #f3e0d8;
+  --green: var(--ok); --green-soft: #e2ecdf; --red: #a3213e; --red-soft: #f5dfe3;
   --slot: 53deg; --cut: 14px; --cut-y: 19px;
   --sans: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -102,7 +102,7 @@ html:root[data-theme="dark"] {
   --bg: #131110; --bg2: #1a1715; --card: #1e1a17; --line: #2e2824; --line2: #3d3631;
   --ink: #f2eadf; --ink-soft: #d9cfc2; --muted: #ab9f92; --faint: #978b7f;
   --agent: #f2eadf; --human: #e06a57; --human-text: #ec7d6b; --human-bg: #3a1f1a; --ok: #8fc9a0;
-  --rust-deep: #f08a78; --green-soft: #17201a; --red: #f2665a; --red-soft: #2a1a16;
+  --rust-deep: #f08a78; --green-soft: #17201a; --red: #f2607e; --red-soft: #2a161b;
   color-scheme: dark;
 }
 @media (prefers-color-scheme: dark) {
@@ -111,7 +111,7 @@ html:root[data-theme="dark"] {
     --bg: #131110; --bg2: #1a1715; --card: #1e1a17; --line: #2e2824; --line2: #3d3631;
     --ink: #f2eadf; --ink-soft: #d9cfc2; --muted: #ab9f92; --faint: #978b7f;
     --agent: #f2eadf; --human: #e06a57; --human-text: #ec7d6b; --human-bg: #3a1f1a; --ok: #8fc9a0;
-    --rust-deep: #f08a78; --green-soft: #17201a; --red: #f2665a; --red-soft: #2a1a16;
+    --rust-deep: #f08a78; --green-soft: #17201a; --red: #f2607e; --red-soft: #2a161b;
     color-scheme: dark;
   }
 }

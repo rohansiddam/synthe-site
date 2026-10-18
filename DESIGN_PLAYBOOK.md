@@ -67,8 +67,8 @@ The site's paper side: warm sand backgrounds, brick-red brand accent, forest suc
 | `--rust-deep` | `#6b1212` | Deep brick (large brand fills) |
 | `--green` | `#286920` | Success = forest. Text, stamps, small indicators |
 | `--green-soft` | `#e3ebda` | Success tint background |
-| `--red-soft` | `#f0e0d3` | Danger tint background |
-| `--red` | `#b3401f` | Signal red: REJECT text, stamps, fail ticks. Brighter than brick, never confused with the brand |
+| `--red-soft` | `#f5dfe3` | Danger tint background (rose, not peach) |
+| `--red` | `#a3213e` | Error crimson: REJECT text, stamps, fail ticks, tampered fields. Hue 347, far from the coral accent (hue 8), so an error never reads as the brand. 6.5:1 on the page |
 
 Pages also define `--mono` and terminal tokens (`--term-bg: #2b2118`, `--term-cream: #f0e6d2`, `--term-green: #7fb069`, `--term-amber: #d99a5b`). All pages share one token set; no page-level overrides.
 
@@ -89,8 +89,8 @@ The **Stark** theme: the archive after dark. Neutral charcoal, not blue-gray and
 | `--rust-deep` | `#ef6a52` | Deep variant (rare fills) |
 | `--green` | `#7fb069` | Success = moss. Text, stamps, small indicators |
 | `--green-soft` | `#161d17` | Success tint background |
-| `--red-soft` | `#241a16` | Danger tint background |
-| `--red` | `#f2555a` | Signal red: REJECT text, stamps, fail ticks |
+| `--red-soft` | `#2a161b` | Danger tint background |
+| `--red` | `#f2607e` | Error crimson: REJECT text, stamps, fail ticks, tampered fields (hue 348; at least 5.4:1 on dark surfaces) |
 
 ### Hard rules learned the painful way
 
@@ -101,6 +101,7 @@ The **Stark** theme: the archive after dark. Neutral charcoal, not blue-gray and
 5. **Terminal blocks are already dark.** Leave `--term-*` untouched in dark mode.
 6. **White overlays are only for already-dark surfaces** (floating pills, dark bands). If the surface adapts to the theme, the overlay must too.
 7. **Demos keep their own state.** A demo attack must never change another attack's verdict. The forge's replay attack once wrote to a page-wide ledger; it now uses its own.
+8. **Every color has one job, and errors are never the brand (since 2026-10-18).** Coral (`--human`, the human half of the mark) is the brand and the human's decision. Ink is the agent and the highest-commitment button. Green is accepted and verified. Crimson (`--red`) is refused, failed or tampered, and nothing else: a refusal must never look like a brand moment. Tampered fields and broken chain links take `--red`, not the accent. Before 2026-10-18 the error red (`#b3401f`, hue 13) sat on top of the coral accent (`#b5402f`, hue 8); the brand research (Monzo's coral/error split) flagged it.
 
 ## 3. Typography
 
@@ -138,6 +139,7 @@ The mark is an inline SVG of the Synthe stamp glyph, carried directly in the HTM
 - **Level geometry (since 2026-10-12):** both flat edges (top of `.a`, bottom of `.b`) are exactly horizontal, and `.b` is `.a` turned 180 degrees about the centre of the 275 x 290 box, so the halves are identical. The earlier paths leaned 1.15 and 0.43 degrees. Same centre, width and gap between halves as before. The path data lives in `tools/apply_chrome.py`; if you edit it, replace every copy on the site (header, footer, `index.html` defs, `logo.svg`, `favicon.svg`, `tools/og-image.html`).
 - **The icon (one fixed version, since 2026-10-12):** the level mark, ink top half and coral bottom half, on a cream tile (`#f6f0e8`). It never changes with the theme: the favicon, the LinkedIn company logo, the iPhone icon and any app or social avatar are all this one tile, the way Ramp's yellow circle is the same everywhere. A bright tile also stands out on dark browser tab bars, where an ink tile disappeared. In the favicon the mark fills 48 of 64 (radius 14) so it reads at 16 px. `/favicon.svg`, `/favicon-32x32.png` and `/apple-touch-icon.png` (full square, iOS rounds it) are linked on every page with `?v=4`; bump the version whenever the icon changes, because browsers cache favicons hard. Inside the site itself the mark still follows the theme (cream top half in dark mode) so it stays visible; that is the wordmark in use, not the icon.
 - **Social card:** `og-image.png` (2240 x 1120), with the logo and "Synthe" locked up on one line, the motto as three lines of 60px type (the last in muted ink), the category line "The trust layer for AI agents" below, and a receipt card on the right (ink, one corner cut at the slot angle, ACCEPT and REJECT rows). The mark is two-color: ink top, coral bottom. Its source is `tools/og-image.html`; render it with headless Chrome (the command is in that file) against the local server so the self-hosted fonts load.
+- **Named states (since 2026-10-18).** The mark only ever moves between four states, each tied to a real event, never as decoration: *apart* (a proposal waits; halves separated), *locking* (the broker re-checks; halves close), *sealed* (approved and committed; halves meet), *refused* (halves part again and the refusal is shown in `--red`, never by recoloring the mark). The homepage replay and the header hover use apart and sealed; any new motion picks one of these states or doesn't ship.
 - The full path data lives in the page markup; when the mark needs replacing, swap the whole inline SVG on every page, not just one. `check_site.py` fails if the header or footer differs between pages.
 
 ## 5. Components
