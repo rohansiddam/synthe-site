@@ -124,7 +124,7 @@
 }
     </script>
     <link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/site.css?v=27f2e1ec" />
+    <link rel="stylesheet" href="/site.css?v=ea4ab7d4" />
     <script src="/site.js?v=7b2917d4" defer></script>
     <style>
       .page { padding: 0; }
@@ -222,6 +222,8 @@
       .stat { border-top: 1px solid var(--line2); padding-top: 12px; }
       .stat b { display: block; font-size: 32px; letter-spacing: -.02em; font-weight: 650; }
       .stat > span { color: var(--muted); font-size: 16px; }
+      .stat-src { display: block; margin-top: 4px; font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+      .stat-src:hover { color: var(--ink); }
       .illus { font: 12px var(--mono); color: var(--faint); margin: 12px 0 0; }
 
       .demo { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
@@ -409,11 +411,12 @@ cd ~/repo &amp;&amp; openclaw tui</code><button class="copy" type="button"><svg 
             <p class="illus">Select a receipt, then tamper with it. Sample receipts: the real chain is signed by the broker's key.</p>
           </div>
           <div class="stats">
-            <div class="stat"><b><span data-fact="beta_doctor_checks">8</span> of 8</b><span>isolation checks pass, broker in its own account (macOS, real GitHub)</span></div>
-            <div class="stat"><b><span data-fact="beta_redteam_refused">33</span> of <span data-fact="beta_redteam_attacks">33</span></b><span>live attacks from the agent's account refused or contained</span></div>
-            <div class="stat"><b><span data-fact="tests_passed">753</span></b><span>public tests passing</span></div>
+            <div class="stat"><b><span data-fact="beta_doctor_checks">8</span> of 8</b><span>isolation checks pass, broker in its own account (macOS, real GitHub)</span><a class="stat-src" href="https://github.com/rohansiddam/Synthe/blob/main/docs/OPENCLAW_RESULTS.md">Proof: OPENCLAW_RESULTS.md</a></div>
+            <div class="stat"><b><span data-fact="beta_redteam_refused">33</span> of <span data-fact="beta_redteam_attacks">33</span></b><span>live attacks from the agent's account refused or contained</span><a class="stat-src" href="https://github.com/rohansiddam/Synthe/blob/main/docs/REDTEAM.md">Proof: REDTEAM.md</a></div>
+            <div class="stat"><b><span data-fact="tests_passed">753</span></b><span>public tests passing</span><a class="stat-src" href="/receipts.html#tests">Proof: commit <span data-fact="checker_commit">91148ef</span></a></div>
           </div>
           <p class="note" style="margin-top:16px"><a class="textlink" href="/status.html">Security and limits</a> · <a class="textlink" href="/receipts.html">every claim and the run behind it</a></p>
+          <p class="note" id="latest-log">Latest in the <a class="textlink" href="/log.html">changelog</a>: <span class="latest-title">The commit broker goes public</span> (<span class="latest-date">October 7, 2026</span>)</p>
         </div>
       </section>
 

@@ -232,6 +232,16 @@ if home_main:
     if words > 900:
         warn(f"index.html: the homepage has {words} words of main text (budget 900). Move detail to how.html or docs.html.")
 
+# 10. The homepage's "Latest in the changelog" line names log.html's newest entry
+latest = re.search(r'id="latest-log".*?<span class="latest-title">([^<]*)</span>.*?<span class="latest-date">([^<]*)</span>',
+                   index_html, re.S)
+first = re.search(r'<span class="date">([^<]*)</span>\s*<h2>([^<]*)</h2>', text(SITE / "log.html"))
+if latest and first and (latest.group(1), latest.group(2)) != (first.group(2), first.group(1)):
+    err(f"index.html: 'Latest in the changelog' says '{latest.group(1)}' ({latest.group(2)}), "
+        f"but log.html's newest entry is '{first.group(2)}' ({first.group(1)})")
+elif latest and not first:
+    err("log.html: no dated entry found for the homepage's 'Latest in the changelog' line")
+
 for w in warnings:
     print(f"::warning::{w}" if IN_CI else f"warning: {w}")
 for e in errors:
