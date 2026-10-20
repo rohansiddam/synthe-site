@@ -22,11 +22,21 @@
     "beta_doctor_checks": "synthe-init doctor in the agent's account: ENFORCED, all 8 checks PASS (same source).",
     "beta_redteam_attacks": "scripts/redteam_live.py, live against the ENFORCED broker: docs/REDTEAM.md and /Users/Shared/synthe-redteam-report.json.",
     "beta_redteam_refused": "Same run: 33 passed, 0 failed; re-verified independently with git ls-remote and the broker's published key.",
-    "v05_tests_passed": "Public tests passing at checker v0.5 (rohansiddam/Synthe PR #2, 15f1527), for the October 5 changelog entry. History: never refreshed."
+    "v05_tests_passed": "Public tests passing at checker v0.5 (rohansiddam/Synthe PR #2, 15f1527), for the October 5 changelog entry. History: never refreshed.",
+    "private_candidate": "Private Synthe_V2 commit c83d52a871763915d3ddded41e0dc271c8306dbb; not publicly reproducible.",
+    "private_validated_date": "Date of the macOS, non-root Linux and Python 3.14 full-suite runs of c83d52a.",
+    "private_tests_macos": "Private release candidate c83d52a (rishabram/Synthe_V2 branch review/autonomy-c83d52a), full suite on 2026-10-19: macOS, Python 3.13.16: 2729 passed, 18 skipped, 21 xfailed, 0 failed.",
+    "private_tests_linux": "Private release candidate c83d52a (rishabram/Synthe_V2 branch review/autonomy-c83d52a), full suite on 2026-10-19: non-root Linux (fresh user), Python 3.13.16: 2728 passed, 19 skipped, 21 xfailed, 0 failed.",
+    "private_tests_py314": "Private release candidate c83d52a (rishabram/Synthe_V2 branch review/autonomy-c83d52a), full suite on 2026-10-19: macOS, Python 3.14.4 (the broker's production runtime): 2667 passed, 80 skipped, 21 xfailed, 0 failed."
   },
   "beta_verified_date": "2026-10-07",
   "beta_doctor_checks": 8,
   "beta_redteam_attacks": 33,
   "beta_redteam_refused": 33,
-  "v05_tests_passed": 57
+  "v05_tests_passed": 57,
+  "private_candidate": "c83d52a",
+  "private_validated_date": "2026-10-19",
+  "private_tests_macos": 2729,
+  "private_tests_linux": 2728,
+  "private_tests_py314": 2667
 }
