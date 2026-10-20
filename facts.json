@@ -1,10 +1,10 @@
 {
   "_about": "Every number on synthe.live comes from this file. tools/facts.py refresh re-measures the public checker; tools/facts.py apply writes the values into each page's data-fact spans; tools/check_site.py fails CI when a page disagrees.",
   "checker_repo": "https://github.com/rohansiddam/Synthe",
-  "checker_commit": "91148ef",
+  "checker_commit": "56c96f9",
   "checker_version": "0.5",
-  "facts_checked_on": "2026-10-08",
-  "tests_passed": 753,
+  "facts_checked_on": "2026-10-20",
+  "tests_passed": 1408,
   "attacks_shipped": 8,
   "attacks_rejected": 8,
   "runner_runs": 3,
