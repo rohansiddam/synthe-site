@@ -99,7 +99,7 @@
           "name": "Which agents does it work with?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Claude Code and OpenClaw through plugins, and any agent through a plain git push or the MCP server. Git pushes are the first action Synthe performs."
+            "text": "Claude Code and OpenClaw through plugins, and any agent through a plain git push. Git pushes are the first action Synthe performs."
           }
         },
         {
@@ -138,9 +138,9 @@
       .hero { position: relative; overflow: hidden; padding: 84px 0 72px; }
       .hero .wrap { position: relative; z-index: 1; display: grid; grid-template-columns: 1.1fr .9fr; gap: 56px; align-items: center; }
       @media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; gap: 40px; } .hero { padding: 44px 0 48px; } }
-      .hero h1 { font-size: clamp(38px, 5.4vw, 64px); line-height: 1.04; margin: 0 0 20px; }
-      .lede { font-size: clamp(18px, 1.6vw, 21px); color: var(--muted); margin: 0 0 28px; max-width: 34em; }
-      .lede b { color: var(--ink); font-weight: 600; }
+      .hero h1 { font-size: clamp(36px, 4.8vw, 56px); line-height: 1.05; margin: 0 0 20px; max-width: 13em; }
+      .lede { font-size: clamp(18px, 1.6vw, 21px); color: var(--ink-soft); margin: 0 0 32px; max-width: 30em; }
+      .motto { display: block; color: var(--ink); font-weight: 600; margin-bottom: 4px; }
       .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
       .meta { margin: 20px 0 0; font: 13px/1.5 var(--mono); color: var(--faint); }
 
@@ -180,7 +180,7 @@
       .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 24px; flex-wrap: wrap; }
       .tab { background: none; border: 0; border-bottom: 2px solid transparent; color: var(--muted); font: 600 16px var(--sans); padding: 12px 16px; cursor: pointer; margin-bottom: -1px; }
       .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--human); }
-      .tab:focus-visible, .copy:focus-visible, .link:focus-visible, .mini:focus-visible, .replay:focus-visible { outline: 2px solid var(--human); outline-offset: 2px; }
+      .tab:focus-visible, .copy:focus-visible, .link:focus-visible, .mini:focus-visible, .replay:focus-visible, .textlink:focus-visible, .faq summary:focus-visible { outline: 2px solid var(--human); outline-offset: 2px; }
       .pane { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; max-width: 780px; }
       .cmdrow { min-width: 0; }
       .pane[hidden] { display: none; }
@@ -193,8 +193,7 @@
       .note { font-size: 14px; color: var(--faint); margin: 0; }
       .term { background: var(--card); border: 1px solid var(--line); padding: 16px; font: 14px/1.65 var(--mono); color: var(--muted); white-space: pre-wrap; margin: 0; }
       .term .h { color: var(--human-text); } .term .o { color: var(--ink); }
-      .works { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; padding: 0; list-style: none; }
-      .works li { font: 13px var(--mono); border: 1px solid var(--line); padding: 4px 8px; color: var(--muted); }
+      .works-note { margin-top: 24px; }
 
       .chainbox { background: var(--card); border: 1px solid var(--line); padding: 28px 24px 20px; }
       .chain { display: flex; align-items: center; justify-content: center; margin: 0 -6px; }
@@ -210,24 +209,22 @@
       .link.sel .num { color: var(--ink); }
       .track { height: 2px; background: var(--line); margin: 4px 4px 16px; position: relative; overflow: hidden; }
       .track i { position: absolute; inset: 0; background: var(--ok); transform-origin: left; transform: scaleX(var(--p, 0)); transition: transform .9s var(--ease-out); }
-      .track.broken i { background: var(--human); }
+      .track.broken i { background: var(--red); }
       .detail { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; font: 13px/1.6 var(--mono); color: var(--muted); min-height: 96px; margin: 0; }
       .detail dt { color: var(--faint); } .detail dd { margin: 0; color: var(--ink); overflow-wrap: anywhere; }
       .cstatus { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); font: 13px var(--mono); }
-      .cstatus .s { color: var(--ok); } .cstatus .s.bad { color: var(--human-text); }
+      .cstatus .s { color: var(--ok); } .cstatus .s.bad { color: var(--red); }
       .mini { background: none; border: 1px solid var(--line2); color: var(--ink); font: 500 13px var(--mono); padding: 8px 12px; cursor: pointer; }
       .mini:disabled { opacity: .45; cursor: default; }
       .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
       @media (max-width: 700px) { .stats { grid-template-columns: 1fr; } }
-      .next-release { margin-top: 28px; border: 1px solid var(--line2); border-radius: 16px; padding: 16px 20px 20px; background: var(--card); }
-      .next-release .nr-label { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--rust); }
-      .next-release .stats { margin-top: 12px; }
       .stat { border-top: 1px solid var(--line2); padding-top: 12px; }
       .stat b { display: block; font-size: 32px; letter-spacing: -.02em; font-weight: 650; }
       .stat > span { color: var(--muted); font-size: 16px; }
       .stat-src { display: block; margin-top: 4px; font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
       .stat-src:hover { color: var(--ink); }
       .illus { font: 12px var(--mono); color: var(--faint); margin: 12px 0 0; }
+      .proof-links { margin: 24px 0 8px; }
 
       .demo { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
       .faq details { border-top: 1px solid var(--line); padding: 16px 0; }
@@ -305,13 +302,13 @@
         <div class="lattice-glow" aria-hidden="true"><svg><rect width="100%" height="100%" fill="url(#latg)"/></svg></div>
         <div class="wrap">
           <div>
-            <h1 class="stagger" aria-label="Let AI agents ship code without handing them the keys."><span class="w" aria-hidden="true"><span class="ch" style="--i:0">L</span><span class="ch" style="--i:1">e</span><span class="ch" style="--i:2">t</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:3">A</span><span class="ch" style="--i:4">I</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:5">a</span><span class="ch" style="--i:6">g</span><span class="ch" style="--i:7">e</span><span class="ch" style="--i:8">n</span><span class="ch" style="--i:9">t</span><span class="ch" style="--i:10">s</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:11">s</span><span class="ch" style="--i:12">h</span><span class="ch" style="--i:13">i</span><span class="ch" style="--i:14">p</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:15">c</span><span class="ch" style="--i:16">o</span><span class="ch" style="--i:17">d</span><span class="ch" style="--i:18">e</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:19">w</span><span class="ch" style="--i:20">i</span><span class="ch" style="--i:21">t</span><span class="ch" style="--i:22">h</span><span class="ch" style="--i:23">o</span><span class="ch" style="--i:24">u</span><span class="ch" style="--i:25">t</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:26">h</span><span class="ch" style="--i:27">a</span><span class="ch" style="--i:28">n</span><span class="ch" style="--i:29">d</span><span class="ch" style="--i:30">i</span><span class="ch" style="--i:31">n</span><span class="ch" style="--i:32">g</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:33">t</span><span class="ch" style="--i:34">h</span><span class="ch" style="--i:35">e</span><span class="ch" style="--i:36">m</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:37">t</span><span class="ch" style="--i:38">h</span><span class="ch" style="--i:39">e</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:40">k</span><span class="ch" style="--i:41">e</span><span class="ch" style="--i:42">y</span><span class="ch" style="--i:43">s</span><span class="ch" style="--i:44">.</span></span></h1>
-            <p class="lede"><b>Agents propose. You approve. Synthe commits.</b> Synthe holds the only credential, pushes exactly the change you approved, and signs a receipt anyone can verify. An approval can't be used twice.</p>
+            <h1 class="stagger"><span class="sr-only">Let AI agents ship code without handing them the keys.</span><span class="w" aria-hidden="true"><span class="ch" style="--i:0">L</span><span class="ch" style="--i:1">e</span><span class="ch" style="--i:2">t</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:3">A</span><span class="ch" style="--i:4">I</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:5">a</span><span class="ch" style="--i:6">g</span><span class="ch" style="--i:7">e</span><span class="ch" style="--i:8">n</span><span class="ch" style="--i:9">t</span><span class="ch" style="--i:10">s</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:11">s</span><span class="ch" style="--i:12">h</span><span class="ch" style="--i:13">i</span><span class="ch" style="--i:14">p</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:15">c</span><span class="ch" style="--i:16">o</span><span class="ch" style="--i:17">d</span><span class="ch" style="--i:18">e</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:19">w</span><span class="ch" style="--i:20">i</span><span class="ch" style="--i:21">t</span><span class="ch" style="--i:22">h</span><span class="ch" style="--i:23">o</span><span class="ch" style="--i:24">u</span><span class="ch" style="--i:25">t</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:26">h</span><span class="ch" style="--i:27">a</span><span class="ch" style="--i:28">n</span><span class="ch" style="--i:29">d</span><span class="ch" style="--i:30">i</span><span class="ch" style="--i:31">n</span><span class="ch" style="--i:32">g</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:33">t</span><span class="ch" style="--i:34">h</span><span class="ch" style="--i:35">e</span><span class="ch" style="--i:36">m</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:37">t</span><span class="ch" style="--i:38">h</span><span class="ch" style="--i:39">e</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:40">k</span><span class="ch" style="--i:41">e</span><span class="ch" style="--i:42">y</span><span class="ch" style="--i:43">s</span><span class="ch" style="--i:44">.</span></span></h1>
+            <p class="lede"><span class="motto">Agents propose. You approve. Synthe commits.</span> Your agent never holds a GitHub token. Synthe does, and pushes only the exact commit you approved, with a signed receipt anyone can verify.</p>
             <div class="ctas">
               <a class="btn2 primary" href="#install"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>Install</a>
               <a class="btn2" href="#how">How it works</a>
             </div>
-            <p class="meta">Public beta · macOS and Linux · Claude Code, OpenClaw or any git push</p>
+            <p class="meta">Public beta · verified on macOS · Claude Code, OpenClaw or any git push</p>
           </div>
           <div class="clasp" role="group" aria-label="Illustration: an agent proposes a push, you approve it, and Synthe commits it">
             <div class="tag"><span>illustration</span><button class="replay" id="replay" type="button">replay</button></div>
@@ -336,7 +333,7 @@
               <li>With no record of who said yes.</li>
             </ul>
           </div>
-          <p class="answer">With Synthe, <strong>agents hold no credentials at all.</strong> They can only propose. The broker runs as its own user, holds the only token, and acts only on a change a person approved.</p>
+          <p class="answer">With Synthe, <strong>agents hold no credentials at all.</strong> They can only propose. The broker runs as its own user and acts only on a change a person approved.</p>
         </div>
       </section>
 
@@ -346,12 +343,12 @@
         <div class="wrap">
           <p class="eyebrow">How it works</p>
           <h2 id="how-h">Two halves. It only ships when they meet.</h2>
-          <p class="sub">The mark is the system: the agent's half proposes, your half approves, and the change goes through only when both lock. <a class="textlink" href="/how.html">How it works, step by step</a></p>
+          <p class="sub">The agent's half proposes, your half approves, and nothing ships until both lock. <a class="textlink" href="/how.html">Step by step</a></p>
           <div class="grid3">
             <div class="card2">
               <svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB" style="opacity:.18"/></svg>
               <h3>The agent proposes</h3>
-              <p>It works on its own branch and proposes the push, through the plugin or a plain git push. It never holds a GitHub token, not even to read.</p>
+              <p>It works on its own branch and proposes the push, through the plugin or a plain git push. It holds no GitHub token, not even to read.</p>
             </div>
             <div class="card2">
               <svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA" style="opacity:.18"/><use class="half b" href="#hB"/></svg>
@@ -361,7 +358,7 @@
             <div class="card2">
               <svg class="mark " viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>
               <h3>Synthe re-checks, then pushes</h3>
-              <p>It re-checks everything at the moment of commit, pushes exactly that change if nothing moved, and signs a receipt. Refusals get receipts too.</p>
+              <p>At the moment of commit it re-checks everything, pushes exactly that change if nothing moved, and signs a receipt. Refusals get one too.</p>
             </div>
           </div>
         </div>
@@ -396,7 +393,7 @@ cd ~/repo &amp;&amp; openclaw tui</code><button class="copy" type="button"><svg 
 <span class="h">synthe:</span> A person reviews the diff and approves it with synthe-approve; then Synthe
 <span class="h">synthe:</span> pushes exactly this commit and signs a receipt.</pre></div>
           </div>
-          <ul class="works" aria-label="Works with"><li>Claude Code</li><li>OpenClaw</li><li>Codex</li><li>Cursor</li><li>any git push</li><li>MCP</li></ul>
+          <p class="note works-note">Claude Code and OpenClaw have plugins; any other agent works through git push. <a class="textlink" href="/integrations.html">Status of each integration</a></p>
         </div>
       </section>
 
@@ -415,18 +412,10 @@ cd ~/repo &amp;&amp; openclaw tui</code><button class="copy" type="button"><svg 
           </div>
           <div class="stats">
             <div class="stat"><b>Enforced</b><span>on a real Mac with real GitHub: the broker in its own account, all <span data-fact="beta_doctor_checks">8</span> isolation checks passing</span><a class="stat-src" href="https://github.com/rohansiddam/Synthe/blob/main/docs/OPENCLAW_RESULTS.md">Proof: OPENCLAW_RESULTS.md</a></div>
-            <div class="stat"><b>Every attack</b><span>from the agent's account refused or contained, <span data-fact="beta_redteam_refused">30</span> of <span data-fact="beta_redteam_attacks">30</span> live attempts</span><a class="stat-src" href="/receipts.html#redteam">Proof: every attack and its result</a></div>
+            <div class="stat"><b>Every attack</b><span>from the agent's account refused or contained: <span data-fact="beta_redteam_refused">30</span> of <span data-fact="beta_redteam_attacks">30</span> live attacks, plus <span data-fact="beta_redteam_controls">3</span> controls that went through</span><a class="stat-src" href="/receipts.html#redteam">Proof: every attack and its result</a></div>
             <div class="stat"><b><span data-fact="tests_passed">1408</span></b><span>public tests passing</span><a class="stat-src" href="/receipts.html#tests">Proof: commit <span data-fact="checker_commit">56c96f9</span></a></div>
           </div>
-          <div class="next-release" aria-labelledby="nr-h">
-            <p class="nr-label" id="nr-h">Next release · design-partner beta · private build <span data-fact="private_candidate">c83d52a</span>, <span data-fact="private_validated_date">October 19, 2026</span></p>
-            <div class="stats">
-              <div class="stat"><b><span data-fact="private_tests_macos">2729</span></b><span>tests pass on macOS, none failing</span><a class="stat-src" href="/status.html#private-build">How we ran it</a></div>
-              <div class="stat"><b><span data-fact="private_tests_linux">2728</span></b><span>tests pass on Linux as an ordinary user, none failing</span><a class="stat-src" href="/status.html#private-build">How we ran it</a></div>
-              <div class="stat"><b><span data-fact="private_tests_py314">2667</span></b><span>tests pass on Python 3.14, the version the broker runs</span><a class="stat-src" href="/status.html#private-build">How we ran it</a></div>
-            </div>
-          </div>
-          <p class="note" style="margin-top:16px"><a class="textlink" href="/status.html">Security and limits</a> · <a class="textlink" href="/receipts.html">every claim and the run behind it</a></p>
+          <p class="note proof-links"><a class="textlink" href="/receipts.html">Every claim and the run behind it</a> · <a class="textlink" href="/status.html">Security and limits</a> · <a class="textlink" href="/status.html#private-build">Next release test runs</a></p>
           <p class="note" id="latest-log">Latest in the <a class="textlink" href="/log.html">changelog</a>: <span class="latest-title">The commit broker goes public</span> (<span class="latest-date">October 7, 2026</span>)</p>
         </div>
       </section>
@@ -444,12 +433,12 @@ cd ~/repo &amp;&amp; openclaw tui</code><button class="copy" type="button"><svg 
         <div class="wrap two">
           <div><p class="eyebrow">Questions</p><h2 id="faq-h">Straight answers, including the limits.</h2></div>
           <div>
-          <details><summary>What does Synthe actually hold?</summary><p>The only credential that can push: a GitHub token in a file only the broker&#x27;s own OS user can read. Your agents hold none, not even to read the repository.</p></details>
-          <details><summary>Is it open source?</summary><p>Mostly. The spec, the checker, the clients and the integrations are open source under Apache-2.0. The commit broker is source-available under FSL-1.1-ALv2: you can read, audit and run it, but not sell it as a competing service, and each version becomes Apache-2.0 two years after its release. Synthe&#x27;s hosted and internal code is separate.</p></details>
-          <details><summary>What can&#x27;t Synthe stop?</summary><p>It doesn&#x27;t stop prompt injection, and it can&#x27;t tell whether approved code is good: if a person approves the wrong change, Synthe pushes exactly that change. It only controls the credentials and remotes it&#x27;s configured for, so an agent&#x27;s account must hold no other credentials. Receipts prove which key acted, not which model wrote the work.</p></details>
-          <details><summary>Which agents does it work with?</summary><p>Claude Code and OpenClaw through plugins, and any agent through a plain git push or the MCP server. Git pushes are the first action Synthe performs.</p></details>
-          <details><summary>What does it cost?</summary><p>Running Synthe yourself costs nothing. If you&#x27;d like help piloting it with your team, <a class="textlink" href="#partner">talk to us</a>.</p></details>
-          <details><summary>Who is building Synthe?</summary><p>Co-founders Rohan Siddamsettiwar and Rishab Ramalingam, out of the University of Utah&#x27;s Sandbox startup community.</p></details>
+          <details><summary>What does Synthe actually hold?</summary><div class="faq-a"><p>The only credential that can push: a GitHub token in a file only the broker&#x27;s own OS user can read. Your agents hold none, not even to read the repository.</p></div></details>
+          <details><summary>Is it open source?</summary><div class="faq-a"><p>Mostly. The spec, the checker, the clients and the integrations are open source under Apache-2.0. The commit broker is source-available under FSL-1.1-ALv2: you can read, audit and run it, but not sell it as a competing service, and each version becomes Apache-2.0 two years after its release. Synthe&#x27;s hosted and internal code is separate.</p></div></details>
+          <details><summary>What can&#x27;t Synthe stop?</summary><div class="faq-a"><p>It doesn&#x27;t stop prompt injection, and it can&#x27;t tell whether approved code is good: if a person approves the wrong change, Synthe pushes exactly that change. It only controls the credentials and remotes it&#x27;s configured for, so an agent&#x27;s account must hold no other credentials. Receipts prove which key acted, not which model wrote the work.</p></div></details>
+          <details><summary>Which agents does it work with?</summary><div class="faq-a"><p>Claude Code and OpenClaw through plugins, and any agent through a plain git push. Git pushes are the first action Synthe performs.</p></div></details>
+          <details><summary>What does it cost?</summary><div class="faq-a"><p>Running Synthe yourself costs nothing. If you&#x27;d like help piloting it with your team, <a class="textlink" href="#partner">talk to us</a>.</p></div></details>
+          <details><summary>Who is building Synthe?</summary><div class="faq-a"><p>Co-founders Rohan Siddamsettiwar and Rishab Ramalingam, out of the University of Utah&#x27;s Sandbox startup community.</p></div></details>
           </div>
         </div>
       </section>
@@ -586,7 +575,7 @@ cd ~/repo &amp;&amp; openclaw tui</code><button class="copy" type="button"><svg 
           var prev = i === 0 ? "genesis" : rows[i - 1].hash.slice(0, 12) + "…";
           var sig = bad ? (i === broken ? "altered: its hash no longer matches" : "untrusted: an earlier link is broken") : "valid · broker key";
           detail.innerHTML = "<dt>receipt</dt><dd>#" + r.seq + " · " + r.decision + "</dd><dt>effect</dt><dd>git push · " + r.branch + "</dd>" +
-            "<dt>links to</dt><dd>" + prev + '</dd><dt>signature</dt><dd style="color:' + (bad ? "var(--human-text)" : "var(--ok)") + '">' + sig + "</dd>";
+            "<dt>links to</dt><dd>" + prev + '</dd><dt>signature</dt><dd style="color:' + (bad ? "var(--red)" : "var(--ok)") + '">' + sig + "</dd>";
           links.forEach(function (l, j) { l.classList.toggle("sel", j === i); });
         }
         function select(i) { sel = i; show(i); if (broken < 0) tb.textContent = "Tamper with #" + rows[i].seq; }
