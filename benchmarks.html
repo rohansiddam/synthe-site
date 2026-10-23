@@ -116,11 +116,6 @@
         <table class="bench">
           <tr><th>Metric</th><th>Evidence</th><th>Source</th></tr>
           <tr>
-            <td class="metric"><span data-fact="clone_to_accept_s">1.5</span> s<small>TO FIRST ACCEPT</small></td>
-            <td class="ev">Fresh <code>git clone</code> to <code>ACCEPT</code> in 1.505 s, timed October 2026. Python 3 only, no install step. Command: <code>python3 src/handoff_check.py examples/valid.json --registry examples/registry.json --workspace . --ledger ledger.json</code>, exit code 0.</td>
-            <td><a class="textlink" href="/how.html#run">The commands</a></td>
-          </tr>
-          <tr>
             <td class="metric"><span data-fact="runner_accepts">1</span> of <span data-fact="runner_runs">3</span><small>RUNS ACCEPTED</small></td>
             <td class="ev">The same handoff dispatched <span data-fact="runner_runs">3</span> times, back to back, on real GitHub runners: exactly one <code>ACCEPT</code> flipped to <code>COMPLETED</code>; the other <span data-fact="runner_duplicates">2</span> were refused with <code>duplicate_idempotency_key</code>.</td>
             <td><a class="textlink" href="https://github.com/rohansiddam/Synthe/actions/runs/36913336715">Runs</a></td>
