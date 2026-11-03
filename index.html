@@ -83,7 +83,7 @@
           "name": "What does it cost?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Synthe is free and open source. You pay for the AI calls with your Synthe key, which is capped at $3. A round has cost $0.03 to $0.06 in our runs so far, and a run stops after 12 rounds at most."
+            "text": "Synthe is free and open source. You pay for the AI calls with your Synthe key, which is capped at $3. A round cost about $0.06 in the public demo run, and a run stops after 12 rounds at most."
           }
         },
         {
@@ -396,7 +396,7 @@
           <div><p class="eyebrow">Questions</p><h2 id="faq-h">Straight answers, including the limits.</h2></div>
           <div>
           <details><summary>What does Synthe change?</summary><div class="faq-a"><p>Only your agent's system prompt, in its own file or as a string in your code. It never runs your code, and every change is a commit you can revert.</p></div></details>
-          <details><summary>What does it cost?</summary><div class="faq-a"><p>Synthe is free and open source. You pay for the AI calls with your Synthe key, which is capped at $<span data-fact="budget_usd">3</span>. A round has cost $<span data-fact="round_cost_low">0.03</span> to $<span data-fact="round_cost_high">0.06</span> in our runs so far, and a run stops after <span data-fact="max_rounds">12</span> rounds at most.</p></div></details>
+          <details><summary>What does it cost?</summary><div class="faq-a"><p>Synthe is free and open source. You pay for the AI calls with your Synthe key, which is capped at $<span data-fact="budget_usd">3</span>. A round cost about $<span data-fact="round_cost_high">0.06</span> in the public demo run, and a run stops after <span data-fact="max_rounds">12</span> rounds at most.</p></div></details>
           <details><summary>Will it push to my main branch?</summary><div class="faq-a"><p>Only if you choose automatic merging. In review mode, each winning change waits in a pull request for you. Repos that require reviews get review mode automatically. <code>npx synthe stop</code> stops it at any time.</p></div></details>
           <details><summary>What doesn't it test?</summary><div class="faq-a"><p>The test messages are simulated and single-turn. Your agent's tools and conversations aren't run, replies come from Claude Haiku even if your app uses another model, and an AI marks the checks. A better score is a strong hint, not proof of how real users will react.</p></div></details>
           <details><summary>Which agents does it work with?</summary><div class="faq-a"><p>Any agent whose system prompt lives in a GitHub repo you can admin, as a file or a string in code. Synthe tests the prompt on its own, so the framework doesn't matter.</p></div></details>
