@@ -147,10 +147,10 @@ html:root[data-theme="dark"] {
 html { overflow-x: clip; }
 html body { background-color: var(--bg); background-image: none !important; color: var(--ink); font-family: var(--sans); }
 h1, h2, h3, h4, .feature-title, .panel-h { text-wrap: balance; }
-/* Headlines are Archivo set wide and heavy, the lettering of a record book's cover. */
-h1 { font-weight: 800 !important; font-stretch: 118%; letter-spacing: -0.02em; }
-h2 { font-weight: 700 !important; font-stretch: 110%; letter-spacing: -0.015em; }
-h3 { font-weight: 650; font-stretch: 105%; }
+/* Headlines: medium weight, tight tracking. Authority comes from size and spacing, not boldness. */
+h1 { font-weight: 500 !important; letter-spacing: -0.035em; }
+h2 { font-weight: 500 !important; letter-spacing: -0.025em; }
+h3 { font-weight: 600; letter-spacing: -0.01em; }
 /* The accent is used once per screen at most: headings no longer carry italic coral words. */
 h1 em, h2 em, h3 em { font-style: normal !important; color: inherit !important; }
 .kicker, .eyebrow { font-family: var(--mono); font-size: 13px !important; font-weight: 500; letter-spacing: 0.08em !important; text-transform: uppercase !important; color: var(--muted); }

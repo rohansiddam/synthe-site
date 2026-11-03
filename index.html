@@ -71,68 +71,129 @@
 }
     </script>
     <link rel="preload" href="/fonts/archivo-normal-62-125-100-900-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/site.css?v=7b6c8326" />
+    <link rel="stylesheet" href="/site.css?v=acea6bda" />
     <script src="/site.js?v=8815e33c" defer></script>
     <style>
       .page { padding: 0; }
-      .page > .site-foot { max-width: 1160px; margin-left: auto; margin-right: auto; padding-left: 24px; padding-right: 24px; }
-      .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+      .page > .site-foot { max-width: 1200px; margin-left: auto; margin-right: auto; padding-left: 32px; padding-right: 32px; }
+      .wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+      @media (max-width: 640px) { .wrap, .page > .site-foot { padding-left: 20px; padding-right: 20px; } }
       main { font-size: 16px; line-height: 1.5; }
       a { color: inherit; }
       code { font-family: var(--mono); }
-      .copy:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+      :root { --band: #f1ede2; --band-hover: #ebe6d8; --dot: rgba(23, 20, 16, .14); --ease: cubic-bezier(.2, .8, .2, 1); }
+      html[data-theme="dark"] { --band: #151511; --band-hover: #1c1c17; --dot: rgba(244, 242, 234, .12); }
+      .muted { color: var(--muted); }
+      .arrow-link { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; text-decoration: none; color: var(--ink); padding: 12px 0; }
+      .arrow-link .arr { transition: transform .2s var(--ease); }
+      .arrow-link:hover .arr { transform: translateX(4px); }
+      .arrow-link:focus-visible, .copy:focus-visible, .card:has(.go:focus-visible), .seg button:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 8px; }
 
-      /* Hero: the pitch on the left, the record of an example night on the right. */
-      .hero { padding: 56px 0 0; }
-      .hero-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 56px; align-items: center; }
-      @media (max-width: 900px) { .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; } .hero { padding-top: 40px; } }
-      .hero h1 { font-size: clamp(36px, 4.4vw, 60px); line-height: 1.02; margin: 16px 0 20px; max-width: 13em; }
-      .lede { font-size: 18px; line-height: 1.55; color: var(--muted); margin: 0 0 24px; max-width: 34em; }
-      .motto { color: var(--ink); font-weight: 650; }
-      .startrow { display: flex; gap: 12px 24px; flex-wrap: wrap; align-items: center; }
-      .cmd { display: flex; align-items: center; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 4px 4px 4px 16px; font: 16px/1.5 var(--mono); min-width: 0; max-width: 100%; }
-      .cmd .prompt { color: var(--muted); }
-      .cmd code { white-space: pre; overflow-x: auto; padding: 0 12px 0 4px; }
-      .copy { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; background: var(--ink); border: 0; border-radius: var(--radius); color: var(--bg); font: 600 14px var(--sans); padding: 0 16px; cursor: pointer; flex: none; }
-      .copy .mark { width: 14px; height: 15px; }
-      .copy .mark .a { fill: var(--bg); }
-      .startrow .textlink { font-size: 16px; padding: 12px 0; }
+      /* Hero */
+      .hero { padding-top: clamp(56px, 9vw, 112px); }
+      .hero h1 { font-size: clamp(40px, 5.6vw, 76px); line-height: 1.02; margin: 0; max-width: 13ch; }
+      .hero .lede { margin: 24px 0 0; font-size: clamp(18px, 1.6vw, 20px); line-height: 1.45; color: var(--muted); max-width: 40ch; }
+      .hero .lede strong { color: var(--ink); font-weight: 500; }
+      .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 36px; }
+      .copy { display: inline-flex; align-items: center; gap: 16px; min-height: 52px; padding: 0 8px 0 20px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font: 16px var(--mono); cursor: pointer; transition: border-color .2s, box-shadow .2s, transform .2s var(--ease); }
+      .copy:hover { border-color: var(--line2); box-shadow: 0 8px 24px -12px rgba(23, 20, 16, .25); transform: translateY(-1px); }
+      .copy .prompt { color: var(--muted); margin-right: -8px; }
+      .copy .btn-label { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 12px; border-radius: 8px; background: var(--ink); color: var(--bg); font: 500 14px var(--sans); }
+      .copy .btn-label svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+      .copy.done .btn-label { background: var(--ok); color: #fff; }
 
-      /* The record: an example night, one row per change tried. Kept rows carry a filled gold dot; color is never the only signal. */
-      .record { margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; }
-      .record-head, .record-foot { display: flex; justify-content: space-between; gap: 16px; padding: 12px 20px; font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
-      .record-head { border-bottom: 1px solid var(--line); }
-      .record ol { list-style: none; margin: 0; padding: 0; }
-      .record li { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 4px 12px; align-items: baseline; padding: 12px 20px; border-bottom: 1px solid var(--line); }
-      .record time { font: 13px var(--mono); color: var(--muted); }
-      .record .change { font-size: 16px; }
-      .record .result { display: inline-flex; align-items: center; gap: 8px; font: 500 13px var(--mono); color: var(--muted); white-space: nowrap; }
-      .record .result::before { content: ""; width: 12px; height: 12px; border-radius: 50%; box-sizing: border-box; border: 2px solid var(--muted); }
-      .record .kept .result { color: var(--ink); }
-      .record .kept .result::before { background: var(--gold-fill); border-color: var(--gold); }
-      .record-foot { text-transform: none; letter-spacing: 0; font: 14px var(--sans); color: var(--muted); align-items: center; }
-      .record-foot strong { color: var(--ink); font-weight: 650; }
-      .record-foot time { font: 13px var(--mono); margin-right: 12px; }
-      @media (max-width: 480px) { .record li { grid-template-columns: 40px minmax(0, 1fr); } .record .result { grid-column: 2; } .record-head, .record-foot, .record li { padding-left: 16px; padding-right: 16px; } }
+      /* The stage: an example night, played once */
+      .stage { margin-top: clamp(48px, 7vw, 80px); }
+      .band { position: relative; overflow: hidden; border-radius: 24px; background: var(--band); padding: clamp(20px, 4vw, 56px) clamp(16px, 4vw, 56px) 0; }
+      .band::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(var(--dot) 1px, transparent 1.5px); background-size: 16px 16px;
+        -webkit-mask-image: radial-gradient(ellipse 70% 80% at 80% 10%, #000 0, transparent 70%); mask-image: radial-gradient(ellipse 70% 80% at 80% 10%, #000 0, transparent 70%); pointer-events: none; }
+      .hours { position: relative; display: flex; justify-content: space-between; list-style: none; margin: 0 0 32px; padding: 0; font: 12px var(--mono); color: var(--muted); }
+      .hours::before, .hours::after { content: ""; position: absolute; left: 0; right: 0; top: 24px; height: 2px; background: var(--line2); border-radius: 2px; }
+      .hours::after { background: var(--gold); transform-origin: left; transform: scaleX(var(--p, 1)); transition: transform 3.6s linear; }
+      .hours li { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+      .hours li::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--band); border: 2px solid var(--line2); position: relative; z-index: 1; }
+      .hours li.lit::after { border-color: var(--gold); background: var(--gold-fill); transition: background .3s, border-color .3s; }
+      @media (max-width: 640px) { .hours li:nth-child(even) span { visibility: hidden; } .lines { font-size: 13px; } .lines li { padding-left: 36px; padding-right: 16px; } .lines li::before { left: 12px; } }
+      .scene { position: relative; display: flex; flex-wrap: wrap; gap: 20px; align-items: stretch; }
+      .doc, .report { background: var(--card); border-radius: 16px 16px 0 0; box-shadow: 0 0 0 1px var(--line), 0 32px 64px -32px rgba(23, 20, 16, .28); }
+      .doc { flex: 3 1 520px; min-width: 0; }
+      .report { flex: 2 1 300px; min-width: 0; }
+      .tabbar { display: flex; align-items: center; gap: 8px; padding: 12px 20px; border-bottom: 1px solid var(--line); font: 13px var(--mono); color: var(--muted); }
+      .tabbar .dots { display: flex; gap: 4px; margin-right: 8px; }
+      .tabbar .dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+      .tabbar .tag { margin-left: auto; font: 500 12px var(--sans); color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; }
+      .lines { list-style: none; margin: 0; padding: 16px 0 24px; font: 14px/1.6 var(--mono); }
+      .lines li { position: relative; padding: 4px 20px 4px 44px; transition: opacity .4s, background .4s, transform .5s var(--ease); }
+      .lines li::before { content: attr(data-n); position: absolute; left: 16px; color: var(--faint); font-size: 12px; top: 6px; }
+      .lines .old { text-decoration: line-through; text-decoration-color: var(--red); opacity: .55; background: color-mix(in srgb, var(--red) 8%, transparent); }
+      .lines .new { background: color-mix(in srgb, var(--gold-fill) 18%, transparent); box-shadow: inset 3px 0 0 var(--gold); }
+      .lines .hidden { opacity: 0; transform: translateY(-4px); max-height: 0; padding-top: 0; padding-bottom: 0; overflow: hidden; }
+      .lines .new .chip { margin-left: 8px; }
+      .chip { display: inline-flex; align-items: center; gap: 4px; font: 500 12px var(--sans); border-radius: 999px; padding: 2px 8px; vertical-align: 1px; }
+      .chip.kept { background: var(--ink); color: var(--bg); }
+      .chip.kept::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--gold-fill); }
+      .chip.no { border: 1px solid var(--line2); color: var(--muted); }
+      .report-body { padding: 20px; display: grid; gap: 12px; }
+      .report-body h3 { margin: 0; font-size: 18px; }
+      .report-body p { margin: 0; font-size: 14px; color: var(--muted); }
+      .rrow { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; padding: 12px; border-radius: 12px; background: var(--bg); transition: opacity .4s, transform .5s var(--ease); }
+      .rrow .chip { flex: none; margin-top: 2px; }
+      .report.pending .rrow { opacity: 0; transform: translateY(8px); }
+      .report .rrow:nth-child(3) { transition-delay: .12s; }
+      .replay { position: absolute; right: 16px; top: 16px; z-index: 2; font: 500 12px var(--sans); color: var(--muted); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+      .replay:hover { color: var(--ink); border-color: var(--line2); }
 
-      /* Three short lines: merges, limits, the public run. */
-      .notes { list-style: none; margin: 48px 0 0; padding: 20px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 40px; font-size: 16px; }
-      @media (max-width: 900px) { .notes { grid-template-columns: minmax(0, 1fr); margin-top: 40px; } }
-      .notes .label { display: block; font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-      .notes .warn .label::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--gold-fill); margin-right: 8px; vertical-align: 1px; }
+      /* Proof */
+      .proof { padding-top: clamp(56px, 8vw, 96px); }
+      .proof p { margin: 0; font-size: clamp(24px, 2.8vw, 36px); line-height: 1.2; letter-spacing: -0.02em; font-weight: 500; max-width: 28ch; }
 
-      /* Contact: one line, one field. */
-      .contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 12px 40px; align-items: end; padding: 28px 0 0; }
+      /* Cards */
+      .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; padding-top: 40px; }
+      @media (max-width: 960px) { .cards { grid-template-columns: minmax(0, 1fr); } }
+      .card { position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; min-height: 320px; padding: 28px; border-radius: 20px; background: var(--band); overflow: hidden; transition: background .25s; }
+      .card:hover { background: var(--band-hover); }
+      .card h3 { margin: 0; padding-right: 48px; font-size: 20px; line-height: 1.3; font-weight: 500; }
+      .card h3 span { color: var(--muted); }
+      .card .go { position: absolute; right: 20px; top: 20px; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--card); color: var(--ink); text-decoration: none; transition: background .25s, color .25s, transform .25s var(--ease); }
+      .card .go svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+      .card:hover .go { background: var(--ink); color: var(--bg); transform: rotate(45deg); }
+      .card .go::after { content: ""; position: absolute; inset: -8px; }
+      .viz { background: var(--card); border-radius: 12px; box-shadow: 0 0 0 1px var(--line); padding: 16px; font-size: 14px; transition: transform .35s var(--ease), box-shadow .35s; }
+      .card:hover .viz { transform: translateY(-4px); box-shadow: 0 0 0 1px var(--line), 0 16px 32px -20px rgba(23, 20, 16, .3); }
+      .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+      .checks li { display: flex; gap: 12px; align-items: flex-start; }
+      .tick { flex: none; display: grid; place-items: center; width: 20px; height: 20px; margin-top: 1px; border-radius: 6px; background: var(--ink); color: var(--bg); transition: transform .3s var(--ease); }
+      .tick svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.2; }
+      .card:hover .checks li:nth-child(1) .tick { transform: scale(1.12); }
+      .card:hover .checks li:nth-child(2) .tick { transform: scale(1.12); transition-delay: .06s; }
+      .card:hover .checks li:nth-child(3) .tick { transform: scale(1.12); transition-delay: .12s; }
+      .tree { list-style: none; margin: 0; padding: 0; font: 13px/1.5 var(--mono); display: grid; gap: 4px; }
+      .tree li { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 8px; border-radius: 6px; color: var(--muted); }
+      .tree li.on { color: var(--ink); background: color-mix(in srgb, var(--gold-fill) 18%, transparent); box-shadow: inset 3px 0 0 var(--gold); }
+      .tree li .lock { font: 12px var(--sans); }
+      .seg { display: inline-flex; padding: 4px; border-radius: 10px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); }
+      .seg button { font: 500 14px var(--sans); color: var(--muted); background: none; border: 0; border-radius: 8px; padding: 8px 12px; min-height: 36px; cursor: pointer; transition: background .2s, color .2s, box-shadow .2s; }
+      .seg button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 2px rgba(23, 20, 16, .12), 0 0 0 1px var(--line); }
+      .seg-out { margin: 12px 0 0; display: flex; align-items: center; gap: 8px; font-size: 14px; }
+      .seg-out .pr { font: 12px var(--mono); color: var(--muted); }
+
+      /* Contact */
+      .contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px 48px; align-items: end; padding-top: clamp(56px, 8vw, 96px); }
       @media (max-width: 900px) { .contact { grid-template-columns: minmax(0, 1fr); } }
-      .contact h2 { font-size: 24px; line-height: 1.2; margin: 0; }
-      .partner-form { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: end; }
+      .contact h2 { font-size: clamp(24px, 2.8vw, 36px); line-height: 1.15; margin: 0; }
+      .contact h2 span { color: var(--muted); }
+      .partner-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
       .partner-form .field { display: grid; gap: 4px; flex: 1 1 240px; }
       .partner-form label { font-size: 14px; color: var(--muted); }
-      .partner-form input[type="email"] { font: inherit; font-size: 16px; color: var(--ink); background: var(--card); border: 1px solid var(--muted); border-radius: var(--radius); min-height: 44px; padding: 0 12px; box-sizing: border-box; }
+      .partner-form input[type="email"] { font: inherit; font-size: 16px; color: var(--ink); background: var(--card); border: 1px solid var(--line2); border-radius: 12px; min-height: 52px; padding: 0 16px; box-sizing: border-box; transition: border-color .2s; }
+      .partner-form input[type="email"]:hover { border-color: var(--muted); }
       .partner-form input:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+      .partner-form .btn2 { min-height: 52px; border-radius: 12px; background: var(--ink); color: var(--bg); border-color: var(--ink); padding: 0 20px; }
+      .partner-form .btn2:hover { opacity: .88; }
       .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
       .trynote { font-size: 14px; color: var(--muted); margin: 0; grid-column: 1 / -1; }
       .trynote:empty { display: none; }
+      @media (prefers-reduced-motion: reduce) { .hours::after, .lines li, .rrow, .card, .card .go, .viz, .tick, .copy, .arrow-link .arr { transition: none !important; } }
     </style>
     <script>
       /* theme and motion: set before first paint to avoid a flash. The js class turns on
@@ -170,54 +231,106 @@
         </nav>
       </header>
     <main id="main">
-      <div class="hero">
-        <div class="wrap">
-          <div class="hero-grid">
-            <div id="start">
-              <p class="eyebrow">Self-improving AI agents</p>
-              <h1>Your AI agent gets better while you sleep.</h1>
-              <p class="lede"><span class="motto">You say what good looks like. Synthe tests changes overnight and keeps only what wins.</span> It works on your agent's prompt, in your own GitHub repo, while you're away. In the morning, a report says what changed and why.</p>
-              <div class="startrow">
-                <div class="cmd"><span class="prompt" aria-hidden="true">$</span><code>npx synthe init</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div>
-                <a class="textlink" href="/docs.html">Get started</a>
+      <section class="hero wrap" id="start">
+        <h1>Your AI agent gets better while you sleep.</h1>
+        <p class="lede"><strong>You say what good looks like.</strong> Synthe tests changes to your agent's prompt overnight, in your own GitHub repo, and keeps only what wins.</p>
+        <div class="actions">
+          <button class="copy" type="button" aria-label="Copy the command npx synthe init"><span class="prompt" aria-hidden="true">$</span><code>npx synthe init</code><span class="btn-label"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="4.5" y="4.5" width="7" height="7" rx="1.5"/><path d="M9.5 4.5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v5.5a1 1 0 0 0 1 1h1.5"/></svg><span>Copy</span></span></button>
+          <a class="arrow-link" href="/docs.html">Read the docs <span class="arr" aria-hidden="true">→</span></a>
+        </div>
+      </section>
+
+      <section class="stage wrap" aria-labelledby="night-h">
+        <div class="band" id="night">
+          <h2 class="sr-only" id="night-h">An example night</h2>
+          <button class="replay" type="button" id="replay" hidden>Play again</button>
+          <ol class="hours" aria-hidden="true">
+            <li><span>11pm</span></li><li><span>12am</span></li><li><span>1am</span></li><li><span>2am</span></li><li><span>3am</span></li><li><span>4am</span></li><li><span>5am</span></li><li><span>6am</span></li><li><span>7am</span></li>
+          </ol>
+          <div class="scene">
+            <div class="doc">
+              <div class="tabbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>prompt.md<span class="tag">Example</span></div>
+              <ol class="lines">
+                <li data-n="1">You are the support assistant for a clothing store.</li>
+                <li data-n="2" class="old-a">If someone asks for a refund, tell them it's approved.</li>
+                <li data-n="2" class="new-a hidden">Explain what the refund policy allows. Offer an exchange first. <span class="chip kept">kept</span></li>
+                <li data-n="3">Keep replies short and friendly.</li>
+                <li data-n="4" class="old-b">If you're not sure about a return, say yes.</li>
+                <li data-n="4" class="new-b hidden">If you're not sure about a return, don't guess. <span class="chip kept">kept</span></li>
+                <li data-n="5">Hand off to a person for anything the policy doesn't cover.</li>
+              </ol>
+            </div>
+            <div class="report" aria-live="off">
+              <div class="tabbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>Morning report<span class="tag">7am</span></div>
+              <div class="report-body">
+                <h3>Your prompt got better overnight.</h3>
+                <div class="rrow"><span class="chip kept">kept</span><span>Offer an exchange before a refund</span></div>
+                <div class="rrow"><span class="chip kept">kept</span><span>Don't guess about returns</span></div>
+                <div class="rrow"><span class="chip no">not kept</span><span>Add a summary to every reply</span></div>
               </div>
             </div>
-            <figure class="record" aria-labelledby="record-h">
-              <figcaption class="record-head"><span id="record-h">Example night</span><span>Your prompt</span></figcaption>
-              <ol>
-                <li><time>11pm</time><span class="change">Greet in one short line</span><span class="result">not kept</span></li>
-                <li class="kept"><time>12am</time><span class="change">Ask for the order number first</span><span class="result">kept</span></li>
-                <li class="kept"><time>2am</time><span class="change">Offer an exchange when a return is refused</span><span class="result">kept</span></li>
-                <li><time>4am</time><span class="change">End every reply with a summary</span><span class="result">not kept</span></li>
-                <li class="kept"><time>6am</time><span class="change">Quote the return policy, not a guess</span><span class="result">kept</span></li>
-              </ol>
-              <p class="record-foot"><span><time>7am</time><strong>Morning report</strong> opens in your repo</span></p>
-            </figure>
           </div>
-          <ul class="notes">
-            <li class="warn"><span class="label">Merges</span>Automatic merges land on your default branch. If it deploys your app, choose review.</li>
-            <li><span class="label">Limits</span>Tests are simulated and only the prompt changes, so check the results yourself. <a class="textlink" href="/status.html">Limits</a></li>
-            <li><span class="label">Public run</span>See a public run: <a class="textlink" href="https://github.com/synthelabs/support-bot/pull/7">a demo store bot's prompt, improved overnight</a>.</li>
-          </ul>
-          <section class="contact" id="partner" aria-labelledby="partner-h">
-            <h2 id="partner-h">Using AI agents in production? Talk to us.</h2>
-            <form class="partner-form" id="partner-form" action="mailto:rohansiddam@synthe.live?subject=Hello%20from%20synthe.live" method="post" enctype="text/plain" data-formspree="" data-fallback-email="rohansiddam@synthe.live">
-              <div class="field">
-                <label for="partner-email">Work email</label>
-                <input type="email" id="partner-email" name="email" placeholder="you@company.com" required autocomplete="email" maxlength="254" />
-              </div>
-              <div class="hp" aria-hidden="true">
-                <label for="partner-company">Leave this empty</label>
-                <input type="text" id="partner-company" name="_gotcha" tabindex="-1" autocomplete="off" />
-              </div>
-              <input type="hidden" name="_subject" value="Hello from synthe.live" />
-              <button class="btn2" type="submit" id="partner-submit">Talk to us</button>
-            </form>
-            <p class="trynote form-note" id="partner-note" role="status" aria-live="polite"></p>
-            <p class="trynote">This opens your email app with a note ready to send. Nothing is stored or sent on its own. Or email <a class="textlink" href="mailto:rohansiddam@synthe.live">rohansiddam@synthe.live</a>.</p>
-          </section>
         </div>
-      </div>
+      </section>
+
+      <section class="proof wrap">
+        <p>See a real one. <span class="muted">A demo store bot's prompt, improved overnight and merged as a pull request.</span></p>
+        <a class="arrow-link" href="https://github.com/synthelabs/support-bot/pull/7">See the public run <span class="arr" aria-hidden="true">→</span></a>
+      </section>
+
+      <section class="cards wrap" aria-label="How it works">
+        <article class="card">
+          <h3>Your checks decide. <span>In plain sentences, say what a good reply does.</span></h3>
+          <div class="viz">
+            <ul class="checks">
+              <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M2.5 6.2 5 8.5 9.5 3.5"/></svg></span><span>Names the return window when asked</span></li>
+              <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M2.5 6.2 5 8.5 9.5 3.5"/></svg></span><span>Never promises a refund the policy doesn't allow</span></li>
+              <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M2.5 6.2 5 8.5 9.5 3.5"/></svg></span><span>Hands off to a person when unsure</span></li>
+            </ul>
+          </div>
+          <a class="go" href="/docs.html" aria-label="Docs: set up your checks"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5 4h7v7"/></svg></a>
+        </article>
+        <article class="card">
+          <h3>Only the prompt changes. <span>Tests are simulated, so check the results yourself.</span></h3>
+          <div class="viz">
+            <ul class="tree">
+              <li><span>src/</span><span class="lock">untouched</span></li>
+              <li><span>tools/</span><span class="lock">untouched</span></li>
+              <li class="on"><span>prompt.md</span><span class="lock">improved</span></li>
+            </ul>
+          </div>
+          <a class="go" href="/status.html" aria-label="Limits and your data"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5 4h7v7"/></svg></a>
+        </article>
+        <article class="card">
+          <h3>You choose how wins land. <span>If your default branch deploys, choose review.</span></h3>
+          <div class="viz">
+            <div class="seg" role="group" aria-label="How wins land">
+              <button type="button" aria-pressed="false" data-out="Automatic merges land on your default branch.">Automatic</button>
+              <button type="button" aria-pressed="true" data-out="Each win waits in a pull request for you.">Review</button>
+            </div>
+            <p class="seg-out" id="seg-out" aria-live="polite">Each win waits in a pull request for you.</p>
+          </div>
+          <a class="go" href="/docs.html" aria-label="Docs: automatic or review"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5 4h7v7"/></svg></a>
+        </article>
+      </section>
+
+      <section class="contact wrap" id="partner" aria-labelledby="partner-h">
+        <h2 id="partner-h">Using AI agents in production? <span>Talk to us.</span></h2>
+        <form class="partner-form" id="partner-form" action="mailto:rohansiddam@synthe.live?subject=Hello%20from%20synthe.live" method="post" enctype="text/plain" data-formspree="" data-fallback-email="rohansiddam@synthe.live">
+          <div class="field">
+            <label for="partner-email">Work email</label>
+            <input type="email" id="partner-email" name="email" placeholder="you@company.com" required autocomplete="email" maxlength="254" />
+          </div>
+          <div class="hp" aria-hidden="true">
+            <label for="partner-company">Leave this empty</label>
+            <input type="text" id="partner-company" name="_gotcha" tabindex="-1" autocomplete="off" />
+          </div>
+          <input type="hidden" name="_subject" value="Hello from synthe.live" />
+          <button class="btn2" type="submit" id="partner-submit">Talk to us</button>
+        </form>
+        <p class="trynote form-note" id="partner-note" role="status" aria-live="polite"></p>
+        <p class="trynote">This opens your email app with a note ready to send. Nothing is stored or sent on its own. Or email <a class="textlink" href="mailto:rohansiddam@synthe.live">rohansiddam@synthe.live</a>.</p>
+      </section>
     </main>
       <footer class="site-foot">
         <p class="footer-brand"><svg class="footer-logo" viewBox="0 0 275 290" aria-hidden="true"><path class="a" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path class="b" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg>Synthe</p>
@@ -235,6 +348,63 @@
       </footer>
     </div>
     <script>
+      (function () {
+        "use strict";
+        /* Review or automatic: a real toggle that says what each choice does. */
+        var out = document.getElementById("seg-out");
+        Array.prototype.forEach.call(document.querySelectorAll(".seg button"), function (b, i, all) {
+          b.addEventListener("click", function () {
+            Array.prototype.forEach.call(all, function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+            out.textContent = b.getAttribute("data-out");
+          });
+        });
+
+        /* The example night plays once when it comes into view (about four seconds), then holds its last frame.
+           With reduced motion it shows the last frame straight away. */
+        var band = document.getElementById("night");
+        var hours = band.querySelectorAll(".hours li");
+        var bar = band.querySelector(".hours");
+        var report = band.querySelector(".report");
+        var replay = document.getElementById("replay");
+        var q = function (c) { return band.querySelector("." + c); };
+        var timers = [];
+        function end() {
+          bar.style.setProperty("--p", 1);
+          Array.prototype.forEach.call(hours, function (h) { h.classList.add("lit"); });
+          ["old-a", "old-b"].forEach(function (c) { q(c).classList.add("hidden"); });
+          ["new-a", "new-b"].forEach(function (c) { q(c).classList.remove("hidden"); q(c).classList.add("new"); });
+          report.classList.remove("pending");
+        }
+        function reset() {
+          timers.forEach(clearTimeout); timers = [];
+          bar.style.transition = "none"; bar.style.setProperty("--p", 0);
+          Array.prototype.forEach.call(hours, function (h) { h.classList.remove("lit"); });
+          ["old-a", "old-b"].forEach(function (c) { q(c).classList.remove("hidden", "old"); });
+          ["new-a", "new-b"].forEach(function (c) { q(c).classList.add("hidden"); q(c).classList.remove("new"); });
+          report.classList.add("pending");
+          void bar.offsetWidth; bar.style.transition = "";
+        }
+        function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
+        function play() {
+          reset();
+          replay.hidden = true;
+          bar.style.setProperty("--p", 1);
+          Array.prototype.forEach.call(hours, function (h, i) { at(i * 440, function () { h.classList.add("lit"); }); });
+          at(700, function () { q("old-a").classList.add("old"); });
+          at(1300, function () { q("old-a").classList.add("hidden"); q("new-a").classList.remove("hidden"); q("new-a").classList.add("new"); });
+          at(2100, function () { q("old-b").classList.add("old"); });
+          at(2700, function () { q("old-b").classList.add("hidden"); q("new-b").classList.remove("hidden"); q("new-b").classList.add("new"); });
+          at(3600, function () { report.classList.remove("pending"); replay.hidden = false; });
+        }
+        var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reduce || !("IntersectionObserver" in window)) { end(); return; }
+        reset();
+        var io = new IntersectionObserver(function (es) {
+          if (es[0].isIntersecting) { io.disconnect(); play(); }
+        }, { threshold: 0.35 });
+        io.observe(band);
+        replay.addEventListener("click", play);
+      })();
       (function () {
         "use strict";
         /* Contact form. Opens a drafted email by default. Once a Formspree form ID
