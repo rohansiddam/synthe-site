@@ -4,38 +4,8 @@
 
 ## What Synthe is
 
-Synthe makes an AI agent better while the team is away. Every hour it tries small changes to the agent's system prompt, tests them, and keeps only clear wins, either merging them into the default branch or opening a pull request for review (the team chooses at setup). In the morning the team reads a report in its GitHub repo that says what changed, why, and how to undo it.
+Synthe makes an AI agent better while the team is away. Every hour it tries small changes to the agent's system prompt, tests them, and keeps only clear wins, either merging them into the default branch or opening a pull request for review. In the morning the team reads a report in its GitHub repo that says what changed, why, and how to undo it.
 
-Source: https://github.com/synthelabs/synthe (Apache-2.0). Package: `synthe` on npm. The README there is the full reference; this site deliberately stays brief.
-
-## Setup
-
-Needs a GitHub repo the user can admin with the agent's system prompt in it (its own file or a string in code), the GitHub CLI signed in, Node 20 or later, and an Anthropic API key. Run `npx synthe init` in the repo, on the default branch.
-
-## Commands
-
-- `npx synthe init`: set up the repo and start
-- `npx synthe status`: show where it is
-- `npx synthe stop`: stop; nothing more runs or changes
-- `npx synthe restart`: start again
-- `npx synthe try`: try it once locally, changing nothing
-
-## Limits
-
-Tests are simulated and only the prompt changes; the team's code and tools are never run. Teams should check the results themselves. Automatic merges land on the default branch, so teams whose default branch deploys should choose review. A run's spend is capped by its budget.
-
-## Data
-
-Synthe has no server of its own. Setup runs on the user's machine and the hourly job in the repo's GitHub Actions. The prompt, README, the code around the prompt and the test messages go to Anthropic's API with the user's key; everything else goes only to GitHub.
-
-## Public demo
-
-https://github.com/synthelabs/support-bot is a demo store bot whose prompt Synthe improved overnight, in public (pull request #7).
-
-## Who builds it
-
-Co-founders Rohan Siddamsettiwar and Rishab Ramalingam. Contact: rohansiddam@synthe.live.
-
-## Retired
+Source: https://github.com/synthelabs/synthe (Apache-2.0). Synthe is early: setup steps are not published yet. Teams using AI agents in production can talk to us at https://synthe.live/#partner.
 
 Synthe's earlier product, a commit barrier and "trust layer for AI agents", is retired. Pages about it on synthe.live are archived and not indexed.
