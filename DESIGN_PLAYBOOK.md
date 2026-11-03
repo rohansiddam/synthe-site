@@ -13,8 +13,8 @@ The site moved from an archival, editorial look to a product site built on one i
 - **The slot angle (53 degrees),** the gap between the halves, is the site's only diagonal: `.slot` section dividers, the cut corner on buttons, cards and the hero card (`clip-path`), bullet ticks, the joints of the receipt chain. No other angles, no pill radii on new components.
 - **The lattice:** whole brand marks in an offset grid (an SVG pattern with corner copies so no mark is cut), fading in from the right, behind the hero only. `site.js` adds a soft glow under the cursor (`.lattice-glow`, hover-capable pointers only, never with reduced motion). The old wavy-line and circle watermark is switched off globally.
 - **Theme switch:** `.themeswitch`, a sun and a moon with the current mode filled (`role="switch"`, `aria-checked`, a title that says which mode is on). It is a setting, so it does not look like the logo; the mark stays the brand. Its state is read from `--mode`, so it is right before any choice is saved.
-- **Chrome:** header = logo lockup (gap 7px), How it works, Docs, Limits (`status.html`), For companies (`/#partner`), GitHub (synthelabs/synthe), the theme switch, and the one call to action, **Get started** (`/#start`). (Changed 2026-11-02 for the new product.) Footer = brand, motto, one nav of whole links, the license line, the colophon. Both are written by `tools/apply_chrome.py` (edit it, run it, then `tools/stamp.py`) and identical on every page.
-- **Homepage story (about 6 screens, since 2026-11-02):** hero (headline, motto, Get started, the one-round illustration with an example morning report) · the problem · how it works (three cards) · get started (`npx synthe init`, requirements, review-mode warning) · a real run you can check (support-bot PR stats, `data-fact`) · FAQ including limits · pilot form (design-partner beta) · final call to action. No logo strip of other companies, no rotating headline word.
+- **Chrome:** header = logo lockup (gap 7px), Docs, Limits (`status.html`), Contact (`/#partner`), GitHub (synthelabs/synthe), the theme switch, and the one call to action, **Get started** (`/docs.html`). (Changed 2026-11-02.)
+- **Homepage (about one screen, since 2026-11-02):** hero with headline, motto, one paragraph, `npx synthe init` with Get started, three one-line notes (review warning, limits, demo run), and the contact card with the form. No FAQ, no animation, no sections below. (Section 12's six-screen story described the retired product.)
 - **One type scale, one grid (CI enforces both).** Pixel font sizes come from 11, 12, 13, 14, 16, 18, 20, 24 and 32; fluid display sizes use `clamp()`. Every padding, margin and gap in px is a multiple of 4 (1 and 2 are for hairlines). `tools/check_site.py` fails on anything else, in `site.css`, in a page's `<style>` and in inline styles.
 - **Integrations and Use cases pages.** They state status per item and never round up: **Verified** (run end to end on a real machine, recorded), **Preview** (built and tested in pieces), **Example** (a setup guide, not run here). Numbers come from `facts.json` through `data-fact`. Neither page names the MCP server, the A2A adapter or the Lab (held topics), shows price or logos, or claims a customer. Both say plainly that nobody outside the team has run the install unaided yet. Update a status only when the evidence in the repo changes.
 - **Motion rules stand:** every animation has a still state under `prefers-reduced-motion`; nothing auto-loops; color is never the only signal (broken links also go dashed).
@@ -29,24 +29,28 @@ The site's framing is **Archival Ledger & Notary Stamp**: a warm paper archive w
 
 ## 1b. What the site says
 
-Since November 2, 2026 the site sells one thing: **Synthe, self-improving AI agents.** It improves an agent's system prompt overnight, in the team's own GitHub repo (source: [synthelabs/synthe](https://github.com/synthelabs/synthe), Apache-2.0, npm `synthe`). The old "trust layer / commit barrier" product is retired from the site: its pages (anatomy, benchmarks, forge, integrations, playground, quiz, race, receipts, tamper, use-cases) stay in the repo, `noindex`, out of the nav, sitemap and `llms.txt`, each with an "Archived" note at the top. Don't link to them from live pages. Use these lines word for word; don't invent new taglines.
+Since November 2, 2026 the site sells one thing: **Synthe, self-improving AI agents** (source: [synthelabs/synthe](https://github.com/synthelabs/synthe), Apache-2.0, npm `synthe`). **The site deliberately stays brief** (founders' decision, November 2, 2026): it says what Synthe does for a team, how to start, the plain limits and where data goes. It shows no roadmap or plans, no inner mechanics (test counts, edits per round, models, statistics, judging, costs per round), and no pilot or design-partner programme. Details live in the GitHub README; link to it instead of repeating it.
+
+The old "trust layer / commit barrier" product is retired: its pages (anatomy, benchmarks, forge, how, integrations, playground, quiz, race, receipts, tamper, use-cases) stay in the repo, `noindex`, out of the nav, sitemap and `llms.txt`, each with an "Archived" note. Don't link to them from live pages. Live pages: `/`, `docs.html`, `status.html`, `log.html`.
+
+Use these lines word for word; don't invent new taglines.
 
 | Where | Line |
 |---|---|
 | Category (eyebrow, social card, footer) | Self-improving AI agents |
 | Homepage headline | Your AI agent gets better while you sleep. |
 | Motto (under the headline, footer) | You say what good looks like. Synthe tests changes overnight and keeps only what wins. |
-| Header call to action | Get started (to `/#start`) |
-| Second way in, for companies | Pilot it on your production agent (`/#partner`, labelled Design-partner beta) |
+| What it does (the most detail the site gives) | Every hour Synthe tries small changes to your agent's prompt, tests them, and keeps only clear wins. You wake up to a report. |
+| Header call to action | Get started (to `/docs.html`) |
+| Company contact | Using AI agents in production? Talk to us. (`/#partner`, labelled "Contact" in the nav and footer) |
 
-Rules for copy that describes the product (check the public repo's README and `src/` before writing a new claim):
+Rules:
 
-- **What it is, plainly.** It changes only the system prompt (a file or a string in code). It never runs the team's code. Each hour Claude Sonnet proposes small edits; replies to simulated test messages are generated with the current prompt and each edit; the reply passing more of the team's checks wins each message, an AI judge breaks ties; a change is kept only if it wins clearly more than it loses (one-sided sign test), wins again on hidden messages, and breaks no rule the old prompt followed. It can undo a change that later does worse.
-- **State the limits where people decide** (FAQ, how, status): simulated, single-turn messages; tools and conversations not run; replies from Claude Haiku even if the app uses another model; checks marked by an AI; automatic merges go to the default branch (review mode if it deploys); spend capped per key; prompt only. The full list lives on `status.html#limits`.
-- **Label what isn't released.** Anything only in an open pull request (today: `npx synthe calibrate`, and showing real replies at setup) is "Coming in the next release" or left out. Production metrics and real-traffic testing are "Design-partner beta", with no dates.
-- **Proof must be checkable.** The public proof is [synthelabs/support-bot](https://github.com/synthelabs/support-bot) (a demo bot with a weak prompt on purpose): its merged pull requests and report issue. Results from private test repos (like "passed 81%, up from 47%") appear only marked "example".
-- **Never say** certified, guaranteed, "proven to improve" in general; no customers, logos, prices or SLAs. A better score is "a strong hint, not proof".
-- **Only our own numbers, and only through `facts.json`** (section 9), each with its source under `_manual`.
+- **Limits, short and plain:** tests are simulated, only the prompt changes (code and tools never run), check the results yourself; automatic merges land on the default branch, so choose review if it deploys. No model names.
+- **Proof:** at most one sentence linking the public demo run (synthelabs/support-bot pull request #7). No stat cards.
+- **Never say** certified, guaranteed, "proven to improve"; no customers, logos, prices, SLAs, dates or plans.
+- **Only our own numbers, and only through `facts.json`** (section 9), each with its source under `_manual`. Keep them few.
+- **Homepage budget:** about one screen at 1440x900 and under 200 words of visible text.
 
 ## 2. Color system
 
@@ -299,13 +303,12 @@ Every page follows the same pattern. To add dark mode to a new page, copy it exa
 
 | Page | What it is |
 |---|---|
-| `/` (index) | Homepage, about 6 screens (section 0) |
-| `how.html` | How it works: setup, each hour, what it keeps and undoes, the morning report, while it runs, what it doesn't test |
-| `docs.html` | Quickstart, the files it adds, synthe.json, test cases, commands, review mode, removal |
-| `status.html` | Limits and your data: status, limits, where the prompt and key go, this site's data, security contact |
-| `log.html` | Changelog of the new product's releases (older entries are in git history) |
+| `/` (index) | One-screen homepage (section 0) |
+| `docs.html` | Short quickstart: what you need, `npx synthe init`, commands, stop or remove, link to the README |
+| `status.html` | Limits and your data: status, limits, your data, this site, security contact |
+| `log.html` | Changelog, user-visible changes only |
 | `404.html` | Not-found page (noindex) |
-| anatomy, benchmarks, forge, integrations, playground, quiz, race, receipts, tamper, use-cases | Retired commit-barrier pages: noindex, archived note, out of nav, sitemap and llms.txt. Their numbers still come from the `checker_*`/`beta_*` facts |
+| anatomy, benchmarks, forge, how, integrations, playground, quiz, race, receipts, tamper, use-cases | Retired commit-barrier pages: noindex, archived note, out of nav, sitemap and llms.txt. Their numbers still come from the `checker_*`/`beta_*` facts |
 
 ## 11. Pitfalls checklist (check before shipping)
 

@@ -36,13 +36,12 @@ HEADER = f"""<header class="site-head">
         <a class="wordmark" href="/">{mark("mark wordmark-logo open")}Synthe</a>
         <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="topnav">Menu</button>
         <nav class="topnav" id="topnav" aria-label="Main">
-          <a href="/how.html">How it works</a>
           <a href="/docs.html">Docs</a>
           <a href="/status.html">Limits</a>
-          <a href="/#partner">For companies</a>
+          <a href="/#partner">Contact</a>
           <a href="https://github.com/synthelabs/synthe">GitHub</a>
           <button class="themeswitch" id="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Dark mode" title="Dark mode">{SUN}{MOON}</button>
-          <a class="nav-cta" href="/#start">{mark("mark open", box="-40 -40 355 370")}Get started</a>
+          <a class="nav-cta" href="/docs.html">{mark("mark open", box="-40 -40 355 370")}Get started</a>
         </nav>
       </header>"""
 
@@ -50,11 +49,10 @@ FOOTER = f"""<footer class="site-foot">
         <p class="footer-brand">{mark("footer-logo", half=False)}Synthe</p>
         <p class="footer-line">Self-improving AI agents. You say what good looks like. Synthe tests changes overnight and keeps only what wins.</p>
         <nav class="footer-nav" aria-label="Footer">
-          <a href="/how.html">How it works</a>
           <a href="/docs.html">Docs</a>
           <a href="/status.html">Limits and your data</a>
           <a href="/log.html">Changelog</a>
-          <a href="/#partner">Pilot it on your production agent</a>
+          <a href="/#partner">Contact</a>
           <a href="https://github.com/synthelabs/synthe">GitHub</a>
           <a href="https://www.npmjs.com/package/synthe">npm</a>
         </nav>
@@ -62,7 +60,7 @@ FOOTER = f"""<footer class="site-foot">
         <p class="colophon">From the Greek <em>synthēkē</em>, meaning agreement.</p>
       </footer>"""
 
-CURRENT = {"how.html": "/how.html", "status.html": "/status.html", "docs.html": "/docs.html"}
+CURRENT = {"status.html": "/status.html", "docs.html": "/docs.html"}
 PRELOAD = re.compile(r'\s*<link rel="preload" href="/fonts/fraunces-[^"]+" as="font" type="font/woff2" crossorigin />')
 
 for page in sorted(site.glob("*.html")):

@@ -4,29 +4,13 @@
 
 ## What Synthe is
 
-Synthe improves an AI agent's system prompt while the team is away. It runs in the agent's own GitHub repo, tests small changes to the prompt against the current one on simulated user messages, and keeps a change only when it is clearly better on the team's own checks. It either merges the change into the default branch or opens a pull request for review; the team chooses at setup.
+Synthe makes an AI agent better while the team is away. Every hour it tries small changes to the agent's system prompt, tests them, and keeps only clear wins, either merging them into the default branch or opening a pull request for review (the team chooses at setup). In the morning the team reads a report in its GitHub repo that says what changed, why, and how to undo it.
 
-Source: https://github.com/synthelabs/synthe (Apache-2.0). Package: `synthe` on npm (version 1.5.0 as of November 2, 2026).
+Source: https://github.com/synthelabs/synthe (Apache-2.0). Package: `synthe` on npm. The README there is the full reference; this site deliberately stays brief.
 
 ## Setup
 
-Run `npx synthe init` in the repo, on the default branch. It needs a GitHub repo the user can admin with the agent's system prompt in it (its own file, or a string in code, up to 20,000 characters), the GitHub CLI signed in, Node 20 or later, and a Synthe key (at the Crimson Hacks hackathon, keys with $3 of credit come from the Synthe table).
-
-Setup finds the prompt, reads the README and the code around the prompt and writes a short brief, asks what the agent should get better at, optionally takes up to 5 real user messages, writes 30 test messages (20 to learn from, 10 kept hidden), proposes 3 checks (plain yes or no sentences such as "Asks for the order number before anything else") that the team confirms or rewrites (up to 5), and asks for automatic merges or review pull requests. It commits 3 files: `synthe.json`, `.synthe/scenarios.jsonl` and `.github/workflows/synthe.yml`, and saves the key as the repo secret `SYNTHE_ANTHROPIC_KEY`.
-
-## Each hour
-
-1. Claude Sonnet proposes 2 small edits to the prompt, aimed at the test messages where it does worst.
-2. Replies to the test messages are generated with the current prompt and with each edit (Claude Haiku).
-3. An AI marks each reply against the team's checks. On each message the reply that passes more checks wins; an AI judge breaks ties.
-4. A change is kept only if it wins clearly more messages than it loses (one-sided sign test, p <= 0.05, ties excluded), is better again on the hidden messages, and breaks none of the team's rules where the old prompt followed them.
-5. If a kept change later does worse than the prompt it replaced, Synthe restores the old prompt.
-
-A run has at most 12 rounds, stops after 3 rounds in a row with no winner, and stops when it has used its $3 budget.
-
-## In the morning
-
-The issue "Synthe: overnight prompt report" says what changed, why, and how to undo it, leading with how often the team's checks passed before and after. Each change is a pull request with its diff, wins and losses, a before and after reply, and fingerprints of what was tested.
+Needs a GitHub repo the user can admin with the agent's system prompt in it (its own file or a string in code), the GitHub CLI signed in, Node 20 or later, and a Synthe key. Run `npx synthe init` in the repo, on the default branch.
 
 ## Commands
 
@@ -34,30 +18,19 @@ The issue "Synthe: overnight prompt report" says what changed, why, and how to u
 - `npx synthe status`: show where it is
 - `npx synthe stop`: stop; nothing more runs or changes
 - `npx synthe restart`: start again
-- `npx synthe try`: one round locally, changing nothing
-- `npx synthe try --noise`: compare the prompt with itself to see how much the judging varies
-- Coming in the next release (not released): `npx synthe calibrate`, to check that checks are marked consistently and as the team means them.
+- `npx synthe try`: try it once locally, changing nothing
 
 ## Limits
 
-- Test messages are simulated and single-turn, not real users or conversations.
-- The agent's tools and code are not run; only the prompt is.
-- Replies are generated with Claude Haiku even if the app uses another model.
-- Checks are marked by an AI.
-- Automatic merges go to the default branch; if it deploys, each change goes live. Review mode avoids that.
-- It only edits the prompt. A better score is a strong hint, not proof of how real users will react.
+Tests are simulated and only the prompt changes; the team's code and tools are never run. Teams should check the results themselves. Automatic merges land on the default branch, so teams whose default branch deploys should choose review. A run's spend is capped by its budget.
 
 ## Data
 
-Synthe has no server of its own. Setup runs on the user's machine and the hourly job in the repo's GitHub Actions. The prompt, README, code around the prompt, goal, checks and test messages are sent to Anthropic's API with the user's key; everything else goes only to GitHub.
+Synthe has no server of its own. Setup runs on the user's machine and the hourly job in the repo's GitHub Actions. The prompt, README, the code around the prompt and the test messages go to Anthropic's API with the user's key; everything else goes only to GitHub.
 
-## Public proof
+## Public demo
 
-https://github.com/synthelabs/support-bot is a demo store support bot that starts with a weak prompt on purpose. Synthe's pull request #7 there was better in 20 test messages and worse in 4, then better in 11 and worse in 0 on the hidden messages, and cut rule breaks from 4 to 0. Its overnight report is issue #3. These are simulated tests judged by AI.
-
-## Coming (design-partner beta, no dates promised)
-
-Learning from real production metrics (for example from observability tools) and testing against real traffic. Teams can ask to pilot it at https://synthe.live/#partner.
+https://github.com/synthelabs/support-bot is a demo store bot whose prompt Synthe improved overnight, in public (pull request #7).
 
 ## Who builds it
 
