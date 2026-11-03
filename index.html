@@ -70,45 +70,69 @@
   ]
 }
     </script>
-    <link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/site.css?v=ea4ab7d4" />
-    <script src="/site.js?v=7b2917d4" defer></script>
+    <link rel="preload" href="/fonts/archivo-normal-62-125-100-900-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/site.css?v=7b6c8326" />
+    <script src="/site.js?v=8815e33c" defer></script>
     <style>
       .page { padding: 0; }
-      .page > .site-foot { max-width: 1120px; margin-left: auto; margin-right: auto; padding-left: 24px; padding-right: 24px; }
-      .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
-      main { font-size: 18px; line-height: 1.6; }
+      .page > .site-foot { max-width: 1160px; margin-left: auto; margin-right: auto; padding-left: 24px; padding-right: 24px; }
+      .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+      main { font-size: 16px; line-height: 1.5; }
       a { color: inherit; }
       code { font-family: var(--mono); }
-      .textlink { color: var(--human-text); font-weight: 500; text-decoration: none; border-bottom: 1px solid currentColor; }
-      .textlink:focus-visible, .copy:focus-visible { outline: 2px solid var(--human); outline-offset: 2px; }
+      .copy:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
-      .hero { position: relative; overflow: hidden; padding: 72px 0 64px; }
-      .hero .wrap { position: relative; z-index: 1; display: grid; grid-template-columns: 1.2fr .8fr; gap: 56px; align-items: center; }
-      @media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; gap: 40px; } .hero { padding: 44px 0 48px; } }
-      .hero h1 { font-size: clamp(36px, 4.8vw, 56px); line-height: 1.05; margin: 12px 0 20px; max-width: 12em; }
-      .lede { font-size: clamp(18px, 1.6vw, 20px); color: var(--ink-soft); margin: 0 0 24px; max-width: 32em; }
-      .motto { display: block; color: var(--ink); font-weight: 600; margin-bottom: 4px; }
-      .startrow { display: flex; gap: 12px; flex-wrap: wrap; align-items: stretch; max-width: 32em; }
-      .cmd { flex: 1 1 240px; display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--line); padding: 8px 8px 8px 16px; font: 16px/1.5 var(--mono); min-width: 0; }
-      .cmd code { flex: 1; white-space: pre; overflow-x: auto; }
-      .copy { display: inline-flex; align-items: center; gap: 8px; background: none; border: 1px solid var(--line2); color: var(--ink); font: 500 13px var(--mono); padding: 8px 8px; cursor: pointer; flex: none; }
+      /* Hero: the pitch on the left, the record of an example night on the right. */
+      .hero { padding: 56px 0 0; }
+      .hero-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 56px; align-items: center; }
+      @media (max-width: 900px) { .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; } .hero { padding-top: 40px; } }
+      .hero h1 { font-size: clamp(36px, 4.4vw, 60px); line-height: 1.02; margin: 16px 0 20px; max-width: 13em; }
+      .lede { font-size: 18px; line-height: 1.55; color: var(--muted); margin: 0 0 24px; max-width: 34em; }
+      .motto { color: var(--ink); font-weight: 650; }
+      .startrow { display: flex; gap: 12px 24px; flex-wrap: wrap; align-items: center; }
+      .cmd { display: flex; align-items: center; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 4px 4px 4px 16px; font: 16px/1.5 var(--mono); min-width: 0; max-width: 100%; }
+      .cmd .prompt { color: var(--muted); }
+      .cmd code { white-space: pre; overflow-x: auto; padding: 0 12px 0 4px; }
+      .copy { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; background: var(--ink); border: 0; border-radius: var(--radius); color: var(--bg); font: 600 14px var(--sans); padding: 0 16px; cursor: pointer; flex: none; }
       .copy .mark { width: 14px; height: 15px; }
-      .copy.done { border-color: var(--ok); color: var(--ok); }
-      .lines { margin: 20px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; max-width: 34em; font-size: 16px; color: var(--muted); }
-      .lines .warn { border-left: 2px solid var(--human); padding-left: 12px; color: var(--ink-soft); }
+      .copy .mark .a { fill: var(--bg); }
+      .startrow .textlink { font-size: 16px; padding: 12px 0; }
 
-      .contact { background: var(--card); border: 1px solid var(--line); padding: 28px 24px 24px; clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 29px, 100% 100%, 0 100%); }
-      .contact h2 { font-size: 24px; line-height: 1.2; margin: 0 0 16px; }
-      .partner-form { display: grid; gap: 12px; }
-      .partner-form label { font-size: 14px; font-weight: 600; }
-      .partner-form input[type="email"] { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg); border: 1px solid var(--line2); padding: 12px 12px; }
-      .partner-form input:focus-visible { outline: 2px solid var(--human); outline-offset: 2px; }
-      .partner-form .btn2 { justify-self: start; }
+      /* The record: an example night, one row per change tried. Kept rows carry a filled gold dot; color is never the only signal. */
+      .record { margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; }
+      .record-head, .record-foot { display: flex; justify-content: space-between; gap: 16px; padding: 12px 20px; font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+      .record-head { border-bottom: 1px solid var(--line); }
+      .record ol { list-style: none; margin: 0; padding: 0; }
+      .record li { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 4px 12px; align-items: baseline; padding: 12px 20px; border-bottom: 1px solid var(--line); }
+      .record time { font: 13px var(--mono); color: var(--muted); }
+      .record .change { font-size: 16px; }
+      .record .result { display: inline-flex; align-items: center; gap: 8px; font: 500 13px var(--mono); color: var(--muted); white-space: nowrap; }
+      .record .result::before { content: ""; width: 12px; height: 12px; border-radius: 50%; box-sizing: border-box; border: 2px solid var(--muted); }
+      .record .kept .result { color: var(--ink); }
+      .record .kept .result::before { background: var(--gold-fill); border-color: var(--gold); }
+      .record-foot { text-transform: none; letter-spacing: 0; font: 14px var(--sans); color: var(--muted); align-items: center; }
+      .record-foot strong { color: var(--ink); font-weight: 650; }
+      .record-foot time { font: 13px var(--mono); margin-right: 12px; }
+      @media (max-width: 480px) { .record li { grid-template-columns: 40px minmax(0, 1fr); } .record .result { grid-column: 2; } .record-head, .record-foot, .record li { padding-left: 16px; padding-right: 16px; } }
+
+      /* Three short lines: merges, limits, the public run. */
+      .notes { list-style: none; margin: 48px 0 0; padding: 20px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 40px; font-size: 16px; }
+      @media (max-width: 900px) { .notes { grid-template-columns: minmax(0, 1fr); margin-top: 40px; } }
+      .notes .label { display: block; font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+      .notes .warn .label::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--gold-fill); margin-right: 8px; vertical-align: 1px; }
+
+      /* Contact: one line, one field. */
+      .contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 12px 40px; align-items: end; padding: 28px 0 0; }
+      @media (max-width: 900px) { .contact { grid-template-columns: minmax(0, 1fr); } }
+      .contact h2 { font-size: 24px; line-height: 1.2; margin: 0; }
+      .partner-form { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: end; }
+      .partner-form .field { display: grid; gap: 4px; flex: 1 1 240px; }
+      .partner-form label { font-size: 14px; color: var(--muted); }
+      .partner-form input[type="email"] { font: inherit; font-size: 16px; color: var(--ink); background: var(--card); border: 1px solid var(--muted); border-radius: var(--radius); min-height: 44px; padding: 0 12px; box-sizing: border-box; }
+      .partner-form input:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
       .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-      .trynote { font-size: 14px; color: var(--muted); margin: 12px 0 0; }
+      .trynote { font-size: 14px; color: var(--muted); margin: 0; grid-column: 1 / -1; }
       .trynote:empty { display: none; }
-      /* Staggered headline reveal (CSS-only). */ .hero h1.stagger .w{display:inline-block;white-space:nowrap}.hero h1.stagger .ch{display:inline-block;opacity:0;transform:translateY(.45em);animation:ch-rise .65s var(--ease-out) forwards;animation-delay:calc(150ms + var(--i)*24ms)}@keyframes ch-rise{to{opacity:1;transform:translateY(0)}}@media (prefers-reduced-motion:reduce){.hero h1.stagger .ch{animation:none;opacity:1;transform:none}}
     </style>
     <script>
       /* theme and motion: set before first paint to avoid a flash. The js class turns on
@@ -130,16 +154,6 @@
       <defs>
         <path id="hA" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/>
         <path id="hB" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/>
-        <g id="mk0" style="fill:var(--ink)"><use href="#hA"/><use href="#hB"/></g>
-        <g id="mk1"><use href="#hA" style="fill:var(--agent)"/><use href="#hB" style="fill:var(--human)"/></g>
-        <pattern id="lat" width="520" height="560" patternUnits="userSpaceOnUse" patternTransform="scale(.3)">
-          <use href="#mk0" transform="translate(10 10)"/><use href="#mk0" transform="translate(270 290)"/>
-          <use href="#mk0" transform="translate(-250 290)"/><use href="#mk0" transform="translate(270 -270)"/><use href="#mk0" transform="translate(-250 -270)"/>
-        </pattern>
-        <pattern id="latg" width="520" height="560" patternUnits="userSpaceOnUse" patternTransform="scale(.3)">
-          <use href="#mk1" transform="translate(10 10)"/><use href="#mk1" transform="translate(270 290)"/>
-          <use href="#mk1" transform="translate(-250 290)"/><use href="#mk1" transform="translate(270 -270)"/><use href="#mk1" transform="translate(-250 -270)"/>
-        </pattern>
       </defs>
     </svg>
     <div class="page">
@@ -157,34 +171,47 @@
       </header>
     <main id="main">
       <div class="hero">
-        <svg class="lattice" aria-hidden="true"><rect width="100%" height="100%" fill="url(#lat)"/></svg>
-        <div class="lattice-glow" aria-hidden="true"><svg><rect width="100%" height="100%" fill="url(#latg)"/></svg></div>
         <div class="wrap">
-          <div id="start">
-            <p class="eyebrow">Self-improving AI agents</p>
-            <h1 class="stagger"><span class="sr-only">Your AI agent gets better while you sleep.</span><span class="w" aria-hidden="true"><span class="ch" style="--i:0">Y</span><span class="ch" style="--i:1">o</span><span class="ch" style="--i:2">u</span><span class="ch" style="--i:3">r</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:4">A</span><span class="ch" style="--i:5">I</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:6">a</span><span class="ch" style="--i:7">g</span><span class="ch" style="--i:8">e</span><span class="ch" style="--i:9">n</span><span class="ch" style="--i:10">t</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:11">g</span><span class="ch" style="--i:12">e</span><span class="ch" style="--i:13">t</span><span class="ch" style="--i:14">s</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:15">b</span><span class="ch" style="--i:16">e</span><span class="ch" style="--i:17">t</span><span class="ch" style="--i:18">t</span><span class="ch" style="--i:19">e</span><span class="ch" style="--i:20">r</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:21">w</span><span class="ch" style="--i:22">h</span><span class="ch" style="--i:23">i</span><span class="ch" style="--i:24">l</span><span class="ch" style="--i:25">e</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:26">y</span><span class="ch" style="--i:27">o</span><span class="ch" style="--i:28">u</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:29">s</span><span class="ch" style="--i:30">l</span><span class="ch" style="--i:31">e</span><span class="ch" style="--i:32">e</span><span class="ch" style="--i:33">p</span><span class="ch" style="--i:34">.</span></span></h1>
-            <p class="lede"><span class="motto">You say what good looks like. Synthe tests changes overnight and keeps only what wins.</span> It works on your agent's prompt, in your own GitHub repo, while you're away. In the morning, a report says what changed and why.</p>
-            <div class="startrow">
-              <div class="cmd"><code>npx synthe init</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div>
-              <a class="btn2 primary" href="/docs.html"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg>Get started</a>
+          <div class="hero-grid">
+            <div id="start">
+              <p class="eyebrow">Self-improving AI agents</p>
+              <h1>Your AI agent gets better while you sleep.</h1>
+              <p class="lede"><span class="motto">You say what good looks like. Synthe tests changes overnight and keeps only what wins.</span> It works on your agent's prompt, in your own GitHub repo, while you're away. In the morning, a report says what changed and why.</p>
+              <div class="startrow">
+                <div class="cmd"><span class="prompt" aria-hidden="true">$</span><code>npx synthe init</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div>
+                <a class="textlink" href="/docs.html">Get started</a>
+              </div>
             </div>
-            <ul class="lines">
-              <li class="warn">Automatic merges land on your default branch. If it deploys your app, choose review.</li>
-              <li>Tests are simulated and only the prompt changes, so check the results yourself. <a class="textlink" href="/status.html">Limits</a></li>
-              <li>See a public run: <a class="textlink" href="https://github.com/synthelabs/support-bot/pull/7">a demo store bot's prompt, improved overnight</a>.</li>
-            </ul>
+            <figure class="record" aria-labelledby="record-h">
+              <figcaption class="record-head"><span id="record-h">Example night</span><span>Your prompt</span></figcaption>
+              <ol>
+                <li><time>11pm</time><span class="change">Greet in one short line</span><span class="result">not kept</span></li>
+                <li class="kept"><time>12am</time><span class="change">Ask for the order number first</span><span class="result">kept</span></li>
+                <li class="kept"><time>2am</time><span class="change">Offer an exchange when a return is refused</span><span class="result">kept</span></li>
+                <li><time>4am</time><span class="change">End every reply with a summary</span><span class="result">not kept</span></li>
+                <li class="kept"><time>6am</time><span class="change">Quote the return policy, not a guess</span><span class="result">kept</span></li>
+              </ol>
+              <p class="record-foot"><span><time>7am</time><strong>Morning report</strong> opens in your repo</span></p>
+            </figure>
           </div>
+          <ul class="notes">
+            <li class="warn"><span class="label">Merges</span>Automatic merges land on your default branch. If it deploys your app, choose review.</li>
+            <li><span class="label">Limits</span>Tests are simulated and only the prompt changes, so check the results yourself. <a class="textlink" href="/status.html">Limits</a></li>
+            <li><span class="label">Public run</span>See a public run: <a class="textlink" href="https://github.com/synthelabs/support-bot/pull/7">a demo store bot's prompt, improved overnight</a>.</li>
+          </ul>
           <section class="contact" id="partner" aria-labelledby="partner-h">
             <h2 id="partner-h">Using AI agents in production? Talk to us.</h2>
             <form class="partner-form" id="partner-form" action="mailto:rohansiddam@synthe.live?subject=Hello%20from%20synthe.live" method="post" enctype="text/plain" data-formspree="" data-fallback-email="rohansiddam@synthe.live">
-              <label for="partner-email">Work email</label>
-              <input type="email" id="partner-email" name="email" placeholder="you@company.com" required autocomplete="email" maxlength="254" />
+              <div class="field">
+                <label for="partner-email">Work email</label>
+                <input type="email" id="partner-email" name="email" placeholder="you@company.com" required autocomplete="email" maxlength="254" />
+              </div>
               <div class="hp" aria-hidden="true">
                 <label for="partner-company">Leave this empty</label>
                 <input type="text" id="partner-company" name="_gotcha" tabindex="-1" autocomplete="off" />
               </div>
               <input type="hidden" name="_subject" value="Hello from synthe.live" />
-              <button class="btn2 primary" type="submit" id="partner-submit">Talk to us</button>
+              <button class="btn2" type="submit" id="partner-submit">Talk to us</button>
             </form>
             <p class="trynote form-note" id="partner-note" role="status" aria-live="polite"></p>
             <p class="trynote">This opens your email app with a note ready to send. Nothing is stored or sent on its own. Or email <a class="textlink" href="mailto:rohansiddam@synthe.live">rohansiddam@synthe.live</a>.</p>

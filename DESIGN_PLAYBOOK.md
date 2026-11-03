@@ -2,30 +2,26 @@
 
 How synthe.live looks, why it looks that way, and the exact tokens and patterns to use when changing it. Read this before touching any page, and run `python3 tools/check_site.py` before you ship.
 
-## 0. The 2026-10 redesign (this section wins over anything older below)
+## 0. "The Record" (2026-11-02; this section wins over anything older below)
 
-The site moved from an archival, editorial look to a product site built on one idea: **the mark is the system.** The logo is two identical hooked halves, one turned 180 degrees, that interlock to form the S. The agent's half (ink) proposes; your half (coral) approves; a change ships only when both lock. *Synthe* comes from *synthēkē*, agreement.
+The site moved from the commit-barrier look (sand, coral, cut corners, the hooked-halves lattice) to **The Record**: an almanac page where every change your agent tries is a line in the book, and only clear wins are marked. It comes from the design direction v3 brief, taken for its look only: no scores, standings numbers, scroll stories or motion pieces, because the site stays brief and shows no internals (section 1b).
 
-- **One palette, defined once.** `site.css` sets every token under `html:root` (and `html:root[data-theme=...]`), which outranks the `:root` blocks pages still carry. The old page names (`--cream`, `--ink`, `--rust`...) map onto it. New pages use the new names: `--bg --bg2 --card --line --line2 --ink --ink-soft --muted --faint --agent --human --human-text --human-bg --ok --mode`.
-- **Two colors carry meaning, never decoration.** `--agent` (ink) is always the agent or a proposal; `--human` (coral) is always the person or an approval. Locked, both. Don't use coral for emphasis words in headings (the old italic accent is switched off globally).
-- **Type:** Hanken Grotesk for everything, headings 650; IBM Plex Mono for code, eyebrows and labels (sentence case, no letter-spacing). The serif is gone: the name `Fraunces` now resolves to Hanken in `site.css`, so older page styles render in the new face. Don't preload Fraunces.
-- **The mark as state:** `.mark` with `.half.a` / `.half.b`. `open` = waiting, no class = locked (committed), `refused` = coral outline pushed apart, `stale` = dashed. Used for: the header logo (locks on load), the hero's propose, approve, commit sequence, the receipt chain, Install buttons and Copy buttons (lock on success).
-- **The slot angle (53 degrees),** the gap between the halves, is the site's only diagonal: `.slot` section dividers, the cut corner on buttons, cards and the hero card (`clip-path`), bullet ticks, the joints of the receipt chain. No other angles, no pill radii on new components.
-- **The lattice:** whole brand marks in an offset grid (an SVG pattern with corner copies so no mark is cut), fading in from the right, behind the hero only. `site.js` adds a soft glow under the cursor (`.lattice-glow`, hover-capable pointers only, never with reduced motion). The old wavy-line and circle watermark is switched off globally.
-- **Theme switch:** `.themeswitch`, a sun and a moon with the current mode filled (`role="switch"`, `aria-checked`, a title that says which mode is on). It is a setting, so it does not look like the logo; the mark stays the brand. Its state is read from `--mode`, so it is right before any choice is saved.
-- **Chrome:** header = logo lockup (gap 7px), Docs, Limits (`status.html`), Contact (`/#partner`), GitHub (synthelabs/synthe), the theme switch, and the one call to action, **Get started** (`/docs.html`). (Changed 2026-11-02.)
-- **Homepage (about one screen, since 2026-11-02):** hero with headline, motto, one paragraph, `npx synthe init` with Get started, three one-line notes (review warning, limits, demo run), and the contact card with the form. No FAQ, no animation, no sections below. (Section 12's six-screen story described the retired product.)
-- **One type scale, one grid (CI enforces both).** Pixel font sizes come from 11, 12, 13, 14, 16, 18, 20, 24 and 32; fluid display sizes use `clamp()`. Every padding, margin and gap in px is a multiple of 4 (1 and 2 are for hairlines). `tools/check_site.py` fails on anything else, in `site.css`, in a page's `<style>` and in inline styles.
-- **Integrations and Use cases pages.** They state status per item and never round up: **Verified** (run end to end on a real machine, recorded), **Preview** (built and tested in pieces), **Example** (a setup guide, not run here). Numbers come from `facts.json` through `data-fact`. Neither page names the MCP server, the A2A adapter or the Lab (held topics), shows price or logos, or claims a customer. Both say plainly that nobody outside the team has run the install unaided yet. Update a status only when the evidence in the repo changes.
-- **Motion rules stand:** every animation has a still state under `prefers-reduced-motion`; nothing auto-loops; color is never the only signal (broken links also go dashed).
+- **One palette, defined once** in `site.css` under `html:root` (and `html:root[data-theme=...]`), which outranks the `:root` blocks archived pages still carry. Old names (`--cream`, `--rust`, `--human`...) map onto it, so archived pages follow without being rewritten.
+- **Gold is a marker, never a fill and never body text.** `--gold` is for underlines, rules, the current-page bar and the bottom half of the mark (3.5:1 on paper, enough for graphics); `--gold-fill` for small dots (a kept change, the merge warning); `--gold-text` only when gold must be text (it passes AA). Buttons are ink. The moment gold floods a surface the look turns into crypto and premium finance.
+- **Type:** Archivo (self-hosted variable font, widths 62 to 125) for everything. Headlines are set wide and heavy: `h1` 800 at `font-stretch: 118%`, `h2` 700 at 110%. IBM Plex Mono for record lines: the command, times, small uppercase labels (12 to 13px, letter-spacing 0.06 to 0.08em, `--muted`). Hanken Grotesk survives only in the wordmark, to match the official lockup.
+- **Shapes:** hairline borders (`--line`), radius `--radius` (8px) on buttons and inputs, `--radius-lg` (12px) on panels. No cut corners, no slot diagonals, no lattice on live pages (the old classes stay in `site.css` for archived pages).
+- **The record** (homepage): a panel headed "Example night" with one row per change tried: mono time, the change in plain words, and the result as a word plus a dot (filled gold = kept, open = not kept), ending on "7am, Morning report". It is labelled an example, carries no numbers, and color is never the only signal. It is the only illustration on the site.
+- **Chrome:** header = logo lockup, Docs, Limits (`status.html`), Contact (`/#partner`), GitHub, the theme switch, and the one call to action, **Get started** (`/docs.html`). The current page gets a 2px gold underline.
+- **Homepage (about one screen, under 200 words):** eyebrow, headline, motto and paragraph on the left; the record on the right; `npx synthe init` with Copy and a Get started link; three labelled notes (Merges, Limits, Public run); a one-line contact form. No FAQ, no animation beyond the logo locking on load.
+- **One type scale, one grid (CI enforces both).** Pixel font sizes come from 11, 12, 13, 14, 16, 18, 20, 24 and 32; display sizes use `clamp()`. Every padding, margin and gap in px is a multiple of 4 (1 and 2 are for hairlines).
+- **No sideways scroll.** Full-bleed bands (the header, the "On this page" bar) use `100vw` corrected by `--sbw`, the scrollbar width `site.js` measures, and `html` has `overflow-x: clip` as a guard. Before 2026-11-02 the header overflowed by 8px at 1440 with a classic scrollbar.
+- **Motion rules stand:** every animation has a still state under `prefers-reduced-motion`; nothing auto-loops.
 
 ## 1. Design philosophy
 
-The site's framing is **Archival Ledger & Notary Stamp**: a warm paper archive where agent actions get notarized. Think bank ledger, rubber stamps, security paper, not a SaaS dashboard.
-
-- **Weight over wackiness.** One signature interaction exists: the ACCEPT/REJECT stamp slam. Everything else is quiet paper and ink.
-- **Paper, not glass.** No glassmorphism, no gradients-as-decoration, no neon. Depth comes from borders, radius, and subtle shadow.
-- **Honesty is a visual feature.** Demos are labeled as demos. Sample data is labeled as sample data. Proof claims link to their receipts. Never render anything that implies live production usage.
+- **Calm and checkable.** One neutral page, one ink, one accent spent only on proof moments (a kept change, the merge warning, the current page). Everything else is paper and ink.
+- **The product is the imagery.** The only picture is a plain record of what Synthe does overnight, labelled as an example. No illustration, stock, dashboards, logos or stat cards.
+- **Honesty is a visual feature.** Examples are labelled as examples. Never render anything that implies customers, usage or results we can't point to.
 
 ## 1b. What the site says
 
@@ -54,99 +50,63 @@ Rules:
 
 ## 2. Color system
 
-All colors go through CSS variables. Never hardcode a hex in a component; use the token.
+All colors go through CSS variables in `site.css`. Never hardcode a hex in a page.
 
-### Light mode (`:root`)
-
-The site's paper side: warm sand backgrounds, brick-red brand accent, forest success.
+### Light mode (the almanac page)
 
 | Token | Value | Role |
 |---|---|---|
-| `--cream` | `#f5efe2` | Page background (sand) |
-| `--cream-deep` | `#e9dfc8` | Alt background, wells, code chips |
-| `--card` | `#fbf7ec` | Card surfaces (lifted off the page) |
-| `--ink` | `#2b2118` | Primary text (bark) |
-| `--ink-soft` | `#4e4436` | Secondary text |
-| `--muted` | `#675c4c` | Muted text, nav links |
-| `--line` | `#dacdaf` | Borders, rules, dividers |
-| `--rust` | `#8a1919` | Primary accent = brick (links, eyebrows, hovers) |
-| `--rust-deep` | `#6b1212` | Deep brick (large brand fills) |
-| `--green` | `#286920` | Success = forest. Text, stamps, small indicators |
-| `--green-soft` | `#e3ebda` | Success tint background |
-| `--red-soft` | `#f5dfe3` | Danger tint background (rose, not peach) |
-| `--red` | `#a3213e` | Error crimson: REJECT text, stamps, fail ticks, tampered fields. Hue 347, far from the coral accent (hue 8), so an error never reads as the brand. 6.5:1 on the page |
+| `--bg` | `#faf8f1` | Page (almanac paper) |
+| `--bg2` | `#f2eee2` | Wells, inline code |
+| `--card` | `#ffffff` | Panels, the command box, inputs |
+| `--line` / `--line2` | `#e3ddce` / `#cfc7b4` | Hairlines / control borders |
+| `--ink` | `#171410` | Text, buttons, the top half of the mark |
+| `--ink-soft` | `#3a352c` | Body text on docs pages |
+| `--muted` / `--faint` | `#6b6455` | Secondary text, labels, dates (5.5:1 on paper) |
+| `--gold` | `#a97b00` | Underlines, rules, current page, bottom half of the mark. Graphics only (3.5:1) |
+| `--gold-fill` | `#e8b90f` | Small dots: kept, the merge warning |
+| `--gold-text` | `#7a5900` | Gold as text, when unavoidable (AA) |
+| `--ok` / `--red` | `#177245` / `#b0352a` | Data only, always with a word or symbol |
 
-Pages also define `--mono` and terminal tokens (`--term-bg: #2b2118`, `--term-cream: #f0e6d2`, `--term-green: #7fb069`, `--term-amber: #d99a5b`). All pages share one token set; no page-level overrides.
+### Dark mode (the night match)
 
-### Dark mode (`html[data-theme="dark"]`)
+| Token | Value |
+|---|---|
+| `--bg` / `--bg2` / `--card` | `#0b0c0a` / `#11120f` / `#151511` |
+| `--line` / `--line2` | `#262620` / `#393830` |
+| `--ink` / `--ink-soft` / `--muted` | `#f4f2ea` / `#d8d4c8` / `#a39c8b` |
+| `--gold` / `--gold-fill` / `--gold-text` / `--gold-mark` | `#d9a91f` / `#f0c420` / `#d9a91f` / `#f0c420` |
+| `--ok` / `--red` | `#3fb97f` / `#e0684f` |
 
-The **Stark** theme: the archive after dark. Neutral charcoal, not blue-gray and not brown. Same token names, inverted values; the brand accent flips from brick to signal red in dark mode.
+Dark mode follows the system until the visitor picks one with the theme switch.
 
-| Token | Value | Role |
-|---|---|---|
-| `--cream` | `#0e0d0c` | Page background (neutral charcoal) |
-| `--cream-deep` | `#161513` | Alt background, wells |
-| `--card` | `#1a1917` | Card surfaces |
-| `--ink` | `#f2ede4` | Primary text (warm paper white) |
-| `--ink-soft` | `#d6cec0` | Secondary text |
-| `--muted` | `#a8a094` | Muted text, nav links |
-| `--line` | `#38352f` | Borders, rules, dividers |
-| `--rust` | `#ec5358` | Primary accent = signal red (links, eyebrows, hovers) |
-| `--rust-deep` | `#ef6a52` | Deep variant (rare fills) |
-| `--green` | `#7fb069` | Success = moss. Text, stamps, small indicators |
-| `--green-soft` | `#161d17` | Success tint background |
-| `--red-soft` | `#2a161b` | Danger tint background |
-| `--red` | `#f2607e` | Error crimson: REJECT text, stamps, fail ticks, tampered fields (hue 348; at least 5.4:1 on dark surfaces) |
+### Hard rules
 
-### Hard rules learned the painful way
-
-1. **Never use `rgba(255,255,255,X)` for a card background.** On light mode it reads as paper; in dark mode it renders as washed-out gray mush. Use `var(--card)` for every card, always.
-2. **Async validators must always resolve promises.** `validateHandoff` once returned a plain object on its early sender-failure path, so `.then()` threw and the playground's "stranger" attack silently died. Every direct return is now `Promise.resolve(...)`.
-3. **Large brand fills stay deep brick in both modes.** Hardcode `background: #6b1212` (never a theme token) on large filled areas like the proof panel and "With Synthe" cards, so no dark-mode override is needed at all.
-4. **`--green` is for text, stamps, and small indicators only.** Small ACCEPT fills and pips use `var(--green)` (forest in light, moss in dark); never paint a large surface green in either mode. `--green-soft` is fine as a tint (the race outcome box).
-5. **Terminal blocks are already dark.** Leave `--term-*` untouched in dark mode.
-6. **White overlays are only for already-dark surfaces** (floating pills, dark bands). If the surface adapts to the theme, the overlay must too.
-7. **Demos keep their own state.** A demo attack must never change another attack's verdict. The forge's replay attack once wrote to a page-wide ledger; it now uses its own.
-8. **Every color has one job, and errors are never the brand (since 2026-10-18).** Coral (`--human`, the human half of the mark) is the brand and the human's decision. Ink is the agent and the highest-commitment button. Green is accepted and verified. Crimson (`--red`) is refused, failed or tampered, and nothing else: a refusal must never look like a brand moment. Tampered fields and broken chain links take `--red`, not the accent. Before 2026-10-18 the error red (`#b3401f`, hue 13) sat on top of the coral accent (`#b5402f`, hue 8); the brand research (Monzo's coral/error split) flagged it.
+1. **Gold never fills a surface and never sets body text** (section 0).
+2. **Every text color passes WCAG AA (4.5:1) in both themes**; check new styles with the skill's `contrast.js`.
+3. **Use `var(--card)` for every panel**; never a white overlay, which turns to grey mush in dark mode.
+4. **Color is never the only signal:** kept and not kept differ by fill and by word.
+5. **Async validators must always resolve promises** (archived demos).
 
 ## 3. Typography
 
-- **Display (retired 2026-10, see section 0):** headlines use Hanken Grotesk at 650. `"Fraunces"` in older page styles now resolves to Hanken.
-- **Body:** `"Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`. It replaced General Sans in October 2026, because General Sans's license doesn't clearly allow its files in a public repo.
-- **Mono:** `"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace`: code, reason codes, kickers, eyebrows, small labels. Eyebrows/kickers are uppercase, letter-spacing `0.08em`-`0.14em`, 12-13px, rust or muted.
-
-**Every font is self-hosted** in `/fonts` (SIL Open Font License 1.1; licenses in `fonts/LICENSES.md`) and declared once, in `site.css`. No page loads Google Fonts, Fontshare or any other font service, so loading a page sends no request anywhere else. Each page preloads the two fonts the hero needs:
-
-```html
-<link rel="preload" href="/fonts/hanken-grotesk-normal-400-700-latin.woff2" as="font" type="font/woff2" crossorigin />
-<link rel="stylesheet" href="/site.css" />
-<script src="/site.js" defer></script>
-```
-
-Playground once shipped without its font links and silently fell back to system fonts; `tools/check_site.py` now fails any page without `site.css`.
+- **Text and headlines:** `var(--sans)`, Archivo. Body 16px at 1.5 to 1.6 line height, lines 45 to 75 characters. Hierarchy comes from width and weight, not a second face.
+- **Mono:** `var(--mono)`, IBM Plex Mono: the command, times, labels, code.
+- **Wordmark:** `var(--wordmark)`, Hanken Grotesk 500, only in the header and footer lockups.
+- **Every font is self-hosted** in `/fonts` (SIL Open Font License 1.1; texts and sources in `fonts/LICENSES.md`), declared once in `site.css`. No page loads a font service. Each page preloads `/fonts/archivo-normal-62-125-100-900-latin.woff2`. The name "Fraunces" in archived pages resolves to Archivo.
 
 ## 4. Texture
 
-- **Retired 2026-10:** the watermark below is switched off globally in `site.css`; the hero lattice of brand marks replaces it (section 0). Kept for history:
-- **The watermark** is a single inline SVG data-URI tile (lathe-like wavy lines + concentric circles), applied as `body { background-image }`. No network request, no JavaScript. Stroke color is `%23241d14` in light mode; each page carries a dark-mode override swapping the stroke to `%23f2ede4`:
-  ```css
-  html[data-theme="dark"] body { background-image: url("data:image/svg+xml,...stroke='%23f2ede4'..."); }
-  ```
-  When editing the tile, change the stroke in BOTH copies.
-- There is no grain overlay (it was removed). Do not add one.
+None. No watermark, grain or lattice on live pages; depth comes from hairlines and the paper and panel tones.
 
 ## 4b. Logo and identity
 
-The mark is an inline SVG of the Synthe stamp glyph, carried directly in the HTML (no `<img>` tag, no request).
+The official mark (the brand kit's `OfficialSyntheLogo.png`, two hooked strokes forming an S) is an inline SVG on every page, from the path data in `tools/apply_chrome.py`.
 
-- **Two halves, two roles (since 2026-10):** path `.a` (top) takes `--agent`, path `.b` (bottom) takes `--human`. Never hardcode a hex fill; both tokens adapt to the theme.
-- **Nav wordmark:** mark sits 7px left of the "Synthe" text, `.wordmark-logo { width: 20px; height: 21px; flex: none; }`, viewBox `0 0 275 290` (tight; `overflow: visible` lets the halves part). Optically centered on the wordmark cap height; check the alignment by eye in both themes whenever the wordmark size changes.
-- **Footer:** same glyph at `.footer-logo { width: 22px; height: 24px; }`, next to the brand line.
-- **Level geometry (since 2026-10-12):** both flat edges (top of `.a`, bottom of `.b`) are exactly horizontal, and `.b` is `.a` turned 180 degrees about the centre of the 275 x 290 box, so the halves are identical. The earlier paths leaned 1.15 and 0.43 degrees. Same centre, width and gap between halves as before. The path data lives in `tools/apply_chrome.py`; if you edit it, replace every copy on the site (header, footer, `index.html` defs, `logo.svg`, `favicon.svg`, `tools/og-image.html`).
-- **The icon (one fixed version, since 2026-10-12):** the level mark, ink top half and coral bottom half, on a cream tile (`#f6f0e8`). It never changes with the theme: the favicon, the LinkedIn company logo, the iPhone icon and any app or social avatar are all this one tile, the way Ramp's yellow circle is the same everywhere. A bright tile also stands out on dark browser tab bars, where an ink tile disappeared. In the favicon the mark fills 48 of 64 (radius 14) so it reads at 16 px. `/favicon.svg`, `/favicon-32x32.png` and `/apple-touch-icon.png` (full square, iOS rounds it) are linked on every page with `?v=4`; bump the version whenever the icon changes, because browsers cache favicons hard. Inside the site itself the mark still follows the theme (cream top half in dark mode) so it stays visible; that is the wordmark in use, not the icon.
-- **Social card:** `og-image.png` (2240 x 1120), with the logo and "Synthe" locked up on one line, the motto as three lines of 60px type (the last in muted ink), the category line "The trust layer for AI agents" below, and a receipt card on the right (ink, one corner cut at the slot angle, ACCEPT and REJECT rows). The mark is two-color: ink top, coral bottom. Its source is `tools/og-image.html`; render it with headless Chrome (the command is in that file) against the local server so the self-hosted fonts load. ACCEPT is the dark-mode green, REJECT the dark-mode `--red` crimson (`#f2607e`), never coral. Every page links it as `og-image.png?v=N`: bump N whenever the image changes, because LinkedIn and X cache cards by URL (v=2 since 2026-10-18).
-- **Named states (since 2026-10-18).** The mark only ever moves between four states, each tied to a real event, never as decoration: *apart* (a proposal waits; halves separated), *locking* (the broker re-checks; halves close), *sealed* (approved and committed; halves meet), *refused* (halves part again and the refusal is shown in `--red`, never by recoloring the mark). The homepage replay and the header hover use apart and sealed; any new motion picks one of these states or doesn't ship.
-- The full path data lives in the page markup; when the mark needs replacing, swap the whole inline SVG on every page, not just one. `check_site.py` fails if the header or footer differs between pages.
+- **Colors:** path `.a` (top) takes `--agent` (ink); path `.b` (bottom) takes `--gold-mark`. The brand kit's original is ink and brick red on cream; the site uses gold for the bottom stroke to match The Record. The favicon and social card still use the kit's colors until the founders decide otherwise.
+- **Lockup:** mark 8px left of "Synthe" in Hanken Grotesk 500, 24px in the header (`.wordmark-logo` 24 x 25), 20px in the footer.
+- **States:** the header mark starts apart and locks once on load (`.mark.open`); copy buttons lock on success. Nothing else moves.
+- **Icon, favicon and social card:** unchanged (`favicon.svg?v=4`, `og-image.png?v=4`); bump the version if they change.
 
 ## 5. Components
 
@@ -314,14 +274,13 @@ Every page follows the same pattern. To add dark mode to a new page, copy it exa
 
 - [ ] `python3 tools/stamp.py` run after any edit to `site.css` or `site.js`
 - [ ] `python3 tools/check_site.py` passes
-- [ ] Homepage still about 6 screens at 1440x900 and about 9 on a phone; new detail goes to a deeper page with a link, not onto the homepage
+- [ ] Homepage still about one screen at 1440x900 and under 200 words; new detail goes to docs or the README
 - [ ] No `rgba(255,255,255,X)` card backgrounds (use `var(--card)`)
-- [ ] No large `var(--green)` fills; large brand fills hardcode `#6b1212` in both modes
+- [ ] Gold only as a marker: no gold fills, no gold body text
 - [ ] Header and footer identical on every page (only `aria-current` differs)
 - [ ] Every page links `/site.css` and `/site.js`; nothing loads from another origin
 - [ ] Every number is a `data-fact` span backed by `facts.json`
 - [ ] Logo mark present next to the wordmark and in the footer on every page; favicon linked
-- [ ] Watermark stroke updated in both light and dark copies
 - [ ] Toggle present, label flips, choice persists, no flash on reload; phone menu opens and closes
 - [ ] Reduced-motion fallback present, and moving content has the Pause motion control
 - [ ] No em dashes in copy

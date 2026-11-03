@@ -78,8 +78,14 @@
   function setHeadHeight() {
     if (head) root.style.setProperty("--head-h", head.offsetHeight + "px");
   }
+  /* Scrollbar width, so full-bleed bands (100vw, which includes a classic scrollbar) don't scroll sideways. */
+  function setScrollbar() {
+    root.style.setProperty("--sbw", Math.max(0, window.innerWidth - root.clientWidth) + "px");
+  }
   setHeadHeight();
-  window.addEventListener("resize", setHeadHeight);
+  setScrollbar();
+  window.addEventListener("resize", function () { setHeadHeight(); setScrollbar(); });
+  window.addEventListener("load", setScrollbar);
 
   /* Navigation groups (native <details>): one open at a time, mark the group holding
      the current page, close on a click outside or when focus leaves the group. */
