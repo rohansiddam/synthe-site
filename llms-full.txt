@@ -10,7 +10,7 @@ Source: https://github.com/synthelabs/synthe (Apache-2.0). Package: `synthe` on 
 
 ## Setup
 
-Needs a GitHub repo the user can admin with the agent's system prompt in it (its own file or a string in code), the GitHub CLI signed in, Node 20 or later, and a Synthe key. Run `npx synthe init` in the repo, on the default branch.
+Needs a GitHub repo the user can admin with the agent's system prompt in it (its own file or a string in code), the GitHub CLI signed in, Node 20 or later, and an Anthropic API key. Run `npx synthe init` in the repo, on the default branch.
 
 ## Commands
 
