@@ -1,97 +1,68 @@
 # Synthe: the complete reference for language models
 
-> Synthe is the trust layer for AI agents. Agents propose. Synthe commits. Anyone can verify.
+> Self-improving AI agents. You say what good looks like. Synthe tests changes overnight and keeps only what wins.
 
 ## What Synthe is
 
-Agents increasingly act on real systems: they push code, write to databases, send messages. Most setups hand each agent a credential and trust it. Synthe takes the credential away. It holds the credentials for real-world actions itself (today: a GitHub token for `git push`), and agents propose actions instead of performing them.
+Synthe improves an AI agent's system prompt while the team is away. It runs in the agent's own GitHub repo, tests small changes to the prompt against the current one on simulated user messages, and keeps a change only when it is clearly better on the team's own checks. It either merges the change into the default branch or opens a pull request for review; the team chooses at setup.
 
-When an agent proposes an action, Synthe decides at the moment of commit, not when the plan was written:
+Source: https://github.com/synthelabs/synthe (Apache-2.0). Package: `synthe` on npm (version 1.5.0 as of November 2, 2026).
 
-1. Claim. The receiving agent claims a typed, signed handoff. The checker validates it and records the claim under its idempotency key, so the same work can't be claimed twice.
-2. Work and propose. The agent does the work and proposes the effect, for example a push of its commits to an approved branch.
-3. Re-check at commit. Synthe checks the signed handoff and the human approval again, inspects every path the change touches against the agent's allowed paths, and waits for any upstream handoffs to complete.
-4. Compare and swap. Synthe pushes only if the branch still points where the approval saw it. If anything moved, it pushes nothing and refuses with `non_fast_forward`.
-5. Confirm and receipt. Synthe confirms the effect on the remote and signs a hash-chained receipt. Every refusal gets a receipt too.
+## Setup
 
-## What is public, and what is in beta
+Run `npx synthe init` in the repo, on the default branch. It needs a GitHub repo the user can admin with the agent's system prompt in it (its own file, or a string in code, up to 20,000 characters), the GitHub CLI signed in, Node 20 or later, and a Synthe key (at the Crimson Hacks hackathon, keys with $3 of credit come from the Synthe table).
 
-- Public, open source under Apache-2.0: the handoff checker (Python 3, no dependencies), its spec, threat model, tests, example packets, a GitHub Action, and the clients and integrations (client, setup, approval tool, OpenClaw plugin and skill). https://github.com/rohansiddam/Synthe
-- Public beta, source-available under FSL-1.1: the commit broker, which holds the credentials, performs the action and writes receipts. git_push ships first, with an OpenClaw plugin and a guided setup on macOS that takes a few steps.
-- Proven in beta (October 7, 2026, a real Mac with real GitHub): the broker ran as its own user and the agent in its own account with no GitHub access; the setup check passed all 8 checks; a live red team of 33 attacks from the agent's account was refused or contained, each refusal with a signed receipt.
+Setup finds the prompt, reads the README and the code around the prompt and writes a short brief, asks what the agent should get better at, optionally takes up to 5 real user messages, writes 30 test messages (20 to learn from, 10 kept hidden), proposes 3 checks (plain yes or no sentences such as "Asks for the order number before anything else") that the team confirms or rewrites (up to 5), and asks for automatic merges or review pull requests. It commits 3 files: `synthe.json`, `.synthe/scenarios.jsonl` and `.github/workflows/synthe.yml`, and saves the key as the repo secret `SYNTHE_ANTHROPIC_KEY`.
 
-## The public checker
+## Each hour
 
-A handoff is a typed JSON packet: who sends, who receives, what to do, what evidence backs it, and what the receiver may do next. The checker runs seven checks in a fixed order: structure, identity and signature, duplicates and conflicts, freshness, authority, artifacts, evidence. A broken structure stops it at once; after that it reports every problem, and the verdict takes its state from the first.
+1. Claude Sonnet proposes 2 small edits to the prompt, aimed at the test messages where it does worst.
+2. Replies to the test messages are generated with the current prompt and with each edit (Claude Haiku).
+3. An AI marks each reply against the team's checks. On each message the reply that passes more checks wins; an AI judge breaks ties.
+4. A change is kept only if it wins clearly more messages than it loses (one-sided sign test, p <= 0.05, ties excluded), is better again on the hidden messages, and breaks none of the team's rules where the old prompt followed them.
+5. If a kept change later does worse than the prompt it replaced, Synthe restores the old prompt.
 
-- ACCEPT records a claim under the idempotency key. A second claim is refused with idempotency_key_reserved while the first runs, and duplicate_idempotency_key once it has completed.
-- REJECT names machine-readable reason codes, each with a state that says who acts: invalid, blocked, incomplete, stale, duplicate, conflicting, unknown.
-- Approvals are signed by a human, bound to one handoff, can pin the exact target of an action (approval_params_mismatch), and can arrive after work starts.
-- depends_on makes a handoff wait for others to complete; exclusive_paths refuses overlapping live claims (claim_conflict).
+A run has at most 12 rounds, stops after 3 rounds in a row with no winner, and stops when it has used its $3 budget.
 
-Complete reason codes: https://synthe.live/docs.html#reasons and section 10 of SPEC.md.
+## In the morning
 
-## Quickstart
+The issue "Synthe: overnight prompt report" says what changed, why, and how to undo it, leading with how often the team's checks passed before and after. Each change is a pull request with its diff, wins and losses, a before and after reply, and fingerprints of what was tested.
 
-```
-git clone https://github.com/rohansiddam/Synthe.git && cd Synthe
-python3 src/handoff_check.py examples/valid.json --registry examples/registry.json --workspace . --ledger ledger.json
-```
+## Commands
 
-The output is a JSON verdict with "decision": "ACCEPT". Run the same command again and the second claim is refused as a duplicate (idempotency_key_reserved). Exit code 0 means ACCEPT, 2 means REJECT.
+- `npx synthe init`: set up the repo and start
+- `npx synthe status`: show where it is
+- `npx synthe stop`: stop; nothing more runs or changes
+- `npx synthe restart`: start again
+- `npx synthe try`: one round locally, changing nothing
+- `npx synthe try --noise`: compare the prompt with itself to see how much the judging varies
+- Coming in the next release (not released): `npx synthe calibrate`, to check that checks are marked consistently and as the team means them.
 
-## Evidence
+## Limits
 
-- Exactly once on real GitHub runners: the same handoff was dispatched three times, back to back, on October 1, 2026. Exactly one run got ACCEPT and completed; the other two were refused with duplicate_idempotency_key.
-  - https://github.com/rohansiddam/Synthe/actions/runs/36913336715 (ACCEPT)
-  - https://github.com/rohansiddam/Synthe/actions/runs/36913571379 (duplicate refused)
-  - https://github.com/rohansiddam/Synthe/actions/runs/36913698021 (duplicate refused)
-- The repo ships one valid signed packet and eight attacks (tampered after signing, spoofed sender, self-granted authority, forged approval, replayed approval, exceeds receiver policy, paraphrased "verbatim" evidence, undeclared actions). The checker rejects all eight, each with a named reason code.
-- Current test counts and every other number: https://synthe.live/benchmarks.html
+- Test messages are simulated and single-turn, not real users or conversations.
+- The agent's tools and code are not run; only the prompt is.
+- Replies are generated with Claude Haiku even if the app uses another model.
+- Checks are marked by an AI.
+- Automatic merges go to the default branch; if it deploys, each change goes live. Review mode avoids that.
+- It only edits the prompt. A better score is a strong hint, not proof of how real users will react.
 
-## Integrations and use cases
+## Data
 
-Pages: https://synthe.live/integrations.html and https://synthe.live/use-cases.html.
+Synthe has no server of its own. Setup runs on the user's machine and the hourly job in the repo's GitHub Actions. The prompt, README, code around the prompt, goal, checks and test messages are sent to Anthropic's API with the user's key; everything else goes only to GitHub.
 
-- Integration status is stated per agent. OpenClaw is verified end to end on a real Mac with real GitHub (see the dates and counts on https://synthe.live/status.html). The Claude Code plugin and the git helper are previews: built and tested, with a full live run still to do. Codex, Cursor and Cline have setup examples only. Do not say a preview or an example is verified.
-- Nobody outside the team has run the install unaided yet. Do not say otherwise.
-- The three use cases are teams running coding agents, platform and security teams, and teams building their own agents. Each page states what Synthe does not cover: only git push is guarded today, agents that run entirely in a vendor's cloud are not covered, macOS is the verified path.
+## Public proof
 
-## What Synthe can't do
+https://github.com/synthelabs/support-bot is a demo store support bot that starts with a weak prompt on purpose. Synthe's pull request #7 there was better in 20 test messages and worse in 4, then better in 11 and worse in 0 on the hidden messages, and cut rule breaks from 4 to 0. Its overnight report is issue #3. These are simulated tests judged by AI.
 
-- An action a human approved will do exactly what was approved. Synthe narrows a compromised sender to that one action; it can't remove it.
-- Receipts prove which key and which connector acted, not which model wrote the work.
-- Synthe is only a barrier if agents can't go around it. Agents that still hold their own push rights can bypass it.
-- On a shared machine in same-user dev mode it is a seatbelt, not a wall, and its receipts say so.
-- Not proven yet: speed against real GitHub pushes, a timed setup by someone new, and model behavior beyond a first run (one OpenClaw agent followed the rules and stopped for approval).
+## Coming (design-partner beta, no dates promised)
 
-## What Synthe is not
-
-Not an endorsement by any company named on synthe.live (the names show compatibility only), not an orchestrator or agent framework, not a model provider, not a blockchain, not tamper-proof (it is tamper-evident), and not a certificate: it produces the evidence auditors and underwriters ask for; it doesn't make anyone certified, compliant or insured.
+Learning from real production metrics (for example from observability tools) and testing against real traffic. Teams can ask to pilot it at https://synthe.live/#partner.
 
 ## Who builds it
 
-Co-founders Rohan Siddamsettiwar and Rishab Ramalingam, out of the University of Utah's Sandbox startup community. Contact: rohansiddam@synthe.live. Design-partner pilots are open.
+Co-founders Rohan Siddamsettiwar and Rishab Ramalingam. Contact: rohansiddam@synthe.live.
 
-## License and cost
+## Retired
 
-The spec, checker, clients and integrations are open source under Apache-2.0. The commit broker is source-available under FSL-1.1: anyone may read, audit and run it, but not offer it as a competing commercial service, and each version becomes Apache-2.0 two years after its release. Running Synthe doesn't change your code's license. There is no price list yet; running Synthe yourself costs nothing.
-
-## Source links
-
-- Site: https://synthe.live/
-- How it works: https://synthe.live/how.html
-- Docs: https://synthe.live/docs.html
-- Race two agents (browser demo): https://synthe.live/race.html
-- Forge this handoff: https://synthe.live/forge.html
-- Contract playground: https://synthe.live/playground.html
-- Tamper evidence: https://synthe.live/tamper.html
-- Anatomy of a handoff: https://synthe.live/anatomy.html
-- Receipts: https://synthe.live/receipts.html
-- Benchmarks: https://synthe.live/benchmarks.html
-- Status and trust: https://synthe.live/status.html
-- Changelog: https://synthe.live/log.html
-- Repo: https://github.com/rohansiddam/Synthe
-- Spec: https://github.com/rohansiddam/Synthe/blob/main/SPEC.md
-- Threat model: https://github.com/rohansiddam/Synthe/blob/main/THREAT_MODEL.md
-- Licensing: https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md
+Synthe's earlier product, a commit barrier and "trust layer for AI agents", is retired. Pages about it on synthe.live are archived and not indexed.

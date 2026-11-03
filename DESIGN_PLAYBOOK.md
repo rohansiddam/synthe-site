@@ -13,8 +13,8 @@ The site moved from an archival, editorial look to a product site built on one i
 - **The slot angle (53 degrees),** the gap between the halves, is the site's only diagonal: `.slot` section dividers, the cut corner on buttons, cards and the hero card (`clip-path`), bullet ticks, the joints of the receipt chain. No other angles, no pill radii on new components.
 - **The lattice:** whole brand marks in an offset grid (an SVG pattern with corner copies so no mark is cut), fading in from the right, behind the hero only. `site.js` adds a soft glow under the cursor (`.lattice-glow`, hover-capable pointers only, never with reduced motion). The old wavy-line and circle watermark is switched off globally.
 - **Theme switch:** `.themeswitch`, a sun and a moon with the current mode filled (`role="switch"`, `aria-checked`, a title that says which mode is on). It is a setting, so it does not look like the logo; the mark stays the brand. Its state is read from `--mode`, so it is right before any choice is saved.
-- **Chrome:** header = logo lockup (gap 7px), How it works, Security (`status.html`), Docs, GitHub, the theme switch, and the one call to action, **Install** (`/#install`). Footer = brand, motto, one nav of whole links, the license line, the colophon. Both are written by `tools/apply_chrome.py` (edit it, run it, then `tools/stamp.py`) and identical on every page.
-- **Homepage story (about 6 screens):** hero (plain promise, Install, the clasp illustration) · the problem · how it works (the two halves) · install (Claude Code / OpenClaw / any agent tabs, copy buttons) · anyone can verify (the receipt chain, three `data-fact` stats) · the race demo · FAQ including limits · design partners form · final call to action. No logo strip of other companies, no rotating headline word.
+- **Chrome:** header = logo lockup (gap 7px), How it works, Docs, Limits (`status.html`), For companies (`/#partner`), GitHub (synthelabs/synthe), the theme switch, and the one call to action, **Get started** (`/#start`). (Changed 2026-11-02 for the new product.) Footer = brand, motto, one nav of whole links, the license line, the colophon. Both are written by `tools/apply_chrome.py` (edit it, run it, then `tools/stamp.py`) and identical on every page.
+- **Homepage story (about 6 screens, since 2026-11-02):** hero (headline, motto, Get started, the one-round illustration with an example morning report) · the problem · how it works (three cards) · get started (`npx synthe init`, requirements, review-mode warning) · a real run you can check (support-bot PR stats, `data-fact`) · FAQ including limits · pilot form (design-partner beta) · final call to action. No logo strip of other companies, no rotating headline word.
 - **One type scale, one grid (CI enforces both).** Pixel font sizes come from 11, 12, 13, 14, 16, 18, 20, 24 and 32; fluid display sizes use `clamp()`. Every padding, margin and gap in px is a multiple of 4 (1 and 2 are for hairlines). `tools/check_site.py` fails on anything else, in `site.css`, in a page's `<style>` and in inline styles.
 - **Integrations and Use cases pages.** They state status per item and never round up: **Verified** (run end to end on a real machine, recorded), **Preview** (built and tested in pieces), **Example** (a setup guide, not run here). Numbers come from `facts.json` through `data-fact`. Neither page names the MCP server, the A2A adapter or the Lab (held topics), shows price or logos, or claims a customer. Both say plainly that nobody outside the team has run the install unaided yet. Update a status only when the evidence in the repo changes.
 - **Motion rules stand:** every animation has a still state under `prefers-reduced-motion`; nothing auto-loops; color is never the only signal (broken links also go dashed).
@@ -29,22 +29,24 @@ The site's framing is **Archival Ledger & Notary Stamp**: a warm paper archive w
 
 ## 1b. What the site says
 
-The site sells one thing: **Synthe, the trust layer for AI agents.** Use these lines word for word; don't invent new taglines. "Commit barrier" stays as the name of the mechanism (docs section, race demo, quiz); the category is the trust layer.
+Since November 2, 2026 the site sells one thing: **Synthe, self-improving AI agents.** It improves an agent's system prompt overnight, in the team's own GitHub repo (source: [synthelabs/synthe](https://github.com/synthelabs/synthe), Apache-2.0, npm `synthe`). The old "trust layer / commit barrier" product is retired from the site: its pages (anatomy, benchmarks, forge, integrations, playground, quiz, race, receipts, tamper, use-cases) stay in the repo, `noindex`, out of the nav, sitemap and `llms.txt`, each with an "Archived" note at the top. Don't link to them from live pages. Use these lines word for word; don't invent new taglines.
 
 | Where | Line |
 |---|---|
-| Category (titles, social card, footer) | The trust layer for AI agents |
-| Motto (under every headline that names Synthe) | Agents propose. You approve. Synthe commits. (Older pages: "Agents propose. Synthe commits. Anyone can verify.") |
-| Homepage headline | Let AI agents ship code without handing them the keys. (Since the 2026-10 redesign; the "bouncer" line and its rotating word are retired.) |
+| Category (eyebrow, social card, footer) | Self-improving AI agents |
+| Homepage headline | Your AI agent gets better while you sleep. |
+| Motto (under the headline, footer) | You say what good looks like. Synthe tests changes overnight and keeps only what wins. |
+| Header call to action | Get started (to `/#start`) |
+| Second way in, for companies | Pilot it on your production agent (`/#partner`, labelled Design-partner beta) |
 
-Rules for copy that describes the product (they come from the strategy's scope; the strategy wins if they ever differ):
+Rules for copy that describes the product (check the public repo's README and `src/` before writing a new claim):
 
-- **Label public vs. beta every time.** The handoff checker, spec, tests and GitHub Action are public. The commit broker (credential custody, compare-and-swap, receipts) is in design-partner beta. Use the `Public today` / `Design-partner beta` tags (section 5).
-- **Say open source only for the Apache-2.0 parts** (spec, checker, clients, integrations). The commit broker is source-available under FSL-1.1: never call it open source. (Changed 2026-10-07, when the code went public.)
-- **Never say certified, compliant, insured or "gap-free".** Synthe produces the evidence auditors and underwriters ask for.
-- **Only our own numbers, and only through `facts.json`** (section 9). No borrowed speed claims. Commit-path performance numbers stay off the site until the founders decide to publish them.
-- **Don't name the MCP server, the A2A adapter or the Lab** on the site until their public scope is decided (decision D7). Say "agent connectors come with the design-partner beta".
-- **State the limits** where people decide: approved actions do exactly what was approved; receipts prove key and connector, not model; agents must lose their own credentials. The full list lives on `status.html#limits`.
+- **What it is, plainly.** It changes only the system prompt (a file or a string in code). It never runs the team's code. Each hour Claude Sonnet proposes small edits; replies to simulated test messages are generated with the current prompt and each edit; the reply passing more of the team's checks wins each message, an AI judge breaks ties; a change is kept only if it wins clearly more than it loses (one-sided sign test), wins again on hidden messages, and breaks no rule the old prompt followed. It can undo a change that later does worse.
+- **State the limits where people decide** (FAQ, how, status): simulated, single-turn messages; tools and conversations not run; replies from Claude Haiku even if the app uses another model; checks marked by an AI; automatic merges go to the default branch (review mode if it deploys); spend capped per key; prompt only. The full list lives on `status.html#limits`.
+- **Label what isn't released.** Anything only in an open pull request (today: `npx synthe calibrate`, and showing real replies at setup) is "Coming in the next release" or left out. Production metrics and real-traffic testing are "Design-partner beta", with no dates.
+- **Proof must be checkable.** The public proof is [synthelabs/support-bot](https://github.com/synthelabs/support-bot) (a demo bot with a weak prompt on purpose): its merged pull requests and report issue. Results from private test repos (like "passed 81%, up from 47%") appear only marked "example".
+- **Never say** certified, guaranteed, "proven to improve" in general; no customers, logos, prices or SLAs. A better score is "a strong hint, not proof".
+- **Only our own numbers, and only through `facts.json`** (section 9), each with its source under `_manual`.
 
 ## 2. Color system
 
@@ -171,7 +173,7 @@ The mark is an inline SVG of the Synthe stamp glyph, carried directly in the HTM
 ```
 - Labels name what people are looking for, never our nicknames: the four demo names live inside "Demos", each with a one-line description (information scent, section 12).
 - The groups are native `<details>` disclosures, the pattern the W3C ARIA guide recommends for site navigation (not `role="menu"`). They open without JavaScript; `site.js` keeps one open at a time, closes on Escape (focus returns to the group) and on a click outside, and marks the group that holds the current page.
-- "Become a design partner" is the one call to action, and it is always in the header.
+- "Get started" is the one call to action, and it is always in the header (section 0 has the current header; the HTML above is the older shape).
 - Links are root-absolute (`/race.html`), so the header works on any path, including the 404 page.
 - The current page's link carries `aria-current="page"`. That attribute is the only allowed difference between pages.
 - The CSS lives in `site.css`. Change the header everywhere at once (the round-2 generator is the model: one function writes it for every page).
@@ -297,20 +299,13 @@ Every page follows the same pattern. To add dark mode to a new page, copy it exa
 
 | Page | What it is |
 |---|---|
-| `/` (index) | Homepage, about 6 screens: hero (bouncer headline), trust strip, how it works (four steps), demos, proof, who it's for, FAQ accordion, final call to action with the partner form |
-| `how.html` | How it works, in detail: the commit path, without and with Synthe, what it stops, the attack loop and stepper, run it yourself, what it can't stop |
-| `race.html` | Race two agents for one commit: claim and compare-and-swap rules, signed and hash-chained demo receipts, chain verification |
-| `forge.html` | Adversarial playground: 6 attacks on a signed handoff, five checks in the real checker's order, inline verdicts |
-| `playground.html` | Click-through story: sign a real Ed25519 handoff, then sabotage it 5 ways |
-| `tamper.html` | Hash-chain demo: edit/delete/reorder/forge entries, find the broken block |
-| `anatomy.html` | CSS-only scrollytelling of a handoff's anatomy |
-| `docs.html` | Docs: the commit barrier, quickstart, check order, concepts, the complete reason-code reference, with the sticky "On this page" bar |
-| `log.html` | Benefit-led changelog with proof links |
-| `quiz.html` | "Do I need a commit barrier?" quiz |
-| `receipts.html` | Source-linked proof claims; sample ledger labeled demo |
-| `benchmarks.html` | Every number on the site and its source |
-| `status.html` | Status, what's unproven, what Synthe can't stop, what it is not, your data, security contact |
+| `/` (index) | Homepage, about 6 screens (section 0) |
+| `how.html` | How it works: setup, each hour, what it keeps and undoes, the morning report, while it runs, what it doesn't test |
+| `docs.html` | Quickstart, the files it adds, synthe.json, test cases, commands, review mode, removal |
+| `status.html` | Limits and your data: status, limits, where the prompt and key go, this site's data, security contact |
+| `log.html` | Changelog of the new product's releases (older entries are in git history) |
 | `404.html` | Not-found page (noindex) |
+| anatomy, benchmarks, forge, integrations, playground, quiz, race, receipts, tamper, use-cases | Retired commit-barrier pages: noindex, archived note, out of nav, sitemap and llms.txt. Their numbers still come from the `checker_*`/`beta_*` facts |
 
 ## 11. Pitfalls checklist (check before shipping)
 

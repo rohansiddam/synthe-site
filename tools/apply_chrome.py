@@ -37,36 +37,28 @@ HEADER = f"""<header class="site-head">
         <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="topnav">Menu</button>
         <nav class="topnav" id="topnav" aria-label="Main">
           <a href="/how.html">How it works</a>
-          <a href="/status.html">Security</a>
           <a href="/docs.html">Docs</a>
-          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+          <a href="/status.html">Limits</a>
+          <a href="/#partner">For companies</a>
+          <a href="https://github.com/synthelabs/synthe">GitHub</a>
           <button class="themeswitch" id="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Dark mode" title="Dark mode">{SUN}{MOON}</button>
-          <a class="nav-cta" href="/#install">{mark("mark open", box="-40 -40 355 370")}Install</a>
+          <a class="nav-cta" href="/#start">{mark("mark open", box="-40 -40 355 370")}Get started</a>
         </nav>
       </header>"""
 
 FOOTER = f"""<footer class="site-foot">
         <p class="footer-brand">{mark("footer-logo", half=False)}Synthe</p>
-        <p class="footer-line">The trust layer for AI agents. Agents propose. You approve. Synthe commits, and anyone can verify the receipt.</p>
+        <p class="footer-line">Self-improving AI agents. You say what good looks like. Synthe tests changes overnight and keeps only what wins.</p>
         <nav class="footer-nav" aria-label="Footer">
           <a href="/how.html">How it works</a>
-          <a href="/status.html">Security and limits</a>
           <a href="/docs.html">Docs</a>
-          <a href="/integrations.html">Integrations</a>
-          <a href="/use-cases.html">Use cases</a>
-          <a href="/race.html">Race two agents</a>
-          <a href="/forge.html">Forge this handoff</a>
-          <a href="/playground.html">Playground</a>
-          <a href="/tamper.html">Tamper evidence</a>
-          <a href="/anatomy.html">Anatomy of a handoff</a>
-          <a href="/quiz.html">Do I need this?</a>
-          <a href="/receipts.html">Receipts</a>
-          <a href="/benchmarks.html">Benchmarks</a>
+          <a href="/status.html">Limits and your data</a>
           <a href="/log.html">Changelog</a>
-          <a href="/#partner">Design partners</a>
-          <a href="https://github.com/rohansiddam/Synthe">GitHub</a>
+          <a href="/#partner">Pilot it on your production agent</a>
+          <a href="https://github.com/synthelabs/synthe">GitHub</a>
+          <a href="https://www.npmjs.com/package/synthe">npm</a>
         </nav>
-        <p class="footer-legal">Synthe is an early project. The spec, checker, clients and integrations are open source under Apache-2.0; the commit broker is source-available under FSL-1.1-ALv2. <a href="https://github.com/rohansiddam/Synthe/blob/main/LICENSING.md">How it's licensed</a>. Synthe produces evidence; it doesn't make anyone certified, compliant or insured.</p>
+        <p class="footer-legal">Synthe is an early project, open source under Apache-2.0 (<a href="https://github.com/synthelabs/synthe/blob/main/LICENSE">license</a>). It tests prompt changes on simulated messages, so read what it changes before you rely on it.</p>
         <p class="colophon">From the Greek <em>synthēkē</em>, meaning agreement.</p>
       </footer>"""
 
