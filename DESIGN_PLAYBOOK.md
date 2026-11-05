@@ -106,7 +106,8 @@ The official mark (the brand kit's `OfficialSyntheLogo.png`, two hooked strokes 
 - **Colors:** path `.a` (top) takes `--agent` (ink); path `.b` (bottom) takes `--gold-mark`. The brand kit's original is ink and brick red on cream; the site uses gold for the bottom stroke to match The Record. The favicon and social card still use the kit's colors until the founders decide otherwise.
 - **Lockup:** mark 8px left of "Synthe" in Hanken Grotesk 500, 24px in the header (`.wordmark-logo` 24 x 25), 20px in the footer.
 - **States:** the header mark starts apart and locks once on load (`.mark.open`); copy buttons lock on success. Nothing else moves.
-- **Icon, favicon and social card:** unchanged (`favicon.svg?v=4`, `og-image.png?v=4`); bump the version if they change.
+- **Icon and favicon:** unchanged (`favicon.svg?v=4`).
+- **Social card:** `og-image.png?v=5` (2240 x 1120), rendered from `tools/og-image.html` with headless Chrome against the local server (the command is in that file): the lockup, "Your AI agent gets better on its own.", and an example prompt report. Bump `?v=` on every page whenever the image changes; LinkedIn and X cache cards by URL.
 
 ## 5. Components
 
