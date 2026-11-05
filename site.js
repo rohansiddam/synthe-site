@@ -37,8 +37,8 @@
   /* Copy buttons: the command goes to the clipboard and the button's mark locks for a moment. */
   Array.prototype.forEach.call(document.querySelectorAll(".copy"), function (b) {
     b.addEventListener("click", function () {
-      var code = b.parentElement.querySelector("code");
-      var label = b.querySelector("span");
+      var code = b.querySelector("code") || b.parentElement.querySelector("code");
+      var label = b.querySelector(".btn-label span") || b.querySelector("span");
       var m = b.querySelector(".mark");
       var done = function () {
         if (m) m.classList.remove("open");
@@ -78,8 +78,14 @@
   function setHeadHeight() {
     if (head) root.style.setProperty("--head-h", head.offsetHeight + "px");
   }
+  /* Scrollbar width, so full-bleed bands (100vw, which includes a classic scrollbar) don't scroll sideways. */
+  function setScrollbar() {
+    root.style.setProperty("--sbw", Math.max(0, window.innerWidth - root.clientWidth) + "px");
+  }
   setHeadHeight();
-  window.addEventListener("resize", setHeadHeight);
+  setScrollbar();
+  window.addEventListener("resize", function () { setHeadHeight(); setScrollbar(); });
+  window.addEventListener("load", setScrollbar);
 
   /* Navigation groups (native <details>): one open at a time, mark the group holding
      the current page, close on a click outside or when focus leaves the group. */
