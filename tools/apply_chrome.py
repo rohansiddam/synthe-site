@@ -46,7 +46,7 @@ HEADER = f"""<header class="site-head">
 
 FOOTER = f"""<footer class="site-foot">
         <p class="footer-brand">{mark("footer-logo", half=False)}Synthe</p>
-        <p class="footer-line">Self-improving AI agents. You say what good looks like. Synthe tests changes overnight and keeps only what wins.</p>
+        <p class="footer-line">Self-improving AI agents. You say what good looks like. Synthe tests changes and keeps only what wins.</p>
         <nav class="footer-nav" aria-label="Footer">
           <a href="/docs.html">Docs</a>
           <a href="/status.html">Limits and your data</a>

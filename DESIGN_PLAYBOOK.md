@@ -34,9 +34,9 @@ Use these lines word for word; don't invent new taglines.
 | Where | Line |
 |---|---|
 | Category (eyebrow, social card, footer) | Self-improving AI agents |
-| Homepage headline | Your AI agent gets better while you sleep. |
-| Motto (under the headline, footer) | You say what good looks like. Synthe tests changes overnight and keeps only what wins. |
-| What it does (the most detail the site gives) | Every hour Synthe tries small changes to your agent's prompt, tests them, and keeps only clear wins. You wake up to a report. |
+| Homepage headline | Your AI agent gets better on its own. (No "sleep" in the tagline, Rohan, 2026-11-05) |
+| Motto (under the headline, footer) | You say what good looks like. Synthe tests changes and keeps only what wins. |
+| What it does (the most detail the site gives) | Synthe tries small changes to your agent's prompt, tests them against your checks, and keeps only clear wins. A report says what changed. |
 | Header call to action | Get started (to `/docs.html`) |
 | Company contact | Using AI agents in production? Talk to us. (`/#partner`, labelled "Contact" in the nav and footer) |
 

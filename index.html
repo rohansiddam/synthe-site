@@ -5,18 +5,18 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://formspree.io; form-action 'self' https://formspree.io mailto:; base-uri 'self'; object-src 'none'; upgrade-insecure-requests" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="description" content="Synthe makes your AI agent better while you sleep. You say what good looks like; every hour Synthe tries small changes to your agent's prompt, tests them, and keeps only clear wins. Open source, one command to set up." />
+    <meta name="description" content="Synthe makes your AI agent better on its own. You say what good looks like; Synthe tries small changes to your agent's prompt, tests them against your checks, and keeps only clear wins. Open source, one command to set up." />
     <link rel="canonical" href="https://synthe.live/" />
     <link rel="icon" href="/favicon.svg?v=4" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32x32.png?v=4" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=4" />
-    <title>Synthe: your AI agent gets better while you sleep</title>
+    <title>Synthe: your AI agent gets better on its own</title>
     <meta property="og:title" content="Synthe: self-improving AI agents" />
-    <meta property="og:description" content="You say what good looks like. Synthe tests changes overnight and keeps only what wins." />
+    <meta property="og:description" content="You say what good looks like. Synthe tests changes and keeps only what wins." />
     <meta property="og:image" content="https://synthe.live/og-image.png?v=4" />
     <meta property="og:image:width" content="2240" />
     <meta property="og:image:height" content="1120" />
-    <meta property="og:image:alt" content="Synthe: your AI agent gets better while you sleep. Self-improving AI agents." />
+    <meta property="og:image:alt" content="Synthe: your AI agent gets better on its own. Self-improving AI agents." />
     <meta property="og:url" content="https://synthe.live/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Synthe" />
@@ -32,7 +32,7 @@
       "url": "https://synthe.live/",
       "logo": "https://synthe.live/apple-touch-icon.png",
       "email": "rohansiddam@synthe.live",
-      "description": "Self-improving AI agents. You say what good looks like. Synthe tests changes overnight and keeps only what wins.",
+      "description": "Self-improving AI agents. You say what good looks like. Synthe tests changes and keeps only what wins.",
       "founder": [
         {
           "@type": "Person",
@@ -59,7 +59,7 @@
     {
       "@type": "SoftwareSourceCode",
       "name": "Synthe",
-      "description": "Makes an AI agent better overnight: tries small changes to its prompt, tests them, and keeps only clear wins.",
+      "description": "Makes an AI agent better on its own: tries small changes to its prompt, tests them, and keeps only clear wins.",
       "codeRepository": "https://github.com/synthelabs/synthe",
       "programmingLanguage": "TypeScript",
       "license": "https://github.com/synthelabs/synthe/blob/main/LICENSE",
@@ -105,7 +105,7 @@
       .copy .btn-label svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; }
       .copy.done .btn-label { background: var(--ok); color: #fff; }
 
-      /* The stage: an example night, played once */
+      /* The stage: an example run, played once */
       .stage { margin-top: clamp(48px, 7vw, 80px); }
       .band { position: relative; overflow: hidden; border-radius: 24px; background: var(--band); padding: clamp(20px, 4vw, 56px) clamp(16px, 4vw, 56px) 0; }
       .band::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(var(--dot) 1px, transparent 1.5px); background-size: 16px 16px;
@@ -255,8 +255,8 @@
       </header>
     <main id="main">
       <section class="hero wrap" id="start">
-        <h1>Your AI agent gets better while you sleep.</h1>
-        <p class="lede"><strong>You say what good looks like.</strong> Synthe tests changes to your agent's prompt overnight, in your own GitHub repo, and keeps only what wins.</p>
+        <h1>Your AI agent gets better on its own.</h1>
+        <p class="lede"><strong>You say what good looks like.</strong> Synthe tests changes to your agent's prompt in your own GitHub repo, and keeps only what wins.</p>
         <div class="actions">
           <button class="copy" type="button" aria-label="Copy the command npx synthe@latest init"><span class="prompt" aria-hidden="true">$</span><code>npx synthe@latest init</code><span class="btn-label"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="4.5" y="4.5" width="7" height="7" rx="1.5"/><path d="M9.5 4.5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v5.5a1 1 0 0 0 1 1h1.5"/></svg><span>Copy</span></span></button>
           <a class="arrow-link" href="#start-tonight">How to start <span class="arr" aria-hidden="true">→</span></a>
@@ -265,10 +265,10 @@
 
       <section class="stage wrap" aria-labelledby="night-h">
         <div class="band" id="night">
-          <h2 class="sr-only" id="night-h">An example night</h2>
+          <h2 class="sr-only" id="night-h">An example run</h2>
           <button class="replay" type="button" id="replay" hidden>Play again</button>
           <ol class="hours" aria-hidden="true">
-            <li><span>11pm</span></li><li><span>12am</span></li><li><span>1am</span></li><li><span>2am</span></li><li><span>3am</span></li><li><span>4am</span></li><li><span>5am</span></li><li><span>6am</span></li><li><span>7am</span></li>
+            <li><span>Round 1</span></li><li><span>2</span></li><li><span>3</span></li><li><span>4</span></li><li><span>5</span></li><li><span>6</span></li><li><span>7</span></li><li><span>8</span></li><li><span>Report</span></li>
           </ol>
           <div class="scene">
             <div class="doc">
@@ -284,9 +284,9 @@
               </ol>
             </div>
             <div class="report" aria-live="off">
-              <div class="tabbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>Morning report<span class="tag">7am</span></div>
+              <div class="tabbar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>Prompt report<span class="tag">Done</span></div>
               <div class="report-body">
-                <h3>Your prompt got better overnight.</h3>
+                <h3>Your prompt got better.</h3>
                 <div class="rrow"><span class="chip kept">kept</span><span>Offer an exchange before a refund</span></div>
                 <div class="rrow"><span class="chip kept">kept</span><span>Don't guess about returns</span></div>
                 <div class="rrow"><span class="chip no">not kept</span><span>Add a summary to every reply</span></div>
@@ -297,7 +297,7 @@
       </section>
 
       <section class="proof wrap">
-        <p>It already works in public. <span class="muted">A demo store bot's prompt, improved overnight and merged as a pull request.</span></p>
+        <p>It already works in public. <span class="muted">A demo store bot's prompt, improved and merged as a pull request.</span></p>
         <a class="arrow-link" href="https://github.com/synthelabs/support-bot">See the public demo run <span class="arr" aria-hidden="true">→</span></a>
       </section>
 
@@ -338,11 +338,11 @@
       </section>
 
       <section class="steps wrap" id="start-tonight" aria-labelledby="steps-h">
-        <h2 id="steps-h">Start it before you sleep. <span>At a hackathon, it's on us.</span></h2>
+        <h2 id="steps-h">Start it with one command. <span>At the event, it's on us.</span></h2>
         <ol class="step-cards">
           <li class="step">
             <span class="num" aria-hidden="true">1</span>
-            <h3>Get a code. <span>From the Synthe table, or use your own Anthropic key.</span></h3>
+            <h3>Get your codes. <span>The event code on the QR card and your team code from the Synthe table. Or use your own Anthropic key.</span></h3>
           </li>
           <li class="step">
             <span class="num" aria-hidden="true">2</span>
@@ -381,7 +381,7 @@
     </main>
       <footer class="site-foot">
         <p class="footer-brand"><svg class="footer-logo" viewBox="0 0 275 290" aria-hidden="true"><path class="a" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path class="b" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg>Synthe</p>
-        <p class="footer-line">Self-improving AI agents. You say what good looks like. Synthe tests changes overnight and keeps only what wins.</p>
+        <p class="footer-line">Self-improving AI agents. You say what good looks like. Synthe tests changes and keeps only what wins.</p>
         <nav class="footer-nav" aria-label="Footer">
           <a href="/docs.html">Docs</a>
           <a href="/status.html">Limits and your data</a>
@@ -405,7 +405,7 @@
           });
         });
 
-        /* The example night plays once when it comes into view (about four seconds), then holds its last frame.
+        /* The example run plays once when it comes into view (about four seconds), then holds its last frame.
            With reduced motion it shows the last frame straight away. */
         var band = document.getElementById("night");
         var hours = band.querySelectorAll(".hours li");
