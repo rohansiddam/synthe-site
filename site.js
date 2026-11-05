@@ -37,8 +37,8 @@
   /* Copy buttons: the command goes to the clipboard and the button's mark locks for a moment. */
   Array.prototype.forEach.call(document.querySelectorAll(".copy"), function (b) {
     b.addEventListener("click", function () {
-      var code = b.parentElement.querySelector("code");
-      var label = b.querySelector("span");
+      var code = b.querySelector("code") || b.parentElement.querySelector("code");
+      var label = b.querySelector(".btn-label span") || b.querySelector("span");
       var m = b.querySelector(".mark");
       var done = function () {
         if (m) m.classList.remove("open");
