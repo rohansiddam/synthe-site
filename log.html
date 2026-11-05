@@ -7,23 +7,23 @@
     <meta name="color-scheme" content="light dark" />
     <meta name="description" content="What shipped in Synthe, the open-source tool that makes an AI agent better on its own." />
     <link rel="canonical" href="https://synthe.live/log.html" />
-    <link rel="icon" href="/favicon.svg?v=4" type="image/svg+xml" />
-    <link rel="icon" href="/favicon-32x32.png?v=4" type="image/png" sizes="32x32" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=4" />
+    <link rel="icon" href="/favicon.svg?v=5" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png?v=5" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=5" />
     <title>Changelog · Synthe</title>
     <meta property="og:title" content="Changelog · Synthe" />
     <meta property="og:description" content="What shipped in Synthe, the open-source tool that makes an AI agent better on its own." />
-    <meta property="og:image" content="https://synthe.live/og-image.png?v=5" />
+    <meta property="og:image" content="https://synthe.live/og-image.png?v=6" />
     <meta property="og:url" content="https://synthe.live/log.html" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Synthe" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="preload" href="/fonts/archivo-normal-62-125-100-900-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/site.css?v=acea6bda" />
-    <script src="/site.js?v=7a614dd1" defer></script>
+    <link rel="stylesheet" href="/site.css?v=adb4e2fe" />
+    <script src="/site.js?v=c8412239" defer></script>
     <style>
       .page { padding: 0; }
-      .page > .site-foot { max-width: 1160px; margin-left: auto; margin-right: auto; padding-left: 24px; padding-right: 24px; }
+      .page > .site-foot { max-width: var(--page-width); margin-left: auto; margin-right: auto; padding-left: var(--gutter); padding-right: var(--gutter); }
       main { font-size: 16px; line-height: 1.6; }
       a { color: inherit; }
       code, pre { font-family: var(--mono); }
@@ -80,8 +80,10 @@
         d.classList.add("js");
         var t = null, m = null;
         try { t = localStorage.getItem("synthe-theme"); m = localStorage.getItem("synthe-motion"); } catch (e) {}
+        if (t !== "light" && t !== "dark") t = null;
         var dark = t ? t === "dark" : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
         d.setAttribute("data-theme", dark ? "dark" : "light");
+        d.style.colorScheme = dark ? "dark" : "light";
         if (m === "paused") d.classList.add("motion-paused");
       })(); } catch (e) {}
     </script>

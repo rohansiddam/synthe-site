@@ -1,113 +1,92 @@
 # Synthe Site Design Playbook
 
-How synthe.live looks, why it looks that way, and the exact tokens and patterns to use when changing it. Read this before touching any page, and run `python3 tools/check_site.py` before you ship.
+The design and interaction contract for synthe.live. Run `python3 tools/check_site.py` before shipping. Sections 0–4b below supersede older examples in the component archive.
 
-## 0. "The Record" (2026-11-02; this section wins over anything older below)
+## 0. The polish pass (2026-11-05)
 
-The site moved from the commit-barrier look (sand, coral, cut corners, the hooked-halves lattice) to **The Record**: an almanac page where every change your agent tries is a line in the book, and only clear wins are marked. It comes from the design direction v3 brief, taken for its look only: no scores, standings numbers, scroll stories or motion pieces, because the site stays brief and shows no internals (section 1b).
+The site keeps The Record's warm paper and ink, with the original logo's **brick red**, selected by Rohan on 2026-11-05. Authority comes from alignment, readable type and complete interaction states. The references are source-code studies of Ramp, Stripe, Harvey, Watershed, Brex, Rippling, Aesop, RIMOWA, Teenage Engineering, Apple, Polestar, Linear and Vercel. Source studies inform the interaction patterns; all implementation here is native HTML, CSS and JavaScript.
 
-- **One palette, defined once** in `site.css` under `html:root` (and `html:root[data-theme=...]`), which outranks the `:root` blocks archived pages still carry. Old names (`--cream`, `--rust`, `--human`...) map onto it, so archived pages follow without being rewritten.
-- **Gold is a marker, never a fill and never body text.** `--gold` is for underlines, rules, the current-page bar and the bottom half of the mark (3.5:1 on paper, enough for graphics); `--gold-fill` for small dots (a kept change, the merge warning); `--gold-text` only when gold must be text (it passes AA). Buttons are ink. The moment gold floods a surface the look turns into crypto and premium finance.
-- **Type:** Archivo (self-hosted variable font, widths 62 to 125) for everything. Headlines are set wide and heavy: `h1` 800 at `font-stretch: 118%`, `h2` 700 at 110%. IBM Plex Mono for record lines: the command, times, small uppercase labels (12 to 13px, letter-spacing 0.06 to 0.08em, `--muted`). Hanken Grotesk survives only in the wordmark, to match the official lockup.
-- **Shapes:** hairline borders (`--line`), radius `--radius` (8px) on buttons and inputs, `--radius-lg` (12px) on panels. No cut corners, no slot diagonals, no lattice on live pages (the old classes stay in `site.css` for archived pages).
-- **The record** (homepage): a panel headed "Example night" with one row per change tried: mono time, the change in plain words, and the result as a word plus a dot (filled gold = kept, open = not kept), ending on "7am, Morning report". It is labelled an example, carries no numbers, and color is never the only signal. It is the only illustration on the site.
-- **Chrome:** header = logo lockup, Docs, Limits (`status.html`), Contact (`/#partner`), GitHub, the theme switch, and the one call to action, **Get started** (`/docs.html`). The current page gets a 2px gold underline.
-- **Homepage (about one screen, under 200 words):** eyebrow, headline, motto and paragraph on the left; the record on the right; `npx synthe init` with Copy and a Get started link; three labelled notes (Merges, Limits, Public run); a one-line contact form. No FAQ, no animation beyond the logo locking on load.
-- **One type scale, one grid (CI enforces both).** Pixel font sizes come from 11, 12, 13, 14, 16, 18, 20, 24 and 32; display sizes use `clamp()`. Every padding, margin and gap in px is a multiple of 4 (1 and 2 are for hairlines).
-- **No sideways scroll.** Full-bleed bands (the header, the "On this page" bar) use `100vw` corrected by `--sbw`, the scrollbar width `site.js` measures, and `html` has `overflow-x: clip` as a guard. Before 2026-11-02 the header overflowed by 8px at 1440 with a classic scrollbar.
-- **Motion rules stand:** every animation has a still state under `prefers-reduced-motion`; nothing auto-loops.
+- One shared 1200px usable rail: outer max 1296px, with 48px desktop, 32px tablet and 24px phone gutters. Header, homepage and footer align.
+- Hero: Archivo 500; headline on seven grid columns, lead and setup action on five, bottom-aligned. Stack at 960px. The headline is 64px desktop, 48px tablet and 40px phone, 1.04/1.06 leading and −.025em tracking.
+- One labelled product example below the hero. Its two prompt changes advance automatically once, then report verdicts appear in order. Start when the prompt is substantially visible; on phone wait for the report to enter view before revealing its verdicts. Each visible sequence stays under five seconds. No replay, loading spinner, round timeline, fake window controls or looping motion. Reduced motion/no JS show the complete result. Reserve both text layers in the same grid cell so changes never move the layout.
+- One accent system, defined in `site.css`. Main buttons stay ink. Brick marks identity and meaningful details; results also have words. Old `--gold*` names alias current semantic tokens for archived pages.
+- Controls have 6px corners; the product frame 10px. Editorial setup rows have hairlines and no rounded container. No default shadows, dotted textures or decorative gradients.
+- 96px section spacing and 128px chapter gaps on desktop; 56–72px on phone. Pixel padding/margin/gap values use the 4px grid. Font sizes use 11, 12, 13, 14, 16, 18, 20, 24, 32px; display sizes use `clamp()`.
+- Resting selectors own transitions, so pointer leave reverses. UI: 200ms `cubic-bezier(.25,1,.5,1)`. Arrow travel: 2px. Only a clickable card's child visual lifts, by 2px over 250ms. Fixed hit areas, no layout animation, fine-pointer hover only, matching keyboard feedback.
+- Native scroll. The stable 64px header (56px phone) gains its hairline and a restrained translucent surface after 8px. Anchors allow the measured header plus 32px. Below-fold, noncritical chapters may reveal once by 12px over 400ms; already-visible content stays still. No scroll hijacking.
+- Theme palette changes immediately as one state, with transitions temporarily suppressed. Only the toggle's selected indicator moves for 200ms. Preference resolves before first paint, follows the system until chosen, persists and synchronizes tabs. Reduced motion removes indicator and reveal movement.
+- Homepage target: under 900 words; approximately four desktop screenfuls and nine phone screenfuls at most. Detail belongs in Docs. Verify actual dimensions rather than shrinking text to meet a budget.
 
 ## 1. Design philosophy
 
-- **Calm and checkable.** One neutral page, one ink, one accent spent only on proof moments (a kept change, the merge warning, the current page). Everything else is paper and ink.
-- **The product is the imagery.** The only picture is a plain record of what Synthe does overnight, labelled as an example. No illustration, stock, dashboards, logos or stat cards.
-- **Honesty is a visual feature.** Examples are labelled as examples. Never render anything that implies customers, usage or results we can't point to.
+- Calm, legible, specific. Neutral surfaces carry the work; accent is sparse.
+- The product is the imagery. The example is an authored, once-only sequence, explicitly labelled, not a live product session.
+- Honest states are part of polish. Clipboard failure must not report success. Static explanatory rows do not move as if clickable. Keyboard and touch get complete experiences.
+- Source research establishes mechanisms; Synthe's dimensions and reduced motion amplitudes are our own design choices. Do not import proprietary fonts, imagery, shaders or frameworks.
 
 ## 1b. What the site says
 
-Since November 2, 2026 the site sells one thing: **Synthe, self-improving AI agents** (source: [synthelabs/synthe](https://github.com/synthelabs/synthe), Apache-2.0, npm `synthe`). **The site deliberately stays brief** (founders' decision, November 2, 2026): it says what Synthe does for a team, how to start, the plain limits and where data goes. It shows no roadmap or plans, no inner mechanics (test counts, edits per round, models, statistics, judging, costs per round), and no pilot or design-partner programme. Details live in the GitHub README; link to it instead of repeating it.
+The site sells **Synthe, self-improving AI agents** (public `synthelabs/synthe`, Apache-2.0, npm `synthe`). It says what Synthe does, how to start, plain limits and data handling. It does not publish a roadmap, private customer details or inner-model/performance claims.
 
-The old "trust layer / commit barrier" product is retired: its pages (anatomy, benchmarks, forge, how, integrations, playground, quiz, race, receipts, tamper, use-cases) stay in the repo, `noindex`, out of the nav, sitemap and `llms.txt`, each with an "Archived" note. Don't link to them from live pages. Live pages: `/`, `docs.html`, `status.html`, `log.html`.
-
-Use these lines word for word; don't invent new taglines.
-
-| Where | Line |
+| Where | Approved copy |
 |---|---|
-| Category (eyebrow, social card, footer) | Self-improving AI agents |
-| Homepage headline | Your AI agent gets better on its own. (No "sleep" in the tagline, Rohan, 2026-11-05) |
-| Motto (under the headline, footer) | You say what good looks like. Synthe tests changes and keeps only what wins. |
-| What it does (the most detail the site gives) | Synthe tries small changes to your agent's prompt, tests them against your checks, and keeps only clear wins. A report says what changed. |
-| Header call to action | Get started (to `/docs.html`) |
-| Company contact | Using AI agents in production? Talk to us. (`/#partner`, labelled "Contact" in the nav and footer) |
+| Category | Self-improving AI agents |
+| Headline | Your AI agent gets better on its own. |
+| Motto | You say what good looks like. Synthe tests changes and keeps only what wins. |
+| Explanation | Synthe tries small changes to your agent's prompt, tests them against your checks, and keeps only clear wins. A report says what changed. |
+| Header action | Get started, linking to `/docs.html` |
+| Contact | Using AI agents in production? Talk to us. |
 
-Rules:
+Keep current copy unless Rohan changes it. No “sleep” in the tagline. Tests are simulated; only the prompt changes; check results yourself. Explain merge versus review plainly. One public demo proof link, no invented statistics, logos, testimonials, customers, prices or certification claims. Quantitative facts come from `facts.json`.
 
-- **Limits, short and plain:** tests are simulated, only the prompt changes (code and tools never run), check the results yourself; automatic merges land on the default branch, so choose review if it deploys. No model names.
-- **Proof:** at most one sentence linking the public demo run (synthelabs/support-bot pull request #7). No stat cards.
-- **Never say** certified, guaranteed, "proven to improve"; no customers, logos, prices, SLAs, dates or plans.
-- **Only our own numbers, and only through `facts.json`** (section 9), each with its source under `_manual`. Keep them few.
-- **Homepage budget:** about one screen at 1440x900 and under 200 words of visible text.
+Live pages: `/`, `docs.html`, `status.html`, `log.html`. The old commit-barrier pages remain archived/noindex and outside live navigation, sitemap and llms files. Old broker/licensing and “design-partner beta” guidance below applies only to those archived surfaces, not the current Apache-2.0 product.
 
-## 2. Color system
+## 2. Colour system
 
-All colors go through CSS variables in `site.css`. Never hardcode a hex in a page.
+Every colour role is a CSS variable in `site.css`. Rohan chose original brick `#B5412F`; do not change it without his approval.
 
-### Light mode (the almanac page)
-
-| Token | Value | Role |
+| Role | Light | Dark |
 |---|---|---|
-| `--bg` | `#faf8f1` | Page (almanac paper) |
-| `--bg2` | `#f2eee2` | Wells, inline code |
-| `--card` | `#ffffff` | Panels, the command box, inputs |
-| `--line` / `--line2` | `#e3ddce` / `#cfc7b4` | Hairlines / control borders |
-| `--ink` | `#171410` | Text, buttons, the top half of the mark |
-| `--ink-soft` | `#3a352c` | Body text on docs pages |
-| `--muted` / `--faint` | `#6b6455` | Secondary text, labels, dates (5.5:1 on paper) |
-| `--gold` | `#a97b00` | Underlines, rules, current page, bottom half of the mark. Graphics only (3.5:1) |
-| `--gold-fill` | `#e8b90f` | Small dots: kept, the merge warning |
-| `--gold-text` | `#7a5900` | Gold as text, when unavoidable (AA) |
-| `--ok` / `--red` | `#177245` / `#b0352a` | Data only, always with a word or symbol |
+| Page / secondary / card | `#faf8f1` / `#f2eee2` / `#ffffff` | `#0b0c0a` / `#11120f` / `#151511` |
+| Ink / soft ink | `#171410` / `#3a352c` | `#f4f2ea` / `#d8d4c8` |
+| Muted / faint | `#6b6455` | `#a39c8b` |
+| Line / stronger line | `#e3ddce` / `#cfc7b4` | `#262620` / `#393830` |
+| `--accent`, `--accent-text`, `--accent-fill`, `--accent-mark` | `#b5412f` | `#e08c79` |
+| `--accent-bg` | `#f6e6df` | `#30201c` |
+| `--on-accent` | `#ffffff` | `#0b0c0a` |
+| Success / danger (data only) | `#177245` / `#b0352a` | `#3fb97f` / `#e0684f` |
 
-### Dark mode (the night match)
+Legacy `--gold`, `--gold-text`, `--gold-fill`, `--gold-bg`, `--gold-mark` alias these accent roles. They no longer mean yellow. Main CTA stays ink-on-paper inverted; do not turn it into a brand-colour fill.
 
-| Token | Value |
-|---|---|
-| `--bg` / `--bg2` / `--card` | `#0b0c0a` / `#11120f` / `#151511` |
-| `--line` / `--line2` | `#262620` / `#393830` |
-| `--ink` / `--ink-soft` / `--muted` | `#f4f2ea` / `#d8d4c8` / `#a39c8b` |
-| `--gold` / `--gold-fill` / `--gold-text` / `--gold-mark` | `#d9a91f` / `#f0c420` / `#d9a91f` / `#f0c420` |
-| `--ok` / `--red` | `#3fb97f` / `#e0684f` |
-
-Dark mode follows the system until the visitor picks one with the theme switch.
-
-### Hard rules
-
-1. **Gold never fills a surface and never sets body text** (section 0).
-2. **Every text color passes WCAG AA (4.5:1) in both themes**; check new styles with the skill's `contrast.js`.
-3. **Use `var(--card)` for every panel**; never a white overlay, which turns to grey mush in dark mode.
-4. **Color is never the only signal:** kept and not kept differ by fill and by word.
-5. **Async validators must always resolve promises** (archived demos).
+Light brick passes small-text AA on page, card and secondary surface (5.25/5.58/4.81:1). Dark pale brick passes there (7.65/7.15/7.34:1). **Ink on solid light brick fails (3.29:1); white on pale dark brick fails (2.56:1).** Use `--on-accent` for any solid accent fill, or tint plus ink. Results always carry text, so brand red is never the only “kept” signal. Verify composed/translucent colours in both themes; endpoint ratios alone are insufficient.
 
 ## 3. Typography
 
-- **Text and headlines:** `var(--sans)`, Archivo. Body 16px at 1.5 to 1.6 line height, lines 45 to 75 characters. Hierarchy comes from width and weight, not a second face.
-- **Mono:** `var(--mono)`, IBM Plex Mono: the command, times, labels, code.
-- **Wordmark:** `var(--wordmark)`, Hanken Grotesk 500, only in the header and footer lockups.
-- **Every font is self-hosted** in `/fonts` (SIL Open Font License 1.1; texts and sources in `fonts/LICENSES.md`), declared once in `site.css`. No page loads a font service. Each page preloads `/fonts/archivo-normal-62-125-100-900-latin.woff2`. The name "Fraunces" in archived pages resolves to Archivo.
+Self-hosted Archivo is the one base face. Hanken Grotesk survives only in the official wordmark; IBM Plex Mono is for commands, source excerpts, labels and record details. Fonts are declared once in `site.css`; every page preloads Archivo Latin. No font service requests.
+
+| Role | Size / line height / weight |
+|---|---|
+| H1 | display `clamp()` 40–64px / 1.04 (phone 1.06) / 500; −.025em; 16ch |
+| H2 | display `clamp()` 28–40px / 1.1 / 500; concise measure |
+| Card heading | 20px / 1.35–1.4 / 500 |
+| Lead | 18px / 1.55 / 400; strong phrase 500 |
+| Body | 16px / 1.5–1.6 / 400 |
+| Controls | 14px / about 20px / 500 |
+| Code / metadata | 12–14px / 1.5–1.65 / 400 |
+
+Use balanced headings and pretty wrapping for prose. Do not condense or shrink a desktop product UI onto phone; recompose it. No artificial bold weight, default text shadow or whole-page motion.
 
 ## 4. Texture
 
-None. No watermark, grain or lattice on live pages; depth comes from hairlines and the paper and panel tones.
+None on live pages. Depth comes from paper, secondary and card surfaces with purposeful hairlines. Do not add dot matrices, grain, watermarks, lattice or ornamental glow to the product still.
 
 ## 4b. Logo and identity
 
-The official mark (the brand kit's `OfficialSyntheLogo.png`, two hooked strokes forming an S) is an inline SVG on every page, from the path data in `tools/apply_chrome.py`.
+The official two hooked strokes are inline SVG, using path data in `tools/apply_chrome.py`. Top uses ink (`--agent`); bottom uses brick (`--accent-mark`, via legacy `--gold-mark`). Do not redraw it.
 
-- **Colors:** path `.a` (top) takes `--agent` (ink); path `.b` (bottom) takes `--gold-mark`. The brand kit's original is ink and brick red on cream; the site uses gold for the bottom stroke to match The Record. The favicon and social card still use the kit's colors until the founders decide otherwise.
-- **Lockup:** mark 8px left of "Synthe" in Hanken Grotesk 500, 24px in the header (`.wordmark-logo` 24 x 25), 20px in the footer.
-- **States:** the header mark starts apart and locks once on load (`.mark.open`); copy buttons lock on success. Nothing else moves.
-- **Icon and favicon:** unchanged (`favicon.svg?v=4`).
-- **Social card:** `og-image.png?v=5` (2240 x 1120), rendered from `tools/og-image.html` with headless Chrome against the local server (the command is in that file): the lockup, "Your AI agent gets better on its own.", and an example prompt report. Bump `?v=` on every page whenever the image changes; LinkedIn and X cache cards by URL.
+Header lockup: 24px mark/wordmark, 8px gap; footer 20px. The phone Menu button is 44px tall with explicit horizontal/vertical content centring, 20px line height and zero vertical padding; its centre matches the wordmark. The header mark locks once on load, 400ms with the shared easing, after a short 120ms delay; reduced motion is immediate. Copy feedback reports actual clipboard results.
+
+Fixed-light favicon and touch icon use paper, ink and exact original brick. Sources: `favicon.svg?v=5`, raster favicon/touch icons generated from it. The social card is `og-image.png?v=6`, 2240×1120 from `tools/og-image.html`, matching the new product still without browser chrome. Update references on all pages when an image changes.
 
 ## 5. Components
 
@@ -235,7 +214,7 @@ Every page follows the same pattern. To add dark mode to a new page, copy it exa
 ## 7. Motion and interaction principles
 
 - Functional interactions may use client-side JS and CSS transitions. Decorative work must add **no network requests and no JavaScript** (the marquee's one-line loop copy is the exception).
-- Scene changes crossfade + slight rise (`opacity`/`translateY`, ~0.45s). Stagger reveals at ~70-90ms.
+- Live pages use the finite motion contract in section 0: 200ms UI, 400ms/12px chapter reveal, no repeated scenes.
 - `@media (prefers-reduced-motion: reduce)` must kill transitions and animations (instant swaps).
 - Anything that moves by itself for more than 5 seconds next to other content needs a pause control (WCAG 2.2.2, Level A). The site has one, **Pause motion**: it adds `motion-paused` to `<html>`, which pauses every decorative animation, and the choice is remembered (`localStorage["synthe-motion"]`, applied by the head script before first paint). The race demo then jumps straight to each result.
 - No sound. No emojis in UI chrome.
@@ -264,7 +243,7 @@ Every page follows the same pattern. To add dark mode to a new page, copy it exa
 
 | Page | What it is |
 |---|---|
-| `/` (index) | One-screen homepage (section 0) |
+| `/` (index) | Product-led homepage (section 0) |
 | `docs.html` | Short quickstart: what you need, `npx synthe init`, commands, stop or remove, link to the README |
 | `status.html` | Limits and your data: status, limits, your data, this site, security contact |
 | `log.html` | Changelog, user-visible changes only |
@@ -275,9 +254,9 @@ Every page follows the same pattern. To add dark mode to a new page, copy it exa
 
 - [ ] `python3 tools/stamp.py` run after any edit to `site.css` or `site.js`
 - [ ] `python3 tools/check_site.py` passes
-- [ ] Homepage still about one screen at 1440x900 and under 200 words; new detail goes to docs or the README
+- [ ] Homepage under 900 words, readable at 1440x900 and 375px; new detail goes to Docs
 - [ ] No `rgba(255,255,255,X)` card backgrounds (use `var(--card)`)
-- [ ] Gold only as a marker: no gold fills, no gold body text
+- [ ] Approved brick roles are readable in both themes; no ink on solid light brick or white on pale dark brick
 - [ ] Header and footer identical on every page (only `aria-current` differs)
 - [ ] Every page links `/site.css` and `/site.js`; nothing loads from another origin
 - [ ] Every number is a `data-fact` span backed by `facts.json`

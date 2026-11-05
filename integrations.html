@@ -8,9 +8,9 @@
     <meta name="robots" content="noindex" />
     <meta name="description" content="Which agents Synthe works with today, how each one connects, and how far each has been tested: verified, preview or setup example." />
     <link rel="canonical" href="https://synthe.live/integrations.html" />
-    <link rel="icon" href="/favicon.svg?v=4" type="image/svg+xml" />
-    <link rel="icon" href="/favicon-32x32.png?v=4" type="image/png" sizes="32x32" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=4" />
+    <link rel="icon" href="/favicon.svg?v=5" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png?v=5" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=5" />
     <title>Integrations · Synthe</title>
     <meta property="og:title" content="Integrations · Synthe" />
     <meta property="og:description" content="Which agents Synthe works with today, how each one connects, and how far each has been tested: verified, preview or setup example." />
@@ -20,8 +20,8 @@
     <meta property="og:site_name" content="Synthe" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="preload" href="/fonts/archivo-normal-62-125-100-900-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/site.css?v=acea6bda" />
-    <script src="/site.js?v=7a614dd1" defer></script>
+    <link rel="stylesheet" href="/site.css?v=adb4e2fe" />
+    <script src="/site.js?v=c8412239" defer></script>
     <style>
       body { overflow-x: clip; margin: 0; color: var(--ink); font-family: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
       .page { max-width: 960px; margin: 0 auto; padding: clamp(24px, 5vw, 44px) 24px clamp(48px, 8vw, 80px); }
@@ -63,8 +63,10 @@
         d.classList.add("js");
         var t = null, m = null;
         try { t = localStorage.getItem("synthe-theme"); m = localStorage.getItem("synthe-motion"); } catch (e) {}
+        if (t !== "light" && t !== "dark") t = null;
         var dark = t ? t === "dark" : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
         d.setAttribute("data-theme", dark ? "dark" : "light");
+        d.style.colorScheme = dark ? "dark" : "light";
         if (m === "paused") d.classList.add("motion-paused");
       })(); } catch (e) {}
     </script>

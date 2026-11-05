@@ -11,6 +11,15 @@
   /* Theme switch: a sun and a moon, the current mode filled. It reports the theme the page is actually
      showing, as the stylesheet resolved it, so it is right even before a choice is saved. */
   var themeBtn = document.getElementById("theme-toggle");
+  var systemTheme = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
+  var themeFrame = 0;
+  function savedTheme() {
+    try {
+      var value = localStorage.getItem("synthe-theme");
+      return value === "light" || value === "dark" ? value : null;
+    } catch (e) { return null; }
+  }
+  var themePreference = savedTheme();
   var showing = function () {
     return getComputedStyle(root).getPropertyValue("--mode").trim() === "dark" ? "dark" : "light";
   };
@@ -20,11 +29,35 @@
       themeBtn.setAttribute("aria-checked", dark ? "true" : "false");
       themeBtn.title = dark ? "Dark mode is on. Switch to light." : "Light mode is on. Switch to dark.";
     };
+    var setTheme = function (next) {
+      /* Change the palette together. Only the selector moves: interpolating text and
+         surfaces can lose contrast between two otherwise accessible themes. */
+      cancelAnimationFrame(themeFrame);
+      root.classList.add("theme-setting");
+      root.setAttribute("data-theme", next);
+      root.style.colorScheme = next;
+      paint();
+      void root.offsetHeight;
+      themeFrame = requestAnimationFrame(function () {
+        themeFrame = requestAnimationFrame(function () { root.classList.remove("theme-setting"); });
+      });
+    };
     themeBtn.addEventListener("click", function () {
       var next = showing() === "dark" ? "light" : "dark";
-      root.setAttribute("data-theme", next);
+      themePreference = next;
       try { localStorage.setItem("synthe-theme", next); } catch (e) {}
-      paint();
+      setTheme(next);
+    });
+    var followSystem = function () {
+      if (!themePreference) setTheme(systemTheme && systemTheme.matches ? "dark" : "light");
+    };
+    if (systemTheme && systemTheme.addEventListener) systemTheme.addEventListener("change", followSystem);
+    window.addEventListener("storage", function (e) {
+      if (e.key === "synthe-theme" || e.key === null) {
+        var saved = savedTheme();
+        themePreference = saved;
+        setTheme(saved === "dark" || saved === "light" ? saved : systemTheme && systemTheme.matches ? "dark" : "light");
+      }
     });
     paint();
     window.addEventListener("load", paint);
@@ -32,26 +65,28 @@
 
   /* The header mark starts apart and locks once the page is ready. */
   var logo = document.querySelector(".wordmark .mark");
-  if (logo) setTimeout(function () { logo.classList.remove("open"); }, reduceMotion ? 0 : 450);
+  if (logo) setTimeout(function () { logo.classList.remove("open"); }, reduceMotion ? 0 : 120);
 
   /* Copy buttons: the command goes to the clipboard and the button's mark locks for a moment. */
   Array.prototype.forEach.call(document.querySelectorAll(".copy"), function (b) {
+    var resetCopy = 0;
     b.addEventListener("click", function () {
       var code = b.querySelector("code") || b.parentElement.querySelector("code");
       var label = b.querySelector(".btn-label span") || b.querySelector("span");
       var m = b.querySelector(".mark");
-      var done = function () {
-        if (m) m.classList.remove("open");
-        b.classList.add("done");
-        if (label) label.textContent = "Copied";
-        setTimeout(function () {
+      var result = function (copied) {
+        clearTimeout(resetCopy);
+        if (m) m.classList.toggle("open", !copied);
+        b.classList.toggle("done", copied);
+        if (label) label.textContent = copied ? "Copied" : "Failed";
+        resetCopy = setTimeout(function () {
           if (m) m.classList.add("open");
           b.classList.remove("done");
           if (label) label.textContent = "Copy";
         }, 2200);
       };
-      if (code && navigator.clipboard) navigator.clipboard.writeText(code.textContent).then(done, done);
-      else done();
+      if (code && navigator.clipboard) navigator.clipboard.writeText(code.textContent).then(function () { result(true); }, function () { result(false); });
+      else result(false);
     });
   });
 
@@ -84,8 +119,88 @@
   }
   setHeadHeight();
   setScrollbar();
+  var headState = function () { if (head) head.classList.toggle("is-scrolled", window.scrollY > 8); };
+  headState();
+  window.addEventListener("scroll", headState, { passive: true });
   window.addEventListener("resize", function () { setHeadHeight(); setScrollbar(); });
   window.addEventListener("load", setScrollbar);
+
+  /* The example changes its prompt once, then records the verdicts. On a phone
+     the report waits until it is visible, instead of finishing below the fold. */
+  var example = document.querySelector(".product-figure");
+  if (example) {
+    var flowMedia = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)");
+    var promptSheet = example.querySelector(".prompt-sheet");
+    var reportSheet = example.querySelector(".report");
+    var changes = Array.prototype.slice.call(example.querySelectorAll(".changed"));
+    var verdicts = Array.prototype.slice.call(example.querySelectorAll(".report-results li"));
+    var flowTimers = [], flowObserver = null;
+    var promptStarted = false, promptDone = false, reportVisible = false, reportStarted = false, flowDone = false;
+    var later = function (ms, fn) { flowTimers.push(setTimeout(function () { if (!flowDone) fn(); }, ms)); };
+    var finishFlow = function () {
+      flowDone = true;
+      flowTimers.forEach(clearTimeout);
+      if (flowObserver) flowObserver.disconnect();
+      changes.forEach(function (line) { line.classList.add("is-kept"); });
+      verdicts.forEach(function (row) { row.classList.add("is-reported"); });
+      example.classList.remove("flow-ready");
+      example.setAttribute("data-flow-state", "complete");
+    };
+    var showReport = function () {
+      if (!promptDone || !reportVisible || reportStarted || flowDone) return;
+      reportStarted = true;
+      example.setAttribute("data-flow-state", "report");
+      verdicts.forEach(function (row, i) { later(i * 160, function () { row.classList.add("is-reported"); }); });
+      later(720, finishFlow);
+    };
+    var showPrompt = function () {
+      if (promptStarted || flowDone) return;
+      promptStarted = true;
+      example.setAttribute("data-flow-state", "prompt");
+      changes.forEach(function (line, i) {
+        later(i * 800 + 80, function () { line.classList.add("is-checking"); });
+        later(i * 800 + 520, function () { line.classList.add("is-kept"); });
+      });
+      later(1680, function () {
+        promptDone = true;
+        example.setAttribute("data-flow-state", "waiting-for-report");
+        showReport();
+      });
+    };
+    if (!promptSheet || !reportSheet || reduceMotion || root.classList.contains("motion-paused") || !("IntersectionObserver" in window)) finishFlow();
+    else {
+      flowObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting || entry.intersectionRatio < .6) return;
+          flowObserver.unobserve(entry.target);
+          if (entry.target === reportSheet) { reportVisible = true; showPrompt(); showReport(); }
+          else showPrompt();
+        });
+      }, { threshold: .6 });
+      flowObserver.observe(promptSheet);
+      flowObserver.observe(reportSheet);
+      example.classList.add("flow-ready");
+      example.setAttribute("data-flow-state", "ready");
+      if (flowMedia && flowMedia.addEventListener) flowMedia.addEventListener("change", function (e) { if (e.matches) finishFlow(); });
+      document.addEventListener("visibilitychange", function () { if (document.hidden) finishFlow(); });
+    }
+  }
+
+  /* One arrival per chapter. Critical content and groups already in view stay still. */
+  if (!reduceMotion && !root.classList.contains("motion-paused") && "IntersectionObserver" in window) {
+    var arrivals = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.remove("reveal-pending");
+        arrivals.unobserve(entry.target);
+      });
+    }, { threshold: .15, rootMargin: "0px 0px -10% 0px" });
+    Array.prototype.forEach.call(document.querySelectorAll(".proof, .cards, .steps, .contact"), function (section) {
+      if (section.getBoundingClientRect().top <= window.innerHeight) return;
+      section.classList.add("scroll-reveal", "reveal-pending");
+      arrivals.observe(section);
+    });
+  }
 
   /* Navigation groups (native <details>): one open at a time, mark the group holding
      the current page, close on a click outside or when focus leaves the group. */
@@ -106,14 +221,22 @@
   /* Phone menu: one labeled button opens the nav as a panel under the header. */
   var menuBtn = document.getElementById("nav-toggle");
   var nav = document.getElementById("topnav");
+  var narrowNav = window.matchMedia && window.matchMedia("(max-width: 900px)");
   function menuOpen() { return head && head.classList.contains("nav-open"); }
+  function syncMenuAccess() { if (nav) nav.inert = !!(narrowNav && narrowNav.matches && !menuOpen()); }
   function setMenu(open) {
     if (!head || !menuBtn) return;
     head.classList.toggle("nav-open", open);
     menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
     menuBtn.textContent = open ? "Close" : "Menu";
+    syncMenuAccess();
   }
   if (head && menuBtn && nav) {
+    syncMenuAccess();
+    if (narrowNav && narrowNav.addEventListener) narrowNav.addEventListener("change", function () {
+      if (!narrowNav.matches) setMenu(false);
+      syncMenuAccess();
+    });
     menuBtn.addEventListener("click", function () { setMenu(!menuOpen()); });
     nav.addEventListener("click", function (e) {
       if (e.target.closest && e.target.closest("a")) setMenu(false);
