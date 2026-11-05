@@ -8,32 +8,24 @@
      (python3 tools/serve.py), so the self-hosted fonts and the site's tokens load:
      "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars \
        --window-size=1120,560 --force-device-scale-factor=2 --screenshot=og-image.png \
-       http://localhost:8790/tools/og-image.html
-     The card matches the homepage: paper, ink, gold only as a marker, and an example prompt report. -->
-<link rel="stylesheet" href="/site.css?v=acea6bda" />
+       http://127.0.0.1:8791/tools/og-image.html
+     The card matches the homepage: paper, ink, approved brick red, and a labelled example prompt report. -->
+<link rel="stylesheet" href="/site.css?v=adb4e2fe" />
 <style>
   html, body { margin: 0; width: 1120px; height: 560px; overflow: hidden; }
   body { background: var(--bg); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
-  .card { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 400px; align-items: center; padding: 0 72px; gap: 48px; }
+  .card { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 360px; align-items: center; padding: 0 72px; gap: 48px; box-sizing: border-box; }
   .left { display: flex; flex-direction: column; height: 416px; justify-content: space-between; }
-  .lockup { display: flex; align-items: center; gap: 12px; font-family: var(--wordmark); font-weight: 500; font-size: 36px; line-height: 1; }
-  .lockup .mark { width: 34px; height: 36px; }
-  h1 { margin: 0; font-size: 72px; line-height: 1.02; letter-spacing: -0.035em; font-weight: 500 !important; }
-  .cat { margin: 0; font-size: 24px; color: var(--muted); }
-  .panel { position: relative; border-radius: 24px; background: #f1ede2; padding: 32px 28px 0; height: 416px; box-sizing: border-box; overflow: hidden; }
-  .panel::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(23, 20, 16, .14) 1px, transparent 1.5px); background-size: 16px 16px;
-    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 85% 0%, #000 0, transparent 70%); mask-image: radial-gradient(ellipse 80% 70% at 85% 0%, #000 0, transparent 70%); }
-  .report { position: relative; background: var(--card); border-radius: 16px 16px 0 0; box-shadow: 0 0 0 1px var(--line), 0 32px 64px -32px rgba(23, 20, 16, .28); height: 100%; }
-  .tab { display: flex; align-items: center; gap: 8px; padding: 14px 20px; border-bottom: 1px solid var(--line); font: 15px var(--mono); color: var(--muted); }
-  .tab i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
-  .tab .tag { margin-left: auto; font: 500 13px var(--sans); border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; }
-  .body { padding: 20px; display: grid; gap: 12px; }
-  .body h2 { margin: 0 0 4px; font-size: 22px; font-weight: 600 !important; letter-spacing: -0.01em; }
-  .row { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; background: var(--bg); font-size: 17px; }
-  .chip { display: inline-flex; align-items: center; gap: 6px; flex: none; font: 500 14px var(--sans); border-radius: 999px; padding: 3px 10px; }
-  .kept { background: var(--ink); color: var(--bg); }
-  .kept::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--gold-fill); }
-  .no { border: 1px solid var(--line2); color: var(--muted); }
+  .lockup { display: flex; align-items: center; gap: 12px; font-family: var(--wordmark); font-weight: 500; font-size: 32px; line-height: 1; }
+  .lockup .mark { width: 32px; height: 34px; }
+  h1 { margin: 0; font-size: 64px; line-height: 1.04; letter-spacing: -.025em; font-weight: 500 !important; }
+  .cat { margin: 0; font-size: 20px; color: var(--muted); }
+  .panel { border: 1px solid var(--line); border-radius: 10px; background: var(--bg2); padding: 28px; height: 416px; box-sizing: border-box; }
+  .label { display: flex; justify-content: space-between; gap: 16px; font: 12px var(--mono); color: var(--muted); margin: 0 0 32px; }
+  h2 { margin: 0 0 32px; font-size: 24px; line-height: 1.15; font-weight: 500; max-width: 14ch; }
+  .row { display: grid; grid-template-columns: 64px 1fr; gap: 12px; padding: 16px 0; border-top: 1px solid var(--line2); font-size: 16px; line-height: 1.4; }
+  .state { font: 12px/1.8 var(--mono); color: var(--accent-text); }
+  .state.no { color: var(--muted); }
 </style>
 </head>
 <body>
@@ -43,16 +35,12 @@
       <h1>Your AI agent gets better on its own.</h1>
       <p class="cat">Self-improving AI agents · open source</p>
     </div>
-    <div class="panel" aria-hidden="true">
-      <div class="report">
-        <div class="tab"><i></i><i></i><i></i>&nbsp;Prompt report<span class="tag">Example</span></div>
-        <div class="body">
-          <h2>Your prompt got better.</h2>
-          <div class="row"><span class="chip kept">kept</span><span>Offer an exchange before a refund</span></div>
-          <div class="row"><span class="chip kept">kept</span><span>Don't guess about returns</span></div>
-          <div class="row"><span class="chip no">not kept</span><span>Add a summary to every reply</span></div>
-        </div>
-      </div>
+    <div class="panel">
+      <p class="label"><span>Prompt report</span><span>Example</span></p>
+      <h2>Your prompt got better.</h2>
+      <div class="row"><span class="state">Kept</span><span>Offer an exchange before a refund</span></div>
+      <div class="row"><span class="state">Kept</span><span>Don't guess about returns</span></div>
+      <div class="row"><span class="state no">Not kept</span><span>Add a summary to every reply</span></div>
     </div>
   </div>
 </body>

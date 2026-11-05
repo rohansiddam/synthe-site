@@ -1,6 +1,6 @@
 /* site.css: shared by every page of synthe.live ("The Record", 2026-11).
    - Webfonts, self-hosted (SIL Open Font License 1.1; texts in fonts/). No request leaves the site for type.
-   - One palette and type for every page: almanac paper, warm ink, gold only as a marker. Archivo for text,
+   - One palette and type for every page: almanac paper, warm ink, brick red only as a marker. Archivo for text,
      IBM Plex Mono for record lines, Hanken Grotesk only in the wordmark (as in the official lockup).
    Page-specific layout stays in each page's own <style>. See DESIGN_PLAYBOOK.md before changing anything here. */
 
@@ -105,21 +105,25 @@
 
 /* ---------- Tokens: one palette for every page ----------
    `html:root` outranks the `:root` blocks archived pages still carry, so this palette wins everywhere.
-   Gold is a marker, never a fill or body text: --gold for rules, underlines and the mark (3:1 or more),
-   --gold-fill for small dots, --gold-text (AA on paper) when gold must be text. Older names
+   Brick red is the approved brand accent (2026-11-05). Legacy --gold names alias the accent tokens
+   so archived pages follow the same system. Main buttons stay ink. Older names
    (--cream, --rust, --human...) map onto the same palette. See DESIGN_PLAYBOOK.md. */
 html:root, html:root[data-theme="light"] {
   --mode: light;
   --bg: #faf8f1; --bg2: #f2eee2; --card: #ffffff; --line: #e3ddce; --line2: #cfc7b4;
   --ink: #171410; --ink-soft: #3a352c; --muted: #6b6455; --faint: #6b6455;
-  --gold: #a97b00; --gold-fill: #e8b90f; --gold-text: #7a5900; --gold-bg: #f7eecd; --gold-mark: #a97b00;
+  --accent: #b5412f; --accent-text: #b5412f; --accent-fill: #b5412f; --accent-bg: #f6e6df; --accent-mark: #b5412f;
+  --gold: var(--accent); --gold-fill: var(--accent-fill); --gold-text: var(--accent-text); --gold-bg: var(--accent-bg); --gold-mark: var(--accent-mark);
   --agent: var(--ink); --human: var(--gold); --human-text: var(--gold-text); --human-bg: var(--gold-bg); --ok: #177245;
-  --cream: var(--bg); --cream-deep: var(--bg2); --rust: var(--gold-text); --rust-deep: #5e4500;
+  --cream: var(--bg); --cream-deep: var(--bg2); --rust: var(--gold-text); --rust-deep: #8f3022;
   --green: var(--ok); --green-soft: #e1efe5; --red: #b0352a; --red-soft: #f7e1dd;
   --slot: 53deg; --cut: 14px; --cut-y: 19px; --radius: 8px; --radius-lg: 12px;
   --sans: 'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --wordmark: 'Hanken Grotesk', 'Archivo', sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --page-width: 1296px; --gutter: 48px;
+  --duration-ui: 200ms; --ease-ui: cubic-bezier(.25, 1, .5, 1);
+  --on-accent: #fff; --on-status: #fff;
   --ease-spring: cubic-bezier(.2, .9, .25, 1.12); --ease-out: cubic-bezier(.2, .8, .2, 1);
   color-scheme: light;
 }
@@ -127,8 +131,9 @@ html:root[data-theme="dark"] {
     --mode: dark;
     --bg: #0b0c0a; --bg2: #11120f; --card: #151511; --line: #262620; --line2: #393830;
     --ink: #f4f2ea; --ink-soft: #d8d4c8; --muted: #a39c8b; --faint: #a39c8b;
-    --gold: #d9a91f; --gold-fill: #f0c420; --gold-text: #d9a91f; --gold-bg: #2a2310; --gold-mark: #f0c420;
-    --rust-deep: #f0c420; --ok: #3fb97f; --green-soft: #13201a; --red: #e0684f; --red-soft: #2a1714;
+    --accent: #e08c79; --accent-text: #e08c79; --accent-fill: #e08c79; --accent-bg: #30201c; --accent-mark: #e08c79;
+    --on-accent: #0b0c0a; --on-status: #0b0c0a;
+    --rust-deep: #e08c79; --ok: #3fb97f; --green-soft: #13201a; --red: #e0684f; --red-soft: #2a1714;
     color-scheme: dark;
 }
 @media (prefers-color-scheme: dark) {
@@ -136,8 +141,9 @@ html:root[data-theme="dark"] {
     --mode: dark;
     --bg: #0b0c0a; --bg2: #11120f; --card: #151511; --line: #262620; --line2: #393830;
     --ink: #f4f2ea; --ink-soft: #d8d4c8; --muted: #a39c8b; --faint: #a39c8b;
-    --gold: #d9a91f; --gold-fill: #f0c420; --gold-text: #d9a91f; --gold-bg: #2a2310; --gold-mark: #f0c420;
-    --rust-deep: #f0c420; --ok: #3fb97f; --green-soft: #13201a; --red: #e0684f; --red-soft: #2a1714;
+    --accent: #e08c79; --accent-text: #e08c79; --accent-fill: #e08c79; --accent-bg: #30201c; --accent-mark: #e08c79;
+    --on-accent: #0b0c0a; --on-status: #0b0c0a;
+    --rust-deep: #e08c79; --ok: #3fb97f; --green-soft: #13201a; --red: #e0684f; --red-soft: #2a1714;
     color-scheme: dark;
   }
 }
@@ -145,7 +151,11 @@ html:root[data-theme="dark"] {
 /* ---------- Type and texture shared by every page ---------- */
 /* The sideways overflow guard: full-bleed bands use 100vw, which includes a classic scrollbar. */
 html { overflow-x: clip; }
-html body { background-color: var(--bg); background-image: none !important; color: var(--ink); font-family: var(--sans); }
+html body { margin: 0; background-color: var(--bg); background-image: none !important; color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+@media (max-width: 960px) { html:root, html:root[data-theme] { --gutter: 32px; } }
+@media (max-width: 640px) { html:root, html:root[data-theme] { --gutter: 24px; } }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+main section[id] { scroll-margin-top: calc(var(--head-h, 64px) + 32px); }
 h1, h2, h3, h4, .feature-title, .panel-h { text-wrap: balance; }
 /* Headlines: medium weight, tight tracking. Authority comes from size and spacing, not boldness. */
 h1 { font-weight: 500 !important; letter-spacing: -0.035em; }
@@ -154,7 +164,7 @@ h3 { font-weight: 600; letter-spacing: -0.01em; }
 /* The accent is used once per screen at most: headings no longer carry italic coral words. */
 h1 em, h2 em, h3 em { font-style: normal !important; color: inherit !important; }
 .kicker, .eyebrow { font-family: var(--mono); font-size: 13px !important; font-weight: 500; letter-spacing: 0.08em !important; text-transform: uppercase !important; color: var(--muted); }
-/* Links in running text: ink, with a gold underline (gold never carries body text). */
+/* Links in running text: ink, with a brick red underline. */
 .textlink { color: var(--ink) !important; font-weight: 600 !important; border-bottom: 0 !important; text-decoration: underline !important;
   text-decoration-color: var(--gold) !important; text-decoration-thickness: 2px !important; text-underline-offset: 4px; }
 .textlink:hover { text-decoration-color: var(--ink) !important; }
@@ -162,14 +172,14 @@ h1 em, h2 em, h3 em { font-style: normal !important; color: inherit !important; 
 /* ---------- The mark: two halves, the agent's (ink) and yours (coral) ----------
    Apart: waiting. Locked: committed. Refused: outlined in coral and pushed apart. Stale: dashed. */
 .mark { overflow: visible; }
-.mark .half { transition: transform .7s var(--ease-spring), stroke .3s, fill .3s; transform-box: view-box; }
+.mark .half { transition: transform .4s var(--ease-ui), stroke .2s, fill .2s; transform-box: view-box; }
 .mark .a { fill: var(--agent); } .mark .b { fill: var(--gold-mark); }
 .mark.open .a { transform: translate(-30px, -22px); } .mark.open .b { transform: translate(30px, 22px); }
 .mark.refused .a { transform: translate(-34px, -26px); } .mark.refused .b { transform: translate(34px, 26px); }
 .mark.refused .half { fill: none; stroke: var(--red); stroke-width: 7; }
 .mark.stale .half { fill: none; stroke: var(--faint); stroke-width: 6; stroke-dasharray: 14 11; }
 
-/* Buttons: ink, rounded, never gold. The primary carries a small mark that locks. */
+/* Buttons: ink, rounded, with a small brand accent. The primary carries a small mark that locks. */
 .btn2 { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font: 600 16px/1 var(--sans); min-height: 44px; padding: 12px 16px; border: 1px solid var(--line2);
   background: transparent; color: var(--ink); text-decoration: none; cursor: pointer; border-radius: var(--radius); }
 .btn2:hover { border-color: var(--muted); }
@@ -203,36 +213,47 @@ h1 em, h2 em, h3 em { font-style: normal !important; color: inherit !important; 
 
 .site-head {
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  height: 64px; padding: 0 max(24px, calc(50vw - var(--sbw, 0px) / 2 - 548px));
-  border-bottom: 1px solid var(--line);
+  height: 64px; box-sizing: border-box; padding: 0 max(var(--gutter), calc(50vw - var(--sbw, 0px) / 2 - 600px));
+  border-bottom: 0;
   position: sticky; top: 0; z-index: 50;
-  background: color-mix(in srgb, var(--bg) 92%, transparent); -webkit-backdrop-filter: saturate(1.2) blur(8px); backdrop-filter: saturate(1.2) blur(8px);
+  background: var(--bg); transition: background-color var(--duration-ui) var(--ease-ui), border-color var(--duration-ui) var(--ease-ui);
   /* Full bleed. --sbw (set by site.js) is the scrollbar's width, which 100vw includes. */
   margin-left: calc(50% - 50vw + var(--sbw, 0px) / 2); margin-right: calc(50% - 50vw + var(--sbw, 0px) / 2);
 }
+.site-head::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--line); opacity: 0; pointer-events: none; transition: opacity var(--duration-ui) var(--ease-ui); }
+.site-head.is-scrolled, .site-head.nav-open { background: color-mix(in srgb, var(--bg) 96%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.site-head.is-scrolled::after, .site-head.nav-open::after { opacity: 1; }
 .wordmark { font-family: var(--wordmark); font-weight: 500; font-size: 24px; letter-spacing: -0.01em; color: var(--ink);
-  text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+  text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; line-height: 1; gap: 8px; }
 .wordmark-logo { width: 24px; height: 25px; flex: none; }
 .topnav { display: flex; align-items: center; gap: 24px; }
-.topnav > a:not(.nav-cta) { color: var(--ink-soft); text-decoration: none; font-size: 16px; font-weight: 500; white-space: nowrap; }
+.topnav > a:not(.nav-cta) { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-soft); text-decoration: none; font-size: 14px; font-weight: 500; white-space: nowrap; transition: color var(--duration-ui) var(--ease-ui); }
 .topnav > a:not(.nav-cta):hover, .topnav > a[aria-current="page"] { color: var(--ink); }
 .topnav > a[aria-current="page"] { box-shadow: inset 0 -2px 0 var(--gold); padding-bottom: 2px; }
 .nav-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: var(--bg); text-decoration: none;
-  font-weight: 600; font-size: 14px; padding: 8px 12px; white-space: nowrap; border-radius: var(--radius); }
+  font-weight: 500; font-size: 14px; min-height: 44px; box-sizing: border-box; padding: 0 16px; white-space: nowrap; border-radius: 6px; transition: background-color var(--duration-ui) var(--ease-ui); }
+@media (hover: hover) and (pointer: fine) { .nav-cta:hover { background: var(--ink-soft); } }
 .nav-cta .mark { width: 15px; height: 16px; flex: none; }
 
 /* Theme switch: a sun and a moon, the current mode filled. It is a setting, so it does not look like the logo. */
-.themeswitch { display: inline-flex; gap: 4px; background: none; border: 1px solid var(--line2); padding: 4px; cursor: pointer; flex: none; border-radius: var(--radius); }
+.themeswitch { position: relative; display: inline-flex; align-items: center; gap: 4px; min-height: 44px; box-sizing: border-box; background: none; border: 1px solid var(--line2); padding: 4px; cursor: pointer; flex: none; border-radius: var(--radius); }
+.themeswitch::before { content: ""; position: absolute; left: 5px; top: 5px; width: 32px; height: 32px; border-radius: 4px; background: var(--ink); transform: translateX(0); transition: transform var(--duration-ui) var(--ease-ui); }
+html:root[data-theme="dark"] .themeswitch::before { transform: translateX(36px); }
 .themeswitch:hover { border-color: var(--muted); }
-.themeswitch .opt { display: grid; place-items: center; width: 32px; height: 28px; color: var(--faint); border-radius: 4px; transition: background .2s, color .2s; }
+.themeswitch .opt { position: relative; display: grid; place-items: center; width: 32px; height: 32px; color: var(--faint); border-radius: 4px; }
 .themeswitch .opt svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-html:root[data-theme="light"] .themeswitch .sun, html:root[data-theme="dark"] .themeswitch .moon { background: var(--ink); color: var(--bg); }
-@media (prefers-color-scheme: light) { html:root:not([data-theme]) .themeswitch .sun { background: var(--ink); color: var(--bg); } }
-@media (prefers-color-scheme: dark) { html:root:not([data-theme]) .themeswitch .moon { background: var(--ink); color: var(--bg); } }
+html:root[data-theme="light"] .themeswitch .sun, html:root[data-theme="dark"] .themeswitch .moon { color: var(--bg); }
+@media (prefers-color-scheme: light) { html:root:not([data-theme]) .themeswitch .sun { color: var(--bg); } }
+@media (prefers-color-scheme: dark) {
+  html:root:not([data-theme]) .themeswitch .moon { color: var(--bg); }
+  html:root:not([data-theme]) .themeswitch::before { transform: translateX(36px); }
+}
+.theme-setting *, .theme-setting *::before, .theme-setting *::after { transition: none !important; }
+html.theme-setting .themeswitch::before { transition: transform var(--duration-ui) var(--ease-ui) !important; }
 
 /* Phone menu: shown on narrow screens, and only when JavaScript runs. Without it the nav wraps. */
-.nav-toggle { display: none; background: none; border: 1px solid var(--line2); border-radius: var(--radius); padding: 8px 12px; font: inherit; font-size: 16px; font-weight: 500;
-  color: var(--ink); cursor: pointer; }
+.nav-toggle { display: none; align-items: center; justify-content: center; box-sizing: border-box; background: none; border: 1px solid var(--line2); border-radius: var(--radius); padding: 0 12px; font: inherit; font-size: 16px; font-weight: 500; line-height: 1.25;
+  min-width: 72px; min-height: 44px; color: var(--ink); cursor: pointer; }
 .nav-toggle:hover { border-color: var(--muted); }
 .themeswitch:focus-visible, .nav-toggle:focus-visible, .skip-link:focus-visible, .topnav > a:focus-visible, .nav-cta:focus-visible, .btn2:focus-visible {
   outline: 2px solid var(--ink); outline-offset: 2px; }
@@ -240,16 +261,26 @@ html:root[data-theme="light"] .themeswitch .sun, html:root[data-theme="dark"] .t
 @media (max-width: 900px) {
   .js .nav-toggle { display: inline-flex; margin-left: auto; }
   .js .topnav {
-    display: none; position: absolute; top: 100%; left: 0; right: 0;
+    display: flex; visibility: hidden; opacity: 0; pointer-events: none; transform: translateY(-4px); position: absolute; top: 100%; left: 0; right: 0;
     flex-direction: column; align-items: stretch; gap: 0;
     background: var(--bg); border-bottom: 1px solid var(--line);
-    padding: 4px 24px 16px; max-height: calc(100vh - 64px); overflow-y: auto;
+    padding: 4px var(--gutter) 16px; max-height: calc(100dvh - var(--head-h, 64px)); overflow-y: auto; overscroll-behavior: contain;
+    transition: opacity .16s var(--ease-ui), transform .16s var(--ease-ui), visibility 0s .16s;
   }
-  .js .site-head.nav-open .topnav { display: flex; }
+  .js .site-head.nav-open .topnav { visibility: visible; opacity: 1; pointer-events: auto; transform: none; transition-delay: 0s; }
   .js .topnav > a:not(.nav-cta) { padding: 12px 0; font-size: 18px; border-top: 1px solid var(--line); box-shadow: none; }
   .js .topnav > a:first-child { border-top: none; }
   .js .topnav .themeswitch { margin: 12px 0 0; align-self: flex-start; }
   .js .topnav > .nav-cta { margin-top: 12px; justify-content: center; padding: 12px; font-size: 16px; }
+  html:not(.js) .site-head { height: auto; min-height: 64px; flex-wrap: wrap; padding-top: 12px; padding-bottom: 12px; }
+  html:not(.js) .topnav { flex-wrap: wrap; gap: 12px; }
+}
+@media (max-width: 640px) { .site-head { height: 56px; } }
+
+/* Only offscreen, noncritical groups are enhanced. Without JS they remain visible. */
+@media (prefers-reduced-motion: no-preference) {
+  .scroll-reveal { transition: opacity .4s var(--ease-ui), transform .4s var(--ease-ui); }
+  .scroll-reveal.reveal-pending { opacity: 0; transform: translateY(12px); }
 }
 
 /* "On this page": a sticky in-page index for long pages, marking the section in view. */
@@ -279,7 +310,7 @@ html:root[data-theme="light"] .themeswitch .sun, html:root[data-theme="dark"] .t
 .motion-paused .marquee-track { animation-play-state: paused !important; }
 
 /* Footer */
-.site-foot { margin-top: clamp(56px, 10vw, 92px); padding: 36px 0 8px; border-top: 1px solid var(--line);
+.site-foot { box-sizing: border-box; width: 100%; margin-top: clamp(56px, 10vw, 92px); padding: 36px 0 32px; border-top: 1px solid var(--line);
   font-size: 14px; line-height: 1.6; color: var(--muted); }
 .site-foot p { margin: 0 0 12px; }
 .footer-brand { display: flex; align-items: center; gap: 8px; font-family: var(--wordmark); font-weight: 500; font-size: 20px; color: var(--ink); }
@@ -299,7 +330,9 @@ html:root[data-theme="light"] .themeswitch .sun, html:root[data-theme="dark"] .t
 [data-fact] { font-variant-numeric: tabular-nums; }
 
 @media (prefers-reduced-motion: reduce) {
-  .skip-link, .mark .half, .themeswitch .opt, .lattice-glow { transition: none !important; }
+  .site-head, .site-head::after, .nav-cta, .copy, .seg button, .card, .card .go svg, .viz, .arrow-link .arr,
+  .partner-form input, .scroll-reveal { transition: none !important; }
+  .skip-link, .mark .half, .themeswitch::before, html.theme-setting .themeswitch::before, .lattice-glow, .js .topnav { transition: none !important; }
 }
 
 /* Visually hidden, still read by screen readers */
