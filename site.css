@@ -337,3 +337,37 @@ html.theme-setting .themeswitch::before { transition: transform var(--duration-u
 
 /* Visually hidden, still read by screen readers */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+/* ---------- Interaction details (2026-11-06) ----------
+   Learned from the shipped code of Stripe, Ramp, Linear, Raycast and Harvey: small, consistent, and
+   never on touch-only hovers. One grow curve for surfaces, the UI curve for everything else. */
+:root { --ease-grow: cubic-bezier(.165, .84, .44, 1); --duration-press: 120ms; }
+html { background-color: var(--bg); }
+::selection { background: var(--accent-bg); color: var(--ink); }
+
+/* Chevron that becomes an arrow: at rest a ">", on hover a shaft fades in and the tip slides on. */
+.hover-arrow { width: 10px; height: 10px; flex: none; overflow: visible; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.hover-arrow .shaft { opacity: 0; transition: opacity 300ms var(--ease-ui); }
+.hover-arrow .tip { transition: transform 300ms var(--ease-ui); }
+:where(a, button):focus-visible .hover-arrow .shaft { opacity: 1; }
+:where(a, button):focus-visible .hover-arrow .tip { transform: translateX(2px); }
+@media (hover: hover) and (pointer: fine) {
+  :where(a, button):hover .hover-arrow .shaft { opacity: 1; }
+  :where(a, button):hover .hover-arrow .tip { transform: translateX(2px); }
+}
+
+/* Press: everything you can click gives a little under the finger. */
+.btn2, .nav-cta, .copy, .seg button, .card .go, .themeswitch, .nav-toggle { transition-property: background-color, border-color, color, transform; transition-duration: var(--duration-ui), var(--duration-ui), var(--duration-ui), var(--duration-press); transition-timing-function: var(--ease-ui); }
+.btn2:active, .nav-cta:active, .seg button:active, .themeswitch:active, .nav-toggle:active { transform: scale(.97); }
+.copy:active .btn-label { transform: scale(.96); }
+.copy .btn-label { transition: transform var(--duration-press) var(--ease-ui), background-color var(--duration-ui) var(--ease-ui); }
+
+/* Labels sit optically centred in their buttons where the browser can trim to cap height. */
+@supports (text-box: trim-both cap alphabetic) {
+  .btn2, .nav-cta, .copy .btn-label, .seg button { text-box: trim-both cap alphabetic; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-arrow .shaft, .hover-arrow .tip, .copy .btn-label { transition: none !important; }
+  .btn2:active, .nav-cta:active, .seg button:active, .themeswitch:active, .nav-toggle:active, .copy:active .btn-label { transform: none; }
+}
