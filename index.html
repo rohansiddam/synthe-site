@@ -71,8 +71,8 @@
 }
     </script>
     <link rel="preload" href="/fonts/archivo-normal-62-125-100-900-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/site.css?v=adb4e2fe" />
-    <script src="/site.js?v=c8412239" defer></script>
+    <link rel="stylesheet" href="/site.css?v=ec8ea9f6" />
+    <script src="/site.js?v=4f7db02e" defer></script>
     <style>
       .page { padding: 0; }
       .page > .site-foot { max-width: var(--page-width); margin-left: auto; margin-right: auto; padding-left: var(--gutter); padding-right: var(--gutter); }
@@ -82,8 +82,18 @@
       code { font-family: var(--mono); }
       .muted { color: var(--muted); }
       .arrow-link { display: inline-flex; align-items: center; min-height: 44px; gap: 8px; font-size: 14px; font-weight: 500; text-decoration: none; color: var(--ink); }
-      .arrow-link .arr { transition: transform var(--duration-ui) var(--ease-ui); }
       .arrow-link:focus-visible, .copy:focus-visible, .card:has(.go:focus-visible), .seg button:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 6px; }
+
+      /* The living field behind the hero: a CSS still first, then a slow WebGL field fades in on top. */
+      main { position: relative; isolation: isolate; }
+      .hero-field { position: absolute; left: 0; right: 0; top: 0; height: min(760px, 92vh); z-index: -1; overflow: hidden; pointer-events: none;
+        -webkit-mask-image: linear-gradient(#000 40%, transparent); mask-image: linear-gradient(#000 40%, transparent);
+        background: radial-gradient(60% 70% at 88% 8%, var(--accent-bg), transparent 70%), radial-gradient(45% 55% at 62% 30%, var(--bg2), transparent 70%), var(--bg); }
+      .hero-field canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.8s ease-in 50ms; }
+      .hero-field.is-live canvas { opacity: 1; }
+      .hero-field::after { content: ""; position: absolute; inset: 0; opacity: .5; mix-blend-mode: multiply; background-size: 160px 160px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+      html[data-theme="dark"] .hero-field::after { mix-blend-mode: screen; opacity: .35; filter: invert(1); }
 
       /* An editorial split, then one labelled, once-only product sequence. */
       .hero { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 48px; align-items: end; padding-top: 96px; }
@@ -138,7 +148,11 @@
       .proof p { margin: 0; font-size: clamp(24px, 2.8vw, 40px); line-height: 1.15; letter-spacing: -.025em; font-weight: 500; max-width: 30ch; }
       .proof .arrow-link { margin-top: 16px; }
       .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding-top: 40px; }
-      .card { position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 32px; min-height: 320px; padding: 24px; box-sizing: border-box; border: 1px solid var(--line); border-radius: 10px; background: var(--bg2); transition: border-color var(--duration-ui) var(--ease-ui); }
+      .card { position: relative; isolation: isolate; display: flex; flex-direction: column; justify-content: space-between; gap: 32px; min-height: 320px; padding: 24px; box-sizing: border-box; border-radius: 10px; --grow: 0px; --mx: 50%; --my: 0%; }
+      .card::before, .card::after { content: ""; position: absolute; inset: calc(-1 * var(--grow)); border-radius: calc(10px + var(--grow)); z-index: -1; pointer-events: none; transition: inset 600ms var(--ease-grow), border-radius 600ms var(--ease-grow), border-color var(--duration-ui) var(--ease-ui), opacity 250ms linear; }
+      .card::before { background: var(--bg2); border: 1px solid var(--line); }
+      .card::after { padding: 1px; opacity: 0; background: radial-gradient(240px circle at var(--mx) var(--my), var(--accent), transparent 70%);
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
       .card h3 { margin: 0; padding-right: 32px; font-size: 20px; line-height: 1.35; font-weight: 500; text-wrap: pretty; }
       .card h3 span { color: var(--muted); }
       .card .go { position: absolute; right: 16px; top: 16px; display: grid; place-items: center; width: 44px; height: 44px; color: var(--ink); text-decoration: none; border-radius: 6px; }
@@ -186,12 +200,12 @@
       .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
       .trynote { font-size: 14px; color: var(--muted); margin: 0; grid-column: 1 / -1; }
       .trynote:empty { display: none; }
-      .arrow-link:focus-visible .arr { transform: translateX(2px); }
-      .card:focus-within { border-color: var(--line2); }
+      .card:focus-within::before { border-color: var(--line2); }
       .card:focus-within .go svg { transform: translate(2px, -2px); }
       @media (hover: hover) and (pointer: fine) {
-        .arrow-link:hover .arr { transform: translateX(2px); }
-        .copy:hover, .card:hover { border-color: var(--muted); }
+        .copy:hover { border-color: var(--muted); }
+        .card:hover { --grow: 6px; }
+        .card:hover::after { opacity: 1; }
         .card:hover .go svg { transform: translate(2px, -2px); }
         .card:hover .viz { transform: translateY(-2px); }
         .partner-form input[type="email"]:hover { border-color: var(--muted); }
@@ -203,6 +217,7 @@
         .scene { grid-template-columns: minmax(0, 1fr); gap: 24px; }
         .cards, .step-cards { grid-template-columns: minmax(0, 1fr); }
         .card { min-height: 0; gap: 24px; }
+        .card:hover { --grow: 0px; }
         .contact { grid-template-columns: minmax(0, 1fr); }
         .steps, .contact { padding-top: 72px; }
         .proof { padding-top: 64px; }
@@ -232,7 +247,9 @@
         .copy:not(.copy-text) code { font-size: 12px; }
       }
       @media (prefers-reduced-motion: reduce) {
-        .viz, .card .go svg, .arrow-link .arr { transition: none !important; transform: none !important; }
+        .viz, .card .go svg, .card::before, .card::after { transition: none !important; transform: none !important; }
+        .card:hover { --grow: 0px; }
+        .hero-field canvas { display: none; }
         .flow-ready .prompt-before { opacity: 0 !important; }
         .flow-ready .prompt-after, .flow-ready .report-results .result-word { opacity: 1 !important; transform: none !important; transition: none !important; }
         .flow-ready .changed { background: var(--accent-bg) !important; border-left-color: var(--accent) !important; transition: none !important; }
@@ -275,13 +292,14 @@
         </nav>
       </header>
     <main id="main">
+      <div class="hero-field" aria-hidden="true"><canvas></canvas></div>
       <section class="hero wrap" id="start">
         <h1>Your AI agent gets better on its own.</h1>
         <div class="hero-copy">
         <p class="lede"><strong>You say what good looks like.</strong> Synthe tests changes to your agent's prompt in your own GitHub repo, and keeps only what wins.</p>
         <div class="actions">
           <button class="copy" type="button" aria-label="Copy the command npx synthe@latest init"><span class="prompt" aria-hidden="true">$</span><code>npx synthe@latest init</code><span class="btn-label"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="4.5" y="4.5" width="7" height="7" rx="1.5"/><path d="M9.5 4.5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v5.5a1 1 0 0 0 1 1h1.5"/></svg><span>Copy</span></span></button>
-          <a class="arrow-link" href="#start-tonight">How to start <span class="arr" aria-hidden="true">→</span></a>
+          <a class="arrow-link" href="#start-tonight">How to start <svg class="hover-arrow arr" viewBox="0 0 10 10" aria-hidden="true"><path class="shaft" d="M.5 5h7"/><path class="tip" d="M3.5 1.5 7 5 3.5 8.5"/></svg></a>
         </div>
         </div>
       </section>
@@ -315,7 +333,7 @@
 
       <section class="proof wrap">
         <p>It already works in public. <span class="muted">A demo store bot's prompt, improved and merged as a pull request.</span></p>
-        <a class="arrow-link" href="https://github.com/synthelabs/support-bot">See the public demo run <span class="arr" aria-hidden="true">→</span></a>
+        <a class="arrow-link" href="https://github.com/synthelabs/support-bot">See the public demo run <svg class="hover-arrow arr" viewBox="0 0 10 10" aria-hidden="true"><path class="shaft" d="M.5 5h7"/><path class="tip" d="M3.5 1.5 7 5 3.5 8.5"/></svg></a>
       </section>
 
       <section class="cards wrap" aria-label="How it works">
