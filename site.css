@@ -371,3 +371,64 @@ html { background-color: var(--bg); }
   .hover-arrow .shaft, .hover-arrow .tip, .copy .btn-label { transition: none !important; }
   .btn2:active, .nav-cta:active, .seg button:active, .themeswitch:active, .nav-toggle:active, .copy:active .btn-label { transform: none; }
 }
+
+/* ---------- PR 1 polish: hero anchor and report artifact (2026-11-06) ----------
+   The hero tightens up so the product artifact starts inside the first viewport, and the
+   example becomes one card with two halves: the prompt file on the left, its run report on
+   the right, both ending on the same bottom edge. Selectors carry a `body main` prefix
+   because the homepage keeps its own page styles after this file; these rules must win
+   without editing those page styles. The demo run behind the card recorded one measured
+   transition and no score series, so its movement renders as paired before/after bars. */
+body main .hero { padding-top: 48px; align-items: start; }
+body main .stage { margin-top: 40px; }
+body main .product-figure { padding: 24px; }
+body main .figure-caption { margin-bottom: 16px; }
+
+body main .artifact-layout { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 0; align-items: stretch;
+  background: var(--card); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+body main .artifact-file { display: flex; flex-direction: column; min-width: 0; background: var(--card);
+  border: 0; border-right: 1px solid var(--line); border-radius: 0; }
+.file-chrome { display: flex; align-items: center; gap: 12px; min-height: 44px; box-sizing: border-box;
+  padding: 0 16px; background: var(--bg2); border-bottom: 1px solid var(--line); font: 13px var(--mono); }
+.file-tab { color: var(--ink); font-weight: 500; }
+.file-note { color: var(--muted); }
+
+body main .prompt-lines { counter-reset: prompt-line; padding: 16px 20px; }
+body main .prompt-lines > p { position: relative; padding-left: 36px; }
+body main .prompt-lines > p::before { counter-increment: prompt-line; content: counter(prompt-line);
+  position: absolute; left: 0; top: 8px; width: 20px; text-align: right;
+  color: var(--muted); font-size: 12px; line-height: 1.65; }
+body main .prompt-lines > p.changed { margin: 4px 0; padding: 8px 12px 8px 48px; }
+body main .prompt-lines > p.changed::before { left: 12px; }
+
+body main .artifact-report { display: flex; flex-direction: column; min-width: 0; padding: 24px; }
+body main .artifact-report .report-results li { padding: 12px 0; }
+.movement-label { margin: 8px 0 0; font-size: 14px; line-height: 1.5; color: var(--muted); text-wrap: pretty; }
+/* One measured transition, drawn as paired bars: two labeled points per measure, no curve. */
+.ba-bars { display: grid; gap: 16px; margin: 16px 0 8px; }
+.ba-group { display: grid; gap: 8px; }
+.ba-title { margin: 0; font: 12px/1.5 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.ba-row { margin: 0; display: grid; grid-template-columns: 44px minmax(0, 1fr) 40px; align-items: center; gap: 12px; font-size: 13px; }
+.ba-when { color: var(--muted); }
+.ba-track { display: block; height: 8px; background: var(--bg2); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+.ba-fill { display: block; height: 100%; width: var(--v); background: var(--muted); }
+.ba-fill.after { background: var(--accent); }
+.ba-val { font: 13px var(--mono); text-align: right; }
+.evidence-lines { list-style: none; margin: 8px 0 0; padding: 0; display: grid; }
+.evidence-lines li { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-top: 1px solid var(--line); font-size: 14px; }
+.evidence-lines .ev { font: 12px/1.75 var(--mono); white-space: nowrap; }
+.artifact-meta { margin: 16px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font: 12px/1.75 var(--mono); color: var(--muted); }
+.artifact-link { margin-top: auto; padding-top: 16px; }
+
+@media (max-width: 960px) {
+  body main .hero { padding-top: 40px; }
+  body main .stage { margin-top: 32px; }
+  body main .artifact-layout { grid-template-columns: minmax(0, 1fr); }
+  body main .artifact-file { border-right: 0; border-bottom: 1px solid var(--line); }
+}
+@media (max-width: 640px) {
+  body main .hero { padding-top: 32px; }
+  body main .product-figure { padding: 16px; }
+  body main .artifact-report { padding: 20px 16px; }
+  body main .prompt-lines { padding: 12px 16px; }
+}
