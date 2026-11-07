@@ -476,3 +476,14 @@ html:root { --r-chip: 4px; --r-control: 6px; --r-frame: 10px; }
   .partner-form input { min-width: 0; }
   .footer-nav { gap: 8px 16px; }
 }
+
+/* ---------- PR 1 follow-up (2026-11-06): the run's checks under the prompt ----------
+   The demo run's checks live in synthe.json; showing them in the artifact's left column
+   under prompt.md fills the column with the run's real material and shows what the
+   report's percentages were measured against. Text is verbatim from the demo repo. */
+.checks-list { margin: 0; padding: 16px 20px 20px 40px; display: grid; gap: 12px;
+  font: 13px/1.65 var(--mono); color: var(--ink); }
+.checks-list li::marker { color: var(--muted); }
+@media (max-width: 640px) {
+  .checks-list { padding: 12px 16px 16px 32px; }
+}
