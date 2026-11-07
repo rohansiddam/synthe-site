@@ -31,6 +31,9 @@
       .doc-hero { padding: 64px 0 32px; }
       .doc-hero h1 { font-size: clamp(32px, 4.2vw, 48px); line-height: 1.08; margin: 12px 0 16px; max-width: 16em; }
       .lede { font-size: 18px; color: var(--muted); margin: 0; max-width: 36em; }
+      .event-callout { display: flex; gap: 12px; align-items: flex-start; margin: 24px 0 0; padding: 16px 20px; border-radius: 8px; background: var(--accent-bg); border: 1px solid var(--accent); color: var(--ink); font-size: 16px; line-height: 1.5; max-width: 48ch; text-wrap: pretty; }
+      .event-callout .dot { flex: none; width: 8px; height: 8px; margin-top: 8px; border-radius: 50%; background: var(--accent); }
+      .event-callout strong { font-weight: 600; }
       .block { padding: 40px 0; border-top: 1px solid var(--line); }
       .block:first-of-type { border-top: 0; }
       .block h2 { font-size: 24px; line-height: 1.2; margin: 0 0 16px; }
@@ -125,13 +128,14 @@
           <p class="eyebrow">Docs</p>
           <h1>Get started with Synthe</h1>
           <p class="lede">A short quickstart for hackathon teams. Everything else is in the <a class="textlink" href="https://github.com/synthelabs/synthe#readme">README on GitHub</a>.</p>
+          <p class="event-callout"><span class="dot" aria-hidden="true"></span><span><strong>At the event? Come talk to us before you start.</strong> Find us at the Synthe table and we'll set you up with your event code and team code, and help you get running.</span></p>
         </div>
         <section class="block" id="need" data-toc-target aria-labelledby="need-h">
           <h2 id="need-h">What you need</h2>
           <ul>
             <li>A GitHub repo you can admin, with your agent's system prompt in it, as its own file or a string in your code.</li>
             <li>The <a class="textlink" href="https://cli.github.com">GitHub CLI</a>, signed in with <code>gh auth login</code>, and Node <span data-fact="node_min">20</span> or later.</li>
-            <li>The event code on the QR card and your team code from the Synthe table (it starts with <code>crim-</code>). Or your own Anthropic key, and you need neither code.</li>
+            <li>Your event code and team code. <strong>Come talk to us at the Synthe table</strong> and we'll set you up. Or use your own Anthropic key, and you need neither code.</li>
           </ul>
         </section>
         <section class="block" id="setup" data-toc-target aria-labelledby="setup-h">

@@ -81,6 +81,9 @@
       a { color: inherit; }
       code { font-family: var(--mono); }
       .muted { color: var(--muted); }
+      .event-callout { display: flex; gap: 12px; align-items: flex-start; margin: 24px 0 0; padding: 16px 20px; border-radius: 8px; background: var(--accent-bg); border: 1px solid var(--accent); color: var(--ink); font-size: 16px; line-height: 1.5; max-width: 48ch; text-wrap: pretty; }
+      .event-callout .dot { flex: none; width: 8px; height: 8px; margin-top: 8px; border-radius: 50%; background: var(--accent); }
+      .event-callout strong { font-weight: 600; }
       .arrow-link { display: inline-flex; align-items: center; min-height: 44px; gap: 8px; font-size: 14px; font-weight: 500; text-decoration: none; color: var(--ink); }
       .arrow-link:focus-visible, .copy:focus-visible, .card:has(.go:focus-visible), .seg button:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 6px; }
 
@@ -301,6 +304,7 @@
           <button class="copy" type="button" aria-label="Copy the command npx synthe@latest init"><span class="prompt" aria-hidden="true">$</span><code>npx synthe@latest init</code><span class="btn-label"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="4.5" y="4.5" width="7" height="7" rx="1.5"/><path d="M9.5 4.5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v5.5a1 1 0 0 0 1 1h1.5"/></svg><span>Copy</span></span></button>
           <a class="arrow-link" href="#start-tonight">How to start <svg class="hover-arrow arr" viewBox="0 0 10 10" aria-hidden="true"><path class="shaft" d="M.5 5h7"/><path class="tip" d="M3.5 1.5 7 5 3.5 8.5"/></svg></a>
         </div>
+        <p class="event-callout"><span class="dot" aria-hidden="true"></span><span><strong>At the event? Come talk to us first.</strong> Find us at the Synthe table and we'll set you up with your codes. You don't need your own Anthropic key.</span></p>
         </div>
       </section>
 
