@@ -371,3 +371,35 @@ html { background-color: var(--bg); }
   .hover-arrow .shaft, .hover-arrow .tip, .copy .btn-label { transition: none !important; }
   .btn2:active, .nav-cta:active, .seg button:active, .themeswitch:active, .nav-toggle:active, .copy:active .btn-label { transform: none; }
 }
+
+/* ---------- PR 3 (2026-11-06): radius scale, icon standard, footer finish, small screens ----------
+   One radius scale for the whole site, in the playbook's steps (section 0: controls 6px, the
+   product frame 10px), plus a 4px chip step for inner segments, tags and inline code:
+     --r-chip: 4px;  --r-control: 6px;  --r-frame: 10px (frames and cards share this step).
+   Page styles opt in per component (the Docs and homepage styles already use these tokens);
+   the shared components defined earlier in this file are aligned here, at the end, so the
+   core rules above stay untouched. Icons: one inline SVG approach, stroke 1.8 with round caps
+   and joins at every size (the logo mark is the only filled icon). */
+html:root { --r-chip: 4px; --r-control: 6px; --r-frame: 10px; }
+.btn2, .nav-toggle, .themeswitch, .to-top { border-radius: var(--r-control); }
+.themeswitch::before, .themeswitch .opt { border-radius: var(--r-chip); }
+.themeswitch .opt svg, .hover-arrow { stroke-width: 1.8; }
+.textlink { -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+
+/* Footer finish: the boundary with the page reads in both themes, and the colophon is a mono
+   record line (the record-label treatment), not a serif italic. */
+.site-foot { border-top-color: var(--line2); }
+.site-foot .colophon { letter-spacing: .04em; }
+
+/* Small screens: keep the header row and the contact form orderly at phone widths.
+   With JavaScript the nav is the Menu panel (max-width 900px rules above); without it the
+   nav wraps, so its gaps tighten here. Hero, example, checks and Start steps already stack
+   at 960px in the homepage styles; the form and footer rules below complete the set. */
+@media (max-width: 640px) {
+  .site-head { gap: 12px; }
+  .topnav { gap: 16px; }
+  .partner-form .field { flex-basis: 100%; }
+  .partner-form .btn2 { flex: 1 1 100%; }
+  .partner-form input { min-width: 0; }
+  .footer-nav { gap: 8px 16px; }
+}

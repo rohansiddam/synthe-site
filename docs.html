@@ -19,7 +19,7 @@
     <meta property="og:site_name" content="Synthe" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="preload" href="/fonts/archivo-normal-62-125-100-900-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/site.css?v=ec8ea9f6" />
+    <link rel="stylesheet" href="/site.css?v=e9464613" />
     <script src="/site.js?v=4f7db02e" defer></script>
     <style>
       .page { padding: 0; }
@@ -31,35 +31,39 @@
       .doc-hero { padding: 64px 0 32px; }
       .doc-hero h1 { font-size: clamp(32px, 4.2vw, 48px); line-height: 1.08; margin: 12px 0 16px; max-width: 16em; }
       .lede { font-size: 18px; color: var(--muted); margin: 0; max-width: 36em; }
-      .event-callout { display: flex; gap: 12px; align-items: flex-start; margin: 24px 0 0; padding: 16px 20px; border-radius: 8px; background: var(--accent-bg); border: 1px solid var(--accent); color: var(--ink); font-size: 16px; line-height: 1.5; max-width: 48ch; text-wrap: pretty; }
+      .event-callout { display: flex; gap: 12px; align-items: flex-start; margin: 24px 0 0; padding: 16px 20px; border-radius: var(--r-frame); background: var(--accent-bg); border: 1px solid var(--accent); color: var(--ink); font-size: 16px; line-height: 1.5; max-width: 48ch; text-wrap: pretty; }
       .event-callout .dot { flex: none; width: 8px; height: 8px; margin-top: 8px; border-radius: 50%; background: var(--accent); }
       .event-callout strong { font-weight: 600; }
       .block { padding: 40px 0; border-top: 1px solid var(--line); }
       .block:first-of-type { border-top: 0; }
       .block h2 { font-size: 24px; line-height: 1.2; margin: 0 0 16px; }
       .block h3 { font-size: 20px; margin: 28px 0 8px; }
-      .block p { color: var(--ink-soft); margin: 0 0 16px; max-width: 40em; }
+      .block p { color: var(--ink-soft); margin: 0 0 16px; max-width: 68ch; }
       .block li { color: var(--ink-soft); }
-      .block ol, .block ul { padding-left: 24px; margin: 0 0 16px; display: grid; gap: 8px; max-width: 40em; }
-      .block p code, .block li code, .block td code { font-size: .88em; background: var(--bg2); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; overflow-wrap: anywhere; }
-      .textlink { color: var(--human-text); font-weight: 500; text-decoration: none; border-bottom: 1px solid currentColor; }
+      .block ol, .block ul { padding-left: 24px; margin: 0 0 16px; display: grid; gap: 8px; max-width: 68ch; }
+      .block p code, .block li code, .block td code { font-size: .88em; background: var(--bg2); border: 1px solid var(--line); border-radius: var(--r-chip); padding: 0 4px; white-space: nowrap; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+      .textlink { color: var(--human-text); font-weight: 500; text-decoration: none; border-bottom: 1px solid currentColor; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
       .textlink:focus-visible, .copy:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-      .cmd { display: inline-flex; align-items: center; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 4px 4px 4px 16px; font: 16px/1.5 var(--mono); overflow-x: auto; margin: 0 0 16px; max-width: 100%; box-sizing: border-box; }
+      .cmd { display: inline-flex; align-items: center; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-frame); padding: 4px 4px 4px 16px; font: 16px/1.5 var(--mono); overflow-x: auto; margin: 0 0 16px; max-width: 100%; box-sizing: border-box; }
       .cmd code { flex: 1; white-space: pre; padding: 0 12px 0 0; }
       .cmd .prompt { color: var(--muted); white-space: pre; }
       @media (max-width: 480px) { .cmd { font-size: 14px; } .cmd code { padding-right: 8px; } .copy { padding: 0 12px; } }
-      .copy { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; background: var(--ink); border: 0; border-radius: var(--radius); color: var(--bg); font: 600 14px var(--sans); padding: 0 16px; cursor: pointer; flex: none; }
+      .copy { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; background: var(--ink); border: 0; border-radius: var(--r-control); color: var(--bg); font: 600 14px var(--sans); padding: 0 16px; cursor: pointer; flex: none; }
       .copy .mark .a { fill: var(--bg); }
       .copy .mark { width: 14px; height: 15px; }
       
-      .term { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 16px; font: 14px/1.65 var(--mono); color: var(--muted); white-space: pre-wrap; margin: 0 0 16px; max-width: 46em; overflow-x: auto; }
-      .avail { display: inline-block; font: 12px/1 var(--mono); color: var(--ink); border: 1px solid var(--gold); border-radius: 4px; padding: 4px 8px; margin: 0 0 12px; }
+      .term { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-frame); padding: 16px; font: 14px/1.65 var(--mono); color: var(--muted); white-space: pre-wrap; margin: 0 0 16px; max-width: 46em; overflow-x: auto; }
+      .avail { display: inline-block; font: 12px/1 var(--mono); color: var(--ink); border: 1px solid var(--gold); border-radius: var(--r-chip); padding: 4px 8px; margin: 0 0 12px; }
       .note { font-size: 16px; color: var(--muted) !important; }
-      .warn { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 16px 12px 36px; position: relative; max-width: 40em; }
-      .warn::before { content: ""; position: absolute; left: 16px; top: 20px; width: 8px; height: 8px; border-radius: 50%; background: var(--gold-fill); }
+      .warn { display: flex; gap: 12px; align-items: flex-start; background: var(--card); border: 1px solid var(--line2); border-radius: var(--r-frame); padding: 16px; margin: 0 0 16px; max-width: 68ch; color: var(--ink-soft); }
+      .warn-icon { flex: none; width: 20px; height: 20px; margin-top: 1px; color: var(--accent-text); fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+      .warn-label { display: block; font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--accent-text); margin: 0 0 4px; }
+      .warn p { margin: 0; max-width: none; }
       .tablewrap { overflow-x: auto; margin: 0 0 16px; }
       table { border-collapse: collapse; width: 100%; font-size: 16px; }
-      th, td { text-align: left; vertical-align: top; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--line); color: var(--ink-soft); }
+      th, td { text-align: left; vertical-align: top; padding: 12px 24px 12px 0; border-bottom: 1px solid var(--line2); color: var(--ink-soft); }
+      th:last-child, td:last-child { padding-right: 0; }
+      tbody tr:last-child td { border-bottom: 0; }
       th { font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
       td:first-child { white-space: nowrap; }
       .facts { list-style: none; padding: 0 !important; margin: 0 0 16px; display: grid; gap: 0 !important; max-width: none !important; }
@@ -68,6 +72,7 @@
       .facts .v { color: var(--ink-soft); }
       .facts .v strong { color: var(--ink); }
       @media (max-width: 640px) { .facts li { grid-template-columns: 1fr; gap: 4px; } }
+      @media (max-width: 640px) { .doc { padding: 0 20px; } .doc-hero { padding: 48px 0 24px; } .event-callout { padding: 16px; } table { font-size: 14px; } th, td { padding-right: 16px; } th:last-child, td:last-child { padding-right: 0; } }
       .entries { list-style: none; padding: 0 !important; margin: 0; display: grid; gap: 0 !important; max-width: none !important; }
       .entries li { padding: 28px 0; border-bottom: 1px solid var(--line); }
       .entries .date { font: 13px var(--mono); color: var(--muted); }
@@ -143,8 +148,12 @@
           <p>On your main branch, in the repo, run:</p>
           <div class="cmd"><span class="prompt" aria-hidden="true">$ </span><code>npx synthe@latest init</code><button class="copy" type="button"><svg class="mark open" viewBox="-40 -40 355 370" aria-hidden="true"><use class="half a" href="#hA"/><use class="half b" href="#hB"/></svg><span>Copy</span></button></div>
           <p>Say what your agent should get better at, confirm the checks Synthe proposes, paste your codes or key, and choose automatic merges or review. When the run ends, open the <strong>Synthe: prompt report</strong> issue in your repo.</p>
-          <p>Using Claude Code, Cursor or Codex? Tell it: <code>Set up Synthe in this repo. Run npx synthe@latest guide and follow it.</code></p>
-          <p class="note warn">Automatic merges land on your main branch. If it deploys your app, choose review.</p>
+          <p>Using Claude Code, Cursor or Codex? Tell it:</p>
+          <div class="term">Set up Synthe in this repo. Run npx synthe@latest guide and follow it.</div>
+          <div class="warn">
+            <svg class="warn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 2.8 19.5h18.4L12 3.5z"/><path d="M12 10v4.2"/><path d="M12 17.3v.2"/></svg>
+            <p><span class="warn-label">Merge setting</span>Automatic merges land on your main branch. If it deploys your app, choose review.</p>
+          </div>
         </section>
         <section class="block" id="commands" data-toc-target aria-labelledby="commands-h">
           <h2 id="commands-h">While it runs</h2>
