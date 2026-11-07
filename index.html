@@ -71,8 +71,8 @@
 }
     </script>
     <link rel="preload" href="/fonts/archivo-normal-62-125-100-900-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/site.css?v=ec8ea9f6" />
-    <script src="/site.js?v=4f7db02e" defer></script>
+    <link rel="stylesheet" href="/site.css?v=787af9dd" />
+    <script src="/site.js?v=8d811d04" defer></script>
     <style>
       .page { padding: 0; }
       .page > .site-foot { max-width: var(--page-width); margin-left: auto; margin-right: auto; padding-left: var(--gutter); padding-right: var(--gutter); }
@@ -147,17 +147,20 @@
       .result-word { font: 12px/1.75 var(--mono); color: var(--accent-text); }
       .result-word.unchanged { color: var(--muted); }
 
-      .proof { padding-top: 96px; }
+      .how { padding-top: var(--space-section); }
+      .section-h { font-size: clamp(28px, 3vw, 40px); line-height: 1.1; margin: 0; max-width: 24ch; }
+      .proof { margin-top: var(--space-4); }
       .proof p { margin: 0; font-size: clamp(24px, 2.8vw, 40px); line-height: 1.15; letter-spacing: -.025em; font-weight: 500; max-width: 30ch; }
       .proof .arrow-link { margin-top: 16px; }
-      .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding-top: 40px; }
-      .card { position: relative; isolation: isolate; display: flex; flex-direction: column; justify-content: space-between; gap: 32px; min-height: 320px; padding: 24px; box-sizing: border-box; border-radius: 10px; --grow: 0px; --mx: 50%; --my: 0%; }
+      .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: var(--space-7); }
+      .card { position: relative; isolation: isolate; display: flex; flex-direction: column; justify-content: flex-start; gap: var(--space-5); padding: var(--space-5); box-sizing: border-box; border-radius: 10px; --grow: 0px; --mx: 50%; --my: 0%; }
       .card::before, .card::after { content: ""; position: absolute; inset: calc(-1 * var(--grow)); border-radius: calc(10px + var(--grow)); z-index: -1; pointer-events: none; transition: inset 600ms var(--ease-grow), border-radius 600ms var(--ease-grow), border-color var(--duration-ui) var(--ease-ui), opacity 250ms linear; }
       .card::before { background: var(--bg2); border: 1px solid var(--line); }
       .card::after { padding: 1px; opacity: 0; background: radial-gradient(240px circle at var(--mx) var(--my), var(--accent), transparent 70%);
         -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
-      .card h3 { margin: 0; padding-right: 32px; font-size: 20px; line-height: 1.35; font-weight: 500; text-wrap: pretty; }
-      .card h3 span { color: var(--muted); }
+      .card-head h3 { margin: 0; padding-right: 32px; font-size: 20px; line-height: 1.35; font-weight: 500; text-wrap: pretty; }
+      .step-head h3 { margin: 0; font-size: 20px; line-height: 1.4; font-weight: 500; text-wrap: pretty; }
+      .card-sub, .step-sub { margin: var(--space-2) 0 0; color: var(--muted); font-size: 16px; line-height: 1.5; text-wrap: pretty; }
       .card .go { position: absolute; right: 16px; top: 16px; display: grid; place-items: center; width: 44px; height: 44px; color: var(--ink); text-decoration: none; border-radius: 6px; }
       .card .go svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; transition: transform var(--duration-ui) var(--ease-ui); }
       .viz { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 16px; font-size: 14px; transition: transform .25s var(--ease-ui); }
@@ -176,22 +179,20 @@
       .seg-out .pr { font: 12px var(--mono); color: var(--muted); }
 
       /* Setup is an editorial sequence, not another collection of floating cards. */
-      .steps { padding-top: 128px; scroll-margin-top: calc(var(--head-h, 64px) + 32px); }
+      .steps { padding-top: var(--space-section); scroll-margin-top: calc(var(--head-h, 64px) + 32px); }
       .steps h2, .contact h2 { font-size: clamp(28px, 3vw, 40px); line-height: 1.1; margin: 0; max-width: 24ch; }
       .steps h2 span, .contact h2 span { color: var(--muted); }
-      .step-cards { list-style: none; margin: 40px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
-      .step { display: flex; flex-direction: column; gap: 24px; padding: 24px 0 0; border-top: 1px solid var(--line2); min-width: 0; }
+      .step-cards { list-style: none; margin: var(--space-7) 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6); }
+      .step { display: flex; flex-direction: column; gap: var(--space-5); padding: var(--space-5) 0 0; border-top: 1px solid var(--line2); min-width: 0; height: 100%; box-sizing: border-box; }
       .step .num { font: 13px var(--mono); color: var(--muted); }
-      .step h3 { margin: 0; font-size: 20px; line-height: 1.4; font-weight: 500; text-wrap: pretty; }
-      .step h3 span { color: var(--muted); }
-      .step .copy { align-self: flex-start; }
+      .step .copy { align-self: flex-start; margin-top: auto; }
       .step .copy code { overflow-wrap: anywhere; text-align: left; }
-      .agent-line { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 40px; padding: 24px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+      .agent-line { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: var(--space-7); padding: var(--space-5) 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
       .agent-line p { margin: 0; }
       .agent-line strong { font-weight: 500; }
       .copy-text { max-width: 100%; }
       .copy-text code { font-size: 14px; white-space: normal; text-align: left; }
-      .share-note { margin: 20px 0 0; font-size: 14px; color: var(--muted); max-width: 72ch; text-wrap: pretty; }
+      .share-note { margin: var(--space-5) 0 0; font-size: 14px; color: var(--muted); max-width: 72ch; text-wrap: pretty; }
       .share-note code { font-size: 13px; }
       .contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px 64px; align-items: end; padding-top: 128px; }
       .partner-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
@@ -207,6 +208,7 @@
       .card:focus-within .go svg { transform: translate(2px, -2px); }
       @media (hover: hover) and (pointer: fine) {
         .copy:hover { border-color: var(--muted); }
+        .seg button:not([aria-pressed="true"]):hover { background: var(--bg2); color: var(--ink); }
         .card:hover { --grow: 6px; }
         .card:hover::after { opacity: 1; }
         .card:hover .go svg { transform: translate(2px, -2px); }
@@ -222,8 +224,7 @@
         .card { min-height: 0; gap: 24px; }
         .card:hover { --grow: 0px; }
         .contact { grid-template-columns: minmax(0, 1fr); }
-        .steps, .contact { padding-top: 72px; }
-        .proof { padding-top: 64px; }
+        .contact { padding-top: 72px; }
       }
       @media (max-width: 640px) {
         .hero { padding-top: 56px; }
@@ -234,11 +235,10 @@
         .prompt-lines { padding: 12px 16px; font-size: 13px; }
         .report h3 { font-size: 24px; }
         .report-results li { grid-template-columns: 64px minmax(0, 1fr); gap: 12px; }
-        .steps, .contact { padding-top: 72px; }
-        .proof { padding-top: 56px; }
-        .cards { padding-top: 32px; }
+        .contact { padding-top: 72px; }
+        .cards { margin-top: var(--space-6); }
         .card { padding: 20px; }
-        .step-cards { margin-top: 32px; }
+        .step-cards { margin-top: var(--space-6); }
         .copy { font-size: 13px; gap: 8px; padding-left: 12px; }
         .copy:not(.copy-text) code { white-space: nowrap; }
         .copy .btn-label { padding: 0 8px; }
@@ -335,14 +335,16 @@
         </figure>
       </section>
 
-      <section class="proof wrap">
+      <section class="how wrap" aria-labelledby="how-h">
+        <h2 class="section-h" id="how-h">How it works</h2>
+        <div class="proof">
         <p>It already works in public. <span class="muted">A demo store bot's prompt, improved and merged as a pull request.</span></p>
         <a class="arrow-link" href="https://github.com/synthelabs/support-bot">See the public demo run <svg class="hover-arrow arr" viewBox="0 0 10 10" aria-hidden="true"><path class="shaft" d="M.5 5h7"/><path class="tip" d="M3.5 1.5 7 5 3.5 8.5"/></svg></a>
-      </section>
+        </div>
 
-      <section class="cards wrap" aria-label="How it works">
+      <div class="cards">
         <article class="card">
-          <h3>Your checks decide. <span>In plain sentences, say what a good reply does.</span></h3>
+          <div class="card-head"><h3>Your checks decide.</h3><p class="card-sub">In plain sentences, say what a good reply does.</p></div>
           <div class="viz">
             <ul class="checks">
               <li><span class="tick" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M2.5 6.2 5 8.5 9.5 3.5"/></svg></span><span>Names the return window when asked</span></li>
@@ -353,7 +355,7 @@
           <a class="go" href="https://github.com/synthelabs/support-bot/blob/main/synthe.json" aria-label="See the checks in the public demo run"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5 4h7v7"/></svg></a>
         </article>
         <article class="card">
-          <h3>Only the prompt changes. <span>Tests are simulated, so check the results yourself.</span></h3>
+          <div class="card-head"><h3>Only the prompt changes.</h3><p class="card-sub">Tests are simulated, so check the results yourself.</p></div>
           <div class="viz">
             <ul class="tree">
               <li><span>src/</span><span class="lock">untouched</span></li>
@@ -364,7 +366,7 @@
           <a class="go" href="/status.html" aria-label="Limits and your data"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5 4h7v7"/></svg></a>
         </article>
         <article class="card">
-          <h3>You choose how wins land. <span>If your main branch deploys your app, choose review.</span></h3>
+          <div class="card-head"><h3>You choose how wins land.</h3><p class="card-sub">If your main branch deploys your app, choose review.</p></div>
           <div class="viz">
             <div class="seg" role="group" aria-label="How wins land">
               <button type="button" aria-pressed="false" data-out="Automatic merges land on your default branch.">Automatic</button>
@@ -374,6 +376,7 @@
           </div>
           <a class="go" href="https://github.com/synthelabs/support-bot/pull/7" aria-label="See a change Synthe merged in the public demo run"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 12 12 4M5 4h7v7"/></svg></a>
         </article>
+      </div>
       </section>
 
       <section class="steps wrap" id="start-tonight" aria-labelledby="steps-h">
@@ -381,16 +384,16 @@
         <ol class="step-cards">
           <li class="step">
             <span class="num" aria-hidden="true">1</span>
-            <h3>Get your codes. <span>Come find us outside WEB 1230 for the codes that let Synthe use our API key. Or use your own Anthropic key.</span></h3>
+            <div class="step-head"><h3>Get your codes.</h3><p class="step-sub">Come find us outside WEB 1230 for the codes that let Synthe use our API key. Or use your own Anthropic key.</p></div>
           </li>
           <li class="step">
             <span class="num" aria-hidden="true">2</span>
-            <h3>Run one command <span>in your repo, on your main branch.</span></h3>
+            <div class="step-head"><h3>Run one command</h3><p class="step-sub">In your repo, on your main branch.</p></div>
             <button class="copy" type="button" aria-label="Copy the command npx synthe@latest init"><span class="prompt" aria-hidden="true">$</span><code>npx synthe@latest init</code><span class="btn-label"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="4.5" y="4.5" width="7" height="7" rx="1.5"/><path d="M9.5 4.5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v5.5a1 1 0 0 0 1 1h1.5"/></svg><span>Copy</span></span></button>
           </li>
           <li class="step">
             <span class="num" aria-hidden="true">3</span>
-            <h3>Confirm your checks. <span>Choose merge or review, then open the report issue when the run ends.</span></h3>
+            <div class="step-head"><h3>Confirm your checks.</h3><p class="step-sub">Choose merge or review, then open the report issue when the run ends.</p></div>
           </li>
         </ol>
         <div class="agent-line">
