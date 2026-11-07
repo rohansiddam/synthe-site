@@ -444,6 +444,7 @@ body main .artifact-report .report-results li { padding: 12px 0; }
   body main .product-figure { padding: 16px; }
   body main .artifact-report { padding: 20px 16px; }
   body main .prompt-lines { padding: 12px 16px; }
+}
 
 /* ---------- PR 3 (2026-11-06): radius scale, icon standard, footer finish, small screens ----------
    One radius scale for the whole site, in the playbook's steps (section 0: controls 6px, the
