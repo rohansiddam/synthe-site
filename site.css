@@ -122,6 +122,10 @@ html:root, html:root[data-theme="light"] {
   --wordmark: 'Hanken Grotesk', 'Archivo', sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   --page-width: 1296px; --gutter: 48px;
+  /* Spacing scale, on the 4px grid (DESIGN_PLAYBOOK section 0). --space-section is the
+     largest vertical gap a page chapter may use; component gaps take the smaller steps. */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px;
+  --space-6: 32px; --space-7: 40px; --space-8: 64px; --space-section: 96px;
   --duration-ui: 200ms; --ease-ui: cubic-bezier(.25, 1, .5, 1);
   --on-accent: #fff; --on-status: #fff;
   --ease-spring: cubic-bezier(.2, .9, .25, 1.12); --ease-out: cubic-bezier(.2, .8, .2, 1);
@@ -129,9 +133,9 @@ html:root, html:root[data-theme="light"] {
 }
 html:root[data-theme="dark"] {
     --mode: dark;
-    --bg: #0b0c0a; --bg2: #11120f; --card: #151511; --line: #262620; --line2: #393830;
+    --bg: #0b0c0a; --bg2: #11120f; --card: #151511; --line: #35342c; --line2: #393830;
     --ink: #f4f2ea; --ink-soft: #d8d4c8; --muted: #a39c8b; --faint: #a39c8b;
-    --accent: #e08c79; --accent-text: #e08c79; --accent-fill: #e08c79; --accent-bg: #30201c; --accent-mark: #e08c79;
+    --accent: #e08c79; --accent-text: #e08c79; --accent-fill: #e08c79; --accent-bg: #3d2820; --accent-mark: #e08c79;
     --on-accent: #0b0c0a; --on-status: #0b0c0a;
     --rust-deep: #e08c79; --ok: #3fb97f; --green-soft: #13201a; --red: #e0684f; --red-soft: #2a1714;
     color-scheme: dark;
@@ -139,9 +143,9 @@ html:root[data-theme="dark"] {
 @media (prefers-color-scheme: dark) {
   html:root:not([data-theme]) {
     --mode: dark;
-    --bg: #0b0c0a; --bg2: #11120f; --card: #151511; --line: #262620; --line2: #393830;
+    --bg: #0b0c0a; --bg2: #11120f; --card: #151511; --line: #35342c; --line2: #393830;
     --ink: #f4f2ea; --ink-soft: #d8d4c8; --muted: #a39c8b; --faint: #a39c8b;
-    --accent: #e08c79; --accent-text: #e08c79; --accent-fill: #e08c79; --accent-bg: #30201c; --accent-mark: #e08c79;
+    --accent: #e08c79; --accent-text: #e08c79; --accent-fill: #e08c79; --accent-bg: #3d2820; --accent-mark: #e08c79;
     --on-accent: #0b0c0a; --on-status: #0b0c0a;
     --rust-deep: #e08c79; --ok: #3fb97f; --green-soft: #13201a; --red: #e0684f; --red-soft: #2a1714;
     color-scheme: dark;
@@ -152,8 +156,8 @@ html:root[data-theme="dark"] {
 /* The sideways overflow guard: full-bleed bands use 100vw, which includes a classic scrollbar. */
 html { overflow-x: clip; }
 html body { margin: 0; background-color: var(--bg); background-image: none !important; color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
-@media (max-width: 960px) { html:root, html:root[data-theme] { --gutter: 32px; } }
-@media (max-width: 640px) { html:root, html:root[data-theme] { --gutter: 24px; } }
+@media (max-width: 960px) { html:root, html:root[data-theme] { --gutter: 32px; --space-section: 72px; } }
+@media (max-width: 640px) { html:root, html:root[data-theme] { --gutter: 24px; --space-section: 56px; } }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 main section[id] { scroll-margin-top: calc(var(--head-h, 64px) + 32px); }
 h1, h2, h3, h4, .feature-title, .panel-h { text-wrap: balance; }
@@ -184,6 +188,7 @@ h1 em, h2 em, h3 em { font-style: normal !important; color: inherit !important; 
   background: transparent; color: var(--ink); text-decoration: none; cursor: pointer; border-radius: var(--radius); }
 .btn2:hover { border-color: var(--muted); }
 .btn2.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .btn2.primary:hover { background: var(--ink-soft); border-color: var(--ink-soft); } }
 .btn2 .mark { width: 16px; height: 17px; flex: none; }
 .btn2.primary .mark .a, .nav-cta .mark .a { fill: var(--bg); }
 .btn2.primary:hover .mark .half, .btn2.primary:focus-visible .mark .half,
@@ -250,6 +255,10 @@ html:root[data-theme="light"] .themeswitch .sun, html:root[data-theme="dark"] .t
 }
 .theme-setting *, .theme-setting *::before, .theme-setting *::after { transition: none !important; }
 html.theme-setting .themeswitch::before { transition: transform var(--duration-ui) var(--ease-ui) !important; }
+/* Theme switch: only the page surface cross-fades, over one UI duration. Component colours still
+   change together under .theme-setting, so text never passes through a low-contrast mix.
+   site.js adds .theme-fade for the switch (never under reduced motion) and removes it after. */
+html.theme-fade body { transition: background-color var(--duration-ui) var(--ease-ui), color var(--duration-ui) var(--ease-ui) !important; }
 
 /* Phone menu: shown on narrow screens, and only when JavaScript runs. Without it the nav wraps. */
 .nav-toggle { display: none; align-items: center; justify-content: center; box-sizing: border-box; background: none; border: 1px solid var(--line2); border-radius: var(--radius); padding: 0 12px; font: inherit; font-size: 16px; font-weight: 500; line-height: 1.25;
@@ -257,6 +266,10 @@ html.theme-setting .themeswitch::before { transition: transform var(--duration-u
 .nav-toggle:hover { border-color: var(--muted); }
 .themeswitch:focus-visible, .nav-toggle:focus-visible, .skip-link:focus-visible, .topnav > a:focus-visible, .nav-cta:focus-visible, .btn2:focus-visible {
   outline: 2px solid var(--ink); outline-offset: 2px; }
+/* Every other interactive element gets the same ring. More specific rules (above, and in
+   page styles) still win where they set their own offset. */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible,
+summary:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
 @media (max-width: 900px) {
   .js .nav-toggle { display: inline-flex; margin-left: auto; }

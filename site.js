@@ -13,6 +13,7 @@
   var themeBtn = document.getElementById("theme-toggle");
   var systemTheme = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
   var themeFrame = 0;
+  var themeFadeTimer = 0;
   function savedTheme() {
     try {
       var value = localStorage.getItem("synthe-theme");
@@ -30,10 +31,16 @@
       themeBtn.title = dark ? "Dark mode is on. Switch to light." : "Light mode is on. Switch to dark.";
     };
     var setTheme = function (next) {
-      /* Change the palette together. Only the selector moves: interpolating text and
-         surfaces can lose contrast between two otherwise accessible themes. */
+      /* Change the palette together. Only the selector moves, and the page surface
+         cross-fades on its own: interpolating every text and surface colour can lose
+         contrast between two otherwise accessible themes. */
       cancelAnimationFrame(themeFrame);
       root.classList.add("theme-setting");
+      if (!reduceMotion) {
+        root.classList.add("theme-fade");
+        clearTimeout(themeFadeTimer);
+        themeFadeTimer = setTimeout(function () { root.classList.remove("theme-fade"); }, 280);
+      }
       root.setAttribute("data-theme", next);
       root.style.colorScheme = next;
       paint();
