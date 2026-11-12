@@ -4,9 +4,8 @@
 
 ## Checks
 
-- [ ] `python3 tools/check_site.py` passes
-- [ ] `python3 tools/stamp.py` run, if `site.css` or `site.js` changed
-- [ ] Verified in both light and dark themes
+- [ ] `npm run build` passes (the static export in `out/` builds clean)
+- [ ] Preview verified (local `out/` export or dev server) in both light and dark themes
 - [ ] Screenshots or recordings attached (both themes; 390px where layout changed)
 - [ ] Every number traces to `facts.json` or a recorded real run; nothing fabricated
 - [ ] No em dashes in copy
