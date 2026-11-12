@@ -488,3 +488,22 @@ html:root { --r-chip: 4px; --r-control: 6px; --r-frame: 10px; }
 @media (max-width: 640px) {
   .checks-list { padding: 12px 16px 16px 32px; }
 }
+
+/* ---------- PR D (2026-11-12): the ending prints the morning report ----------
+   A quiet mono band directly above the shared footer, on the homepage and Docs:
+   the public demo run's real report, in the order the product sends it (pass
+   rate, what merged, spend). The shared .site-foot is unchanged; the band is a
+   sibling before it, so the footer stays identical on every page. The values
+   are the demo run's recorded ones (report issue #3, run 2, 2026-11-03). */
+.report-band { box-sizing: border-box; width: 100%; margin-top: clamp(56px, 10vw, 92px);
+  padding: 28px 0 4px; border-top: 1px solid var(--line2);
+  font-family: var(--mono); color: var(--muted); }
+.report-band + .site-foot { margin-top: 28px; }
+.report-band-label { margin: 0 0 4px; font-size: 12px; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--faint); }
+.report-band-src { margin: 0 0 16px; font-size: 12px; line-height: 1.65; color: var(--faint); }
+.report-band-lines { display: grid; gap: 8px; margin: 0 0 20px; font-size: 13px; line-height: 1.65; }
+.report-band-lines p { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.rb-key { flex: 0 0 9em; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--faint); }
+.rb-val { color: var(--ink-soft); }
+.report-band .arrow-link { font-family: var(--sans); }
