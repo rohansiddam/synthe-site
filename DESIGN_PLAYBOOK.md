@@ -295,3 +295,36 @@ The October 2026 restructure (homepage from 10.8 to 5.8 screens at 1440x900, 17.
 
 Budgets `check_site.py` watches: the homepage's main text stays under 900 words (warning).
 
+## 13. UX laws and craft rules
+
+Added 2026-11-12, from the living-console improvement spec. The 20 laws are the standard set collected at [lawsofux.com](https://lawsofux.com), restated here as checks on this site's surfaces; the reel or source that surfaced each one is named with it. These rules bind every change: a pull request that violates one does not merge, and the pull request description states which rules it touches and how each was verified. Where the console work differs from the finite motion contract in sections 0 and 7 (a replay loop, a round readout), the difference is deliberate and scoped to the hero console; sections 0 and 7 still govern everything else.
+
+1. **Aesthetic-usability effect.** Users read a polished interface as a working one. Check: the hero console looks like a real product surface, with real file chrome, real metadata and real states, never an illustration of one.
+2. **Hick's law** (@zen_ux). Decision time rises with the number and complexity of choices. Check: one primary action per view (the install command); the console shows at most six cards; on phone it shows three, with the rest behind one clearly labelled expansion.
+3. **Fitts's law.** Primary targets are large and near the thumb or cursor path. Check: the install pill and Get started stay the biggest interactive elements in the hero; console cards are not click targets except for their one real link.
+4. **Jakob's law.** Users expect the conventions of every other developer tool. Check: file tabs, diffs, PR states and progress in the console and the report artifact read the way GitHub and CI tools render them; no invented iconography for known states.
+5. **Miller's law.** Working memory holds about seven chunks. Check: six console cards maximum; the report card summarizes and does not enumerate all 30 test cases, which live one click away in the real report.
+6. **Doherty threshold.** Feedback lands inside 400ms or the interaction feels broken. Check: the copy button confirms instantly, hover states stay within the 100 to 400ms UI motion band, and the console loop never makes a visitor wait for information.
+7. **Law of proximity** (@zanderwhitehurst). Related elements group tightly; unrelated ones separate. Check: inside each console card, label, value and state sit as one group, and card-to-card gaps exceed every in-card gap.
+8. **Law of similarity.** Same meaning, same treatment, everywhere. Check: a passing check looks identical in the console, the report artifact and Docs; semantic colour (rule C2) is the mechanism.
+9. **Common region.** A card's border is what makes its contents one thing. Check: nothing straddles a card edge, and the score line never bleeds into the neighbouring card.
+10. **Visual hierarchy.** Size and position say what matters. Check: score movement first, run state second, metadata last, in every console card and in the hero as a whole; one alignment anchor per card, text left-aligned, never centred stacks (@zanderwhitehurst).
+11. **Progressive disclosure** (@zen_ux). Show what everyone needs; tuck the rest one tap away. Check: the hero shows the loop working, while the full 30-case detail, the raw JSON and the methodology live behind the real links to the demo run and Docs.
+12. **Recognition over recall.** Labels are words, not memory tests. Check: segments read "Automatic" and "Review", states read "merged" and "no winner", and no product state is ever a bare icon.
+13. **Von Restorff effect.** The one different thing is what gets remembered. Check: exactly one element on the homepage breaks pattern, the merge moment in the console loop; accent colour sprinkled around is not a substitute.
+14. **Peak-end rule** (@zen_ux). People judge an experience by its peak and its end. Check: the peak is the merge moment, the end of the page is the morning report printed in the footer, and both are designed deliberately rather than left to whatever happens to be last.
+15. **Goal gradient.** Effort accelerates near a visible goal. Check: the run card shows round 3 of 4, not an abstract spinner, and the install section reads as three short steps with the last one visibly closest to done.
+16. **Serial position.** First and last items in a sequence are remembered. Check: the first viewport carries what Synthe is plus proof it works, the last viewport carries the morning report and one action, and middle sections carry detail, not the message.
+17. **Tesler's law.** Complexity is conserved; someone absorbs it, and here the site does. Check: the console explains the loop with no prior knowledge assumed, and terms like "held-out" are glossed in place the first time they appear.
+18. **Postel's law.** Be liberal in what the page accepts. Check: every page works with JavaScript off (the console shows its final recorded state), with reduced motion, at 390px, and in a text-only pass, without losing the message or the numbers.
+19. **Occam's razor.** Every card, section and animation must answer what the visitor learns from it. Check: if the answer is decoration, it is cut; this rule outranks garnish of any kind.
+20. **Feedback loops.** Every action answers visibly. Check: copy confirms, the theme toggle transitions, the partner form reports its real state at each step and ends in a designed success state; no silent buttons anywhere on the site.
+
+Craft rules, same binding force:
+
+- **C1. Invisible UX** (@zen_ux, "Invisible UX Design"). Progress bars where a wait carries uncertainty, because they give perceived control; skeleton loaders instead of spinners for anything that loads; no motion that does not carry information.
+- **C2. Semantic colour is a stoplight language** (@zen_ux). System, brand, error, warning and success each get one token and one meaning across the whole site. The accent never means success, and the success colour never decorates.
+- **C3. Slop removal** (@charles.unemployed / charles-unslop). One title and one call to action per screen region; concentric radii (inner radius equals outer radius minus padding) on every nested surface in the console; shadows tinted to the scene (warm dark in the dark theme, never neutral grey slabs); shared-element transitions where a thing becomes another thing, such as the PR card's open-to-merged state change.
+- **C4. Design skill or slop** (Theo Browne's Fable 5.2 testing). Generated UI without a design system in the loop defaults to template output, and its known failure modes include overused eyebrow labels and subheading stacks. Check: generated code for this site works from this playbook plus this section, and its output gets a Hallmark audit before review.
+- **C5. One whole job, defined done** (@daniel_strongin_ai, @sheni_icg). Whoever or whatever builds a change gets the whole change as one job, with the spec's acceptance as the definition of done. Agent-facing files follow the same hygiene: instructions layered (this playbook always loaded, per-change detail on demand), conflicting rules audited out, and hard "never" or "must" wording kept only where it is truly hard. The no-fabricated-numbers rule is one.
+
