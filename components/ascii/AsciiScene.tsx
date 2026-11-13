@@ -14,17 +14,25 @@ import { fullscreenMesh, makeRenderer, observeTheme, prefersReducedMotion, readP
  *  - window scroll drives the shader from anywhere on the page, lerp-
  *    smoothed in JS before upload (u_progress, u_scroll energy), so
  *    nothing ever jumps with the raw wheel;
- *  - the tendrils are geometric, not decorative: the glyph terrain
- *    below publishes its crest line to dockBus every frame, and each
- *    anchor's length eases toward the distance from its source (the
- *    mark's real lower contour) to the crest beneath it. A tendril
- *    exists only while a crest is in the frame under it, grows as
- *    the crest rises to meet it, ends at the crest, and reports the
- *    dock back so the receiving column flashes. Scrolling up sinks
- *    the crest and the tendrils retract through the same easing;
- *  - u_extend (the mark's reach, which also raises it) follows the
- *    longest live tendril target, so the strain, the raise and the
- *    reach are one gesture;
+ *  - the morph is gradual across the whole hero exit (v4 retime: in
+ *    v3 everything waited for the terrain and then happened in one
+ *    narrow window). u_extend is anchored to the scroll itself: it
+ *    starts moving at ~0.06 viewport heights of scroll, is visibly
+ *    intermediate at every depth, and reaches full as the terrain
+ *    finishes crossing. Tendrils extrude on that same clock, reaching
+ *    down-screen ahead of the terrain; once the glyph terrain below
+ *    publishes a crest under an anchor (dockBus), that anchor's
+ *    length switches to the exact source-to-crest distance, ends at
+ *    the crest, and reports the dock back so the receiving column
+ *    flashes. Docking therefore rolls column by column across the
+ *    terrain's whole rise instead of clustering at one sweet spot.
+ *    Scrolling up sinks the crest and the tendrils retract through
+ *    the same easing;
+ *  - after the reach, the dissolve: u_dissolve is driven by the
+ *    terrain's measured position once its filled field takes over
+ *    the viewport (gated on the reach having happened), lerped both
+ *    ways, so the mark converts into the dark glyph field in the
+ *    shader and re-condenses out of it on scroll up;
  *  - rendering pauses when the tab is hidden or the terrain and band
  *    have covered the viewport (later sections are opaque);
  *  - prefers-reduced-motion renders exactly one static frame: frozen
@@ -55,6 +63,7 @@ export function AsciiScene() {
     let progress = 0;
     let energy = 0;
     let extend = 0;
+    let dissolve = 0;
     let maxBottomV = 0;
     /* Tendril state: per-anchor eased lengths (plane UV) and
        docked-ness, driven by the terrain's crest via dockBus. */
@@ -129,14 +138,33 @@ export function AsciiScene() {
       if (!el) return;
       el.textContent =
         `grid ${cols} x ${rows} · cell 11px · ramp '${RAMP.join("")}' · ` +
-        `${fps} fps · scroll ${progress.toFixed(2)} · extend ${extend.toFixed(2)} · dock ${dockCount}/16`;
+        `${fps} fps · scroll ${progress.toFixed(2)} · extend ${extend.toFixed(2)} · dock ${dockCount}/16` +
+        ` · dissolve ${dissolve.toFixed(2)}`;
     };
 
-    /* One frame of tendril geometry: read the terrain's crest from
-       dockBus, ease each anchor's length toward the distance from
-       its source to the crest beneath it, ease docked-ness, and
-       report completed docks back to the terrain. Mirrors the
-       shader's raised-rect math exactly (rectS / rectO there). */
+    /* One frame of morph geometry. Three phases, one set of numbers:
+       1. REACH (scroll-anchored): extendTarget grows from ~0.06
+          viewport heights of scroll to full at ~1.45x the scroll
+          depth where the terrain's top reaches the viewport's bottom
+          edge (measured live from dockBus, so page layout changes
+          cannot mistime it). Before any crest is in frame, each
+          anchor's length target is that same reach fraction of its
+          distance to the bottom of the screen: the tendrils grow
+          down-screen ahead of the terrain, gradually, from the
+          first scroll.
+       2. DOCK (geometric): once the terrain publishes a crest under
+          an anchor, the anchor's target becomes the exact source-to-
+          crest distance; the tip lands on the crest, the dock is
+          reported, the column flashes. As the crest rises through
+          the frame the docks complete anchor by anchor across the
+          whole crossing. A crest that has risen past its source
+          absorbs the tendril (target 0).
+       3. DISSOLVE: once the terrain's top passes 40% of the viewport
+          height (its filled field taking over), and gated on the
+          reach having happened, dissolveTarget runs to 1 as the
+          terrain top exits the top of the frame; the shader turns
+          the mark into the field. All values lerp, both ways.
+       Mirrors the shader's raised-rect math exactly (rectS / rectO). */
     const updateTendrils = (now: number) => {
       if (!material) return;
       const raiseE = extend * extend * (3 - 2 * extend);
@@ -146,7 +174,21 @@ export function AsciiScene() {
       const rectOy = logoOffsetV.y + logoSizeV.y * 0.15 * raiseE;
       const vh = window.innerHeight;
       const vw = window.innerWidth;
-      let maxTarget = 0;
+      const scrollY = window.scrollY;
+      const tState = dockBus.terrain;
+
+      /* The scroll depth at which the terrain's top edge reaches
+         the viewport's bottom edge, from its measured position. */
+      const entryScroll = tState.present
+        ? tState.topViewportY + scrollY - vh
+        : vh * 1.6;
+      let scrollExtend = Math.min(
+        1,
+        Math.max(0, (scrollY - vh * 0.06) / Math.max(1, entryScroll * 1.45))
+      );
+      scrollExtend = Math.pow(scrollExtend, 0.92);
+
+      let maxCrestTarget = 0;
       let docks = 0;
       for (let i = 0; i < 16; i++) {
         const a = anchorVecs[i];
@@ -156,9 +198,12 @@ export function AsciiScene() {
           const srcCssX = (rectOx + a.x * rectSx) * vw;
           const srcTopPx = (1 - (rectOy + a.y * rectSy)) * vh;
           const crest = dockBus.crestAt(srcCssX);
-          if (crest !== null && crest <= vh + 30 && crest - srcTopPx >= 8) {
+          if (crest !== null && crest < srcTopPx - 4) {
+            target = 0; // the crest has risen past this source: absorbed
+          } else if (crest !== null && crest <= vh + 40 && crest - srcTopPx >= 6) {
             target = (crest - srcTopPx) / vh;
-            docked = Math.abs(lenCur[i] - target) < 0.022;
+            maxCrestTarget = Math.max(maxCrestTarget, target);
+            docked = Math.abs(lenCur[i] - target) < 0.03;
             if (docked) {
               docks += 1;
               const col = dockBus.columnAt(srcCssX);
@@ -167,21 +212,44 @@ export function AsciiScene() {
                 dockBus.dock(col);
               }
             }
+          } else {
+            /* No crest under this anchor yet: reach down-screen on
+               the scroll clock, toward where the crest will be. */
+            const lenToBottom = Math.min(0.95, (vh + 24 - srcTopPx) / vh);
+            target = scrollExtend * lenToBottom;
           }
         }
-        maxTarget = Math.max(maxTarget, target);
         lenCur[i] += (target - lenCur[i]) * 0.075;
         if (Math.abs(target - lenCur[i]) < 0.0012) lenCur[i] = target;
         dockCur[i] += ((docked ? 1 : 0) - dockCur[i]) * 0.14;
       }
       dockCount = docks;
-      /* Reach follows the longest live target, so the mark strains
-         and lifts exactly while its tendrils are reaching. */
-      const reachTarget = Math.min(1, maxTarget * 2.4);
-      extend += (reachTarget - extend) * 0.05;
-      if (Math.abs(reachTarget - extend) < 0.0015) extend = reachTarget;
+
+      /* Extend: the scroll clock is the floor (the morph is underway
+         from the first scroll, terrain or not); live crest geometry
+         can push it further. Eased, so it never snaps. */
+      const geoExtend = Math.min(1, maxCrestTarget * 2.2);
+      const extendTarget = Math.max(scrollExtend, geoExtend);
+      extend += (extendTarget - extend) * 0.05;
+      if (Math.abs(extendTarget - extend) < 0.0015) extend = extendTarget;
       (material.uniforms.u_tendrilLen.value as Float32Array).set(lenCur);
       (material.uniforms.u_dockT.value as Float32Array).set(dockCur);
+
+      /* Dissolve: terrain-position driven, gated so it cannot start
+         before the reach (once started, the gate stays open until
+         the mark has fully re-condensed). */
+      let dissolveTarget = 0;
+      if (tState.present) {
+        dissolveTarget = Math.min(
+          1,
+          Math.max(0, (vh * 0.4 - tState.topViewportY) / (vh * 0.52))
+        );
+        const gate =
+          dissolve > 0.001 ? 1 : Math.min(1, Math.max(0, (extend - 0.5) / 0.25));
+        dissolveTarget *= gate;
+      }
+      dissolve += (dissolveTarget - dissolve) * 0.045;
+      if (Math.abs(dissolveTarget - dissolve) < 0.0015) dissolve = dissolveTarget;
     };
 
     function renderOnce() {
@@ -194,6 +262,8 @@ export function AsciiScene() {
          lifting only once the tendrils are underway, then settles. */
       const e = reduced ? 0 : extend;
       material.uniforms.u_raise.value = e * e * (3 - 2 * e);
+      /* Reduced motion shows the plain mark: no reach, no dissolve. */
+      material.uniforms.u_dissolve.value = reduced ? 0 : dissolve;
       renderer.render(scene, new THREE.Camera());
     }
 
@@ -269,6 +339,7 @@ export function AsciiScene() {
         u_extend: { value: 0 },
         u_raise: { value: 0 },
         u_tendrilCeil: { value: 0.5 },
+        u_dissolve: { value: 0 },
       });
       material = built.material;
       scene.add(built.mesh);

@@ -12,10 +12,14 @@
  *      body resolves into mixed glyphs, with real letters and digits
  *      woven into its mid-density zones, while edge and crest cells stay
  *      at the top of the ramp so the silhouette stays crisp. Scrolling
- *      first strains the mark (a small residual warp, tension) and then
- *      extrudes glyph tendrils from its lower contour whose lengths are
- *      set on the CPU from the glyph terrain's crest line (dockBus):
- *      they grow toward the rising crest and dock into its columns.
+ *      first strains the mark (a small residual warp, tension), a
+ *      gesture that begins almost immediately and runs across the whole
+ *      hero exit; glyph tendrils extrude from its lower contour, reach
+ *      down-screen ahead of the terrain, then follow the glyph
+ *      terrain's crest line (dockBus) and dock into its columns. Past
+ *      the dock, a dissolve front converts the mark cell by cell into
+ *      the dark glyph field itself, so it disappears by becoming the
+ *      field rather than by being covered.
  *   2. The glyph contour (CONTOUR_VERTEX / CONTOUR_FRAGMENT): topographic
  *      contour lines, in the hero field's fbm language, drawn entirely from
  *      mono glyphs at low contrast as a background presence behind copy.
@@ -103,6 +107,7 @@ uniform float u_dockT[16];     /* per-anchor docked-ness, 0..1, CPU-eased: tip c
 uniform float u_extend;        /* eased reach of the mark, 0..1: set from the longest live tendril target */
 uniform float u_raise;         /* eased raise of the mark, 0..1, follows u_extend */
 uniform float u_tendrilCeil;   /* centre.y above which no tendril can reach */
+uniform float u_dissolve;      /* 0..1: the mark converting into the dark glyph field, lerped in JS */
 
 varying vec2 vUv;
 
@@ -242,10 +247,11 @@ void main() {
 
   /* --- Ambient speckle: far outside the mark, rare noise peaks raise a
      single faint '.' so the empty field is not dead. Kept sparse and
-     still (no flicker) on purpose. */
+     still (no flicker) on purpose. It dies away as the dissolve takes
+     the field over (the field has its own glyphs by then). */
   if (lum < 0.001 && u_ambient > 0.0) {
     float sp = snoise(centre * 22.0 + vec2(u_time * 0.15, -u_time * 0.10));
-    float on = step(0.93, sp) * u_ambient;
+    float on = step(0.93, sp) * u_ambient * (1.0 - u_dissolve);
     if (on > 0.0) {
       vec2 dotUv = vec2((1.0 + cellUv.x) / u_rampCount, 0.5 + cellUv.y * 0.5);
       float dotGlyph = texture2D(u_atlas, dotUv).a;
@@ -330,6 +336,44 @@ void main() {
       }
       vec3 tt = mix(bestTint, u_accent, tipBoost * 0.55);
       col = mix(col, tt, tg * clamp(best * 2.2 * (1.0 + tipBoost * 0.25), 0.0, 1.0));
+    }
+  }
+
+  /* --- Dissolve: the mark becomes the field. Once the tendrils have
+     docked and the terrain's filled world takes over the viewport,
+     u_dissolve (scroll-driven, lerped in JS, reversible) sweeps a
+     conversion front up through the frame, bottom cells first, with
+     a per-cell hash scatter so no straight edge ever shows. Each
+     cell, as the front passes it: (1) its glyphs bleach toward the
+     paper, sinking away; (2) its ground flips to the dark world's
+     ground (the --ink token, the same colour the terrain fills
+     with, so the terrain's own fill can sweep over the converted
+     cells without a seam); (3) a faint field glyph fades in at
+     wallpaper strength, drawn from the letters row and re-rolled
+     on a slow clock, the terrain field's alphabet family. At
+     u_dissolve = 1 every cell has converted: the mark is not
+     covered, it is gone, and only the dark glyph field remains.
+     Scrolling back up runs the same lerped uniform backwards and
+     the mark re-condenses out of the field. --- */
+  if (u_dissolve > 0.001) {
+    float dh = hash21(cellId * 4.39 + 11.1);
+    float front = mix(-0.20, 1.30, u_dissolve);
+    float dist = front - centre.y + (dh - 0.5) * 0.26;
+    float a = clamp(dist / 0.12, 0.0, 1.0);
+    if (a > 0.0) {
+      /* (1) bleach: the mark's glyphs sink toward the paper. */
+      col = mix(col, u_bg, smoothstep(0.04, 0.34, a) * 0.38);
+      /* (3) the field glyph that will remain. */
+      float ftick = floor(u_time * 0.45 + dh * 9.0);
+      float fIdx = floor(hash21(cellId * 6.53 + ftick * 1.317) * u_letterCount);
+      float fGlyph = texture2D(u_atlas, vec2((fIdx + cellUv.x) / u_letterCount,
+                                             cellUv.y * 0.5)).a;
+      float fGate = hash21(cellId * 3.97) < 0.34 ? 0.3 : 1.0;
+      float fAlpha = (0.10 + 0.16 * hash21(cellId * 9.71)) * fGate
+                   * smoothstep(0.45, 0.95, a);
+      vec3 fieldCol = mix(u_ink, u_bg, fGlyph * fAlpha);
+      /* (2) the ground flip, fast per cell once its bleach is done. */
+      col = mix(col, fieldCol, smoothstep(0.30, 0.62, a));
     }
   }
 
