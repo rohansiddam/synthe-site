@@ -82,15 +82,10 @@ export function ThemeToggle() {
     window.addEventListener("load", onLoad);
     paint();
 
-    /* The layout's theme-init script reaches the static export only as inert
-       RSC payload, so it never runs: without this, data-theme is never set
-       on load, the saved choice is lost on every navigation, and the html
-       never gets the js class the phone nav depends on. Apply both here, on
-       mount. No fade: this is a correction, not a change the visitor made. */
-    root.classList.add("js");
-    if (!root.hasAttribute("data-theme")) {
-      setTheme(themePreference ?? (systemTheme.matches ? "dark" : "light"), false);
-    }
+    /* data-theme and the js class are already set before first paint by the
+       blocking theme-init script in the document head (layout.tsx); that is
+       the single mechanism. This component only reports and changes the
+       theme from here. */
 
     return () => {
       btn.removeEventListener("click", onClick);
