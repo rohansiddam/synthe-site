@@ -988,8 +988,8 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .ascii-spacer .ascii-depth { position: absolute; left: var(--gutter); top: 22vh; }
 .ascii-spacer .ascii-depth-low { top: 62vh; }
 .ascii-spacer .ascii-depth-edge { top: auto; bottom: 20px; }
-.ascii-bridge { position: relative; z-index: 1; line-height: 0; }
-.ascii-bridge-canvas { display: block; width: 100%; }
+.ascii-terrain { position: relative; z-index: 1; line-height: 0; }
+.ascii-terrain-canvas { display: block; width: 100%; }
 .ascii-band { position: relative; z-index: 1; background: var(--ink); color: var(--bg);
   margin-top: -1px; overflow: clip; }
 .ascii-contour { position: absolute; inset: 0; }

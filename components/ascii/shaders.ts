@@ -3,16 +3,19 @@
  * Two scenes share this module:
  *   1. The logo field (LOGO_VERTEX / LOGO_FRAGMENT): the Synthe mark drawn
  *      out of IBM Plex Mono glyphs. A dense monospace grid samples the logo
- *      texture's luminance per cell and maps it to a character ramp; a
- *      u_time-driven hash flicker swaps glyphs inside their density band.
- *      The mark is flat (interior luminance 1.0), so the interior's
+ *      texture's luminance per cell and maps it to a character ramp; every
+ *      covered cell then re-rolls its glyph on its own staggered clock
+ *      (a 1 to 2 second per-cell cadence, the reference band's measured
+ *      mutation pace), so the whole body crawls while the silhouette
+ *      holds. The mark is flat (interior luminance 1.0), so the interior's
  *      effective luminance is modulated by layered simplex noise: the
  *      body resolves into mixed glyphs, with real letters and digits
  *      woven into its mid-density zones, while edge and crest cells stay
  *      at the top of the ramp so the silhouette stays crisp. Scrolling
- *      first strains the mark (a small residual warp, tension) and then,
- *      with u_extend, extrudes glyph tendrils from its lower contour
- *      that reach down the viewport and dissolve at their tips.
+ *      first strains the mark (a small residual warp, tension) and then
+ *      extrudes glyph tendrils from its lower contour whose lengths are
+ *      set on the CPU from the glyph terrain's crest line (dockBus):
+ *      they grow toward the rising crest and dock into its columns.
  *   2. The glyph contour (CONTOUR_VERTEX / CONTOUR_FRAGMENT): topographic
  *      contour lines, in the hero field's fbm language, drawn entirely from
  *      mono glyphs at low contrast as a background presence behind copy.
@@ -95,7 +98,9 @@ uniform vec3  u_faint;         /* site --muted: ambient speckle */
 uniform float u_ambient;       /* ambient speckle strength, 0..1 */
 uniform float u_debug;         /* 0 off; 1 raw texture; 2 luminance; 3 ramp index */
 uniform vec4  u_tendrils[16];  /* anchors in texture space: u, bottomV, half (0 A / 1 B), active */
-uniform float u_extend;        /* eased scroll extension, 0..1: tendril growth */
+uniform float u_tendrilLen[16];/* per-anchor length in plane UV, eased on the CPU toward the terrain crest (dockBus) */
+uniform float u_dockT[16];     /* per-anchor docked-ness, 0..1, CPU-eased: tip cells brighten as the join completes */
+uniform float u_extend;        /* eased reach of the mark, 0..1: set from the longest live tendril target */
 uniform float u_raise;         /* eased raise of the mark, 0..1, follows u_extend */
 uniform float u_tendrilCeil;   /* centre.y above which no tendril can reach */
 
@@ -166,39 +171,52 @@ void main() {
      composition zones, the way the reference band has a hex field
      here and terrain there, not as uniform static. The result spans
      the middle and top of the ramp: =, +, *, #, %, @ mixed. --- */
-  float zoneN = snoise(logoUv * 2.4 + vec2(3.7, 9.1));
-  float midN = snoise(logoUv * 6.5 + vec2(-5.2, 1.3) + vec2(u_time * 0.015, 0.0));
+  float zoneN = snoise(logoUv * 2.4 + vec2(3.7 + u_time * 0.008, 9.1));
+  float midN = snoise(logoUv * 6.5 + vec2(-5.2, 1.3) + vec2(u_time * 0.05, u_time * 0.011));
   float fineN = (hash21(cellId * 13.73) - 0.5) * 0.16; /* per-cell grain, no third noise call */
   float modN = clamp(0.58 + zoneN * 0.30 + midN * 0.20 + fineN, 0.05, 1.0);
   modN = mix(modN, floor(modN * 5.0) / 5.0 + 0.10, 0.35);
   float lumEff = mix(lum, 0.36 + 0.64 * modN, interior);
 
-  /* --- Luminance to character ramp, with in-band flicker. ---
-     The effective luminance picks the ramp level; a fast hash tick
-     (about 11 steps/sec) swaps the glyph one level up or down inside
-     its own density band. The flicker is masked off in empty
-     background and only damped near the very top of the ramp, so the
-     crest stays steady while the body boils gently. */
+  /* --- Luminance to character ramp, with the crawl. ---
+     The effective luminance picks the ramp level; then every covered
+     cell re-rolls its glyph on its own staggered clock: a per-cell
+     rate (about 0.6 to 1.2 events per second, a 1 to 2 second
+     cadence, the reference band's measured cell-mutation pace) and a
+     per-cell phase, so the whole body churns continuously instead of
+     blinking in lockstep. A re-roll swaps one or two levels inside
+     the cell's own density neighbourhood: the breakup zones still
+     decide where each cell lives, so the surface boils while the
+     silhouette holds. Crest cells (top band) re-roll too, but their
+     swaps clamp into the heaviest three levels: the outline sparkles
+     without ever thinning. */
   float maxIdx = u_rampCount - 1.0;
-  float tick = floor(u_time * 11.0);
-  float gate = hash21(cellId + tick * 0.7317);
-  float dir = hash21(cellId * 1.3713 + tick * 1.9131);
-  float swap = step(0.60, gate) * sign(dir - 0.5);
-  float flickMask = smoothstep(0.03, 0.18, lumEff) * (1.0 - smoothstep(0.93, 1.0, lumEff) * 0.75);
-  float idx = clamp(floor(lumEff * maxIdx + 0.5 + swap * flickMask), 0.0, maxIdx);
+  float cellRate = 0.62 + 0.55 * hash21(cellId * 1.917);
+  float cellPhase = hash21(cellId * 2.613 + 7.7);
+  float ctick = floor(u_time * cellRate + cellPhase * 16.0);
+  float cr1 = hash21(cellId * 3.31 + ctick * 0.7317);
+  float cr2 = hash21(cellId * 5.77 + ctick * 1.9131);
+  float crawlMag = cr2 < 0.62 ? 1.0 : 2.0;
+  float crawlSwap = (step(0.5, cr1) * 2.0 - 1.0) * crawlMag;
+  float crawlMask = smoothstep(0.03, 0.15, lumEff);
+  float idxBase = floor(lumEff * maxIdx + 0.5);
+  float idx = clamp(idxBase + crawlSwap * crawlMask, 0.0, maxIdx);
+  if (idxBase >= maxIdx - 1.0) idx = clamp(idx, maxIdx - 2.0, maxIdx);
 
   /* --- Letters in the body. Interior cells in the mid-density bands
      may draw from the atlas's letter row instead of the ramp: the
-     letters of SYNTHE and the digits, the mark's own substance. The
-     pick re-rolls slowly (2 s tick) so letters hold still long enough
-     to read, then quietly change. Crest and edge cells never do this:
-     the outline stays pure ramp. --- */
-  float letterTick = floor(u_time * 0.5);
-  float lh = hash21(cellId * 3.171 + letterTick * 0.9173);
-  float letterP = interior * 0.42
-    * smoothstep(0.40, 0.55, lumEff) * (1.0 - smoothstep(0.82, 0.95, lumEff));
+     letters of SYNTHE and the digits, the mark's own substance.
+     Letters ride the same crawl: each cell's letter clock is its own
+     (same rate family, own phase and seed), so letters surface and
+     sink across the body every second or two instead of changing in
+     one global blink, and the letter itself re-rolls with its clock.
+     Crest and edge cells never do this: the outline stays pure ramp. */
+  float ltick = floor(u_time * cellRate * 0.9 + cellPhase * 12.0);
+  float lh = hash21(cellId * 3.171 + ltick * 0.9173);
+  float letterP = interior * 0.50
+    * smoothstep(0.36, 0.52, lumEff) * (1.0 - smoothstep(0.84, 0.97, lumEff));
   float useLetter = step(lh, letterP);
-  float letterIdx = floor(hash21(cellId * 7.77 + 4.2) * u_letterCount);
+  float letterIdx = floor(hash21(cellId * 7.77 + ltick * 1.371) * u_letterCount);
 
   /* --- Colour: the mark's halves keep their identity through the map.
      Half A renders in ink, half B in the brick accent. On half A the
@@ -236,36 +254,42 @@ void main() {
   }
 
   /* --- Tendrils: glyph streams extruded from the mark's lower
-     contour. Each anchor (scanned from the real mark raster on the
-     CPU) grows a stream whose length is u_extend times its share of
-     the drop to the viewport floor. Streams sway, taper and thin with
-     depth; some fork once into a thinner branch; near the tip the
-     density falls through the ramp until only sparse dots remain.
-     Gated to fragments below the mark so the loop is skipped for most
-     of the frame at rest. --- */
+     contour, and in v3 they land somewhere. Each anchor's length is
+     computed on the CPU (AsciiScene, via dockBus) as the eased
+     distance from its source to the crest of the glyph terrain
+     rising into the frame below: a tendril exists only while a
+     crest is in the frame beneath it, grows as the crest approaches,
+     and ends AT the crest. As the join completes (u_dockT) the tip
+     cells brighten toward the accent and the full ramp, and the
+     receiving terrain column flashes back (dockBus.dock). Streams
+     sway and fork as before, but the depth taper is gentle now:
+     the tip is a join, not a dissolve. Gated to fragments below
+     the mark so the loop is skipped for most of the frame at rest. */
   if (u_extend > 0.002 && centre.y < u_tendrilCeil && lum < 0.6) {
     float best = 0.0;
     vec3 bestTint = u_ink;
     float bestIdx = 1.0;
     float bestLetter = -1.0;
+    float bestT01 = 0.0;
+    float bestDock = 0.0;
     for (int i = 0; i < 16; i++) {
       vec4 a = u_tendrils[i];
       if (a.w < 0.5) continue;
+      float len = u_tendrilLen[i];
+      if (len < 0.004) continue;
       vec2 src = rectO + a.xy * rectS;
       if (centre.y > src.y + 0.005) continue;
-      float fi = float(i);
-      float lenF = 0.80 + 0.45 * hash21(vec2(fi * 1.31, 7.7));
-      float len = (src.y + 0.10) * lenF * u_extend;
       float d = src.y - centre.y;
-      if (len < 0.004 || d > len) continue;
+      if (d > len) continue;
       float t01 = d / len;
+      float fi = float(i);
       float phase = hash21(vec2(fi * 3.77, 1.3)) * 17.0;
       float cellW = 1.0 / u_grid.x;
 
       float px = tendrilPathX(src.x, d, phase);
-      float wdt = mix(1.45, 0.45, t01) * cellW;
+      float wdt = mix(1.45, 0.85, t01) * cellW;
       float dens = (1.0 - smoothstep(wdt * 0.4, wdt, abs(centre.x - px)))
-                 * pow(1.0 - t01, 0.8);
+                 * (1.0 - 0.30 * t01);
 
       float forkH = hash21(vec2(fi * 5.13, 2.9));
       if (forkH < 0.5) {
@@ -275,9 +299,9 @@ void main() {
           float bx = tendrilPathX(src.x, fd, phase) + dirF * (d - fd) * 0.85;
           bx += sin(d * 31.0 + phase * 2.3 + u_time * 0.3) * 0.006
               * min(1.0, (d - fd) * 8.0);
-          float bw = mix(0.80, 0.25, (d - fd) / (len - fd)) * cellW;
+          float bw = mix(0.80, 0.45, (d - fd) / (len - fd)) * cellW;
           float bd = (1.0 - smoothstep(bw * 0.4, bw, abs(centre.x - bx)))
-                   * pow(1.0 - t01, 0.8) * 0.75;
+                   * (1.0 - 0.35 * t01) * 0.8;
           dens = max(dens, bd);
         }
       }
@@ -286,21 +310,26 @@ void main() {
         best = dens;
         bestTint = a.z > 0.5 ? u_accent : u_ink;
         bestIdx = clamp(floor(dens * maxIdx + 0.5), 1.0, maxIdx);
+        bestT01 = t01;
+        bestDock = u_dockT[i];
         float lt = hash21(cellId * 5.37 + fi * 0.731);
         bestLetter = (d < len * 0.28 && lt < 0.20)
           ? floor(hash21(cellId * 9.13 + fi) * u_letterCount) : -1.0;
       }
     }
     if (best > 0.03) {
+      float tipBoost = smoothstep(0.86, 1.0, bestT01) * bestDock;
       float tg;
-      if (bestLetter >= 0.0) {
+      if (bestLetter >= 0.0 && tipBoost < 0.5) {
         tg = texture2D(u_atlas, vec2((bestLetter + cellUv.x) / u_letterCount,
                                      cellUv.y * 0.5)).a;
       } else {
-        tg = texture2D(u_atlas, vec2((bestIdx + cellUv.x) / u_rampCount,
+        float ti = mix(bestIdx, maxIdx, tipBoost * 0.9);
+        tg = texture2D(u_atlas, vec2((ti + cellUv.x) / u_rampCount,
                                      0.5 + cellUv.y * 0.5)).a;
       }
-      col = mix(col, bestTint, tg * clamp(best * 2.2, 0.0, 1.0));
+      vec3 tt = mix(bestTint, u_accent, tipBoost * 0.55);
+      col = mix(col, tt, tg * clamp(best * 2.2 * (1.0 + tipBoost * 0.25), 0.0, 1.0));
     }
   }
 

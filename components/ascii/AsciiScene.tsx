@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { LETTERS, LOGO_FRAGMENT, LOGO_VERTEX, RAMP } from "./shaders";
 import { MARK_FRACTION, computeTendrilAnchors, createGlyphAtlas, createLogoTexture } from "./logoTexture";
+import { dockBus } from "./dockBus";
 import { fullscreenMesh, makeRenderer, observeTheme, prefersReducedMotion, readPalette } from "./glBase";
 
 /* The hero of the /ascii lane: a fixed, full-viewport WebGL canvas that
@@ -11,14 +12,21 @@ import { fullscreenMesh, makeRenderer, observeTheme, prefersReducedMotion, readP
  *
  * Behaviour contract (founder motion rules):
  *  - window scroll drives the shader from anywhere on the page, lerp-
- *    smoothed in JS before upload (u_progress, u_scroll energy and
- *    u_extend), so nothing ever jumps with the raw wheel;
- *  - u_extend is the hero-zone scroll fraction (full by about 1.85
- *    viewport heights, as the bridge arrives): it raises the mark and
- *    grows the glyph tendrils out of its lower contour. Scrolling back
- *    up retracts them through the same lerp;
- *  - rendering pauses when the tab is hidden or the hero zone has
- *    scrolled out of view (the later sections are opaque and cover it);
+ *    smoothed in JS before upload (u_progress, u_scroll energy), so
+ *    nothing ever jumps with the raw wheel;
+ *  - the tendrils are geometric, not decorative: the glyph terrain
+ *    below publishes its crest line to dockBus every frame, and each
+ *    anchor's length eases toward the distance from its source (the
+ *    mark's real lower contour) to the crest beneath it. A tendril
+ *    exists only while a crest is in the frame under it, grows as
+ *    the crest rises to meet it, ends at the crest, and reports the
+ *    dock back so the receiving column flashes. Scrolling up sinks
+ *    the crest and the tendrils retract through the same easing;
+ *  - u_extend (the mark's reach, which also raises it) follows the
+ *    longest live tendril target, so the strain, the raise and the
+ *    reach are one gesture;
+ *  - rendering pauses when the tab is hidden or the terrain and band
+ *    have covered the viewport (later sections are opaque);
  *  - prefers-reduced-motion renders exactly one static frame: frozen
  *    time, no strain, no tendrils (re-rendered only on resize / flip);
  *  - pixel ratio is capped at 1.75 and the grid cell at 11 CSS px.
@@ -46,9 +54,17 @@ export function AsciiScene() {
     let progressTarget = 0;
     let progress = 0;
     let energy = 0;
-    let extendTarget = 0;
     let extend = 0;
     let maxBottomV = 0;
+    /* Tendril state: per-anchor eased lengths (plane UV) and
+       docked-ness, driven by the terrain's crest via dockBus. */
+    const lenCur = new Float32Array(16);
+    const dockCur = new Float32Array(16);
+    const lastDockAt = new Map<number, number>();
+    let anchorVecs: THREE.Vector4[] = [];
+    let logoSizeV = new THREE.Vector2(1, 1);
+    let logoOffsetV = new THREE.Vector2(0, 0);
+    let dockCount = 0;
     let lastScrollY = window.scrollY;
     let time = reduced ? 4.2 : 0;
     let frames = 0;
@@ -59,10 +75,6 @@ export function AsciiScene() {
       const doc = document.documentElement;
       const max = doc.scrollHeight - window.innerHeight;
       progressTarget = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-      /* Extension is a hero-zone measure, not a whole-page one: the
-         tendrils are full-length once the visitor has scrolled about
-         1.85 viewport heights, just as the bridge section arrives. */
-      extendTarget = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 1.85)));
     };
 
     const applyPalette = () => {
@@ -98,8 +110,10 @@ export function AsciiScene() {
         sizeX = 0.94;
         sizeY = sizeX * (size.x / size.y);
       }
-      material.uniforms.u_logoOffset.value = new THREE.Vector2((1 - sizeX) / 2, (1 - sizeY) / 2);
-      material.uniforms.u_logoSize.value = new THREE.Vector2(sizeX, sizeY);
+      logoOffsetV = new THREE.Vector2((1 - sizeX) / 2, (1 - sizeY) / 2);
+      logoSizeV = new THREE.Vector2(sizeX, sizeY);
+      material.uniforms.u_logoOffset.value = logoOffsetV;
+      material.uniforms.u_logoSize.value = logoSizeV;
 
       /* The highest point any tendril source can sit at, with the mark
          fully raised; the shader skips its tendril loop above this. */
@@ -115,7 +129,59 @@ export function AsciiScene() {
       if (!el) return;
       el.textContent =
         `grid ${cols} x ${rows} · cell 11px · ramp '${RAMP.join("")}' · ` +
-        `${fps} fps · scroll ${progress.toFixed(2)} · extend ${extend.toFixed(2)}`;
+        `${fps} fps · scroll ${progress.toFixed(2)} · extend ${extend.toFixed(2)} · dock ${dockCount}/16`;
+    };
+
+    /* One frame of tendril geometry: read the terrain's crest from
+       dockBus, ease each anchor's length toward the distance from
+       its source to the crest beneath it, ease docked-ness, and
+       report completed docks back to the terrain. Mirrors the
+       shader's raised-rect math exactly (rectS / rectO there). */
+    const updateTendrils = (now: number) => {
+      if (!material) return;
+      const raiseE = extend * extend * (3 - 2 * extend);
+      const rectSx = logoSizeV.x * (1 - 0.18 * raiseE);
+      const rectSy = logoSizeV.y * (1 - 0.18 * raiseE);
+      const rectOx = logoOffsetV.x + logoSizeV.x * 0.09 * raiseE;
+      const rectOy = logoOffsetV.y + logoSizeV.y * 0.15 * raiseE;
+      const vh = window.innerHeight;
+      const vw = window.innerWidth;
+      let maxTarget = 0;
+      let docks = 0;
+      for (let i = 0; i < 16; i++) {
+        const a = anchorVecs[i];
+        let target = 0;
+        let docked = false;
+        if (a && a.w > 0.5) {
+          const srcCssX = (rectOx + a.x * rectSx) * vw;
+          const srcTopPx = (1 - (rectOy + a.y * rectSy)) * vh;
+          const crest = dockBus.crestAt(srcCssX);
+          if (crest !== null && crest <= vh + 30 && crest - srcTopPx >= 8) {
+            target = (crest - srcTopPx) / vh;
+            docked = Math.abs(lenCur[i] - target) < 0.022;
+            if (docked) {
+              docks += 1;
+              const col = dockBus.columnAt(srcCssX);
+              if (col >= 0 && now - (lastDockAt.get(col) ?? 0) > 850) {
+                lastDockAt.set(col, now);
+                dockBus.dock(col);
+              }
+            }
+          }
+        }
+        maxTarget = Math.max(maxTarget, target);
+        lenCur[i] += (target - lenCur[i]) * 0.075;
+        if (Math.abs(target - lenCur[i]) < 0.0012) lenCur[i] = target;
+        dockCur[i] += ((docked ? 1 : 0) - dockCur[i]) * 0.14;
+      }
+      dockCount = docks;
+      /* Reach follows the longest live target, so the mark strains
+         and lifts exactly while its tendrils are reaching. */
+      const reachTarget = Math.min(1, maxTarget * 2.4);
+      extend += (reachTarget - extend) * 0.05;
+      if (Math.abs(reachTarget - extend) < 0.0015) extend = reachTarget;
+      (material.uniforms.u_tendrilLen.value as Float32Array).set(lenCur);
+      (material.uniforms.u_dockT.value as Float32Array).set(dockCur);
     };
 
     function renderOnce() {
@@ -135,22 +201,21 @@ export function AsciiScene() {
       raf = requestAnimationFrame(loop);
       if (document.hidden) return;
       /* The opaque sections below cover the fixed canvas; stop paying
-         for it once the bridge and band have taken over the viewport.
-         The window runs through the whole spacer so the tendrils can
-         grow and retract across it. */
-      if (window.scrollY > window.innerHeight * 2.7) return;
+         for it once the terrain has passed and the band has taken
+         over the viewport. Until the terrain has published, fall
+         back to the old scroll window. */
+      const tState = dockBus.terrain;
+      if (tState.present ? tState.bottomViewportY < -60 : window.scrollY > window.innerHeight * 2.7) return;
 
       const dt = Math.min(0.05, (now - lastFrame) / 1000);
       lastFrame = now;
       time += dt;
 
-      /* Smooth the scroll inputs: progress trails its target, energy
-         charges fast on scroll deltas and discharges slowly, and
-         extension trails at the same rate as progress so tendrils
-         grow and retract like a physical reach, never a snap. */
+      /* Smooth the scroll inputs: progress trails its target and
+         energy charges fast on scroll deltas and discharges slowly.
+         Tendril reach is geometric (updateTendrils), eased there. */
       progress += (progressTarget - progress) * 0.06;
-      extend += (extendTarget - extend) * 0.055;
-      if (Math.abs(extendTarget - extend) < 0.0015) extend = extendTarget;
+      updateTendrils(now);
       const dy = Math.abs(window.scrollY - lastScrollY);
       lastScrollY = window.scrollY;
       const energyTarget = Math.min(1, dy / 55);
@@ -174,6 +239,7 @@ export function AsciiScene() {
       logoTex = createLogoTexture();
       const tendrils = computeTendrilAnchors();
       maxBottomV = tendrils.maxBottomV;
+      anchorVecs = tendrils.anchors;
 
       renderer = makeRenderer(canvas);
       scene = new THREE.Scene();
@@ -198,6 +264,8 @@ export function AsciiScene() {
         u_ambient: { value: 0.6 },
         u_debug: { value: Number(new URLSearchParams(window.location.search).get("debug") ?? 0) || 0 },
         u_tendrils: { value: tendrils.anchors },
+        u_tendrilLen: { value: new Float32Array(16) },
+        u_dockT: { value: new Float32Array(16) },
         u_extend: { value: 0 },
         u_raise: { value: 0 },
         u_tendrilCeil: { value: 0.5 },
@@ -207,7 +275,6 @@ export function AsciiScene() {
 
       updateScrollTarget();
       progress = progressTarget;
-      extend = extendTarget;
       resize();
       stopTheme = observeTheme(applyPalette);
       window.addEventListener("resize", resize);

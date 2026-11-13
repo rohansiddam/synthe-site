@@ -1,19 +1,21 @@
 import type { Metadata } from "next";
 import { AsciiScene } from "../../components/ascii/AsciiScene";
 import { ContourGlyphs } from "../../components/ascii/ContourGlyphs";
-import { GlyphBridge } from "../../components/ascii/GlyphBridge";
+import { TerrainBoundary } from "../../components/ascii/TerrainBoundary";
 import { WordField } from "../../components/ascii/WordField";
 
 export const metadata: Metadata = {
   title: "Synthe — the mark in type (ASCII prototype)",
   description:
-    "Exploration prototype: the Synthe mark drawn out of IBM Plex Mono glyphs by a WebGL shader, its body broken into mixed letters and digits, scroll-strained with glyph tendrils, a living glyph-field bridge into the report band, and a glyph contour form.",
+    "Exploration prototype: the Synthe mark drawn out of IBM Plex Mono glyphs by a WebGL shader, its body crawling with mixed letters and digits, glyph tendrils that dock into a rising glyph terrain at the dark section's edge, and a glyph contour form.",
 };
 
 /* /ascii: an exploration lane page (lane/ascii-shader), not production.
  * Four treatments on one tall scroll:
  *   1. the logo field (fixed WebGL canvas behind the first sections),
- *   2. a glyph-field bridge where paper dissolves into the band,
+ *   2. the terrain boundary: the dark section's leading edge as a
+ *      living glyph terrain that rises on scroll and receives the
+ *      logo's tendrils,
  *   3. a glyph-contour whorl behind the morning report inside the band,
  *   4. the word field, Synthe's own phrases forming the climb.
  * The theme toggle in the site header drives every canvas. */
@@ -27,19 +29,19 @@ export default function AsciiPage() {
         <h1 className="ascii-title">The mark, drawn in type.</h1>
         <p className="ascii-sub">
           The Synthe logo, sampled cell by cell and rebuilt from IBM Plex Mono glyphs: letters,
-          digits and density marks mixed through its body, never one repeated character. Scroll,
-          and it strains, then reaches down the page in glyph tendrils.
+          digits and density marks crawling through its body, never sitting still. Scroll, and
+          it strains, then reaches down to meet the terrain rising below.
         </p>
         <p className="ascii-depth ascii-depth-hero">scroll 000 · the field is live</p>
       </section>
 
       <section className="ascii-spacer">
         <p className="ascii-depth">scroll 100 · the mark strains first: a small warp, tension before reach</p>
-        <p className="ascii-depth ascii-depth-low">scroll 200 · tendrils grow from the lower edge, longer the deeper you scroll</p>
-        <p className="ascii-depth ascii-depth-edge">treatment 02 · ahead, a glyph field bridges paper and charcoal, cell by cell</p>
+        <p className="ascii-depth ascii-depth-low">scroll 200 · below, the dark section's front edge is rising to meet it</p>
+        <p className="ascii-depth ascii-depth-edge">treatment 02 · a living glyph terrain: the mark reaches down, the crest receives it</p>
       </section>
 
-      <GlyphBridge />
+      <TerrainBoundary />
 
       <section className="ascii-band">
         <ContourGlyphs />
@@ -69,8 +71,8 @@ export default function AsciiPage() {
         <WordField />
         <p className="ascii-words-title">Treatment 04 · the word field</p>
         <p className="ascii-words-label">
-          Synthe&apos;s own phrases in rows; their brightness is the climb. Phrases swap slowly,
-          inside their length class, so the shape holds.
+          Synthe&apos;s own phrases in rows; their brightness is the climb. Phrases swap
+          constantly, inside their length class, so the shape holds while the text churns.
         </p>
       </section>
 

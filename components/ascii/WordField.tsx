@@ -13,9 +13,12 @@ import { observeTheme, prefersReducedMotion, readToken } from "./glBase";
  * climb. Fragments on the climb's line glow at full strength (accent
  * at the crest), the field under the curve stays at a middle level,
  * and the field above it is barely there. The shape does not move;
- * life comes from a slow crest pulse travelling the line and from
- * phrases quietly swapping for same-length phrases every few seconds,
- * each swap dipping through a fade so nothing snaps.
+ * life comes from a crest pulse travelling the line and from phrases
+ * swapping for same-length phrases on the crawl cadence (a tick
+ * every 1.4 s, about a sixth of the field eligible each tick), each
+ * swap dipping through a fade so nothing snaps but the churn is
+ * clearly visible, the way the reference band's cells never sit
+ * still.
  *
  * Canvas 2D: a few hundred fillText calls, redrawn only while the
  * section is on screen. Reduced motion draws one static field.
@@ -148,7 +151,7 @@ export function WordField() {
       for (const f of frags) {
         let fade = 1;
         if (f.swapStart > 0) {
-          const t = (now - f.swapStart) / 550;
+          const t = (now - f.swapStart) / 480;
           if (t >= 1) {
             if (f.nextText) f.text = f.nextText;
             f.nextText = null;
@@ -168,10 +171,10 @@ export function WordField() {
     };
 
     const scheduleSwaps = (now: number) => {
-      if (now - lastTick < 2600) return;
+      if (now - lastTick < 1400) return;
       lastTick = now;
       for (const f of frags) {
-        if (f.swapStart === 0 && hash1(f.seed * 1.7 + now * 0.0001) < 0.06) {
+        if (f.swapStart === 0 && Math.random() < 0.16) {
           for (let tries = 0; tries < 6; tries++) {
             const cand = PHRASES[Math.floor(hash1(f.seed * 3.9 + now * 0.001 + tries * 7.7) * PHRASES.length)];
             if (cand !== f.text && Math.abs(cand.length - f.text.length) <= f.text.length * 0.35 + 4) {
