@@ -467,6 +467,18 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .report-band-lines p { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 16px; }
 .rb-key { flex: 0 0 9em; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--faint); }
 .rb-val { color: var(--ink-soft); }
+
+/* Split-flap print (Part 3): borderless character cells inside the
+   band's mono line. A tile is exactly 1ch wide and 1em tall, so the
+   line's layout is identical before, during and after the flap; the
+   word wrapper keeps wrapping at word boundaries like plain text.
+   The shade is the seam flash as a tile lands. */
+.flap-word { display: inline-block; white-space: nowrap; perspective: 300px; }
+.flap-tile { display: inline-block; position: relative; width: 1ch; height: 1em;
+  line-height: 1; vertical-align: baseline; }
+.flap-char { display: block; height: 1em; line-height: 1em; text-align: center; }
+.flap-shade { position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  background: linear-gradient(to bottom, transparent 44%, rgb(0 0 0 / .32) 50%, transparent 56%); }
 .report-band .arrow-link { font-family: var(--sans); }
 
 /* Dock reaction (wave 4): when a tendril docks, the field sets
