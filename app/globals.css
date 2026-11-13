@@ -963,3 +963,54 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
     animation: n5-breathe 3.8s cubic-bezier(.45, 0, .55, 1) infinite alternate; }
   html:not(.motion-paused) .pg-home .console-head-halo { animation: n5-halo 2.9s cubic-bezier(.22, 1, .36, 1) infinite; }
 }
+
+/* ---------- Lane D3 exploration: The Thread (app/thread only) ----------
+   A background record line that travels the page. All rules scoped to
+   .pg-thread; nothing here touches production pages. The layer itself is
+   decorative: pointer-events none, content stacked above it. */
+.pg-thread .thread-wrap { position: relative; max-width: var(--page-width); margin: 0 auto;
+  padding: 24px var(--gutter) 0; }
+.pg-thread .thread-layer { position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  overflow: visible; animation: thread-fadein .5s var(--ease-ui) both; }
+@keyframes thread-fadein { from { opacity: 0; } to { opacity: 1; } }
+.pg-thread .thread-content { position: relative; z-index: 1; }
+.pg-thread .thread-ghost { fill: none; stroke: var(--line); stroke-width: 1.5; opacity: .5; }
+.pg-thread .thread-trunk { fill: none; stroke: var(--line2); stroke-width: 1.5; stroke-linecap: round; }
+.pg-thread .thread-branch { fill: none; stroke: var(--line2); stroke-width: 1.5; stroke-linecap: round; }
+.pg-thread .thread-node { fill: var(--line2); }
+.pg-thread .thread-tip { transition: fill .3s var(--ease-ui); }
+.pg-thread .thread-pulse-seg { stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; }
+.pg-thread .thread-pulse-dot { fill: var(--accent); }
+.pg-thread .thread-pulse-halo { fill: var(--accent); }
+.pg-thread .thread-intro { padding: 72px 0 8px; max-width: 720px; }
+.pg-thread .thread-eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--accent-text); margin: 0 0 16px; }
+.pg-thread .thread-title { font-size: clamp(40px, 6vw, 64px); line-height: 1.04; font-weight: 500;
+  letter-spacing: -.025em; margin: 0 0 20px; }
+.pg-thread .thread-lede { font-size: 18px; line-height: 1.55; color: var(--ink-soft); margin: 0; }
+.pg-thread .thread-sec { border-top: 1px solid var(--line); margin-top: 64px; padding: 48px 0 56px;
+  display: flex; flex-direction: column; box-sizing: border-box; }
+.pg-thread .thread-sec-head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+.pg-thread .thread-sec-idx { font-family: var(--mono); font-size: 12px; color: var(--accent-text); }
+.pg-thread .thread-sec-title { font-size: clamp(28px, 4vw, 40px); line-height: 1.1; font-weight: 500; margin: 0; }
+.pg-thread .thread-sec-note { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.pg-thread .thread-sec-line { font-size: 16px; line-height: 1.55; color: var(--muted);
+  margin: 14px 0 36px; max-width: 46em; }
+.pg-thread .thread-visual { border: 1px solid var(--line); background: var(--card);
+  border-radius: var(--r-frame); display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: .04em; }
+.pg-thread .thread-legend { position: fixed; left: 16px; bottom: 16px; z-index: 40; pointer-events: none;
+  font-family: var(--mono); font-size: 11px; line-height: 1; color: var(--muted);
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r-chip);
+  padding: 7px 10px; }
+@media (max-width: 760px) {
+  .pg-thread .thread-wrap { padding: 16px 24px 0; }
+  .pg-thread .thread-intro { padding-top: 48px; }
+  .pg-thread .thread-sec { margin-top: 48px; padding: 36px 0 44px; }
+  .pg-thread .thread-visual { margin-left: 6% !important; width: 88% !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pg-thread .thread-layer { animation: none; }
+  .pg-thread .thread-tip { transition: none; }
+}
+/* ---------- /Lane D3 ---------- */
