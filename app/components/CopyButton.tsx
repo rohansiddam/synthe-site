@@ -50,7 +50,12 @@ export function CopyButton({ text, variant = "pill", ariaLabel }: CopyButtonProp
 
   if (variant === "docs") {
     return (
-      <button className="copy" type="button" onClick={onClick} aria-label={ariaLabel}>
+      <button
+        className={`copy${state === "done" ? " done" : ""}${state === "failed" ? " failed" : ""}`}
+        type="button"
+        onClick={onClick}
+        aria-label={ariaLabel}
+      >
         <Mark view="open" state={state === "done" ? "" : "open"} />
         <span>{label}</span>
       </button>
@@ -59,7 +64,7 @@ export function CopyButton({ text, variant = "pill", ariaLabel }: CopyButtonProp
 
   return (
     <button
-      className={`copy${variant === "text" ? " copy-text" : ""}${state === "done" ? " done" : ""}`}
+      className={`copy${variant === "text" ? " copy-text" : ""}${state === "done" ? " done" : ""}${state === "failed" ? " failed" : ""}`}
       type="button"
       onClick={onClick}
       aria-label={ariaLabel ?? `Copy the command ${text}`}
