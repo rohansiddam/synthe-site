@@ -840,6 +840,13 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .pg-home .console-round-n { font: 13px var(--mono); color: var(--ink); }
 .pg-home .console-round-note { grid-column: 2 / -1; font-size: 13px; line-height: 1.45; color: var(--muted); }
 .pg-home .console-round-note:empty { display: none; }
+/* Wave 3 (B6): the note's space is reserved for the whole cycle. The
+   text is in the layout from the start and only its visibility waits
+   for the round to resolve, so the run card and the console frame
+   hold the final (tallest) state's height at every phase instead of
+   growing +21/+40px per resolved round and collapsing at the reset.
+   The entrance is unchanged: .is-done still runs v2-note-in. */
+.pg-home .console-round:not(.is-done) .console-round-note { visibility: hidden; }
 .pg-home .console-round-cost { font: 12px var(--mono); color: var(--muted); text-align: right; white-space: nowrap; }
 .pg-home .console-round:not(.is-done):not(.is-active) { opacity: .55; }
 .pg-home .console-round-state { display: inline-flex; align-items: center; gap: 7px; font: 12px var(--mono); color: var(--ink); white-space: nowrap; }

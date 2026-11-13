@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { CELL, TendrilEngine } from "./engine";
+import { CELL, TendrilEngine, type DynRect } from "./engine";
 import { measure, type MeasureResult, type Rect } from "./measure";
 import { FONT_SPEC, SpriteAtlas, glyphChar, type Palette } from "./sprites";
 
@@ -89,7 +89,21 @@ export function TendrilField() {
     let renders = 0;
     let drawnCells = 0;
     let pregrowMs = 0;
+    let pregrowMaxSliceMs = 0;
     let pregrowSimSeconds = 0;
+    let pregrowCapped = false;
+    /* Header keep-out (wave 3): the sticky header's band height plus
+       a small margin, in viewport px. The renderer draws nothing
+       above this line, so no settled glyph, head or pulse can ever
+       appear inside the header band at any scroll position. The
+       header is already a dynamic obstacle for movement; this is
+       the render-side guarantee for glyphs laid in page space that
+       later pass beneath the band as the page scrolls. */
+    let headerClipPx = 0;
+    const updateClip = (rects: DynRect[]) => {
+      const head = rects.find((r) => r.x <= 1 && r.y <= 1);
+      headerClipPx = head ? head.h + 6 : 0;
+    };
     let frameCostEma = 0;
     let rafDeltaEma = 16;
     let govChecks = 0;
@@ -139,15 +153,17 @@ export function TendrilField() {
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
       const r0 = Math.max(0, Math.floor(scrollY / CELL) - 1);
       const r1 = Math.min(w.rows - 1, Math.ceil((scrollY + vh) / CELL) + 1);
+      const clipY = headerClipPx;
       let drawn = 0;
       for (let cy = r0; cy <= r1; cy++) {
         const rowOff = cy * w.cols;
         const yPx = cy * CELL - scrollY;
+        if (yPx < clipY) continue; // header band keep-out
         for (let cx = 0; cx < w.cols; cx++) {
           const i = rowOff + cx;
           const d = engine.trail[i];
           if (d <= 0.05) continue;
-          const sp = atlas.get(glyphChar(engine.glyph[i], d), "ink", 0.13 + d * 0.55);
+          const sp = atlas.get(glyphChar(engine.glyph[i], d), "ink", 0.2 + d * 0.58);
           if (sp) {
             ctx.drawImage(sp, cx * CELL, yPx, CELL, CELL);
             drawn++;
@@ -164,6 +180,7 @@ export function TendrilField() {
           const cx = cell % w.cols;
           const cy = Math.floor(cell / w.cols);
           if (cy < r0 || cy > r1) continue;
+          if (cy * CELL - scrollY < clipY) continue; // header band keep-out
           const ch = k === 0 ? "@" : glyphChar(engine.glyph[cell], engine.trail[cell] || 0.6);
           const sp = atlas.get(ch, "accent", k === 0 ? 1 : k % 2 === 0 ? 0.38 : 0.62);
           if (sp) {
@@ -178,6 +195,7 @@ export function TendrilField() {
         const cy = Math.round(tip.y);
         if (cy < r0 || cy > r1) continue;
         const yPx = cy * CELL - scrollY;
+        if (yPx < clipY) continue; // header band keep-out
         if (tip.state === "docked") {
           const sp = atlas.get("@", "accent", 1);
           if (sp) ctx.drawImage(sp, cx * CELL, yPx, CELL, CELL);
@@ -190,6 +208,7 @@ export function TendrilField() {
           const bx = cell % w.cols;
           const by = Math.floor(cell / w.cols);
           if (by < r0 || by > r1) continue;
+          if (by * CELL - scrollY < clipY) continue; // header band keep-out
           const sp = atlas.get(glyphChar(engine.glyph[cell], 0.7), "ink", 0.72 - b * 0.11);
           if (sp) {
             ctx.drawImage(sp, bx * CELL, by * CELL - scrollY, CELL, CELL);
@@ -247,6 +266,7 @@ export function TendrilField() {
         }
       }
       engine.setDynRects(nm.dynRects);
+      updateClip(nm.dynRects);
       engine.version++;
     };
 
@@ -274,6 +294,7 @@ export function TendrilField() {
       engine = new TendrilEngine(measured.world);
       engine.onDock = onDock;
       engine.setDynRects(measured.dynRects);
+      updateClip(measured.dynRects);
       const t = TIERS[tierIdx];
       engine.maxTips = t.maxTips;
       engine.budgetScale = t.budgetScale;
@@ -291,7 +312,9 @@ export function TendrilField() {
           renders,
           drawnCells,
           pregrowMs: Math.round(pregrowMs),
+          pregrowMaxSliceMs: Math.round(pregrowMaxSliceMs),
           pregrowSimSeconds,
+          pregrowCapped,
           frameCostMs: Math.round(frameCostEma * 100) / 100,
           rafDeltaMs: Math.round(rafDeltaEma * 10) / 10,
           dpr,
@@ -305,6 +328,37 @@ export function TendrilField() {
                 worldRects.map((r) => ({ x: r.x - 3, y: r.y - 3, w: r.w + 6, h: r.h + 6 })),
               )
             : -1,
+        auditHeads: () =>
+          engine
+            ? engine.auditHeads(
+                worldRects.map((r) => ({ x: r.x - 3, y: r.y - 3, w: r.w + 6, h: r.h + 6 })),
+              )
+            : -1,
+        /* Header band accounting at the current scroll position:
+           how many settled cells and live heads sit inside the band
+           the renderer clips away. Drawn violations are zero by
+           construction (render skips the band); these counts prove
+           the clip is load-bearing rather than decorative. */
+        band: () => {
+          if (!engine) return null;
+          const w = engine.world;
+          const sy = window.scrollY;
+          let settled = 0;
+          let heads = 0;
+          for (let cy = 0; cy < w.rows; cy++) {
+            const yPx = cy * CELL - sy;
+            if (yPx >= headerClipPx) break;
+            if (yPx + CELL <= 0) continue;
+            for (let cx = 0; cx < w.cols; cx++) {
+              if (engine.trail[cy * w.cols + cx] > 0.05) settled++;
+            }
+          }
+          for (const tip of engine.tips) {
+            const yPx = Math.round(tip.y) * CELL - sy;
+            if (yPx < headerClipPx && yPx + CELL > 0) heads++;
+          }
+          return { clipPx: headerClipPx, settledSuppressed: settled, headsSuppressed: heads };
+        },
         dockLog: () => engine?.dockLog.slice() ?? [],
       };
       (window as unknown as { __tendrils?: typeof debug }).__tendrils = debug;
@@ -315,25 +369,38 @@ export function TendrilField() {
         return;
       }
 
-      /* Pregrow: fast-forward the simulation ~30 sim-seconds before
-         the live loop starts, so the page is born with a connected
-         network through the first sections and the dock cascade
-         already staged downward, instead of spending its first half
-         minute as a few glyphs around the hero. The world is fully
-         measured above, so the pregrow respects the same obstacle
-         grid as live growth. It runs after mount (the page has
-         painted; init already awaited the font), in 2 sim-second
-         slices with a yield between them, and its main-thread cost
-         is measured into the debug stats as pregrowMs. The
-         reduced-motion path above keeps its own 90s+ static
-         fast-forward and never reaches here. */
-      const PREGROW_SECONDS = 30;
+      /* Pregrow: fast-forward the simulation ~120 sim-seconds before
+         the live loop starts (wave 3; wave 2 grew 30). The reduced-
+         motion path grows a full static network at 260s; the live
+         path now grows the same class of coverage, so a visitor who
+         scrolls to any section in their first seconds finds a settled
+         network already there, pulses travelling it, and the live
+         cascade continues from that state instead of starting cold.
+         The world is fully measured above, so the pregrow respects
+         the same obstacle grid as live growth. It runs after mount
+         (the page has painted; init already awaited the font), in
+         2 sim-second slices with a yield between them, painting the
+         born network after each slice; the main-thread cost is
+         measured into the debug stats as pregrowMs /
+         pregrowMaxSliceMs. Growth radiates from the hero and down
+         the port cascade in page order, so if the tier's settled
+         glyph budget is reached first the pregrow stops there:
+         earlier sections are the densest by construction, which is
+         the hero-outward priority the budget demands. */
+      const PREGROW_SECONDS = 120;
       const SLICE_SECONDS = 2;
       for (let doneS = 0; doneS < PREGROW_SECONDS && !disposed; doneS += SLICE_SECONDS) {
         const t0 = performance.now();
         engine.fastForward(Math.min(SLICE_SECONDS, PREGROW_SECONDS - doneS));
-        pregrowMs += performance.now() - t0;
+        const sliceMs = performance.now() - t0;
+        pregrowMs += sliceMs;
+        if (sliceMs > pregrowMaxSliceMs) pregrowMaxSliceMs = sliceMs;
         pregrowSimSeconds = Math.min(PREGROW_SECONDS, doneS + SLICE_SECONDS);
+        render();
+        if (engine.stats().trailCells >= engine.glyphBudget) {
+          pregrowCapped = true;
+          break;
+        }
         if (doneS + SLICE_SECONDS < PREGROW_SECONDS) {
           await new Promise((r) => window.setTimeout(r, 0));
         }

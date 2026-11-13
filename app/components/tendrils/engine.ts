@@ -307,9 +307,18 @@ export class TendrilEngine {
     const y = yPx / CELL;
     const cx = Math.round(x);
     const cy = Math.round(y);
-    if (this.blockedAt(cx, cy, 0) && !this.wholePageActive) {
+    if (this.blockedAt(cx, cy, 0)) {
       /* Nudge down until a free cell appears (sources sit just above
-         content edges; the first free cell below is the channel). */
+         content edges; the first free cell below is the channel).
+         This must apply in whole-page (pregrow) mode too: it used to
+         be skipped there, and on Docs every hero source sits inside
+         the stamped obstacle of the mark/eyebrow block, so pregrow
+         tips spawned inside a wall, never moved, never laid, and
+         retired in place: the Docs pregrow grew a 4-cell network in
+         120 sim-seconds. Live spawns were nudged and worked, which
+         is why only the pregrow was empty. Port-anchor spawns are
+         unaffected: anchors are free cells by construction, so the
+         nudge never triggers for them. */
       let ny = cy;
       while (ny < w.rows - 1 && this.blockedAt(cx, ny, 0)) ny++;
       if (ny >= w.rows - 1) return null;
@@ -468,7 +477,13 @@ export class TendrilEngine {
   private lay(tip: Tip, cx: number, cy: number) {
     const w = this.world;
     const i = cy * w.cols + cx;
-    const target = 0.42 + tip.width * 0.34; // settled mid density
+    /* Settled density. Wave 3 raised the floor a step (0.42 + w*0.34
+       before): at the old target a settled stream read as faint
+       punctuation in a still, most cells sitting at ':' / '-' on the
+       ramp's light end. The new target puts the body of a stream at
+       '-' / '=' with '+' on thick paths, while heads (drawn at full
+       alpha from the heavy end) stay the heaviest element. */
+    const target = 0.54 + tip.width * 0.32;
     if (this.trail[i] < target) {
       if (this.trail[i] <= 0.02) {
         /* Ramp only. A lone letter or digit in a margin reads as
@@ -529,6 +544,25 @@ export class TendrilEngine {
             bad++;
             break;
           }
+        }
+      }
+    }
+    return bad;
+  }
+
+  /* Audit for live heads: the same rect test as auditRects, applied
+     to each tip's head cell centre. Heads are movement-checked
+     against the blocked grid every substep, so a clean result is
+     the expected state; the audit exists to prove it on captures. */
+  auditHeads(rects: { x: number; y: number; w: number; h: number }[]) {
+    let bad = 0;
+    for (const tip of this.tips) {
+      const px = Math.round(tip.x) * CELL + CELL / 2;
+      const py = Math.round(tip.y) * CELL + CELL / 2;
+      for (const r of rects) {
+        if (px >= r.x && px <= r.x + r.w && py >= r.y && py <= r.y + r.h) {
+          bad++;
+          break;
         }
       }
     }
