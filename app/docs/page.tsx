@@ -115,20 +115,7 @@ export default function DocsPage() {
             </div>
             <p>You can keep editing your prompt. After Synthe changes it, pull before you edit.</p>
           </RevealSection>
-          <RevealSection solo className="block" id="data" data-toc-target="" aria-labelledby="data-h">
-            <h2 id="data-h">Your data at the event</h2>
-            <p>
-              During the event, Synthe shares your prompt, your test cases and how the run goes
-              with the Synthe team. It never sends your code, and it removes keys, emails and phone
-              numbers first. Turn it off any time with <code>"share": "none"</code> in{" "}
-              <code>synthe.json</code>.{" "}
-              <a className="textlink" href="https://github.com/synthelabs/synthe#data">
-                Details in the README
-              </a>
-              .
-            </p>
-          </RevealSection>
-          <RevealSection solo className="block" id="remove" data-toc-target="" aria-labelledby="remove-h">
+                    <RevealSection solo className="block" id="remove" data-toc-target="" aria-labelledby="remove-h">
             <h2 id="remove-h">Stop or remove it</h2>
             <p>
               Run <code>npx synthe stop</code> at any time. To remove it, also delete{" "}

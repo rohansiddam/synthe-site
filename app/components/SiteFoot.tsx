@@ -47,7 +47,7 @@ export function ReportBand({ variant }: { variant: "home" | "docs" }) {
         The morning report
       </h2>
       <p className="report-band-src">
-        From the public demo run, November 3, 2026. Every run ends with a report like this one.
+        Every run ends with a report like this one.
       </p>
       <div className="report-band-lines">
         <p>

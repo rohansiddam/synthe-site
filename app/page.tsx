@@ -129,7 +129,7 @@ export default function HomePage() {
               </span>
             </p>
             <a className="arrow-link" href="https://github.com/synthelabs/support-bot">
-              See the public demo run <HoverArrow />
+              See the run on GitHub <HoverArrow />
             </a>
           </RevealDiv>
 
@@ -158,7 +158,7 @@ export default function HomePage() {
               <a
                 className="go"
                 href="https://github.com/synthelabs/support-bot/blob/main/synthe.json"
-                aria-label="See the checks in the public demo run"
+                aria-label="See the checks Synthe ran"
               >
                 <GoArrow />
               </a>
@@ -199,7 +199,7 @@ export default function HomePage() {
               <a
                 className="go"
                 href="https://github.com/synthelabs/support-bot/pull/8"
-                aria-label="See a change Synthe merged in the public demo run"
+                aria-label="See a change Synthe merged"
               >
                 <GoArrow />
               </a>
@@ -246,14 +246,6 @@ export default function HomePage() {
               ariaLabel="Copy the instruction for your coding agent"
             />
           </RevealDiv>
-          <RevealP className="share-note">
-            At the event, Synthe shares your prompt, test cases and how the run goes with the Synthe
-            team, never your code. Turn it off any time with <code>"share": "none"</code> in{" "}
-            <code>synthe.json</code>.{" "}
-            <a className="textlink" href="/status.html#data">
-              Your data
-            </a>
-          </RevealP>
         </RevealSection>
 
         <RevealSection className="contact wrap" id="partner" aria-labelledby="partner-h">
