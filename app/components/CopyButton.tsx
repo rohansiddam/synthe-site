@@ -19,12 +19,15 @@ type CopyButtonProps = {
       docs: the ink button in a Docs command row (mark instead of copy icon). */
   variant?: "pill" | "text" | "docs";
   ariaLabel?: string;
+  /** Tendril dock anchor (Lane home-design contract), rendered as
+      data-port on the button. */
+  dataPort?: string;
 };
 
 /* Copy buttons, ported from site.js: the command goes to the clipboard and
    the button reports what actually happened (Copied, or Failed when the
    clipboard is unavailable or refuses). The mark locks on success. */
-export function CopyButton({ text, variant = "pill", ariaLabel }: CopyButtonProps) {
+export function CopyButton({ text, variant = "pill", ariaLabel, dataPort }: CopyButtonProps) {
   const [state, setState] = useState<"idle" | "done" | "failed">("idle");
   const timer = useRef(0);
 
@@ -55,6 +58,7 @@ export function CopyButton({ text, variant = "pill", ariaLabel }: CopyButtonProp
         type="button"
         onClick={onClick}
         aria-label={ariaLabel}
+        data-port={dataPort}
       >
         <Mark view="open" state={state === "done" ? "" : "open"} />
         <span>{label}</span>
@@ -68,6 +72,7 @@ export function CopyButton({ text, variant = "pill", ariaLabel }: CopyButtonProp
       type="button"
       onClick={onClick}
       aria-label={ariaLabel ?? `Copy the command ${text}`}
+      data-port={dataPort}
     >
       {variant === "pill" ? (
         <span className="prompt" aria-hidden="true">

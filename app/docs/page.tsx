@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { CopyButton } from "../components/CopyButton";
 import { RevealDiv, RevealSection } from "../components/Reveal";
 import { ReportBand, SiteFoot } from "../components/SiteFoot";
+import { AsciiMark } from "../components/AsciiMark";
 
 export const metadata: Metadata = {
   title: "Docs · Synthe",
@@ -22,16 +23,21 @@ export default function DocsPage() {
     <>
       <main id="main" className="pg-docs" tabIndex={-1}>
         <div className="doc">
-          <RevealDiv root solo className="doc-hero">
-            <p className="eyebrow">Docs</p>
-            <h1>Get started with Synthe</h1>
-            <p className="lede">
-              A short quickstart. Everything else is in the{" "}
-              <a className="textlink" href="https://github.com/synthelabs/synthe#readme">
-                README on GitHub
-              </a>
-              .
-            </p>
+          <RevealDiv root solo className="doc-hero" data-port="docs-hero">
+            <div className="doc-hero-grid">
+              <div className="doc-hero-text">
+                <p className="eyebrow">Docs</p>
+                <h1>Get started with Synthe</h1>
+                <p className="lede">
+                  A short quickstart. Everything else is in the{" "}
+                  <a className="textlink" href="https://github.com/synthelabs/synthe#readme">
+                    README on GitHub
+                  </a>
+                  .
+                </p>
+              </div>
+              <AsciiMark className="docs-emblem" />
+            </div>
           </RevealDiv>
           <RevealSection solo className="block" id="need" data-toc-target="" aria-labelledby="need-h">
             <h2 id="need-h">What you need</h2>
@@ -53,7 +59,7 @@ export default function DocsPage() {
           <RevealSection solo className="block" id="setup" data-toc-target="" aria-labelledby="setup-h">
             <h2 id="setup-h">Set it up</h2>
             <p>On your main branch, in the repo, run:</p>
-            <div className="cmd">
+            <div className="cmd" data-port="docs-install">
               <span className="prompt" aria-hidden="true">
                 ${" "}
               </span>

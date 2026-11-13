@@ -1239,3 +1239,58 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
   .thread-home-layer .thread-layer { animation: none; }
   .thread-home-layer .thread-tip { transition: none; }
 }
+
+/* ---------- Lane home-design: the renovated homepage + Docs ----------
+   The redesign's composition layer. The vector Thread is unmounted
+   (its CSS block above is inert: .thread-home-wrap no longer exists)
+   and the hero's WebGL field is gone: the hero sits on the solid page
+   background, and the Synthe mark returns as a FOREGROUND EMBLEM, a
+   contained element in the hero's right column (the AsciiMark
+   component; a vector stub until the emblem lane's file lands).
+   The page's motion layer is now the glyph tendril field
+   (components/tendrils/TendrilField, a stub here), a fixed overlay
+   that travels the gutters and docks at the [data-port] anchors
+   planted in page.tsx, Console, WorkedExample, Scenes, SiteFoot and
+   the Docs page. Channels: the existing rail math is the channel
+   system, untouched (--page-width 1296, --gutter 48/32/24); sections
+   keep transparent backgrounds so the overlay reads against the page,
+   and the report band stays a shore: its port sits on the band
+   itself, the tendrils' target is its top rule, and nothing in this
+   block gives the band a treatment the field would have to cross. */
+
+/* The tendril overlay's mount box (stub: empty and inert; the engine
+   lane owns the real layer's stacking when it replaces the stub). */
+.tendril-field { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
+
+/* The emblem component's box, shared by both pages' placements. */
+.ascii-mark { display: block; line-height: 0; }
+.ascii-mark .mark { display: block; width: 100%; height: auto; }
+
+/* Hero, recomposed: copy column + emblem column. */
+.pg-home .hero { grid-template-columns: minmax(0, 1fr) 320px; gap: 64px; align-items: center; padding-top: 64px; }
+.pg-home .hero-main { display: grid; gap: 28px; align-content: start; min-width: 0; }
+.pg-home .hero-emblem { justify-self: end; width: 320px; max-width: 100%; }
+@media (max-width: 1100px) {
+  .pg-home .hero { grid-template-columns: minmax(0, 1fr) 280px; gap: 48px; }
+  .pg-home .hero-emblem { width: 280px; }
+}
+@media (max-width: 960px) {
+  /* One column: headline, copy, then the emblem stacked in clear air
+     below the callout, fully visible, never behind text. */
+  .pg-home .hero { grid-template-columns: minmax(0, 1fr); gap: 32px; align-items: start; padding-top: 40px; }
+  .pg-home .hero-emblem { justify-self: center; width: min(240px, 62vw); margin-top: 8px; }
+}
+@media (max-width: 640px) {
+  .pg-home .hero { padding-top: 32px; }
+  .pg-home .hero-emblem { width: min(208px, 58vw); }
+}
+
+/* Docs header: the narrow column takes the emblem as a modest
+   right-hand element in the hero row, contained, clear of the lede. */
+.pg-docs .doc-hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: start; }
+.pg-docs .docs-emblem { width: 104px; margin-top: 6px; }
+@media (max-width: 640px) {
+  /* Stacked: a small emblem above the eyebrow, then the text. */
+  .pg-docs .doc-hero-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .pg-docs .docs-emblem { order: -1; width: 56px; margin-top: 0; }
+}

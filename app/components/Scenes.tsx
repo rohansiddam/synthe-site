@@ -133,7 +133,7 @@ export function ChecksScene() {
   const { ref, armed, playing } = useEntryPlay<HTMLDivElement>();
   const passing = useFlip(armed, playing, 450);
   return (
-    <div ref={ref} className="scene scene-file">
+    <div ref={ref} className="scene scene-file" data-port="checks">
       <div className="scene-file-head">
         <span className="scene-file-name">synthe.json</span>
         <span className="scene-readout">
