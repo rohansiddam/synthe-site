@@ -116,7 +116,7 @@ export function ScoreCard({
         Your prompt: {dogfoodRun.firstMeasured}% to {dogfoodRun.lastMeasured}%
       </p>
       <p className="console-sub">
-        Held-out score, the test cases Synthe never trains on, measured after each round.
+        Held-out score: test cases Synthe never trains on.
       </p>
       <svg
         className="console-chart"

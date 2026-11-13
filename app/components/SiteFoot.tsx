@@ -30,9 +30,6 @@ export function SiteFoot() {
         <a href="https://github.com/synthelabs/synthe/blob/main/LICENSE">license</a>). It tests
         prompt changes on simulated messages, so read what it changes before you rely on it.
       </p>
-      <p className="colophon">
-        From the Greek <em>synthēkē</em>, meaning agreement.
-      </p>
     </footer>
   );
 }

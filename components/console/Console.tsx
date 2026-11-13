@@ -308,9 +308,6 @@ export function Console() {
           <h2 className="example-label" id="console-h">
             Two recorded runs, replayed
           </h2>
-          <span className="console-caption-note">
-            Every number below is from a real run. Nothing is simulated.
-          </span>
         </div>
         <div className="console">
           <CardShell index={0} className="cell-score" controls={controls} labelledBy="console-score-h" dataPort="score">

@@ -127,19 +127,12 @@ export default function HomePage() {
           <RevealH2 className="section-h" id="how-h">
             How it works
           </RevealH2>
-          <RevealDiv className="proof-line">
-            <p className="proof-label">One real run, in public · Loom &amp; Lark support bot</p>
-            <a className="arrow-link" href="https://github.com/synthelabs/support-bot">
-              See the run on GitHub <HoverArrow />
-            </a>
-          </RevealDiv>
 
           <WorkedExample />
 
           <div className="cards">
             <RevealArticle className="card">
               <div className="card-head">
-                <p className="scene-eyebrow">The checks</p>
                 <h3>Your checks decide.</h3>
               </div>
               <div className="viz">
@@ -155,7 +148,6 @@ export default function HomePage() {
             </RevealArticle>
             <RevealArticle className="card">
               <div className="card-head">
-                <p className="scene-eyebrow">The merge</p>
                 <h3>Only the prompt changes.</h3>
               </div>
               <div className="viz">
@@ -171,7 +163,6 @@ export default function HomePage() {
             </RevealArticle>
             <RevealArticle className="card">
               <div className="card-head">
-                <p className="scene-eyebrow">The report</p>
                 <h3>You get the report.</h3>
               </div>
               <div className="viz">
@@ -230,10 +221,7 @@ export default function HomePage() {
             </ol>
           </div>
           <RevealDiv className="agent-line">
-            <p>
-              <strong>Using Claude Code, Cursor or Codex?</strong>{" "}
-              <span className="muted">Tell it:</span>
-            </p>
+            <p className="agent-label">For your coding agent:</p>
             <CopyButton
               variant="text"
               text="Set up Synthe in this repo. Run npx synthe@latest guide and follow it."

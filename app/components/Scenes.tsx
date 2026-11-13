@@ -306,7 +306,6 @@ export function ClimbLine() {
           </text>
         </motion.g>
       </svg>
-      <p className="climb-cap">Checks passed, before and after the merge</p>
     </motion.div>
   );
 }

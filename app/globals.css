@@ -422,8 +422,6 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .site-foot a:hover { color: var(--ink); }
 .site-foot .footer-legal { color: var(--faint); max-width: 62em; }
 .site-foot .footer-legal a { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--gold); }
-.site-foot .colophon { font-family: var(--mono); font-size: 12px; letter-spacing: .04em; color: var(--faint); margin-bottom: 0; }
-.site-foot .colophon em { font-style: normal; color: var(--muted); }
 @media (max-width: 640px) {
   .site-head { gap: 12px; }
   .topnav { gap: 16px; }
@@ -621,8 +619,7 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .pg-home .step .copy { align-self: flex-start; margin-top: auto; }
 .pg-home .step .copy code { overflow-wrap: anywhere; text-align: left; }
 .pg-home .agent-line { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: var(--space-7); padding: var(--space-5) 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.pg-home .agent-line p { margin: 0; }
-.pg-home .agent-line strong { font-weight: 500; }
+.pg-home .agent-line .agent-label { margin: 0; font: 500 12px/1.5 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
 .pg-home .copy-text { max-width: 100%; }
 .pg-home .copy-text code { font-size: 14px; white-space: normal; text-align: left; }
 .pg-home .share-note { margin: var(--space-5) 0 0; font-size: 14px; color: var(--muted); max-width: 72ch; text-wrap: pretty; }
@@ -853,7 +850,6 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
      app/providers.tsx, so its light-dark() tokens resolve the site's way. */
 .pg-home .console-shell { background: var(--bg2); border: 1px solid var(--line); border-radius: 10px; padding: 24px; }
 .pg-home .console-caption { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; margin-bottom: 16px; }
-.pg-home .console-caption-note { color: var(--muted); font-size: 14px; }
 .pg-home .console {
   --color-background-card: var(--card);
   --color-background-muted: var(--bg2);
@@ -1156,11 +1152,6 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
    render their final recorded state without JS or with reduced
    motion, exactly like the console above them. */
 
-/* The proof line: one mono record line and the link, no statement. */
-.pg-home .proof-line { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; margin-top: var(--space-4); }
-.pg-home .proof-label { margin: 0; font: 500 12px/1.5 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
-.pg-home .proof-line .arrow-link { min-height: 40px; }
-
 /* ---------- The worked example ---------- */
 .pg-home .wx { margin: var(--space-6) 0 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 24px; }
 .pg-home .wx-cap { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; margin-bottom: 20px; }
@@ -1171,7 +1162,6 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .pg-home .wx-file { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; min-width: 0; }
 .pg-home .wx-file-chrome { display: flex; align-items: center; gap: 12px; min-height: 44px; box-sizing: border-box; padding: 4px 8px 4px 16px; background: var(--bg2); border-bottom: 1px solid var(--line); font: 13px var(--mono); }
 .pg-home .wx-file-name { color: var(--ink); font-weight: 500; }
-.pg-home .wx-file-note { color: var(--muted); }
 .pg-home .wx-pill { margin-left: auto; display: inline-flex; }
 .pg-home .wx-diff { font: 13px/1.65 var(--mono); padding: 8px 0; }
 .pg-home .wx-diff-line { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; padding: 6px 14px 6px 8px; }
@@ -1206,7 +1196,6 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .pg-home .scene-check-icon.is-fail { color: var(--red); }
 
 /* ---------- Card scenes ---------- */
-.pg-home .scene-eyebrow { margin: 0 0 6px; font: 500 12px/1.5 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
 .pg-home .card .viz { display: flex; }
 .pg-home .scene { display: flex; flex-direction: column; gap: 14px; flex: 1 1 auto; min-width: 0; width: 100%; }
 .pg-home .scene-file-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0; }
@@ -1260,7 +1249,6 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .climb-dot.is-end { fill: var(--accent); }
 .climb-halo { fill: none; stroke: var(--accent); stroke-width: 1.6; opacity: .45; transform-box: fill-box; transform-origin: center; }
 .climb-label { font: 11px var(--mono); fill: var(--muted); }
-.climb-cap { margin: 6px 0 0; font-size: 11px; line-height: 1.5; color: var(--faint); }
 
 /* Ambient life for the new surfaces: the worked example's merge
    mark breathes and the report climb's head radiates, on the same
