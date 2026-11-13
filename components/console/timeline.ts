@@ -84,3 +84,45 @@ export const DRAW_UNITS = 10;
 /** Spend fills during the last phase, once the rounds have resolved. */
 export const SPEND_FILL_AT = 10400;
 export const SPEND_MS = 900;
+
+/* ------------------------------------------------------------------ */
+/* Lane V2: every card lives internally. The cues below are the      */
+/* per-card choreography layered on the same cycle; each is a time   */
+/* on the play segment, and Console.tsx drives them off the same     */
+/* conductor, so pause, resume and reset apply to all of them at     */
+/* once. Nothing here changes what the record says, only when each   */
+/* card shows the part of the record it already carries.             */
+/* ------------------------------------------------------------------ */
+
+/** The checks flip one at a time off the merge beat, in the order
+    synthe.json lists them: the beat lands, then each check settles
+    in turn over the following ~900ms. The record holds only the
+    aggregate (72% to 89%, rule breaks 2 to 0), so the flips are the
+    beat's punctuation, never per-check claims. */
+export const CHECK_FLIP_AT = [3400, 3620, 3840, 4060] as const;
+
+/** How many checks have flipped by cycle time t. */
+export function checksFlipped(t: number): number {
+  let n = 0;
+  for (const at of CHECK_FLIP_AT) if (t >= at) n++;
+  return n;
+}
+
+/** The PR card's diff composes while round 1 is being tested: the
+    lines activate one by one and the last one lands just before the
+    merge beat flips the pill. The draw runs on a motion value in
+    Console.tsx, 0..(number of diff lines). */
+export const DIFF_AT = 1150;
+export const DIFF_MS = 2200;
+
+/** Spend accumulates per round, at the moment each round resolves
+    (the phase starts on PHASE_STARTS), over a short eased tween.
+    Round 3 recorded no cost, so its step holds the total where it
+    was; that hold is the record, not a gap. Console.tsx computes
+    the cumulative targets from lib/runData.ts; the final target is
+    the recorded total spend, not the sum of the rounded parts. */
+export const SPEND_STEP_MS = 750;
+
+/** The report prints at the end of the play: headline first, then
+    its lines in sequence, settling into the rest beat (peak-end). */
+export const REPORT_AT = 10600;

@@ -113,7 +113,11 @@ export function RoundState({
   return (
     <span className={`console-round-state is-${kind}`}>
       <Mark className="console-round-mark" state={markState} />
-      <span>{word}</span>
+      {/* The word remounts on a state change (key) so it can ease in
+          while the mark's halves travel on their CSS transition. */}
+      <span key={kind} className="console-round-word">
+        {word}
+      </span>
     </span>
   );
 }
