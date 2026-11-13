@@ -19,7 +19,13 @@
  *     heaviest ramp levels so the silhouette never thins;
  *   - ink / accent channel split: half A renders in --ink (with the
  *     shader's slight warmth toward the accent at its peaks), half B
- *     in --accent, both re-read from the site tokens on theme flips.
+ *     in --accent, both re-read from the site tokens on theme flips;
+ *   - a Sobel edge pass over the coverage grid (integration fix):
+ *     cells with a strong coverage gradient draw a directional
+ *     glyph (- | / \) aligned to the edge tangent instead of a
+ *     density-ramp glyph, so the mark's strokes read as strokes
+ *     with drawn outlines rather than stipple; only flat interior
+ *     cells use the ramp and the letter mixing.
  *
  * The vector mark renders underneath as an inline SVG and the canvas
  * fades over it only once its first full frame is painted, so there
@@ -195,6 +201,7 @@ export function AsciiMark({
     let cellH = 0;
     let lum: Float32Array = new Float32Array(0);
     let interior: Float32Array = new Float32Array(0);
+    let edgeGlyph: string[] = [];
     let isB: Uint8Array = new Uint8Array(0);
     let fineN: Float32Array = new Float32Array(0);
     let rate: Float32Array = new Float32Array(0);
@@ -212,6 +219,15 @@ export function AsciiMark({
     let raf = 0;
 
     function cellGlyph(i: number, cx: number, cy: number, t: number): [string, string] {
+      /* Edge cells draw their directional glyph, steady while the
+         interior crawls: the outline is the silhouette, and a
+         silhouette that holds still reads as a drawn stroke. */
+      if (edgeGlyph[i]) {
+        const color = isB[i]
+          ? accentStr()
+          : warmScale[Math.round(smoothstep(0.78, 1.0, lum[i]) * (warmScale.length - 1))];
+        return [edgeGlyph[i], color];
+      }
       const u = (cx + 0.5) / cols;
       const v = (cy + 0.5) / rows;
       /* Breakup, the shader's recipe: drifting mid noise over the
@@ -314,6 +330,7 @@ export function AsciiMark({
       const n = cols * rows;
       lum = new Float32Array(n);
       interior = new Float32Array(n);
+      edgeGlyph = new Array<string>(n).fill("");
       isB = new Uint8Array(n);
       fineN = new Float32Array(n);
       rate = new Float32Array(n);
@@ -340,6 +357,32 @@ export function AsciiMark({
             Math.abs(gU - lum[i]),
           );
           interior[i] = smoothstep(0.985, 1.0, lum[i]) * (1 - clamp(grad * 2.2, 0, 1));
+          /* Sobel pass on the coverage grid: where coverage changes
+             fast, this cell sits on a stroke edge. Its glyph is the
+             one whose stroke runs along the edge (the tangent, i.e.
+             the gradient direction rotated 90 degrees), quantized to
+             the four orientations a mono grid can draw. */
+          const L = (x: number, y: number) =>
+            lum[Math.min(rows - 1, Math.max(0, y)) * cols + Math.min(cols - 1, Math.max(0, x))];
+          const gx =
+            L(cx + 1, cy - 1) + 2 * L(cx + 1, cy) + L(cx + 1, cy + 1) -
+            (L(cx - 1, cy - 1) + 2 * L(cx - 1, cy) + L(cx - 1, cy + 1));
+          const gy =
+            L(cx - 1, cy + 1) + 2 * L(cx, cy + 1) + L(cx + 1, cy + 1) -
+            (L(cx - 1, cy - 1) + 2 * L(cx, cy - 1) + L(cx + 1, cy - 1));
+          const mag = Math.sqrt(gx * gx + gy * gy);
+          if (mag >= 1.15 && lum[i] > 0.3) {
+            let phi = Math.atan2(gy, gx) + Math.PI / 2;
+            phi = ((phi % Math.PI) + Math.PI) % Math.PI;
+            edgeGlyph[i] =
+              phi < Math.PI / 8 || phi >= (7 * Math.PI) / 8
+                ? "-"
+                : phi < (3 * Math.PI) / 8
+                  ? "\\"
+                  : phi < (5 * Math.PI) / 8
+                    ? "|"
+                    : "/";
+          }
           fineN[i] = (hash21(cx * 13.73, cy * 13.73) - 0.5) * 0.16;
           rate[i] = 0.62 + 0.55 * hash21(cx * 1.917, cy * 1.917);
           phase[i] = hash21(cx * 2.613 + 7.7, cy * 2.613 + 7.7);

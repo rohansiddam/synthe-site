@@ -22,10 +22,14 @@ import { CardHead } from "./kit";
    conductor, so spend accumulates the way the run actually spent
    it: a step as each round resolves ($0.08, then $0.12 more, a hold
    on the round that recorded no cost, then the last $0.12), landing
-   exactly on the recorded total. The big number is the running
-   total, read off the same motion value with no per-frame render,
-   and a tick lands on the meter at each step's position. It rests
-   at the recorded share. */
+   exactly on the recorded total. A tick lands on the meter at each
+   step's position. It rests at the recorded share.
+   Integration fix (checklist G2): the meter fill still eases
+   between steps (it is a graphic), but the big number no longer
+   interpolates dollars off the fill: it STEPS between the recorded
+   cumulative totals only ($0.00 before round 1, then $0.08, $0.20,
+   $0.20 held through the no-cost round, $0.32). No frame ever
+   displays a spend figure that is not in the run record. */
 
 /** Tick positions on the meter (percent of budget): where the
     cumulative spend stood after each round that recorded a cost,
@@ -53,15 +57,42 @@ function MeterTick({ pct, at }: { pct: MotionValue<number>; at: number }) {
   );
 }
 
+/** The recorded cumulative spend (USD) after each demo round, plus
+    the pre-round zero: the only totals the big number may display.
+    The last entry is the recorded total spend, not the sum of the
+    rounded parts. */
+const SPEND_STEPS_USD: number[] = (() => {
+  let acc = 0;
+  const out = [0];
+  demoRun.rounds.forEach((r, i) => {
+    if (r.costUsd !== null) acc += r.costUsd;
+    out.push(i === demoRun.rounds.length - 1 ? demoRun.spendUsd : acc);
+  });
+  return out;
+})();
+
+/** Which recorded step a fill percentage has reached. */
+function stepIndexFor(pctValue: number): number {
+  const usd = (pctValue / 100) * demoRun.budgetUsd;
+  let idx = 0;
+  SPEND_STEPS_USD.forEach((s, i) => {
+    if (usd >= s - 1e-9) idx = i;
+  });
+  return idx;
+}
+
+const stepNow = (pctValue: number) =>
+  Math.round((SPEND_STEPS_USD[stepIndexFor(pctValue)] / demoRun.budgetUsd) * 100);
+
 export function SpendCard({ pct }: { pct: MotionValue<number> }) {
   const width = useTransform(pct, (v) => `${v}%`);
   const dollars = useTransform(
     pct,
-    (v) => `$${((v / 100) * demoRun.budgetUsd).toFixed(2)}`,
+    (v) => `$${SPEND_STEPS_USD[stepIndexFor(v)].toFixed(2)}`,
   );
-  const [now, setNow] = useState(() => Math.round(pct.get()));
+  const [now, setNow] = useState(() => stepNow(pct.get()));
   useMotionValueEvent(pct, "change", (v) => {
-    const r = Math.round(v);
+    const r = stepNow(v);
     setNow((prev) => (prev === r ? prev : r));
   });
   return (

@@ -1288,7 +1288,7 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 /* Docs header: the narrow column takes the emblem as a modest
    right-hand element in the hero row, contained, clear of the lede. */
 .pg-docs .doc-hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: start; }
-.pg-docs .docs-emblem { width: 104px; margin-top: 6px; }
+.pg-docs .docs-emblem { width: 104px; height: auto; margin-top: 6px; }
 @media (max-width: 640px) {
   /* Stacked: a small emblem above the eyebrow, then the text. */
   .pg-docs .doc-hero-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }

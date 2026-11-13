@@ -23,8 +23,19 @@ export function SmoothScroll() {
     gsap.registerPlugin(ScrollTrigger);
     /* anchors: Lenis owns same-page fragment clicks (the hero's "How
        to start" link), so a fragment jump can never race the smoothed
-       scroll's internal state. */
-    const lenis = new Lenis({ syncTouch: false, anchors: true });
+       scroll's internal state. stopInertiaOnNavigate: a click on an
+       internal link kills any in-flight wheel inertia first, so the
+       anchor landing is the click's target, not wherever the fling
+       was heading. allowNestedScroll: nested scrollers (the Docs
+       command table's horizontal wrap) keep their own scroll instead
+       of being hijacked into page scroll. autoRaf stays off: the
+       GSAP ticker below drives raf, the canonical sync. */
+    const lenis = new Lenis({
+      syncTouch: false,
+      anchors: true,
+      stopInertiaOnNavigate: true,
+      allowNestedScroll: true,
+    });
     const onScroll = () => ScrollTrigger.update();
     lenis.on("scroll", onScroll);
     const tick = (time: number) => {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CopyButton } from "../components/CopyButton";
 import { RevealDiv, RevealSection } from "../components/Reveal";
 import { ReportBand, SiteFoot } from "../components/SiteFoot";
-import { AsciiMark } from "../components/AsciiMark";
+import { Mark } from "../components/Mark";
 
 export const metadata: Metadata = {
   title: "Docs · Synthe",
@@ -36,7 +36,10 @@ export default function DocsPage() {
                   .
                 </p>
               </div>
-              <AsciiMark className="docs-emblem" />
+              {/* Vector mark, not the glyph emblem: at 104px (56px on
+                  phones) this placement is below the AsciiMark lane's
+                  ~120px legibility floor, so the plain mark carries it. */}
+              <Mark className="docs-emblem" />
             </div>
           </RevealDiv>
           <RevealSection solo className="block" id="need" data-toc-target="" aria-labelledby="need-h">
@@ -135,7 +138,7 @@ export default function DocsPage() {
               <a className="textlink" href="https://github.com/synthelabs/synthe#readme">
                 Read the README
               </a>
-              <a className="textlink" href="/status.html">
+              <a className="textlink" href="#remove">
                 Limits and your data
               </a>
               <a className="textlink" href="https://github.com/synthelabs/synthe/issues">

@@ -113,7 +113,7 @@ export function SiteHead() {
         <a href="/docs.html" aria-current={current === "docs" ? "page" : undefined}>
           Docs
         </a>
-        <a href="/status.html">Limits</a>
+        <a href="/docs.html#remove">Limits</a>
         <a href="https://github.com/synthelabs/synthe">GitHub</a>
         <ThemeToggle />
         <a className="nav-cta" href="/docs.html">
