@@ -1,13 +1,13 @@
 import { HALF_A, HALF_B, HoverArrow } from "./Mark";
 import { RevealSection } from "./Reveal";
-import { CountUp } from "./CountUp";
+import { RevealValue } from "./RevealValue";
 import { ClimbLine } from "./Scenes";
 
 /* The shared footer: identical on every page. */
 export function SiteFoot() {
   return (
     <footer className="site-foot">
-      <p className="footer-brand">
+      <p className="footer-brand" data-port="footer">
         <svg className="footer-logo" viewBox="0 0 275 290" aria-hidden="true">
           <path className="a" d={HALF_A} />
           <path className="b" d={HALF_B} />
@@ -20,8 +20,8 @@ export function SiteFoot() {
       </p>
       <nav className="footer-nav" aria-label="Footer">
         <a href="/docs.html">Docs</a>
-        <a href="/status.html">Limits and your data</a>
-        <a href="/log.html">Changelog</a>
+        <a href="/docs.html#remove">Limits and your data</a>
+        <a href="https://github.com/synthelabs/synthe/releases">Changelog</a>
         <a href="/#partner">Contact</a>
         <a href="https://github.com/synthelabs/synthe">GitHub</a>
       </nav>
@@ -43,7 +43,7 @@ export function SiteFoot() {
    the arrow link; Docs uses its plain text link, as on the static pages. */
 export function ReportBand({ variant }: { variant: "home" | "docs" }) {
   return (
-    <RevealSection solo className="report-band" aria-labelledby="morning-report-h">
+    <RevealSection solo className="report-band" data-port="report" aria-labelledby="morning-report-h">
       <h2 className="report-band-label" id="morning-report-h">
         The morning report
       </h2>
@@ -55,9 +55,9 @@ export function ReportBand({ variant }: { variant: "home" | "docs" }) {
           <p>
             <span className="rb-key">Checks passed</span>
             <span className="rb-val">
-              <CountUp value={89} suffix="%" /> of the time, up from{" "}
-              <CountUp value={72} suffix="%" />. Held-out score <CountUp value={50} suffix="%" />{" "}
-              to <CountUp value={80} suffix="%" />.
+              <RevealValue value={89} suffix="%" /> of the time, up from{" "}
+              <RevealValue value={72} suffix="%" />. Held-out score <RevealValue value={50} suffix="%" />{" "}
+              to <RevealValue value={80} suffix="%" />.
           </span>
         </p>
         <p>
@@ -70,7 +70,7 @@ export function ReportBand({ variant }: { variant: "home" | "docs" }) {
         <p>
           <span className="rb-key">Spend</span>
           <span className="rb-val">
-            <CountUp value={0.32} decimals={2} prefix="$" /> of a <CountUp value={3} prefix="$" />{" "}
+            <RevealValue value={0.32} decimals={2} prefix="$" /> of a <RevealValue value={3} prefix="$" />{" "}
             budget.
           </span>
           </p>

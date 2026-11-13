@@ -421,6 +421,37 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .rb-val { color: var(--ink-soft); }
 .report-band .arrow-link { font-family: var(--sans); }
 
+/* Dock reaction (wave 4): when a tendril docks, the field sets
+   data-docked="true" on the port element for 1.2 sim-seconds, and
+   the target answers with a brief accent touch: a thin ring and a
+   soft halo that ease in fast, hold, and fade inside the same 1.2s,
+   plus an accent tint on the report band's top rule. An animation
+   (not a transition) carries the whole lifecycle, so no port
+   element's own transitions are touched and the fade completes
+   even though the attribute simply clears at 1.2s. Outline and
+   box-shadow only: no layout shift, no text color changes. The
+   accent token is theme-relative, so the touch reads the same in
+   both themes; under reduced motion the whole reaction is off
+   (the field never sets the attribute there either). */
+@media (prefers-reduced-motion: no-preference) {
+  [data-port][data-docked="true"] {
+    outline: 1.5px solid transparent;
+    outline-offset: 3px;
+    animation: dock-touch 1.2s var(--ease-ui) both;
+  }
+  .report-band[data-docked="true"] { animation: dock-touch 1.2s var(--ease-ui) both, dock-rule 1.2s var(--ease-ui) both; }
+  @keyframes dock-touch {
+    0% { outline-color: transparent; box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); }
+    14% { outline-color: color-mix(in srgb, var(--accent) 55%, transparent); box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 10%, transparent); }
+    68% { outline-color: color-mix(in srgb, var(--accent) 55%, transparent); box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 10%, transparent); }
+    100% { outline-color: transparent; box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); }
+  }
+  @keyframes dock-rule {
+    0%, 100% { border-top-color: var(--line2); }
+    14%, 68% { border-top-color: var(--accent); }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .site-head, .site-head::after, .nav-cta, .copy, .seg button, .card, .card .go svg, .viz, .arrow-link .arr,
   .partner-form input, .scroll-reveal { transition: none !important; }
@@ -840,6 +871,13 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .pg-home .console-round-n { font: 13px var(--mono); color: var(--ink); }
 .pg-home .console-round-note { grid-column: 2 / -1; font-size: 13px; line-height: 1.45; color: var(--muted); }
 .pg-home .console-round-note:empty { display: none; }
+/* Wave 3 (B6): the note's space is reserved for the whole cycle. The
+   text is in the layout from the start and only its visibility waits
+   for the round to resolve, so the run card and the console frame
+   hold the final (tallest) state's height at every phase instead of
+   growing +21/+40px per resolved round and collapsing at the reset.
+   The entrance is unchanged: .is-done still runs v2-note-in. */
+.pg-home .console-round:not(.is-done) .console-round-note { visibility: hidden; }
 .pg-home .console-round-cost { font: 12px var(--mono); color: var(--muted); text-align: right; white-space: nowrap; }
 .pg-home .console-round:not(.is-done):not(.is-active) { opacity: .55; }
 .pg-home .console-round-state { display: inline-flex; align-items: center; gap: 7px; font: 12px var(--mono); color: var(--ink); white-space: nowrap; }
@@ -1238,4 +1276,59 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 @media (prefers-reduced-motion: reduce) {
   .thread-home-layer .thread-layer { animation: none; }
   .thread-home-layer .thread-tip { transition: none; }
+}
+
+/* ---------- Lane home-design: the renovated homepage + Docs ----------
+   The redesign's composition layer. The vector Thread is unmounted
+   (its CSS block above is inert: .thread-home-wrap no longer exists)
+   and the hero's WebGL field is gone: the hero sits on the solid page
+   background, and the Synthe mark returns as a FOREGROUND EMBLEM, a
+   contained element in the hero's right column (the AsciiMark
+   component; a vector stub until the emblem lane's file lands).
+   The page's motion layer is now the glyph tendril field
+   (components/tendrils/TendrilField, a stub here), a fixed overlay
+   that travels the gutters and docks at the [data-port] anchors
+   planted in page.tsx, Console, WorkedExample, Scenes, SiteFoot and
+   the Docs page. Channels: the existing rail math is the channel
+   system, untouched (--page-width 1296, --gutter 48/32/24); sections
+   keep transparent backgrounds so the overlay reads against the page,
+   and the report band stays a shore: its port sits on the band
+   itself, the tendrils' target is its top rule, and nothing in this
+   block gives the band a treatment the field would have to cross. */
+
+/* The tendril overlay's mount box (stub: empty and inert; the engine
+   lane owns the real layer's stacking when it replaces the stub). */
+.tendril-field { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
+
+/* The emblem component's box, shared by both pages' placements. */
+.ascii-mark { display: block; line-height: 0; }
+.ascii-mark .mark { display: block; width: 100%; height: auto; }
+
+/* Hero, recomposed: copy column + emblem column. */
+.pg-home .hero { grid-template-columns: minmax(0, 1fr) 320px; gap: 64px; align-items: center; padding-top: 64px; }
+.pg-home .hero-main { display: grid; gap: 28px; align-content: start; min-width: 0; }
+.pg-home .hero-emblem { justify-self: end; width: 320px; max-width: 100%; }
+@media (max-width: 1100px) {
+  .pg-home .hero { grid-template-columns: minmax(0, 1fr) 280px; gap: 48px; }
+  .pg-home .hero-emblem { width: 280px; }
+}
+@media (max-width: 960px) {
+  /* One column: headline, copy, then the emblem stacked in clear air
+     below the callout, fully visible, never behind text. */
+  .pg-home .hero { grid-template-columns: minmax(0, 1fr); gap: 32px; align-items: start; padding-top: 40px; }
+  .pg-home .hero-emblem { justify-self: center; width: min(240px, 62vw); margin-top: 8px; }
+}
+@media (max-width: 640px) {
+  .pg-home .hero { padding-top: 32px; }
+  .pg-home .hero-emblem { width: min(208px, 58vw); }
+}
+
+/* Docs header: the narrow column takes the emblem as a modest
+   right-hand element in the hero row, contained, clear of the lede. */
+.pg-docs .doc-hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: start; }
+.pg-docs .docs-emblem { width: 104px; height: auto; margin-top: 6px; }
+@media (max-width: 640px) {
+  /* Stacked: a small emblem above the eyebrow, then the text. */
+  .pg-docs .doc-hero-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .pg-docs .docs-emblem { order: -1; width: 56px; margin-top: 0; }
 }

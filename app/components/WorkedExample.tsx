@@ -70,6 +70,7 @@ export function WorkedExample() {
           </div>
           <motion.div
             className="wx-diff"
+            data-port="diff"
             variants={diffBox}
             role="img"
             aria-label={`Diff of prompt.md in pull request ${pr.number}: ${pr.fullTitle}`}

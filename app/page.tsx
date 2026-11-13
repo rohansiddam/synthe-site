@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { HeroField } from "./components/HeroField";
 import { HeroDrift } from "./components/HeroDrift";
+import { AsciiMark } from "./components/AsciiMark";
 import {
   RevealArticle,
   RevealDiv,
@@ -17,7 +17,6 @@ import { ReportBand, SiteFoot } from "./components/SiteFoot";
 import { WorkedExample } from "./components/WorkedExample";
 import { ChecksScene, MergeScene, ReportScene } from "./components/Scenes";
 import { GoArrow, HoverArrow, Mark } from "./components/Mark";
-import { ThreadLayer } from "./components/ThreadLayer";
 
 export const metadata: Metadata = {
   title: "Synthe: your AI agent gets better on its own",
@@ -90,32 +89,34 @@ const JSON_LD = `{
 export default function HomePage() {
   return (
     <>
-      <div className="thread-home-wrap">
-        <ThreadLayer />
-        <main id="main" className="pg-home" tabIndex={-1}>
-        <HeroField />
+      <main id="main" className="pg-home" tabIndex={-1}>
         <HeroDrift>
-          <h1>Your AI agent gets better on its own.</h1>
-          <div className="hero-copy">
-            <p className="lede">
-              <strong>You say what good looks like.</strong> Synthe tests changes to your agent's
-              prompt in your own GitHub repo, and keeps only what wins.
-            </p>
-            <div className="actions">
-              <CopyButton
-                text="npx synthe@latest init"
-                ariaLabel="Copy the command npx synthe@latest init"
-              />
-              <a className="arrow-link" href="#start-tonight">
-                How to start <HoverArrow />
-              </a>
+          <div className="hero-main">
+            <h1>Your AI agent gets better on its own.</h1>
+            <div className="hero-copy">
+              <p className="lede">
+                <strong>You say what good looks like.</strong> Synthe tests changes to your agent's
+                prompt in your own GitHub repo, and keeps only what wins.
+              </p>
+              <div className="actions">
+                <CopyButton
+                  text="npx synthe@latest init"
+                  ariaLabel="Copy the command npx synthe@latest init"
+                />
+                <a className="arrow-link" href="#start-tonight">
+                  How to start <HoverArrow />
+                </a>
+              </div>
+              <p className="event-callout">
+                <span className="dot" aria-hidden="true"></span>
+                <span className="record">
+                  Crimson Hacks, November 2026: three winning teams built with Synthe.
+                </span>
+              </p>
             </div>
-            <p className="event-callout">
-              <span className="dot" aria-hidden="true"></span>
-              <span className="record">
-                Crimson Hacks, November 2026: three winning teams built with Synthe.
-              </span>
-            </p>
+          </div>
+          <div className="hero-emblem">
+            <AsciiMark className="hero-emblem-mark" />
           </div>
         </HeroDrift>
 
@@ -211,6 +212,7 @@ export default function HomePage() {
                 <CopyButton
                   text="npx synthe@latest init"
                   ariaLabel="Copy the command npx synthe@latest init"
+                  dataPort="install"
                 />
               </RevealLi>
               <RevealLi className="step">
@@ -250,10 +252,9 @@ export default function HomePage() {
             <PartnerForm />
           </RevealDiv>
         </RevealSection>
-        </main>
-        <ReportBand variant="home" />
-        <SiteFoot />
-      </div>
+      </main>
+      <ReportBand variant="home" />
+      <SiteFoot />
       <HomeEffects />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON_LD }} />
     </>

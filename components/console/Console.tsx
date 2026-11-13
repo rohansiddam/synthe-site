@@ -313,7 +313,7 @@ export function Console() {
           </span>
         </div>
         <div className="console">
-          <CardShell index={0} className="cell-score" controls={controls} labelledBy="console-score-h">
+          <CardShell index={0} className="cell-score" controls={controls} labelledBy="console-score-h" dataPort="score">
             <ScoreCard draw={draw} beat={playing && phase === MERGE_PHASE} />
           </CardShell>
           <CardShell index={1} className="cell-run" controls={controls} labelledBy="console-run-h">

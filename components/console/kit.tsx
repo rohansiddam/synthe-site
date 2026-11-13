@@ -43,16 +43,21 @@ export function CardShell({
   className,
   controls,
   labelledBy,
+  dataPort,
   children,
 }: {
   index: number;
   className: string;
   controls: AnimationControls;
   labelledBy: string;
+  /** Tendril dock anchor (Lane home-design contract): the tendril field
+      measures [data-port] elements and routes to them. */
+  dataPort?: string;
   children: ReactNode;
 }) {
   return (
     <motion.div
+      data-port={dataPort}
       className={`console-cell ${className}`}
       custom={index}
       initial="rest"

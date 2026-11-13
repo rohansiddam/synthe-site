@@ -8,7 +8,8 @@ import { CardHead, RoundState } from "./kit";
    row carries a state pip on its rail (hollow while queued, breathing
    while the round is being tested, filled in the outcome's colour
    once it resolves), and a round's cost and note ease in as it
-   resolves rather than sitting there from the start. The failed
+   resolves (the note's space is reserved from the start so the
+   card never changes height; only its visibility waits). The failed
    round reads as failed (never smoothed into a skip), and its cost
    reads as not recorded, because the record says its cost is
    unknown. */
@@ -81,7 +82,14 @@ export function RunCard({
                   `$${r.costUsd.toFixed(2)}`
                 )}
               </span>
-              <span className="console-round-note">{isDone ? r.note : ""}</span>
+              {/* The note text renders from the start; CSS keeps it
+                  invisible until the round resolves (see
+                  .console-round-note in globals.css). Reserving its
+                  space is what holds the card, and the console frame,
+                  at the final state's height through the whole
+                  replay cycle (wave 3, B6): the note still rises in
+                  on the same beat via the .is-done animation. */}
+              <span className="console-round-note">{r.note}</span>
             </li>
           );
         })}

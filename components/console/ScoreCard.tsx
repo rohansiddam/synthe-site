@@ -81,6 +81,11 @@ export function ScoreCard({
   useMotionValueEvent(draw, "change", (latest) => setV(latest));
 
   const head = headAt(v);
+  /* The text readout steps between recorded points only (checklist
+     G2): the drawn head travels the line continuously, but the
+     "Round N · S%" label always names a recorded (round, score)
+     pair, never an interpolated score between two measurements. */
+  const shownPoint = POINTS[Math.min(POINTS.length - 1, Math.max(0, Math.round(v)))];
   const whole = Math.floor(Math.min(v, DRAW_UNITS));
   const shownPts = POINTS.slice(0, whole + 1);
   const linePts =
@@ -103,7 +108,7 @@ export function ScoreCard({
         eyebrow={`${dogfoodRun.label} · ${dogfoodRun.agent}`}
         right={
           <span className="console-readout" aria-live="off">
-            {`Round ${head.round} · ${fmtScore(head.score)}%`}
+            {`Round ${shownPoint.round} · ${fmtScore(shownPoint.scorePct)}%`}
           </span>
         }
       />
