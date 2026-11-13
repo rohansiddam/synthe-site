@@ -25,11 +25,14 @@ import { observeTheme, prefersReducedMotion, readToken } from "./glBase";
  *    60 to 200 second clock, a 6 second per-cell dissolve, never a
  *    cut). Panels run staggered periods and phases, so the band is
  *    never all changing at once and never all still.
- *  - Colours are the site's tokens, arranged the way this site
- *    arranges its inverted sections: the ground is --ink, the
- *    glyphs are --bg at graded alphas, and the accent stands in for
- *    the reference's green (brightest peak, top value grade, sparse
- *    sparks in the hex field).
+ *  - Colours: the band is a dark strip in BOTH themes (the
+ *    reference keeps its band dark in dark mode too, and the
+ *    founder's reference video is a dark strip). v4 read the
+ *    ground/glyph pair from the flipping --ink/--bg tokens, which
+ *    inverted the strip to a cream slab on the dark page; the pair
+ *    is now pinned to the site's charcoal/paper values, and only
+ *    the accent follows the theme (brightest peak, top value
+ *    grade, sparse sparks in the hex field).
  *
  * The page carries two instances: one under the hero, one near the
  * footer, at a different seed and phase, mirroring the reference's
@@ -349,12 +352,12 @@ export function SupabaseBand({ variant = 0 }: { variant?: number }) {
     let stopTheme: (() => void) | null = null;
     let resizeObs: ResizeObserver | null = null;
 
-    let groundColor = "#171410";
-    let glyphColor = "#faf8f1";
+    /* Pinned strip palette: near-black ground, luminous glyphs,
+       regardless of site theme. Only the accent is theme-read. */
+    const groundColor = "#171410";
+    const glyphColor = "#faf8f1";
     let accentColor = "#b5412f";
     const readColors = () => {
-      groundColor = readToken("--ink", groundColor);
-      glyphColor = readToken("--bg", glyphColor);
       accentColor = readToken("--accent", accentColor);
     };
 

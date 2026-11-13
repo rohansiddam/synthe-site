@@ -38,10 +38,26 @@ import { fullscreenMesh, makeRenderer, observeTheme, prefersReducedMotion, readP
  *  - prefers-reduced-motion renders exactly one static frame: frozen
  *    time, no strain, no tendrils (re-rendered only on resize / flip);
  *  - pixel ratio is capped at 1.75 and the grid cell at 11 CSS px.
+ *
+ * Mobile art direction (v5, <= 640 CSS px; desktop is untouched):
+ *  - the mark is fitted into the hero's measured empty zone (below
+ *    the lede, above the depth label) instead of viewport-centred,
+ *    so at rest it never sits on the copy;
+ *  - the whole stage fades out while a band section (band + its
+ *    caption) crosses the mark's extent, so the opaque band never
+ *    guillotines the mark mid-row and no glyphs ever sit behind
+ *    the caption; it fades back for the spacer's strain/reach act;
+ *  - the legend HUD reduces to one small line (grid + fps).
  */
+
+/* The mark inside its square texture: height fraction MARK_FRACTION,
+   centred, so the bare padding on each side is (1 - f) / 2. */
+const MARK_PAD = (1 - MARK_FRACTION) / 2;
+
 export function AsciiScene() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const legendRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -111,15 +127,47 @@ export function AsciiScene() {
 
       /* Logo rect: the mark stands about 78% of the viewport tall,
          centred. The texture is square (mark centred in it), so the
-         rect keeps the texture's aspect against the plane's aspect. */
-      const markH = 0.78;
+         rect keeps the texture's aspect against the plane's aspect.
+         On narrow viewports the centred 78% mark lands on top of
+         the hero copy (at 390 px the lede ends ~52% down the first
+         screen and the mark spans ~30-70%), so the mark is fitted
+         into the hero's empty zone instead: measured in page
+         coordinates (lede bottom + margin to depth-label top -
+         margin, clamped to the first screen), height-capped by the
+         zone and by width, centred in the zone. */
+      let markH = 0.78;
+      let centerFromTop: number | null = null; // fraction of vh, narrow only
+      const narrow = window.innerWidth <= 640;
+      if (narrow) {
+        const vhPx = window.innerHeight;
+        const sub = document.querySelector(".ascii-sub");
+        const lab = document.querySelector(".ascii-depth-hero");
+        let zoneTop = vhPx * 0.54;
+        let zoneBottom = vhPx * 0.97;
+        if (sub && lab) {
+          const sy = window.scrollY;
+          zoneTop = sub.getBoundingClientRect().bottom + sy + 22;
+          zoneBottom = Math.min(lab.getBoundingClientRect().top + sy - 22, vhPx - 8);
+        }
+        if (zoneBottom - zoneTop >= 150) {
+          markH = Math.min((zoneBottom - zoneTop) / vhPx, 0.44);
+          centerFromTop = (zoneTop + zoneBottom) / 2 / vhPx;
+        } else {
+          markH = 0.3;
+          centerFromTop = 0.66;
+        }
+      }
       let sizeY = markH / MARK_FRACTION;
       let sizeX = sizeY * (size.y / size.x);
-      if (sizeX > 0.94) {
-        sizeX = 0.94;
+      const maxSizeX = narrow ? 0.97 : 0.94;
+      if (sizeX > maxSizeX) {
+        sizeX = maxSizeX;
         sizeY = sizeX * (size.x / size.y);
       }
-      logoOffsetV = new THREE.Vector2((1 - sizeX) / 2, (1 - sizeY) / 2);
+      logoOffsetV = new THREE.Vector2(
+        (1 - sizeX) / 2,
+        centerFromTop === null ? (1 - sizeY) / 2 : 1 - centerFromTop - sizeY / 2
+      );
       logoSizeV = new THREE.Vector2(sizeX, sizeY);
       material.uniforms.u_logoOffset.value = logoOffsetV;
       material.uniforms.u_logoSize.value = logoSizeV;
@@ -136,10 +184,50 @@ export function AsciiScene() {
     const writeLegend = (cols: number, rows: number, fps: number) => {
       const el = legendRef.current;
       if (!el) return;
+      /* Phones get one small line (grid + fps); the full readout is
+         a desktop instrument and wrapped to a screen-eating panel
+         at 390 px. */
+      if (window.innerWidth <= 640) {
+        el.textContent = `grid ${cols} x ${rows} · ${fps} fps`;
+        return;
+      }
       el.textContent =
         `grid ${cols} x ${rows} · cell 11px · ramp '${RAMP.join("")}' · ` +
         `${fps} fps · scroll ${progress.toFixed(2)} · extend ${extend.toFixed(2)} · dock ${dockCount}/16` +
         ` · dissolve ${dissolve.toFixed(2)}`;
+    };
+
+    /* Stage fade (narrow viewports only; on desktop the stage is
+       never faded and the inline style is cleared). The band
+       sections are opaque and scroll over this fixed canvas: while
+       a band (its caption included, the caption is a child of the
+       same wrap) crosses the mark's extent, the stage eases out so
+       the band's edge never slices the mark mid-row and the
+       caption never has glyphs behind it; then it eases back for
+       the spacer act. The terrain crossing is NOT faded: that is
+       where the tendrils dock and the dissolve happens. */
+    let stageFade = 1;
+    const updateStageFade = () => {
+      const stage = stageRef.current;
+      if (!stage) return;
+      let target = 1;
+      if (window.innerWidth <= 640) {
+        const vh = window.innerHeight;
+        const mTop = (1 - (logoOffsetV.y + logoSizeV.y * (1 - MARK_PAD))) * vh;
+        const mBot = (1 - (logoOffsetV.y + logoSizeV.y * MARK_PAD)) * vh;
+        const wraps = document.querySelectorAll(".ascii-bandwrap");
+        for (const w of wraps) {
+          const r = w.getBoundingClientRect();
+          if (r.top < mBot + 30 && r.bottom > mTop - 30) {
+            target = 0;
+            break;
+          }
+        }
+      }
+      stageFade += (target - stageFade) * 0.16;
+      if (Math.abs(target - stageFade) < 0.01) stageFade = target;
+      const v = stageFade >= 0.999 ? "" : stageFade.toFixed(3);
+      if (stage.style.opacity !== v) stage.style.opacity = v;
     };
 
     /* One frame of morph geometry. Three phases, one set of numbers:
@@ -270,6 +358,7 @@ export function AsciiScene() {
     const loop = (now: number) => {
       raf = requestAnimationFrame(loop);
       if (document.hidden) return;
+      updateStageFade();
       /* The opaque sections below cover the fixed canvas; stop paying
          for it once the terrain has passed and the band has taken
          over the viewport. Until the terrain has published, fall
@@ -347,12 +436,27 @@ export function AsciiScene() {
       updateScrollTarget();
       progress = progressTarget;
       resize();
+      /* The narrow-viewport mark fit measures the hero copy; webfont
+         arrival can move it, so re-measure once fonts settle. */
+      document.fonts?.ready
+        .then(() => {
+          if (!disposed) resize();
+        })
+        .catch(() => {});
       stopTheme = observeTheme(applyPalette);
       window.addEventListener("resize", resize);
       window.addEventListener("scroll", updateScrollTarget, { passive: true });
 
       if (reduced) {
         renderOnce();
+        /* Reduced motion renders one static frame, but the stage
+           fade is a scroll-driven layout guard, not motion design:
+           keep it alive on its own loop. */
+        const fadeLoop = () => {
+          raf = requestAnimationFrame(fadeLoop);
+          if (!document.hidden) updateStageFade();
+        };
+        raf = requestAnimationFrame(fadeLoop);
       } else {
         lastFrame = performance.now();
         lastFpsStamp = lastFrame;
@@ -375,7 +479,7 @@ export function AsciiScene() {
 
   return (
     <>
-      <div className="ascii-stage" aria-hidden="true">
+      <div ref={stageRef} className="ascii-stage" aria-hidden="true">
         <canvas ref={canvasRef} className="ascii-canvas" />
       </div>
       <div ref={legendRef} className="ascii-legend" aria-hidden="true">

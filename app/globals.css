@@ -992,7 +992,9 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .ascii-terrain { position: relative; z-index: 1; line-height: 0; }
 .ascii-terrain-canvas { display: block; width: 100%; }
 .ascii-bandwrap { position: relative; z-index: 1; }
-.ascii-bandstrip { position: relative; line-height: 0; background: var(--ink); }
+/* The band is a dark strip in both themes (see SupabaseBand): the
+   ground is the pinned charcoal, never the flipping --ink token. */
+.ascii-bandstrip { position: relative; line-height: 0; background: #171410; }
 .ascii-bandstrip-canvas { display: block; width: 100%; }
 .ascii-bandstrip-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em;
   color: var(--muted); margin: 0; padding: 12px var(--gutter) 26px; }
@@ -1028,4 +1030,26 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 @media (max-width: 640px) {
   .ascii-band-line { grid-template-columns: 1fr; gap: 4px; }
   .ascii-hero { padding-top: 104px; }
+  /* The legend HUD shrinks to a single small line (grid + fps, set
+     in AsciiScene.writeLegend): never a panel, never wide enough
+     to meet the site's back-to-top button at the other corner. */
+  .ascii-legend { font-size: 10.5px; padding: 5px 8px; white-space: nowrap;
+    max-width: calc(100vw - 32px); overflow: hidden; }
+  /* Section labels that scroll across the fixed glyph field get
+     the legend's chip ground on phones, so their text never has
+     to fight glyphs passing behind it. (The band caption needs no
+     chip: the stage fades out whenever its section crosses the
+     mark, so no glyphs are ever behind it.) */
+  .ascii-depth {
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    border-radius: 5px; }
+  /* The word field's own labels sit over the brightest field on
+     the page (crest phrases at full strength pass behind them),
+     so their chip runs stronger: glyphs behind the text drop to
+     ~12% strength. */
+  .ascii-words-title, .ascii-words-label {
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    border-radius: 5px; }
+  .ascii-depth { padding: 3px 7px; width: fit-content; max-width: calc(100vw - 48px); }
+  .ascii-words-title, .ascii-words-label { padding: 4px 8px; }
 }
