@@ -39,8 +39,24 @@ const climbV: Variants = {
   hidden: { pathLength: 0 },
   play: {
     pathLength: 1,
-    transition: { delay: 3.95, duration: 0.9, ease: [0.65, 0, 0.35, 1] },
+    /* One smooth sine-in-out (cubic-bezier(0.37, 0, 0.63, 1), the
+       bezier form of GSAP's sine.inOut): the same curve as the
+       console's and the report band's climbs. */
+    transition: { delay: 3.95, duration: 0.9, ease: [0.37, 0, 0.63, 1] },
   },
+};
+/* The markers land in sequence with the draw: the start point as
+   the line leaves it, the end point as the line reaches it (draw
+   runs 3.95 to 4.85), never before the line does. */
+const climbDotStartV: Variants = {
+  rest: { opacity: 1 },
+  hidden: { opacity: 0 },
+  play: { opacity: 1, transition: { delay: 3.95, duration: 0.2 } },
+};
+const climbDotEndV: Variants = {
+  rest: { opacity: 1 },
+  hidden: { opacity: 0 },
+  play: { opacity: 1, transition: { delay: 4.75, duration: 0.3 } },
 };
 
 export function WorkedExample() {
@@ -103,11 +119,15 @@ export function WorkedExample() {
               <svg className="wx-climb-svg" viewBox="0 0 260 84" aria-hidden="true">
                 <path className="wx-climb-ghost" d="M10 66 L250 18" />
                 <motion.path className="wx-climb-line" d="M10 66 L250 18" variants={climbV} />
-                <circle className="wx-dot" cx="10" cy="66" r="4" />
+                <motion.g variants={climbDotStartV}>
+                  <circle className="wx-dot" cx="10" cy="66" r="4" />
+                </motion.g>
                 <text className="wx-axis" x="10" y="82">
                   {demoRun.checksBefore}%
                 </text>
-                <circle className="wx-dot" cx="250" cy="18" r="4" />
+                <motion.g variants={climbDotEndV}>
+                  <circle className="wx-dot" cx="250" cy="18" r="4" />
+                </motion.g>
                 <text className="wx-axis" x="250" y="82" textAnchor="end">
                   {demoRun.checksAfter}%
                 </text>

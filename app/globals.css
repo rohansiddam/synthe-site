@@ -1350,6 +1350,12 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
    lane owns the real layer's stacking when it replaces the stub). */
 .tendril-field { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
 
+/* The wireframe emblem's static underlay: the vector mark fills the
+   same box the canvas paints over, so SSR / no-JS / pre-init show
+   the mark itself at full size. */
+.wireframe-mark { line-height: 0; }
+.wireframe-mark .wireframe-underlay { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
 /* The emblem component's box, shared by both pages' placements. */
 .ascii-mark { display: block; line-height: 0; }
 .ascii-mark .mark { display: block; width: 100%; height: auto; }
