@@ -448,7 +448,7 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
    it (position + DOM order). Token inversion applies only under
    [data-morph="on"], which MorphSeam sets after its first draw. */
 .morph-seam { position: relative; margin-top: clamp(56px, 10vw, 92px); padding: 110px 0; }
-.morph-canvas { position: absolute; inset: 0; pointer-events: none; }
+.morph-canvas { position: absolute; inset: -16px 0; pointer-events: none; }
 .morph-seam .report-band { margin-top: 0; position: relative; }
 .morph-seam[data-morph="on"] .report-band { border-top: none; }
 .morph-seam + .site-foot { margin-top: 28px; }
