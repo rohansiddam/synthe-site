@@ -1201,3 +1201,41 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 @media (prefers-reduced-motion: reduce) {
   .pg-home .wx-check, .pg-home .scene-check, .pg-home .scene-check-icon { transition: none; }
 }
+
+/* ---------- Lane T2: The Thread on the homepage (app/page.tsx only) ----------
+   A record line in the gutter behind the homepage's content, drawn by
+   scroll, with an autonomous walker that takes each branch. The wrap
+   spans main + report band + footer, so the footer's metrics rule is
+   re-declared for the wrap (it can no longer match .page > .site-foot),
+   the to-top rule's footer padding travels with it (.page:has(> .to-top)
+   > .site-foot also stops matching; the layout always renders that
+   button, so the 64px bottom padding was always in effect), and the
+   band and footer get an explicit stacking place above the layer. Presence: the drawn trunk is one step stronger than the
+   exploration's --line2, an ink mix that holds in both themes; the
+   ghost (undrawn) line keeps the quieter --line. */
+.thread-home-wrap { position: relative;
+  --thread-line: color-mix(in srgb, var(--ink) 30%, transparent);
+  --thread-branch: color-mix(in srgb, var(--ink) 22%, transparent); }
+.thread-home-wrap > .site-foot { max-width: var(--page-width); margin-left: auto; margin-right: auto;
+  padding-left: var(--gutter); padding-right: var(--gutter); padding-bottom: 64px;
+  position: relative; z-index: 1; }
+.thread-home-wrap > .report-band { position: relative; z-index: 1; }
+.thread-home-layer { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.thread-home-layer .thread-layer { position: absolute; inset: 0; overflow: visible;
+  animation: thread-home-fadein .5s var(--ease-ui) both; }
+@keyframes thread-home-fadein { from { opacity: 0; } to { opacity: 1; } }
+.thread-home-layer .thread-ghost { fill: none; stroke: var(--line); stroke-width: 1.5; opacity: .5; }
+.thread-home-layer .thread-trunk { fill: none; stroke: var(--thread-line); stroke-width: 2;
+  stroke-linecap: round; }
+.thread-home-layer .thread-branch { fill: none; stroke: var(--thread-branch); stroke-width: 1.75;
+  stroke-linecap: round; }
+.thread-home-layer .thread-node { fill: var(--thread-branch); }
+.thread-home-layer .thread-tip { transition: fill .3s var(--ease-ui); }
+.thread-home-layer .thread-walker-seg { fill: none; stroke: var(--accent); stroke-width: 2.5;
+  stroke-linecap: round; stroke-linejoin: round; }
+.thread-home-layer .thread-walker-dot { fill: var(--accent); }
+.thread-home-layer .thread-walker-halo { fill: var(--accent); }
+@media (prefers-reduced-motion: reduce) {
+  .thread-home-layer .thread-layer { animation: none; }
+  .thread-home-layer .thread-tip { transition: none; }
+}
