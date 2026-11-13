@@ -17,6 +17,7 @@ import { ReportBand, SiteFoot } from "./components/SiteFoot";
 import { WorkedExample } from "./components/WorkedExample";
 import { ChecksScene, MergeScene, ReportScene } from "./components/Scenes";
 import { GoArrow, HoverArrow, Mark } from "./components/Mark";
+import { ThreadLayer } from "./components/ThreadLayer";
 
 export const metadata: Metadata = {
   title: "Synthe: your AI agent gets better on its own",
@@ -89,7 +90,9 @@ const JSON_LD = `{
 export default function HomePage() {
   return (
     <>
-      <main id="main" className="pg-home" tabIndex={-1}>
+      <div className="thread-home-wrap">
+        <ThreadLayer />
+        <main id="main" className="pg-home" tabIndex={-1}>
         <HeroField />
         <HeroDrift>
           <h1>Your AI agent gets better on its own.</h1>
@@ -247,9 +250,10 @@ export default function HomePage() {
             <PartnerForm />
           </RevealDiv>
         </RevealSection>
-      </main>
-      <ReportBand variant="home" />
-      <SiteFoot />
+        </main>
+        <ReportBand variant="home" />
+        <SiteFoot />
+      </div>
       <HomeEffects />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON_LD }} />
     </>
