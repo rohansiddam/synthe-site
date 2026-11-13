@@ -7,7 +7,7 @@ import { ClimbLine } from "./Scenes";
 export function SiteFoot() {
   return (
     <footer className="site-foot">
-      <p className="footer-brand">
+      <p className="footer-brand" data-port="footer">
         <svg className="footer-logo" viewBox="0 0 275 290" aria-hidden="true">
           <path className="a" d={HALF_A} />
           <path className="b" d={HALF_B} />
@@ -43,7 +43,7 @@ export function SiteFoot() {
    the arrow link; Docs uses its plain text link, as on the static pages. */
 export function ReportBand({ variant }: { variant: "home" | "docs" }) {
   return (
-    <RevealSection solo className="report-band" aria-labelledby="morning-report-h">
+    <RevealSection solo className="report-band" data-port="report" aria-labelledby="morning-report-h">
       <h2 className="report-band-label" id="morning-report-h">
         The morning report
       </h2>
