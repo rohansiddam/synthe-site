@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import type { CSSProperties } from "react";
 import { HeroField } from "./components/HeroField";
+import { Console } from "@/components/console/Console";
 import { HomeEffects } from "./components/HomeEffects";
 import { CopyButton } from "./components/CopyButton";
 import { SegControl } from "./components/SegControl";
@@ -76,8 +76,6 @@ const JSON_LD = `{
   ]
 }`;
 
-const bar = (v: string) => ({ "--v": v }) as CSSProperties;
-
 export default function HomePage() {
   return (
     <>
@@ -109,157 +107,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="stage wrap" aria-labelledby="night-h">
-          <figure className="product-figure report-artifact" id="night">
-            <figcaption className="figure-caption" id="night-h">
-              <span className="example-label">Example prompt and report</span>
-              <span>A clothing store support agent</span>
-            </figcaption>
-            <div className="scene artifact-layout">
-              <div className="prompt-sheet artifact-file">
-                <div className="file-chrome">
-                  <span className="file-tab">prompt.md</span>
-                  <span className="file-note">excerpt</span>
-                </div>
-                <div className="prompt-lines">
-                  <p>You are the support assistant for a clothing store.</p>
-                  <p className="changed">
-                    <span className="prompt-before" aria-hidden="true">
-                      If someone asks for a refund, tell them it's approved.
-                    </span>
-                    <span className="prompt-after">
-                      Explain what the refund policy allows. Offer an exchange first.
-                    </span>
-                  </p>
-                  <p>Keep replies short and friendly.</p>
-                  <p className="changed">
-                    <span className="prompt-before" aria-hidden="true">
-                      If you're not sure about a return, say yes.
-                    </span>
-                    <span className="prompt-after">
-                      If you're not sure about a return, don't guess.
-                    </span>
-                  </p>
-                  <p>Hand off to a person for anything the policy doesn't cover.</p>
-                </div>
-                <div className="file-chrome">
-                  <span className="file-tab">synthe.json</span>
-                  <span className="file-note">the checks</span>
-                </div>
-                <ol className="checks-list">
-                  <li>
-                    When the customer asks for a refund or a return, the reply explains the return
-                    policy that applies and never says the refund is already approved.
-                  </li>
-                  <li>
-                    When the customer wants to send an item back and an exchange or store credit
-                    would fit, the reply offers it, with its benefit (free return shipping, or the
-                    10% store credit bonus).
-                  </li>
-                  <li>
-                    The reply never states a delivery date, tracking number or order status for the
-                    customer's order; it gives the policy's shipping times or points them to their
-                    tracking.
-                  </li>
-                  <li>
-                    When the case needs a person (a damaged item, a missing package, or an order
-                    change), the reply sends the customer to the right place: help@loomandlark.com
-                    or loomandlark.com/claim.
-                  </li>
-                </ol>
-              </div>
-              <div className="report artifact-report">
-                <p className="record-label">Prompt report</p>
-                <h3>Your prompt: 72% to 89%</h3>
-                <p className="movement-label">
-                  Checks passed, before and after the merge. Held-out cases are the test cases
-                  Synthe never trains on.
-                </p>
-                <div className="ba-bars">
-                  <div className="ba-group">
-                    <p className="ba-title">Checks passed</p>
-                    <p className="ba-row">
-                      <span className="ba-when">Before</span>
-                      <span className="ba-track">
-                        <span className="ba-fill" style={bar("72%")}></span>
-                      </span>
-                      <span className="ba-val">72%</span>
-                    </p>
-                    <p className="ba-row">
-                      <span className="ba-when">After</span>
-                      <span className="ba-track">
-                        <span className="ba-fill after" style={bar("89%")}></span>
-                      </span>
-                      <span className="ba-val">89%</span>
-                    </p>
-                  </div>
-                  <div className="ba-group">
-                    <p className="ba-title">Held-out score</p>
-                    <p className="ba-row">
-                      <span className="ba-when">Before</span>
-                      <span className="ba-track">
-                        <span className="ba-fill" style={bar("50%")}></span>
-                      </span>
-                      <span className="ba-val">50%</span>
-                    </p>
-                    <p className="ba-row">
-                      <span className="ba-when">After</span>
-                      <span className="ba-track">
-                        <span className="ba-fill after" style={bar("80%")}></span>
-                      </span>
-                      <span className="ba-val">80%</span>
-                    </p>
-                  </div>
-                </div>
-                <ul className="report-results">
-                  <li>
-                    <span className="result-word">Kept</span>
-                    <span>Stop approving refunds and inventing dates</span>
-                  </li>
-                  <li>
-                    <span className="result-word">Kept</span>
-                    <span>Offer an exchange or store credit when a return fits</span>
-                  </li>
-                  <li>
-                    <span className="result-word">Kept</span>
-                    <span>Don't guess about returns. Explain the policy that applies</span>
-                  </li>
-                  <li>
-                    <span className="result-word unchanged">Not kept</span>
-                    <span>Two later rounds found nothing clearly better, so nothing else changed</span>
-                  </li>
-                </ul>
-                <ul className="evidence-lines">
-                  <li>
-                    <span>Head-to-head replies</span>
-                    <span className="ev">better in 22, worse in 3</span>
-                  </li>
-                  <li>
-                    <span>Hidden cases</span>
-                    <span className="ev">better in 10, worse in 1</span>
-                  </li>
-                  <li>
-                    <span>Rule breaks</span>
-                    <span className="ev">2 to 0</span>
-                  </li>
-                </ul>
-                <p className="artifact-meta">
-                  November 3, 2026. 4 rounds: 1 merged, 2 no winner, 1 failed. Spend $0.32 of a $3
-                  budget.
-                  <br />
-                  Writer claude-sonnet-5-5. Agent and judge claude-haiku-5-5. Rule checker
-                  claude-sonnet-5-5.
-                </p>
-                <a
-                  className="arrow-link artifact-link"
-                  href="https://github.com/synthelabs/support-bot/pull/8"
-                >
-                  See the merged change in PR #8 <HoverArrow />
-                </a>
-              </div>
-            </div>
-          </figure>
-        </section>
+                <Console />
 
         <section className="how wrap" aria-labelledby="how-h">
           <h2 className="section-h" id="how-h">
