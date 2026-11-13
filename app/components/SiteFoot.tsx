@@ -1,6 +1,6 @@
 import { HALF_A, HALF_B, HoverArrow } from "./Mark";
 import { RevealSection } from "./Reveal";
-import { RevealValue } from "./RevealValue";
+import { FlapText } from "./FlapText";
 import { ClimbLine } from "./Scenes";
 
 /* The shared footer: identical on every page. */
@@ -30,9 +30,6 @@ export function SiteFoot() {
         <a href="https://github.com/synthelabs/synthe/blob/main/LICENSE">license</a>). It tests
         prompt changes on simulated messages, so read what it changes before you rely on it.
       </p>
-      <p className="colophon">
-        From the Greek <em>synthēkē</em>, meaning agreement.
-      </p>
     </footer>
   );
 }
@@ -55,23 +52,22 @@ export function ReportBand({ variant }: { variant: "home" | "docs" }) {
           <p>
             <span className="rb-key">Checks passed</span>
             <span className="rb-val">
-              <RevealValue value={89} suffix="%" /> of the time, up from{" "}
-              <RevealValue value={72} suffix="%" />. Held-out score <RevealValue value={50} suffix="%" />{" "}
-              to <RevealValue value={80} suffix="%" />.
+              <FlapText text="89% of the time, up from 72%. Held-out score 50% to 80%." />
           </span>
         </p>
         <p>
           <span className="rb-key">Merged</span>
           <span className="rb-val">
-            Stop approving refunds and inventing dates (PR #8). 4 rounds: 1 merged, 2 no winner, 1
-            failed.
+            <FlapText
+              text="Stop approving refunds and inventing dates (PR #8). 4 rounds: 1 merged, 2 no winner, 1 failed."
+              delay={0.18}
+            />
           </span>
         </p>
         <p>
           <span className="rb-key">Spend</span>
           <span className="rb-val">
-            <RevealValue value={0.32} decimals={2} prefix="$" /> of a <RevealValue value={3} prefix="$" />{" "}
-            budget.
+            <FlapText text="$0.32 of a $3 budget." delay={0.36} />
           </span>
           </p>
         </div>

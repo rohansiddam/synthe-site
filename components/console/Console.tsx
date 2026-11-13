@@ -7,6 +7,8 @@ import {
   useMotionValue,
   useReducedMotion,
 } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { demoRun } from "@/lib/runData";
 import {
   CHECK_FLIP_AT,
@@ -119,6 +121,48 @@ export function Console() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (window.matchMedia("(max-width: 640px)").matches) setExpanded(false);
   }, []);
+
+  /* Container-scroll tilt (Part 3, clean-room on ScrollTrigger):
+     the whole console surface enters with a subtle perspective
+     recline and scrubs to flat through its entry zone only, then
+     stays flat for the whole reading zone. Transforms only, so
+     document height and the console's internals never move (B6).
+     The Lenis chassis already pumps ScrollTrigger from the GSAP
+     ticker (SmoothScroll), so the scrub rides the site's own
+     scroll. Reduced motion and the motion-paused opt-out leave it
+     flat; at phone widths the recline is halved, not removed: the
+     captures show it still reading as depth, not distortion. */
+  useEffect(() => {
+    const shell = shellRef.current;
+    if (!shell) return;
+    if (reduceMotion) return;
+    if (document.documentElement.classList.contains("motion-paused")) return;
+    gsap.registerPlugin(ScrollTrigger);
+    const parent = shell.parentElement;
+    if (parent) gsap.set(parent, { perspective: 1400 });
+    const angle = window.matchMedia("(max-width: 640px)").matches ? 5 : 10;
+    const tween = gsap.fromTo(
+      shell,
+      { rotationX: angle, scale: 0.97, transformOrigin: "50% 0%" },
+      {
+        rotationX: 0,
+        scale: 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: shell,
+          start: "top 98%",
+          end: "top 45%",
+          scrub: 0.5,
+        },
+      },
+    );
+    return () => {
+      tween.scrollTrigger?.kill();
+      tween.kill();
+      gsap.set(shell, { clearProps: "transform" });
+      if (parent) gsap.set(parent, { clearProps: "perspective" });
+    };
+  }, [reduceMotion]);
 
   useEffect(() => {
     const el = shellRef.current;
@@ -308,9 +352,6 @@ export function Console() {
           <h2 className="example-label" id="console-h">
             Two recorded runs, replayed
           </h2>
-          <span className="console-caption-note">
-            Every number below is from a real run. Nothing is simulated.
-          </span>
         </div>
         <div className="console">
           <CardShell index={0} className="cell-score" controls={controls} labelledBy="console-score-h" dataPort="score">

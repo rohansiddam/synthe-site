@@ -63,7 +63,6 @@ export function WorkedExample() {
         <div className="wx-file">
           <div className="wx-file-chrome">
             <span className="wx-file-name">prompt.md</span>
-            <span className="wx-file-note">the change Synthe proposed</span>
             <span className="wx-pill">
               <StatePill merged={passing} />
             </span>

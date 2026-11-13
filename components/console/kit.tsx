@@ -1,7 +1,10 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useEffect, useRef } from "react";
 import { motion, type useAnimationControls } from "framer-motion";
+import gsap from "gsap";
+import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 
 type AnimationControls = ReturnType<typeof useAnimationControls>;
 import { Card } from "@astryxdesign/core/Card";
@@ -91,13 +94,64 @@ export function CardShell({
    voice. The PR card's open/merged pill is NOT this component:
    GitHub's state pill is a convention of its own (Jakob's law), so
    PullRequestCard renders that pill itself in the site's tokens. */
+let scrambleReady = false;
+
+/* A round's status word decodes through a glyph charset when it
+   changes (Part 3, the console's one scrambled surface). Official
+   GSAP ScrambleTextPlugin, glyphs only: the charset carries no
+   digits and no letters, so a word in flight can never read as a
+   wrong word or a wrong number, and numeric readouts elsewhere
+   keep their stepped reveal untouched. ~0.7s, locking left to
+   right, once per change: RoundState remounts the word on a state
+   change (key), which is the trigger. A word that mounts off-screen
+   (the server-rendered final state below the fold) stays settled,
+   and reduced motion or the motion-paused gate leaves the final
+   word in place instantly. Adapted from the Annnimate Starter
+   Pack's dual-scramble (licensed for use in any project; see the
+   Part 3 report): the trigger and settle discipline, not its
+   colour treatment. */
+export function ScrambleWord({ text }: { text: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (document.documentElement.classList.contains("motion-paused")) return;
+    const rect = el.getBoundingClientRect();
+    if (rect.top > window.innerHeight * 1.25 || rect.bottom < -100) return;
+    if (!scrambleReady) {
+      gsap.registerPlugin(ScrambleTextPlugin);
+      scrambleReady = true;
+    }
+    const tween = gsap.to(el, {
+      duration: 0.7,
+      ease: "none",
+      scrambleText: {
+        text,
+        chars: "/\\|#*+=%@~^_-",
+        speed: 1,
+        revealDelay: 0.12,
+      },
+    });
+    return () => {
+      tween.kill();
+      el.textContent = text;
+    };
+  }, [text]);
+  return <span ref={ref}>{text}</span>;
+}
+
 export function RoundState({
   kind,
 }: {
   kind: "merged" | "no-winner" | "failed" | "testing" | "queued";
 }) {
   if (kind === "queued") {
-    return <span className="console-round-state is-queued">Queued</span>;
+    return (
+      <span className="console-round-state is-queued">
+        <ScrambleWord text="Queued" />
+      </span>
+    );
   }
   const markState =
     kind === "merged"
@@ -118,10 +172,10 @@ export function RoundState({
   return (
     <span className={`console-round-state is-${kind}`}>
       <Mark className="console-round-mark" state={markState} />
-      {/* The word remounts on a state change (key) so it can ease in
-          while the mark's halves travel on their CSS transition. */}
+      {/* The word remounts on a state change (key) so it can decode
+          in while the mark's halves travel on their CSS transition. */}
       <span key={kind} className="console-round-word">
-        {word}
+        <ScrambleWord text={word} />
       </span>
     </span>
   );
