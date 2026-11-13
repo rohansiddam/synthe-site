@@ -6,7 +6,6 @@ import {
   RevealDiv,
   RevealH2,
   RevealLi,
-  RevealP,
   RevealSection,
 } from "./components/Reveal";
 import { Console } from "@/components/console/Console";
@@ -15,7 +14,9 @@ import { CopyButton } from "./components/CopyButton";
 import { SegControl } from "./components/SegControl";
 import { PartnerForm } from "./components/PartnerForm";
 import { ReportBand, SiteFoot } from "./components/SiteFoot";
-import { GoArrow, HoverArrow, Tick } from "./components/Mark";
+import { WorkedExample } from "./components/WorkedExample";
+import { ChecksScene, MergeScene, ReportScene } from "./components/Scenes";
+import { GoArrow, HoverArrow, Mark } from "./components/Mark";
 
 export const metadata: Metadata = {
   title: "Synthe: your AI agent gets better on its own",
@@ -121,39 +122,23 @@ export default function HomePage() {
           <RevealH2 className="section-h" id="how-h">
             How it works
           </RevealH2>
-          <RevealDiv className="proof">
-            <p>
-              It already works in public.{" "}
-              <span className="muted">
-                A demo store bot's prompt, improved and merged as a pull request.
-              </span>
-            </p>
+          <RevealDiv className="proof-line">
+            <p className="proof-label">One real run, in public · Loom &amp; Lark support bot</p>
             <a className="arrow-link" href="https://github.com/synthelabs/support-bot">
               See the run on GitHub <HoverArrow />
             </a>
           </RevealDiv>
 
+          <WorkedExample />
+
           <div className="cards">
             <RevealArticle className="card">
               <div className="card-head">
+                <p className="scene-eyebrow">The checks</p>
                 <h3>Your checks decide.</h3>
-                <p className="card-sub">In plain sentences, say what a good reply does.</p>
               </div>
               <div className="viz">
-                <ul className="checks">
-                  <li>
-                    <Tick />
-                    <span>Names the return window when asked</span>
-                  </li>
-                  <li>
-                    <Tick />
-                    <span>Never promises a refund the policy doesn't allow</span>
-                  </li>
-                  <li>
-                    <Tick />
-                    <span>Hands off to a person when unsure</span>
-                  </li>
-                </ul>
+                <ChecksScene />
               </div>
               <a
                 className="go"
@@ -165,36 +150,11 @@ export default function HomePage() {
             </RevealArticle>
             <RevealArticle className="card">
               <div className="card-head">
+                <p className="scene-eyebrow">The merge</p>
                 <h3>Only the prompt changes.</h3>
-                <p className="card-sub">Tests are simulated, so check the results yourself.</p>
               </div>
               <div className="viz">
-                <ul className="tree">
-                  <li>
-                    <span>src/</span>
-                    <span className="lock">untouched</span>
-                  </li>
-                  <li>
-                    <span>tools/</span>
-                    <span className="lock">untouched</span>
-                  </li>
-                  <li className="on">
-                    <span>prompt.md</span>
-                    <span className="lock">improved</span>
-                  </li>
-                </ul>
-              </div>
-              <a className="go" href="/status.html" aria-label="Limits and your data">
-                <GoArrow />
-              </a>
-            </RevealArticle>
-            <RevealArticle className="card">
-              <div className="card-head">
-                <h3>You choose how wins land.</h3>
-                <p className="card-sub">If your main branch deploys your app, choose review.</p>
-              </div>
-              <div className="viz">
-                <SegControl />
+                <MergeScene />
               </div>
               <a
                 className="go"
@@ -204,37 +164,65 @@ export default function HomePage() {
                 <GoArrow />
               </a>
             </RevealArticle>
+            <RevealArticle className="card">
+              <div className="card-head">
+                <p className="scene-eyebrow">The report</p>
+                <h3>You get the report.</h3>
+              </div>
+              <div className="viz">
+                <ReportScene />
+              </div>
+              <a
+                className="go"
+                href="https://github.com/synthelabs/support-bot/issues/3"
+                aria-label="Read the full report"
+              >
+                <GoArrow />
+              </a>
+            </RevealArticle>
           </div>
         </RevealSection>
 
         <RevealSection className="steps wrap" id="start-tonight" aria-labelledby="steps-h">
           <RevealH2 id="steps-h">Start it with one command.</RevealH2>
-          <ol className="step-cards">
-            <RevealLi className="step">
-              <span className="num" aria-hidden="true">
-                1
-              </span>
-              <div className="step-head">
-                <h3>Run one command.</h3>
-                <p className="step-sub">In your repo, on your main branch.</p>
-              </div>
-              <CopyButton
-                text="npx synthe@latest init"
-                ariaLabel="Copy the command npx synthe@latest init"
-              />
-            </RevealLi>
-            <RevealLi className="step">
-              <span className="num" aria-hidden="true">
-                2
-              </span>
-              <div className="step-head">
-                <h3>Confirm your checks.</h3>
-                <p className="step-sub">
-                  Choose merge or review, then open the report issue when the run ends.
-                </p>
-              </div>
-            </RevealLi>
-          </ol>
+          <div className="steps-strip">
+            <svg
+              className="steps-climb"
+              viewBox="0 0 1000 56"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path d="M4 48 L580 40 L996 6" />
+            </svg>
+            <span className="steps-dot is-1" aria-hidden="true" />
+            <span className="steps-dot is-2" aria-hidden="true" />
+            <Mark className="steps-mark" />
+            <ol className="step-cards">
+              <RevealLi className="step">
+                <span className="num" aria-hidden="true">
+                  1
+                </span>
+                <div className="step-head">
+                  <h3>Run one command.</h3>
+                </div>
+                <CopyButton
+                  text="npx synthe@latest init"
+                  ariaLabel="Copy the command npx synthe@latest init"
+                />
+              </RevealLi>
+              <RevealLi className="step">
+                <span className="num" aria-hidden="true">
+                  2
+                </span>
+                <div className="step-head">
+                  <h3>Confirm your checks.</h3>
+                </div>
+                <div className="seg-anchor">
+                  <SegControl />
+                </div>
+              </RevealLi>
+            </ol>
+          </div>
           <RevealDiv className="agent-line">
             <p>
               <strong>Using Claude Code, Cursor or Codex?</strong>{" "}
@@ -249,9 +237,12 @@ export default function HomePage() {
         </RevealSection>
 
         <RevealSection className="contact wrap" id="partner" aria-labelledby="partner-h">
-          <RevealH2 id="partner-h">
-            Using AI agents in production? <span>Talk to us.</span>
-          </RevealH2>
+          <div>
+            <Mark className="contact-mark" view="open" />
+            <RevealH2 id="partner-h">
+              Using AI agents in production? <span>Talk to us.</span>
+            </RevealH2>
+          </div>
           <RevealDiv>
             <PartnerForm />
           </RevealDiv>

@@ -963,3 +963,149 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
     animation: n5-breathe 3.8s cubic-bezier(.45, 0, .55, 1) infinite alternate; }
   html:not(.motion-paused) .pg-home .console-head-halo { animation: n5-halo 2.9s cubic-bezier(.22, 1, .36, 1) infinite; }
 }
+
+/* ------------------------------------------------------------------
+   Lane V1: the visual-first homepage (2026-11-12). Below the hero,
+   the page shows instead of telling: the worked example plays the
+   demo run's one change at full width, the how-it-works cards are
+   live mini-scenes of the run's real artifacts, the steps compress
+   to labels around the command, and the report band gains the
+   climb. Everything here is additive: new classes, plus overrides
+   scoped to the new wrappers (.steps-strip, .report-band-main).
+   Motion is transform/opacity, eased on the site's curves; scenes
+   render their final recorded state without JS or with reduced
+   motion, exactly like the console above them. */
+
+/* The proof line: one mono record line and the link, no statement. */
+.pg-home .proof-line { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; margin-top: var(--space-4); }
+.pg-home .proof-label { margin: 0; font: 500 12px/1.5 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.pg-home .proof-line .arrow-link { min-height: 40px; }
+
+/* ---------- The worked example ---------- */
+.pg-home .wx { margin: var(--space-6) 0 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 24px; }
+.pg-home .wx-cap { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; margin-bottom: 20px; }
+.pg-home .wx-label { font: 500 12px/1.5 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--ink); }
+.pg-home .wx-cap-note { color: var(--muted); font-size: 14px; }
+.pg-home .wx-cap .arrow-link { margin-left: auto; min-height: 36px; }
+.pg-home .wx-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 28px; align-items: start; }
+.pg-home .wx-file { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; min-width: 0; }
+.pg-home .wx-file-chrome { display: flex; align-items: center; gap: 12px; min-height: 44px; box-sizing: border-box; padding: 4px 8px 4px 16px; background: var(--bg2); border-bottom: 1px solid var(--line); font: 13px var(--mono); }
+.pg-home .wx-file-name { color: var(--ink); font-weight: 500; }
+.pg-home .wx-file-note { color: var(--muted); }
+.pg-home .wx-pill { margin-left: auto; display: inline-flex; }
+.pg-home .wx-diff { font: 13px/1.65 var(--mono); padding: 8px 0; }
+.pg-home .wx-diff-line { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; padding: 6px 14px 6px 8px; }
+.pg-home .wx-diff-line.is-add { background: var(--green-soft); }
+.pg-home .wx-diff-line.is-del { background: var(--red-soft); color: var(--ink-soft); }
+.pg-home .wx-diff-line.is-context { color: var(--muted); }
+.pg-home .wx-diff-sign { text-align: center; color: var(--muted); }
+.pg-home .wx-diff-line.is-add .wx-diff-sign { color: var(--ok); }
+.pg-home .wx-diff-line.is-del .wx-diff-sign { color: var(--red); }
+.pg-home .wx-side { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.pg-home .wx-side-label { margin: 0; font: 500 12px/1.5 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.pg-home .wx-checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font: 12.5px/1.55 var(--mono); }
+.pg-home .wx-verdict { border-top: 1px solid var(--line); padding-top: 16px; display: grid; gap: 10px; }
+.pg-home .wx-climb { position: relative; }
+.pg-home .wx-climb-svg { display: block; width: 100%; height: auto; }
+.pg-home .wx-climb-ghost { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; opacity: .16; }
+.pg-home .wx-climb-line { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.pg-home .wx-dot { fill: var(--card); stroke: var(--accent); stroke-width: 2; }
+.pg-home .wx-axis { font: 11px var(--mono); fill: var(--muted); }
+.pg-home .wx-merge-mark { position: absolute; right: -2px; top: -20px; width: 30px; height: 32px; }
+.pg-home .wx-verdict-line { margin: 0; display: flex; gap: 16px; align-items: baseline; font-size: 14px; line-height: 1.55; color: var(--ink-soft); }
+.pg-home .wx-kept { flex: none; font: 12px/1.75 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--success); }
+.pg-home .wx-verdict-meta { margin: 0; font: 12px/1.75 var(--mono); color: var(--muted); }
+
+/* Check rows, shared by the worked example and the checks scene:
+   the console's treatment (same meaning, same treatment, law 8). */
+.pg-home .wx-check, .pg-home .scene-check { display: flex; gap: 10px; align-items: flex-start; transition: color .35s var(--ease-ui); }
+.pg-home .wx-check.is-fail, .pg-home .scene-check.is-fail { color: var(--muted); }
+.pg-home .wx-check.is-pass, .pg-home .scene-check.is-pass { color: var(--ink); }
+.pg-home .scene-check-icon { flex: none; width: 16px; height: 16px; margin-top: 1px; stroke: currentColor; transition: color .35s var(--ease-ui); transition-delay: inherit; }
+.pg-home .scene-check-icon.is-pass { color: var(--ok); }
+.pg-home .scene-check-icon.is-fail { color: var(--red); }
+
+/* ---------- Card scenes ---------- */
+.pg-home .scene-eyebrow { margin: 0 0 6px; font: 500 12px/1.5 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.pg-home .card .viz { display: flex; }
+.pg-home .scene { display: flex; flex-direction: column; gap: 14px; flex: 1 1 auto; min-width: 0; width: 100%; }
+.pg-home .scene-file-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0; }
+.pg-home .scene-file-name { font: 500 12.5px var(--mono); color: var(--ink); }
+.pg-home .scene-readout { font: 12px var(--mono); color: var(--muted); white-space: nowrap; }
+.pg-home .scene-checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font: 12px/1.55 var(--mono); }
+.pg-home .scene-meta { margin: auto 0 0; padding-top: 12px; border-top: 1px solid var(--line); font: 12px/1.75 var(--mono); color: var(--muted); }
+.pg-home .scene-pr-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.pg-home .scene-pr-title { margin: 0; font-size: 15px; line-height: 1.35; font-weight: 600; }
+.pg-home .scene-pr-num { color: var(--muted); font-weight: 400; }
+.pg-home .scene-pr-state { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--ok); font: 500 12px var(--sans); white-space: nowrap; }
+.pg-home .scene-pr-state.is-open { color: var(--ok); background: transparent; }
+.pg-home .scene-pr-state.is-merged { color: var(--on-status); background: var(--ok); }
+.pg-home .scene-pr-glyph { width: 13px; height: 13px; flex: none; }
+.pg-home .scene-diff { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; font: 12px/1.6 var(--mono); }
+.pg-home .scene-diff-line { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; padding: 5px 12px 5px 8px; }
+.pg-home .scene-diff-line.is-add { background: var(--green-soft); }
+.pg-home .scene-diff-line.is-del { background: var(--red-soft); color: var(--ink-soft); }
+.pg-home .scene-diff-sign { text-align: center; color: var(--muted); }
+.pg-home .scene-diff-line.is-add .scene-diff-sign { color: var(--ok); }
+.pg-home .scene-diff-line.is-del .scene-diff-sign { color: var(--red); }
+.pg-home .scene-tree { margin: 0; }
+.pg-home .scene-report-lines { display: grid; gap: 10px; font: 13px/1.6 var(--mono); }
+.pg-home .scene-report-lines p { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.pg-home .scene-rpt-key { flex: 0 0 8.5em; padding-top: 2px; font-size: 11.5px; letter-spacing: .04em; text-transform: uppercase; color: var(--faint); }
+.pg-home .scene-rpt-val { flex: 1 1 12em; color: var(--ink-soft); }
+
+/* ---------- Steps: labels around the command, on a climb ---------- */
+.pg-home .steps-strip { position: relative; margin-top: var(--space-7); }
+.pg-home .steps-climb { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 56px; overflow: visible; pointer-events: none; }
+.pg-home .steps-climb path { fill: none; stroke: var(--accent); stroke-width: 1.5; vector-effect: non-scaling-stroke; opacity: .55; stroke-linecap: round; }
+.pg-home .steps-dot { position: absolute; width: 9px; height: 9px; border-radius: 50%; background: var(--card); border: 2px solid var(--accent); transform: translate(-50%, -50%); pointer-events: none; }
+.pg-home .steps-dot.is-1 { left: 5px; top: 48px; }
+.pg-home .steps-dot.is-2 { left: calc(50% + 21px); top: 41px; }
+.pg-home .steps-mark { position: absolute; right: 0; top: -10px; width: 30px; height: 32px; pointer-events: none; }
+.pg-home .steps-strip .step-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 0; padding-top: 76px; }
+.pg-home .steps-strip .step { border-top: 0; padding-top: 0; }
+.pg-home .step .seg-anchor { margin-top: auto; align-self: flex-start; }
+
+/* ---------- Contact: the mark, open, at scale ---------- */
+.pg-home .contact-mark { display: block; width: 60px; height: 64px; margin-bottom: 20px; }
+
+/* ---------- Report band: the climb beside the lines ---------- */
+.report-band-main { display: flex; gap: 16px 40px; align-items: flex-start; justify-content: space-between; margin: 0 0 20px; }
+.report-band .report-band-lines { margin-bottom: 0; flex: 1 1 auto; }
+.climb { flex: 0 0 220px; }
+.climb-svg { display: block; width: 100%; height: auto; }
+.climb-ghost { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; opacity: .16; }
+.climb-line { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.climb-dot { fill: var(--card); stroke: var(--accent); stroke-width: 2; }
+.climb-dot.is-end { fill: var(--accent); }
+.climb-halo { fill: none; stroke: var(--accent); stroke-width: 1.6; opacity: .45; transform-box: fill-box; transform-origin: center; }
+.climb-label { font: 11px var(--mono); fill: var(--muted); }
+.climb-cap { margin: 6px 0 0; font-size: 11px; line-height: 1.5; color: var(--faint); }
+
+/* Ambient life for the new surfaces: the worked example's merge
+   mark breathes and the report climb's head radiates, on the same
+   keyframes and gating as the hero's (Lane N5). */
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.motion-paused) .pg-home .wx-merge-mark { transform-box: fill-box; transform-origin: center;
+    animation: n5-breathe 3.8s cubic-bezier(.45, 0, .55, 1) infinite alternate; }
+  html:not(.motion-paused) .climb-halo { animation: n5-halo 2.9s cubic-bezier(.22, 1, .36, 1) infinite; }
+}
+
+@media (max-width: 960px) {
+  .pg-home .wx-grid { grid-template-columns: minmax(0, 1fr); }
+  .pg-home .steps-climb, .pg-home .steps-dot, .pg-home .steps-mark { display: none; }
+  .pg-home .steps-strip { margin-top: var(--space-6); }
+  .pg-home .steps-strip .step-cards { grid-template-columns: minmax(0, 1fr); padding-top: 0; }
+  .pg-home .steps-strip .step { border-top: 1px solid var(--line2); padding-top: var(--space-5); }
+}
+@media (max-width: 640px) {
+  .pg-home .wx { padding: 16px; }
+  .pg-home .wx-diff { font-size: 12px; }
+  .pg-home .wx-cap .arrow-link { margin-left: 0; }
+  .pg-home .contact-mark { width: 48px; height: 51px; }
+  .report-band-main { flex-direction: column; }
+  .climb { flex: none; width: 220px; max-width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pg-home .wx-check, .pg-home .scene-check, .pg-home .scene-check-icon { transition: none; }
+}

@@ -1,6 +1,7 @@
 import { HALF_A, HALF_B, HoverArrow } from "./Mark";
 import { RevealSection } from "./Reveal";
 import { CountUp } from "./CountUp";
+import { ClimbLine } from "./Scenes";
 
 /* The shared footer: identical on every page. */
 export function SiteFoot() {
@@ -49,12 +50,14 @@ export function ReportBand({ variant }: { variant: "home" | "docs" }) {
       <p className="report-band-src">
         Every run ends with a report like this one.
       </p>
-      <div className="report-band-lines">
-        <p>
-          <span className="rb-key">Checks passed</span>
-          <span className="rb-val">
-            <CountUp value={89} suffix="%" /> of the time, up from <CountUp value={72} suffix="%" />.
-            Held-out score <CountUp value={50} suffix="%" /> to <CountUp value={80} suffix="%" />.
+      <div className="report-band-main">
+        <div className="report-band-lines">
+          <p>
+            <span className="rb-key">Checks passed</span>
+            <span className="rb-val">
+              <CountUp value={89} suffix="%" /> of the time, up from{" "}
+              <CountUp value={72} suffix="%" />. Held-out score <CountUp value={50} suffix="%" />{" "}
+              to <CountUp value={80} suffix="%" />.
           </span>
         </p>
         <p>
@@ -70,7 +73,9 @@ export function ReportBand({ variant }: { variant: "home" | "docs" }) {
             <CountUp value={0.32} decimals={2} prefix="$" /> of a <CountUp value={3} prefix="$" />{" "}
             budget.
           </span>
-        </p>
+          </p>
+        </div>
+        <ClimbLine />
       </div>
       {variant === "home" ? (
         <a className="arrow-link" href="https://github.com/synthelabs/support-bot/issues/3">
