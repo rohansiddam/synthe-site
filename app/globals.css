@@ -105,6 +105,19 @@
   --agent: var(--ink); --human: var(--gold); --human-text: var(--gold-text); --human-bg: var(--gold-bg); --ok: #177245;
   --cream: var(--bg); --cream-deep: var(--bg2); --rust: var(--gold-text); --rust-deep: #8f3022;
   --green: var(--ok); --green-soft: #e1efe5; --red: #b0352a; --red-soft: #f7e1dd;
+  /* Semantic stoplight tokens (PR C; playbook section 13, rule C2). One
+     token, one meaning, everywhere: success is a verdict or confirmation
+     that landed (kept, copied, sent); error is a failure or a refusal;
+     warning is caution, proceed carefully; sys is the platform speaking
+     (notices, progress); neutral is no verdict (not kept, stale, inactive).
+     Brand (--accent) is none of these: it marks what is Synthe's and what
+     changed, and never carries a verdict on its own. --ok, --red, --green
+     and the two -soft tokens are legacy aliases of the success/error pair. */
+  --success: var(--ok); --success-bg: var(--green-soft);
+  --error: var(--red); --error-bg: var(--red-soft);
+  --warning: #856404; --warning-bg: #f8edd3;
+  --sys: var(--ink-soft); --sys-bg: var(--bg2);
+  --neutral: var(--muted); --neutral-bg: var(--bg2);
   --slot: 53deg; --cut: 14px; --cut-y: 19px; --radius: 8px; --radius-lg: 12px;
   --sans: 'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --wordmark: 'Hanken Grotesk', 'Archivo', sans-serif;
@@ -126,6 +139,11 @@
   --accent: #e08c79; --accent-text: #e08c79; --accent-fill: #e08c79; --accent-bg: #3d2820; --accent-mark: #e08c79;
   --on-accent: #0b0c0a; --on-status: #0b0c0a;
   --rust-deep: #e08c79; --ok: #3fb97f; --green-soft: #13201a; --red: #e0684f; --red-soft: #2a1714;
+  --success: var(--ok); --success-bg: var(--green-soft);
+  --error: var(--red); --error-bg: var(--red-soft);
+  --warning: #e8b93e; --warning-bg: #2a2110;
+  --sys: var(--ink-soft); --sys-bg: var(--bg2);
+  --neutral: var(--muted); --neutral-bg: var(--bg2);
   color-scheme: dark;
 }
 @media (prefers-color-scheme: dark) {
@@ -136,6 +154,11 @@
     --accent: #e08c79; --accent-text: #e08c79; --accent-fill: #e08c79; --accent-bg: #3d2820; --accent-mark: #e08c79;
     --on-accent: #0b0c0a; --on-status: #0b0c0a;
     --rust-deep: #e08c79; --ok: #3fb97f; --green-soft: #13201a; --red: #e0684f; --red-soft: #2a1714;
+    --success: var(--ok); --success-bg: var(--green-soft);
+    --error: var(--red); --error-bg: var(--red-soft);
+    --warning: #e8b93e; --warning-bg: #2a2110;
+    --sys: var(--ink-soft); --sys-bg: var(--bg2);
+    --neutral: var(--muted); --neutral-bg: var(--bg2);
     color-scheme: dark;
   }
 }
@@ -179,6 +202,16 @@
   --color-red-soft: var(--red-soft);
   --color-on-accent: var(--on-accent);
   --color-on-status: var(--on-status);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-error: var(--error);
+  --color-error-bg: var(--error-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-sys: var(--sys);
+  --color-sys-bg: var(--sys-bg);
+  --color-neutral: var(--neutral);
+  --color-neutral-bg: var(--neutral-bg);
   --font-sans: var(--sans);
   --font-mono: var(--mono);
   --font-wordmark: var(--wordmark);
@@ -221,8 +254,8 @@ summary:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--ink);
 .mark .a { fill: var(--agent); } .mark .b { fill: var(--gold-mark); }
 .mark.open .a { transform: translate(-30px, -22px); } .mark.open .b { transform: translate(30px, 22px); }
 .mark.refused .a { transform: translate(-34px, -26px); } .mark.refused .b { transform: translate(34px, 26px); }
-.mark.refused .half { fill: none; stroke: var(--red); stroke-width: 7; }
-.mark.stale .half { fill: none; stroke: var(--faint); stroke-width: 6; stroke-dasharray: 14 11; }
+.mark.refused .half { fill: none; stroke: var(--error); stroke-width: 7; }
+.mark.stale .half { fill: none; stroke: var(--neutral); stroke-width: 6; stroke-dasharray: 14 11; }
 
 /* Buttons: ink, rounded. The primary carries a small mark that locks. */
 .btn2 { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font: 600 16px/1 var(--sans); min-height: 44px; padding: 12px 16px; border: 1px solid var(--line2);
@@ -402,8 +435,8 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .pg-home a { color: inherit; }
 .pg-home code { font-family: var(--mono); }
 .pg-home .muted { color: var(--muted); }
-.pg-home .event-callout { display: flex; gap: 12px; align-items: flex-start; margin: 24px 0 0; padding: 16px 20px; border-radius: 8px; background: var(--accent-bg); border: 1px solid var(--accent); color: var(--ink); font-size: 16px; line-height: 1.5; max-width: 48ch; text-wrap: pretty; }
-.pg-home .event-callout .dot { flex: none; width: 8px; height: 8px; margin-top: 8px; border-radius: 50%; background: var(--accent); }
+.pg-home .event-callout { display: flex; gap: 12px; align-items: flex-start; margin: 24px 0 0; padding: 16px 20px; border-radius: 8px; background: var(--sys-bg); border: 1px solid var(--line2); color: var(--ink); font-size: 16px; line-height: 1.5; max-width: 48ch; text-wrap: pretty; }
+.pg-home .event-callout .dot { flex: none; width: 8px; height: 8px; margin-top: 8px; border-radius: 50%; background: var(--sys); }
 .pg-home .event-callout strong { font-weight: 600; }
 .pg-home .arrow-link:focus-visible, .pg-home .copy:focus-visible, .pg-home .card:has(.go:focus-visible), .pg-home .seg button:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 6px; }
 
@@ -428,7 +461,8 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .pg-home .copy code { min-width: 0; }
 .pg-home .copy .btn-label { display: inline-flex; flex: none; align-items: center; gap: 8px; min-height: 36px; padding: 0 12px; border-radius: 4px; background: var(--ink); color: var(--bg); font: 500 14px var(--sans); }
 .pg-home .copy .btn-label svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; }
-.pg-home .copy.done .btn-label { background: var(--ok); color: var(--on-status); }
+.pg-home .copy.done .btn-label { background: var(--success); color: var(--on-status); }
+.pg-home .copy.failed .btn-label { background: var(--error); color: var(--on-status); }
 .pg-home .stage { margin-top: 64px; }
 .pg-home .product-figure { margin: 0; padding: 32px; border-radius: 10px; background: var(--bg2); border: 1px solid var(--line); }
 .pg-home .figure-caption { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-bottom: 24px; color: var(--muted); font-size: 14px; }
@@ -462,8 +496,8 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .pg-home .report h3 { font-size: 24px; line-height: 1.2; font-weight: 500; margin: 0 0 24px; max-width: 16ch; }
 .pg-home .report-results { list-style: none; padding: 0; margin: 0; }
 .pg-home .report-results li { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 16px; padding: 16px 0; border-top: 1px solid var(--line2); font-size: 14px; }
-.pg-home .result-word { font: 12px/1.75 var(--mono); color: var(--accent-text); }
-.pg-home .result-word.unchanged { color: var(--muted); }
+.pg-home .result-word { font: 12px/1.75 var(--mono); color: var(--success); }
+.pg-home .result-word.unchanged { color: var(--neutral); }
 
 .pg-home .how { padding-top: var(--space-section); }
 .pg-home .section-h { font-size: clamp(28px, 3vw, 40px); line-height: 1.1; margin: 0; max-width: 24ch; }
@@ -521,6 +555,34 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .pg-home .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .pg-home .trynote { font-size: 14px; color: var(--muted); margin: 0; grid-column: 1 / -1; }
 .pg-home .trynote:empty { display: none; }
+
+/* Partner form states (PR C). The box keeps its grid cell through every
+   state; framer-motion animates its height as the form becomes the
+   confirmation. Error colour appears only at the field that failed and in
+   the failure note; progress is a system-coloured bar, never a percentage. */
+.pg-home .partner-box { min-width: 0; }
+.pg-home .partner-form input[aria-invalid="true"] { border-color: var(--error); }
+.pg-home .partner-form input:disabled { opacity: .65; }
+.pg-home .partner-form .btn2:disabled { opacity: .55; cursor: default; }
+.pg-home .field-msg { margin: 0; font-size: 14px; line-height: 1.45; color: var(--error); }
+.pg-home .form-note.is-error { color: var(--error); }
+/* Progress in the product's own language: the mark, halves apart while the
+   send is unresolved, a mono step label, and one pip that breathes. No bar:
+   a bar would claim a proportion nobody measured. */
+.pg-home .send-progress { display: flex; align-items: center; gap: 12px; margin-top: 16px; font-family: var(--mono); }
+.pg-home .send-progress .mark { width: 16px; height: 17px; flex: none; }
+.pg-home .send-progress .sp-label { margin: 0; font-size: 13px; color: var(--muted); }
+.pg-home .sp-pip { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--sys); animation: sp-pip 1.2s var(--ease-ui) infinite; }
+@keyframes sp-pip { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+/* The confirmation is a record, in the report artifact's treatment: a mono
+   label, a kept line with the verdict word in success green, the address. */
+.pg-home .partner-done { box-sizing: border-box; border: 1px solid var(--line); border-radius: 6px; background: var(--card); padding: 20px 24px; display: grid; gap: 12px; align-content: start; font-family: var(--mono); }
+.pg-home .partner-done:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+.pg-home .done-label { margin: 0; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--faint); }
+.pg-home .done-line { margin: 0; display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 16px; align-items: baseline; font-size: 14px; line-height: 1.5; color: var(--ink); }
+.pg-home .done-word { font-size: 12px; line-height: 1.75; color: var(--success); }
+.pg-home .done-sub { margin: 0; font-size: 13px; line-height: 1.65; color: var(--muted); }
+.pg-home .partner-done .btn2 { justify-self: start; }
 .pg-home .card:focus-within::before { border-color: var(--line2); }
 .pg-home .card:focus-within .go svg { transform: translate(2px, -2px); }
 @media (hover: hover) and (pointer: fine) {
@@ -572,6 +634,7 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
   .pg-home .viz, .pg-home .card .go svg, .pg-home .card::before, .pg-home .card::after { transition: none !important; transform: none !important; }
   .pg-home .card:hover { --grow: 0px; }
   .pg-home .hero-field canvas { display: none; }
+  .pg-home .sp-pip { animation: none !important; opacity: 1; }
   .pg-home .flow-ready .prompt-before { opacity: 0 !important; }
   .pg-home .flow-ready .prompt-after, .pg-home .flow-ready .report-results .result-word { opacity: 1 !important; transform: none !important; transition: none !important; }
   .pg-home .flow-ready .changed { background: var(--accent-bg) !important; border-left-color: var(--accent) !important; transition: none !important; }
@@ -641,8 +704,8 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .pg-docs .doc-hero { padding: 64px 0 32px; }
 .pg-docs .doc-hero h1 { font-size: clamp(32px, 4.2vw, 48px); line-height: 1.08; margin: 12px 0 16px; max-width: 16em; }
 .pg-docs .lede { font-size: 18px; color: var(--muted); margin: 0; max-width: 36em; }
-.pg-docs .event-callout { display: flex; gap: 12px; align-items: flex-start; margin: 24px 0 0; padding: 16px 20px; border-radius: var(--r-frame); background: var(--accent-bg); border: 1px solid var(--accent); color: var(--ink); font-size: 16px; line-height: 1.5; max-width: 48ch; text-wrap: pretty; }
-.pg-docs .event-callout .dot { flex: none; width: 8px; height: 8px; margin-top: 8px; border-radius: 50%; background: var(--accent); }
+.pg-docs .event-callout { display: flex; gap: 12px; align-items: flex-start; margin: 24px 0 0; padding: 16px 20px; border-radius: var(--r-frame); background: var(--sys-bg); border: 1px solid var(--line2); color: var(--ink); font-size: 16px; line-height: 1.5; max-width: 48ch; text-wrap: pretty; }
+.pg-docs .event-callout .dot { flex: none; width: 8px; height: 8px; margin-top: 8px; border-radius: 50%; background: var(--sys); }
 .pg-docs .event-callout strong { font-weight: 600; }
 .pg-docs .block { padding: 40px 0; border-top: 1px solid var(--line); }
 .pg-docs .block:first-of-type { border-top: 0; }
@@ -656,7 +719,9 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .pg-docs .cmd { display: inline-flex; align-items: center; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-frame); padding: 4px 4px 4px 16px; font: 16px/1.5 var(--mono); overflow-x: auto; margin: 0 0 16px; max-width: 100%; box-sizing: border-box; }
 .pg-docs .cmd code { flex: 1; white-space: pre; padding: 0 12px 0 0; }
 .pg-docs .cmd .prompt { color: var(--muted); white-space: pre; }
-.pg-docs .copy { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; background: var(--ink); border: 0; border-radius: var(--r-control); color: var(--bg); font: 600 14px var(--sans); padding: 0 16px; cursor: pointer; flex: none; }
+.pg-docs .copy { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; background: var(--ink); border: 0; border-radius: var(--r-control); color: var(--bg); font: 600 14px var(--sans); padding: 0 16px; cursor: pointer; flex: none; transition: background-color var(--duration-ui) var(--ease-ui), color var(--duration-ui) var(--ease-ui); }
+.pg-docs .copy.done { background: var(--success); color: var(--on-status); }
+.pg-docs .copy.failed { background: var(--error); color: var(--on-status); }
 .pg-docs .copy .mark .a { fill: var(--bg); }
 .pg-docs .copy .mark { width: 14px; height: 15px; }
 @media (max-width: 480px) { .pg-docs .cmd { font-size: 14px; } .pg-docs .cmd code { padding-right: 8px; } .pg-docs .copy { padding: 0 12px; } }
@@ -664,8 +729,8 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .pg-docs .avail { display: inline-block; font: 12px/1 var(--mono); color: var(--ink); border: 1px solid var(--gold); border-radius: var(--r-chip); padding: 4px 8px; margin: 0 0 12px; }
 .pg-docs .note { font-size: 16px; color: var(--muted) !important; }
 .pg-docs .warn { display: flex; gap: 12px; align-items: flex-start; background: var(--card); border: 1px solid var(--line2); border-radius: var(--r-frame); padding: 16px; margin: 0 0 16px; max-width: 68ch; color: var(--ink-soft); }
-.pg-docs .warn-icon { flex: none; width: 20px; height: 20px; margin-top: 1px; color: var(--accent-text); fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.pg-docs .warn-label { display: block; font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--accent-text); margin: 0 0 4px; }
+.pg-docs .warn-icon { flex: none; width: 20px; height: 20px; margin-top: 1px; color: var(--warning); fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.pg-docs .warn-label { display: block; font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--warning); margin: 0 0 4px; }
 .pg-docs .warn p { margin: 0; max-width: none; }
 .pg-docs .tablewrap { overflow-x: auto; margin: 0 0 16px; }
 .pg-docs table { border-collapse: collapse; width: 100%; font-size: 16px; }

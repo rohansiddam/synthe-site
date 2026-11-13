@@ -37,10 +37,10 @@ export function ThemeToggle() {
       btn.title = dark ? "Dark mode is on. Switch to light." : "Light mode is on. Switch to dark.";
     };
 
-    const setTheme = (next: "light" | "dark") => {
+    const setTheme = (next: "light" | "dark", fade = true) => {
       cancelAnimationFrame(themeFrame);
       root.classList.add("theme-setting");
-      if (!reduceMotion) {
+      if (fade && !reduceMotion) {
         root.classList.add("theme-fade");
         window.clearTimeout(themeFadeTimer);
         themeFadeTimer = window.setTimeout(() => root.classList.remove("theme-fade"), 280);
@@ -81,6 +81,16 @@ export function ThemeToggle() {
     window.addEventListener("storage", onStorage);
     window.addEventListener("load", onLoad);
     paint();
+
+    /* The layout's theme-init script reaches the static export only as inert
+       RSC payload, so it never runs: without this, data-theme is never set
+       on load, the saved choice is lost on every navigation, and the html
+       never gets the js class the phone nav depends on. Apply both here, on
+       mount. No fade: this is a correction, not a change the visitor made. */
+    root.classList.add("js");
+    if (!root.hasAttribute("data-theme")) {
+      setTheme(themePreference ?? (systemTheme.matches ? "dark" : "light"), false);
+    }
 
     return () => {
       btn.removeEventListener("click", onClick);
