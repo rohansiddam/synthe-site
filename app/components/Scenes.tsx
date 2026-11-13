@@ -260,13 +260,24 @@ const climbLineV: Variants = {
   hidden: { pathLength: 0 },
   play: {
     pathLength: 1,
-    transition: { duration: 1, ease: [0.65, 0, 0.35, 1], delay: 0.15 },
+    /* One smooth sine-in-out (cubic-bezier(0.37, 0, 0.63, 1), the
+       bezier form of GSAP's sine.inOut): the same curve as the
+       console's and the worked example's climbs. */
+    transition: { duration: 1, ease: [0.37, 0, 0.63, 1], delay: 0.15 },
   },
 };
-const climbDotV: Variants = {
+/* The markers land in sequence with the draw (0.15 to 1.15): the
+   start point as the line leaves it, the end point as the line
+   reaches it, not both together at the end. */
+const climbDotStartV: Variants = {
   rest: { opacity: 1 },
   hidden: { opacity: 0 },
-  play: { opacity: 1, transition: { duration: 0.3, delay: 1 } },
+  play: { opacity: 1, transition: { duration: 0.25, delay: 0.15 } },
+};
+const climbDotEndV: Variants = {
+  rest: { opacity: 1 },
+  hidden: { opacity: 0 },
+  play: { opacity: 1, transition: { duration: 0.3, delay: 1.05 } },
 };
 
 /* The climb, two honest points: the demo run's checks score before
@@ -292,13 +303,13 @@ export function ClimbLine() {
           d="M10 60 L210 16"
           variants={climbLineV}
         />
-        <motion.g variants={climbDotV}>
+        <motion.g variants={climbDotStartV}>
           <circle className="climb-dot" cx="10" cy="60" r="4" />
           <text className="climb-label" x="10" y="76">
             {demoRun.checksBefore}%
           </text>
         </motion.g>
-        <motion.g variants={climbDotV}>
+        <motion.g variants={climbDotEndV}>
           <circle className="climb-halo" cx="210" cy="16" r="6" />
           <circle className="climb-dot is-end" cx="210" cy="16" r="4" />
           <text className="climb-label is-end" x="210" y="76" textAnchor="end">

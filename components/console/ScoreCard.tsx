@@ -17,12 +17,19 @@ import { CardHead } from "./kit";
    numbers). Round 7's dip is the run's honest shape: it is the old
    prompt's score, recorded the round the fix merged, and the
    footnote says exactly that.
-   Lane N5: the draw is continuous. Console.tsx tweens a motion
-   value along the recorded polyline and this card interpolates the
-   head between points, so the line flows instead of jumping point
-   to point. At rest the head carries a slow radiating pulse and the
-   merge mark breathes; both are CSS keyframes on sine-like eases,
-   gated to no-preference motion in globals.css. */
+   The draw is one stroke-dashoffset pass over the full recorded
+   polyline: Console.tsx tweens a motion value 0..DRAW_UNITS on a
+   single sine-in-out ease and this card maps it to a dash offset,
+   so the drawn edge travels the real line at every instant. (The
+   previous build rebuilt the path from whole points plus the head
+   each frame, which dropped the last recorded point before the
+   head: the segment in front of the head was a corner-cutting
+   chord that snapped straight at every point crossing. The dash
+   draw cannot do that; the geometry is the recorded polyline
+   itself.) The area fill is the full recorded area, clipped at the
+   head's x. At rest the head carries a slow radiating pulse and
+   the merge mark breathes; both are CSS keyframes on sine-like
+   eases, gated to no-preference motion in globals.css. */
 
 const W = 560;
 const H = 348;
@@ -41,6 +48,7 @@ const POINTS = dogfoodRun.series.map((p) => ({
   y: py(p.scorePct),
 }));
 const FULL_PATH = POINTS.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ");
+const FULL_AREA = `${FULL_PATH} L${POINTS[POINTS.length - 1].x},${py(0)} L${POINTS[0].x},${py(0)} Z`;
 const MERGE_INDEX = POINTS.findIndex((p) => p.round === dogfoodRun.mergedRound);
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
@@ -86,19 +94,12 @@ export function ScoreCard({
      "Round N · S%" label always names a recorded (round, score)
      pair, never an interpolated score between two measurements. */
   const shownPoint = POINTS[Math.min(POINTS.length - 1, Math.max(0, Math.round(v)))];
-  const whole = Math.floor(Math.min(v, DRAW_UNITS));
-  const shownPts = POINTS.slice(0, whole + 1);
-  const linePts =
-    v > 0.02
-      ? [...shownPts.slice(0, -1), { x: head.x, y: head.y }]
-      : shownPts.slice(0, 1);
-  const path = linePts
-    .map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`)
-    .join(" ");
-  const area =
-    v > 0.02
-      ? `${path} L${head.x.toFixed(1)},${py(0)} L${shownPts[0].x},${py(0)} Z`
-      : "";
+  /* Draw progress along the recorded polyline, 0..1. The line is
+     the full path shown through a dash window of exactly this
+     fraction (pathLength normalizes the dash math), and the area
+     is the full recorded area clipped at the head's x, so both
+     reveal the same recorded geometry the head has reached. */
+  const progress = clamp01(v / DRAW_UNITS);
   const atRest = v >= DRAW_UNITS - 0.001;
 
   return (
@@ -141,8 +142,23 @@ export function ScoreCard({
         {/* The full recorded line sits underneath at low opacity, so the
             chart's destination is honest context, not a surprise. */}
         <path d={FULL_PATH} className="console-line-ghost" />
-        {area ? <path d={area} className="console-area" /> : null}
-        {v > 0.02 ? <path d={path} className="console-line" /> : null}
+        <defs>
+          <clipPath id="console-area-clip">
+            <rect x={0} y={0} width={head.x} height={H} />
+          </clipPath>
+        </defs>
+        {progress > 0.001 ? (
+          <path d={FULL_AREA} className="console-area" clipPath="url(#console-area-clip)" />
+        ) : null}
+        {progress > 0.001 ? (
+          <path
+            d={FULL_PATH}
+            className="console-line"
+            pathLength={1}
+            strokeDasharray={1}
+            strokeDashoffset={1 - progress}
+          />
+        ) : null}
         {POINTS.map((p, i) => {
           if (i === MERGE_INDEX) return null;
           return (

@@ -79,9 +79,12 @@ const SPEND_STEPS: { at: number; pct: number }[] = (() => {
   });
 })();
 
-/** The climb: symmetric ease-in-out, so the line gathers pace and
-    lands softly exactly on the merge beat. */
-const CLIMB_EASE = [0.65, 0, 0.35, 1] as const;
+/** The climb: one smooth sine-in-out (cubic-bezier(0.37, 0, 0.63, 1),
+    the standard bezier form of GSAP's sine.inOut), so the dash draw
+    gathers pace and lands softly exactly on the merge beat. The
+    same curve drives the worked example's and the report band's
+    climbs, so every score line on the page moves the same way. */
+const CLIMB_EASE = [0.37, 0, 0.63, 1] as const;
 /** The reset: the same family, so the rewind feels like the play
     run backwards rather than a cut. */
 const RESET_EASE = [0.65, 0, 0.35, 1] as const;

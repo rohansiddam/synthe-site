@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { HeroDrift } from "./components/HeroDrift";
-import { AsciiMark } from "./components/AsciiMark";
+import { WireframeMark } from "./components/WireframeMark";
 import {
   RevealArticle,
   RevealDiv,
@@ -117,7 +117,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="hero-emblem">
-            <AsciiMark className="hero-emblem-mark" />
+            <WireframeMark className="hero-emblem-mark" />
           </div>
         </HeroDrift>
 
