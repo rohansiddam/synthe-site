@@ -18,6 +18,7 @@ import { WorkedExample } from "./components/WorkedExample";
 import { ChecksScene, MergeScene, ReportScene } from "./components/Scenes";
 import { GoArrow, HoverArrow, Mark } from "./components/Mark";
 import { ThreadLayer } from "./components/ThreadLayer";
+import { TendrilField } from "./components/tendrils/TendrilField";
 
 export const metadata: Metadata = {
   title: "Synthe: your AI agent gets better on its own",
@@ -92,6 +93,7 @@ export default function HomePage() {
     <>
       <div className="thread-home-wrap">
         <ThreadLayer />
+        <TendrilField />
         <main id="main" className="pg-home" tabIndex={-1}>
         <HeroField />
         <HeroDrift>
