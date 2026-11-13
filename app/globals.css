@@ -963,3 +963,43 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
     animation: n5-breathe 3.8s cubic-bezier(.45, 0, .55, 1) infinite alternate; }
   html:not(.motion-paused) .pg-home .console-head-halo { animation: n5-halo 2.9s cubic-bezier(.22, 1, .36, 1) infinite; }
 }
+
+/* ==== lane dither-mark (exploration, /dither only) ===================== */
+.pg-dither .wrap { width: 100%; max-width: var(--page-width); margin: 0 auto; padding: 0 var(--gutter); box-sizing: border-box; }
+.pg-dither { padding-bottom: var(--space-section); }
+.dither-intro { padding-top: 72px; }
+.dither-kicker { font: 500 13px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 16px; }
+.dither-h1 { font-size: clamp(40px, 5vw, 64px); line-height: 1.04; letter-spacing: -.025em; margin: 0; }
+.dither-lede { font-size: 18px; line-height: 1.55; color: var(--muted); max-width: 58ch; margin: 20px 0 0; text-wrap: pretty; }
+.dither-study { margin-top: 88px; }
+.dither-study-tight { margin-top: 88px; }
+.dither-label { font: 12px/1.5 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink); margin: 0 0 24px; }
+.dither-note { font-size: 15px; line-height: 1.6; color: var(--muted); max-width: 62ch; margin: 24px 0 0; text-wrap: pretty; }
+.dither-read { font: 12px/1.6 var(--mono); letter-spacing: .03em; color: var(--faint); margin: 12px 0 0; }
+.dither-mark-row { display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start; }
+.dither-mark-cell { width: min(420px, 84vw); }
+.dither-source-cell { width: 148px; padding-top: 8px; }
+.dither-source-mark { width: 132px; height: auto; display: block; }
+.dither-mark-wrap { width: 100%; aspect-ratio: 275 / 290; }
+.dither-canvas { width: 100%; height: 100%; display: block; }
+.dither-hero { position: relative; margin-top: 96px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: radial-gradient(60% 70% at 88% 8%, var(--accent-bg), transparent 70%), radial-gradient(45% 55% at 62% 30%, var(--bg2), transparent 70%), var(--bg); overflow: hidden; }
+.dither-ground { position: absolute; inset: 0; -webkit-mask-image: linear-gradient(#000 55%, transparent 98%); mask-image: linear-gradient(#000 55%, transparent 98%); }
+.dither-ground-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.dither-ground-read { position: absolute; right: var(--gutter); bottom: 14px; margin: 0; }
+.dither-hero-copy { position: relative; padding-top: 88px; padding-bottom: 120px; pointer-events: none; }
+.dither-hero-h { font-size: clamp(40px, 5vw, 64px); line-height: 1.04; letter-spacing: -.025em; margin: 0; max-width: 16ch; }
+.dither-hero-lede { font-size: 18px; line-height: 1.55; color: var(--muted); max-width: 42ch; margin: 24px 0 0; text-wrap: pretty; }
+.dither-hero-lede strong { color: var(--ink); font-weight: 500; }
+.dither-scroll { height: 260vh; position: relative; }
+.dither-scroll-stage { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+.dither-scroll-mark { width: min(46vh, 400px, 82vw); }
+.dither-scroll-read { margin: 0 0 8px; }
+.dither-scroll-hint { font: 13px var(--mono); color: var(--muted); margin: 16px 0 0; letter-spacing: .03em; }
+.dither-foot { margin-top: 72px; }
+@media (max-width: 640px) {
+  .dither-intro { padding-top: 48px; }
+  .dither-study, .dither-study-tight { margin-top: 64px; }
+  .dither-hero-copy { padding-top: 56px; padding-bottom: 88px; }
+  .dither-ground-read { display: none; }
+}
+/* ==== end lane dither-mark ============================================ */
