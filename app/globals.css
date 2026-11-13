@@ -963,3 +963,63 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
     animation: n5-breathe 3.8s cubic-bezier(.45, 0, .55, 1) infinite alternate; }
   html:not(.motion-paused) .pg-home .console-head-halo { animation: n5-halo 2.9s cubic-bezier(.22, 1, .36, 1) infinite; }
 }
+
+/* ---------- /ascii exploration lane (lane/ascii-shader) ----------
+   Scoped to .ascii-* classes, which exist only on the prototype page.
+   Three treatments: the fixed logo field, the dithered skyline edge,
+   and the inverted band with its glyph-contour ground. */
+.ascii-page { position: relative; }
+.ascii-stage { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.ascii-canvas { display: block; width: 100%; height: 100%; }
+.ascii-legend { position: fixed; left: 16px; bottom: 14px; z-index: 40; pointer-events: none;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: var(--muted);
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  border: 1px solid var(--line); border-radius: 6px; padding: 6px 9px; }
+.ascii-hero { position: relative; z-index: 1; min-height: 100vh; padding: 128px var(--gutter) 0;
+  pointer-events: none; }
+.ascii-kicker { font-family: var(--mono); font-size: 12px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0 0 18px; }
+.ascii-title { font-family: var(--wordmark); font-weight: 500; font-size: clamp(34px, 5.4vw, 64px);
+  letter-spacing: -0.02em; line-height: 1.04; color: var(--ink); margin: 0 0 16px; max-width: 12em; }
+.ascii-sub { font-size: 16px; line-height: 1.55; color: var(--ink-soft); max-width: 34em; margin: 0; }
+.ascii-depth { font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em; color: var(--muted); margin: 0; }
+.ascii-depth-hero { position: absolute; left: var(--gutter); bottom: 28px; }
+.ascii-spacer { position: relative; z-index: 1; min-height: 115vh; pointer-events: none; }
+.ascii-spacer .ascii-depth { position: absolute; left: var(--gutter); top: 22vh; }
+.ascii-spacer .ascii-depth-low { top: 62vh; }
+.ascii-spacer .ascii-depth-edge { top: auto; bottom: 20px; }
+.ascii-skyline { position: relative; z-index: 1; line-height: 0; }
+.ascii-skyline-canvas { display: block; width: 100%; }
+.ascii-band { position: relative; z-index: 1; background: var(--ink); color: var(--bg);
+  margin-top: -1px; overflow: clip; }
+.ascii-contour { position: absolute; inset: 0; }
+.ascii-contour-canvas { display: block; width: 100%; height: 100%; }
+.ascii-band-copy { position: relative; max-width: 620px; padding: 16vh var(--gutter) 18vh; }
+.ascii-band-eyebrow { font-family: var(--mono); font-size: 12px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.72; margin: 0 0 14px; }
+.ascii-band-intro { font-size: 16px; line-height: 1.55; margin: 0 0 34px; }
+.ascii-band-line { display: grid; grid-template-columns: 128px 1fr; gap: 16px; align-items: baseline;
+  padding: 13px 0; border-top: 1px solid color-mix(in srgb, currentColor 22%, transparent); margin: 0; }
+.ascii-band-line span { font-family: var(--mono); font-size: 11px; letter-spacing: 0.07em;
+  text-transform: uppercase; opacity: 0.72; }
+.ascii-band-line strong { font-weight: 500; font-size: 16px; line-height: 1.5; color: inherit; }
+/* The Astryx reset paints p/span/strong with its own text token, which
+   beats inheritance from .ascii-band; set the inverted colour directly. */
+.ascii-band-eyebrow, .ascii-band-intro, .ascii-band-note,
+.ascii-band-line span, .ascii-band-line strong { color: var(--bg); }
+.ascii-words { position: relative; z-index: 1; min-height: 128vh; overflow: clip; background: var(--bg); }
+.ascii-words-field { position: absolute; inset: 0; }
+.ascii-words-canvas { display: block; width: 100%; height: 100%; }
+.ascii-words-label { position: absolute; left: var(--gutter); bottom: 22px; z-index: 1;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em; color: var(--muted);
+  margin: 0; pointer-events: none; }
+.ascii-words-title { position: absolute; left: var(--gutter); top: 26px; z-index: 1;
+  font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted); margin: 0; pointer-events: none; }
+.ascii-band-note { font-family: var(--mono); font-size: 11.5px; line-height: 1.7; letter-spacing: 0.03em;
+  opacity: 0.66; margin: 34px 0 0; max-width: 44em; }
+.ascii-end { position: relative; z-index: 1; min-height: 46vh; padding: 12vh var(--gutter) 0; background: var(--bg); }
+@media (max-width: 640px) {
+  .ascii-band-line { grid-template-columns: 1fr; gap: 4px; }
+  .ascii-hero { padding-top: 104px; }
+}
