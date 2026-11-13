@@ -84,7 +84,11 @@ export function TendrilField() {
        layout the engine has not adopted yet. */
     let worldRects: Rect[] = [];
     let portEls: HTMLElement[] = [];
-    const dockTimers = new Map<number, number>();
+    /* Live docks, keyed by port NAME (indices shift across world
+       swaps; names do not): the timeout that clears the attribute,
+       and the wall-clock expiry the remeasure re-apply reads. */
+    const dockTimers = new Map<string, number>();
+    const dockUntil = new Map<string, number>();
 
     let renders = 0;
     let drawnCells = 0;
@@ -92,6 +96,8 @@ export function TendrilField() {
     let pregrowMaxSliceMs = 0;
     let pregrowSimSeconds = 0;
     let pregrowCapped = false;
+    let pregrowStopReason = "";
+    let pregrowRegions: number[] = [];
     /* Header keep-out (wave 3): the sticky header's band height plus
        a small margin, in viewport px. The renderer draws nothing
        above this line, so no settled glyph, head or pulse can ever
@@ -121,6 +127,7 @@ export function TendrilField() {
     const clearDocks = () => {
       for (const [, t] of dockTimers) window.clearTimeout(t);
       dockTimers.clear();
+      dockUntil.clear();
       for (const el of portEls) el.removeAttribute("data-docked");
     };
 
@@ -235,11 +242,16 @@ export function TendrilField() {
       if (!el || !name) return;
       el.setAttribute("data-docked", "true");
       el.dispatchEvent(new CustomEvent("tendril-dock", { bubbles: true, detail: { port: name } }));
-      const prev = dockTimers.get(portIdx);
+      dockUntil.set(name, performance.now() + 1200);
+      const prev = dockTimers.get(name);
       if (prev) window.clearTimeout(prev);
       dockTimers.set(
-        portIdx,
-        window.setTimeout(() => el.removeAttribute("data-docked"), 1200),
+        name,
+        window.setTimeout(() => {
+          el.removeAttribute("data-docked");
+          dockUntil.delete(name);
+          dockTimers.delete(name);
+        }, 1200),
       );
     };
 
@@ -254,9 +266,20 @@ export function TendrilField() {
         Math.abs(prev.world.pageW - nm.world.pageW) > 2 ||
         prev.world.ports.length !== nm.world.ports.length;
       if (changed) {
-        clearDocks();
         portEls = nm.portEls;
         worldRects = nm.auditRects;
+        /* Docks survive world swaps (wave 4): a swap used to clear
+           data-docked mid-reaction, truncating the 1.2s touch to
+           whatever fraction of it preceded the next remeasure
+           (measured as short as ~200ms). Re-apply any still-live
+           dock to its re-resolved element; the original per-name
+           timer still clears it on schedule. */
+        const now = performance.now();
+        nm.world.ports.forEach((p, i) => {
+          const until = dockUntil.get(p.name);
+          const el = portEls[i];
+          if (el && until !== undefined && until > now) el.setAttribute("data-docked", "true");
+        });
         engine.setWorld(nm.world);
         /* Static mode: a world swap prunes glyphs that landed inside
            shifted content; grow the network back under the new world. */
@@ -315,6 +338,8 @@ export function TendrilField() {
           pregrowMaxSliceMs: Math.round(pregrowMaxSliceMs),
           pregrowSimSeconds,
           pregrowCapped,
+          pregrowStopReason,
+          pregrowRegions,
           frameCostMs: Math.round(frameCostEma * 100) / 100,
           rafDeltaMs: Math.round(rafDeltaEma * 10) / 10,
           dpr,
@@ -360,6 +385,94 @@ export function TendrilField() {
           return { clipPx: headerClipPx, settledSuppressed: settled, headsSuppressed: heads };
         },
         dockLog: () => engine?.dockLog.slice() ?? [],
+        /* Wave-4 pregrow diagnostics: per-region budgets and floors
+           (the coverage predicate's own arithmetic), per-hop cascade
+           feasibility (each port's distance field read at the
+           previous port's anchor: -1 means the hop can never be
+           walked), and a raw reachability pass over the blocked grid
+           from the hero sources (which regions walking physics can
+           ever settle, and which rows are fully sealed). */
+        regions: () => {
+          const e = engine;
+          if (!e) return null;
+          return {
+            cols: e.world.cols,
+            rows: e.world.rows,
+            regionRows: e.world.regionRows,
+            settled: e.regionSettled(),
+            budgets: e.regionSettled().map((_, r) => e.regionBudget(r)),
+            floors: e
+              .regionSettled()
+              .map((_, r) => Math.max(28, Math.round(e.regionBudget(r) * 0.14))),
+          };
+        },
+        hops: () => {
+          const e = engine;
+          if (!e) return [];
+          return e.world.ports.map((p, i) => {
+            if (i === 0) return { name: p.name, dock: [p.dockX, p.dockY], fromPrev: null };
+            const prev = e.world.ports[i - 1];
+            const f = e.world.distFields[i];
+            const at =
+              prev.dockX !== undefined && prev.dockY !== undefined && f
+                ? f[prev.dockY * e.world.cols + prev.dockX]
+                : null;
+            return { name: p.name, dock: [p.dockX, p.dockY], fromPrev: at };
+          });
+        },
+        reach: () => {
+          const e = engine;
+          if (!e) return null;
+          const w = e.world;
+          const seen = new Uint8Array(w.cols * w.rows);
+          const queue: number[] = [];
+          for (const s of w.heroSources) {
+            const cx = Math.min(w.cols - 1, Math.max(0, Math.floor(s.x / CELL)));
+            let cy = Math.min(w.rows - 1, Math.max(0, Math.floor(s.y / CELL)));
+            /* Same free-cell nudge spawn() applies: a source inside
+               a stamped obstacle seeds from the first free cell
+               below it, not from inside the wall. */
+            while (cy < w.rows - 1 && w.blocked[cy * w.cols + cx]) cy++;
+            const i = cy * w.cols + cx;
+            if (!w.blocked[i] && !seen[i]) {
+              seen[i] = 1;
+              queue.push(i);
+            }
+          }
+          for (let qi = 0; qi < queue.length; qi++) {
+            const cur = queue[qi];
+            const cx = cur % w.cols;
+            const cy = Math.floor(cur / w.cols);
+            for (let dy = -1; dy <= 1; dy++) {
+              for (let dx = -1; dx <= 1; dx++) {
+                if (dx === 0 && dy === 0) continue;
+                const nx = cx + dx;
+                const ny = cy + dy;
+                if (nx < 0 || ny < 0 || nx >= w.cols || ny >= w.rows) continue;
+                const ni = ny * w.cols + nx;
+                if (seen[ni] || w.blocked[ni]) continue;
+                if (dx !== 0 && dy !== 0 && (w.blocked[cy * w.cols + nx] || w.blocked[ny * w.cols + cx])) continue;
+                seen[ni] = 1;
+                queue.push(ni);
+              }
+            }
+          }
+          const regions = Math.max(1, Math.ceil(w.rows / w.regionRows));
+          const reachable = new Array(regions).fill(0);
+          const sealedRows: number[] = [];
+          for (let cy = 0; cy < w.rows; cy++) {
+            let free = 0;
+            for (let cx = 0; cx < w.cols; cx++) {
+              const i = cy * w.cols + cx;
+              if (seen[i]) {
+                reachable[Math.floor(cy / w.regionRows)]++;
+                free++;
+              } else if (!w.blocked[i]) free++;
+            }
+            if (free === 0) sealedRows.push(cy);
+          }
+          return { reachable, sealedRows };
+        },
       };
       (window as unknown as { __tendrils?: typeof debug }).__tendrils = debug;
 
@@ -369,42 +482,90 @@ export function TendrilField() {
         return;
       }
 
-      /* Pregrow: fast-forward the simulation ~120 sim-seconds before
-         the live loop starts (wave 3; wave 2 grew 30). The reduced-
-         motion path grows a full static network at 260s; the live
-         path now grows the same class of coverage, so a visitor who
-         scrolls to any section in their first seconds finds a settled
-         network already there, pulses travelling it, and the live
-         cascade continues from that state instead of starting cold.
+      /* Pregrow: fast-forward the simulation before the live loop
+         starts, growing to COVERAGE, not to a fixed duration (wave
+         4; wave 3 grew a fixed 120 sim-seconds, wave 2 grew 30). A
+         fixed budget left Home's last region (report band + footer)
+         bare at birth in every run, because the cascade's final hops
+         down a 5,340px page take longer than 120 sim-seconds from a
+         cold start. The stop condition is now the outcome the
+         pregrow exists for: every page region holds settled network,
+         judged per region from the engine's settled counts against
+         a floor scaled to that region's own density budget. The
+         reduced-motion path grows its full static network at 260
+         sim-seconds; the ceiling here is a backstop in that class
+         (typical coverage lands at 82-220 sim-seconds; the ceiling
+         exists for the stochastic tail of the last hand-off, and the
+         wall-clock and slow-slice guards below are what actually
+         protect a slow device), and on a page the cascade can cover
+         sooner (Docs), the pregrow stops as soon as coverage lands
+         and costs less than the old fixed run. Growth radiates from the hero down the port cascade in
+         page order, so early coverage is the old pregrow's coverage:
+         the extra growth only ever extends the frontier downward.
+         Guards, in the order they can fire: the tier's settled glyph
+         budget (pregrowCapped, the wave-3 semantics: earlier
+         sections are densest by construction, the hero-outward
+         priority); a slow-device guard (three consecutive slices
+         over 300ms of CPU, or 25s of wall time including yields:
+         stop gracefully with whatever coverage exists; the live
+         cascade continues regardless); and the sim-seconds ceiling.
          The world is fully measured above, so the pregrow respects
          the same obstacle grid as live growth. It runs after mount
          (the page has painted; init already awaited the font), in
          2 sim-second slices with a yield between them, painting the
-         born network after each slice; the main-thread cost is
-         measured into the debug stats as pregrowMs /
-         pregrowMaxSliceMs. Growth radiates from the hero and down
-         the port cascade in page order, so if the tier's settled
-         glyph budget is reached first the pregrow stops there:
-         earlier sections are the densest by construction, which is
-         the hero-outward priority the budget demands. */
-      const PREGROW_SECONDS = 120;
+         born network after each slice; cost is measured into the
+         debug stats as pregrowMs / pregrowMaxSliceMs, the outcome
+         as pregrowStopReason / pregrowRegions. */
+      const PREGROW_MAX_SECONDS = 480;
       const SLICE_SECONDS = 2;
-      for (let doneS = 0; doneS < PREGROW_SECONDS && !disposed; doneS += SLICE_SECONDS) {
+      const SLOW_SLICE_MS = 300;
+      const WALL_BUDGET_MS = 25000;
+      const coverageMet = () => {
+        const e = engine;
+        if (!e) return true;
+        const counts = e.regionSettled();
+        if (!counts.length) return true;
+        return counts.every(
+          (c, r) => c >= Math.max(28, Math.round(e.regionBudget(r) * 0.14)),
+        );
+      };
+      const pregrowStart = performance.now();
+      let slowSlices = 0;
+      let doneS = 0;
+      pregrowStopReason = "ceiling";
+      while (!disposed && doneS < PREGROW_MAX_SECONDS) {
+        if (coverageMet()) {
+          pregrowStopReason = "coverage";
+          break;
+        }
         const t0 = performance.now();
-        engine.fastForward(Math.min(SLICE_SECONDS, PREGROW_SECONDS - doneS));
+        engine.fastForward(Math.min(SLICE_SECONDS, PREGROW_MAX_SECONDS - doneS));
         const sliceMs = performance.now() - t0;
         pregrowMs += sliceMs;
         if (sliceMs > pregrowMaxSliceMs) pregrowMaxSliceMs = sliceMs;
-        pregrowSimSeconds = Math.min(PREGROW_SECONDS, doneS + SLICE_SECONDS);
+        doneS += SLICE_SECONDS;
+        pregrowSimSeconds = Math.min(PREGROW_MAX_SECONDS, doneS);
         render();
         if (engine.stats().trailCells >= engine.glyphBudget) {
           pregrowCapped = true;
+          pregrowStopReason = "glyph-budget";
           break;
         }
-        if (doneS + SLICE_SECONDS < PREGROW_SECONDS) {
+        slowSlices = sliceMs > SLOW_SLICE_MS ? slowSlices + 1 : 0;
+        if (slowSlices >= 3) {
+          pregrowStopReason = "slow-device";
+          break;
+        }
+        if (performance.now() - pregrowStart > WALL_BUDGET_MS) {
+          pregrowStopReason = "wall-clock";
+          break;
+        }
+        if (doneS < PREGROW_MAX_SECONDS) {
           await new Promise((r) => window.setTimeout(r, 0));
         }
       }
+      if (pregrowStopReason === "ceiling" && coverageMet()) pregrowStopReason = "coverage";
+      pregrowRegions = engine.regionSettled();
       if (disposed) return;
       engine.spawnFromHero();
       render();

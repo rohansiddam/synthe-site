@@ -99,7 +99,7 @@ function resolvePorts(doc: Document): { ports: PortGeom[]; els: HTMLElement[] } 
   };
 }
 
-function collectObstacleRects(doc: Document): Rect[] {
+function collectObstacleRects(doc: Document, pageW: number): Rect[] {
   const rects: Rect[] = [];
   const seen = new Set<HTMLElement>();
   doc.querySelectorAll<HTMLElement>(OBSTACLE_SEL).forEach((el) => {
@@ -110,6 +110,13 @@ function collectObstacleRects(doc: Document): Rect[] {
     const box = pageBox(el);
     if (!box) return;
     if (box.w < 6 || box.h < 6) return;
+    /* A full-bleed section (the report band at phone widths, where
+       its rect spans the whole page with the gutters as its own
+       padding) is ground, not a wall: stamping it seals the grid
+       across the full width and nothing below it can ever be
+       reached. Its content children are collected on their own and
+       stay walls, exactly like every other section's. */
+    if (box.w >= pageW - 2) return;
     if (box.y > -50 && box.w * box.h > 900_000) return; // containers, not content
     rects.push(box);
   });
@@ -162,7 +169,7 @@ export function measure(doc: Document): MeasureResult {
   const portInflation = narrow ? 4 : 6;
 
   const { ports, els: portEls } = resolvePorts(doc);
-  const obstacles = collectObstacleRects(doc);
+  const obstacles = collectObstacleRects(doc, pageW);
 
   const blocked = new Uint8Array(cols * rows);
   const stamp = (r: Rect, infl: number) => {
@@ -181,8 +188,17 @@ export function measure(doc: Document): MeasureResult {
     }
   };
   for (const r of obstacles) stamp(r, inflation);
-  /* Ports are content too: their faces are walls, their edges dock. */
-  for (const p of ports) stamp(p, portInflation);
+  /* Ports are content too: their faces are walls, their edges dock.
+     Full-bleed ports are the exception, for the same reason as in
+     collectObstacleRects: the report band's face at phone widths is
+     the page's own ground (its lines are stamped as content), and
+     stamping the band would seal the grid above the footer. Its
+     dock anchor is then found on its top edge, which is its shore
+     by design. */
+  for (const p of ports) {
+    if (p.w >= pageW - 2) continue;
+    stamp(p, portInflation);
+  }
 
   /* Dock anchors: the free cell nearest each port rect (expanding
      Chebyshev rings, up to ~200px). Interior ports are sealed by

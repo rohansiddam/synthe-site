@@ -421,6 +421,37 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .rb-val { color: var(--ink-soft); }
 .report-band .arrow-link { font-family: var(--sans); }
 
+/* Dock reaction (wave 4): when a tendril docks, the field sets
+   data-docked="true" on the port element for 1.2 sim-seconds, and
+   the target answers with a brief accent touch: a thin ring and a
+   soft halo that ease in fast, hold, and fade inside the same 1.2s,
+   plus an accent tint on the report band's top rule. An animation
+   (not a transition) carries the whole lifecycle, so no port
+   element's own transitions are touched and the fade completes
+   even though the attribute simply clears at 1.2s. Outline and
+   box-shadow only: no layout shift, no text color changes. The
+   accent token is theme-relative, so the touch reads the same in
+   both themes; under reduced motion the whole reaction is off
+   (the field never sets the attribute there either). */
+@media (prefers-reduced-motion: no-preference) {
+  [data-port][data-docked="true"] {
+    outline: 1.5px solid transparent;
+    outline-offset: 3px;
+    animation: dock-touch 1.2s var(--ease-ui) both;
+  }
+  .report-band[data-docked="true"] { animation: dock-touch 1.2s var(--ease-ui) both, dock-rule 1.2s var(--ease-ui) both; }
+  @keyframes dock-touch {
+    0% { outline-color: transparent; box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); }
+    14% { outline-color: color-mix(in srgb, var(--accent) 55%, transparent); box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 10%, transparent); }
+    68% { outline-color: color-mix(in srgb, var(--accent) 55%, transparent); box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 10%, transparent); }
+    100% { outline-color: transparent; box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); }
+  }
+  @keyframes dock-rule {
+    0%, 100% { border-top-color: var(--line2); }
+    14%, 68% { border-top-color: var(--accent); }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .site-head, .site-head::after, .nav-cta, .copy, .seg button, .card, .card .go svg, .viz, .arrow-link .arr,
   .partner-form input, .scroll-reveal { transition: none !important; }

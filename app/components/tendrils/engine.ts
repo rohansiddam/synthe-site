@@ -92,6 +92,10 @@ export type Tip = {
   hug: number; // seconds spent on high-repulsion ground by a wall
   escape: number; // seconds of forced break-away steering remaining
   escapeDir: number; // heading the escape steering holds
+  straight: number; // cells travelled since the last committed turn
+  turnSum: number; // recent cumulative |heading change|, leaked over ~1.2s
+  curveDir: number; // +-1: the tip's preferred open-field curve direction
+  prevHeading: number; // heading at the previous step's end (turn accounting)
   hist: { x: number; y: number; traveled: number }[]; // loop guard samples
   histT: number; // seconds since the last loop-guard sample
 };
@@ -266,6 +270,24 @@ export class TendrilEngine {
     return this.world.halo[cy * this.world.cols + cx] ?? 0;
   }
 
+  /* Openness (wave 4): 1 on neutral open ground well clear of any
+     wall, 0 in the channels and anywhere inside a wall's repulsion
+     halo. Channels are the gutters (cost 0.45) and the section seams
+     (0.7); open ground is the neutral 1.15 field. Steering reads this
+     to demand curvature in the open field only: channel travel,
+     where straight runs are the design, is untouched. A wide valley
+     between two obstacle systems (the hero field left of the emblem)
+     is open ground by this measure even though its halo gradients
+     centre a tip in it: that is precisely where grid-straight runs
+     used to read as placeholder rectangles. */
+  private opennessAt(cx: number, cy: number) {
+    if (!this.inBounds(cx, cy)) return 0;
+    const i = cy * this.world.cols + cx;
+    if (this.world.halo[i] > 0) return 0;
+    const c = this.world.cost[i];
+    return Math.max(0, Math.min(1, (c - 0.8) / 0.35));
+  }
+
   /* Steepest descent of the repulsion field around a point: the
      heading that leaves a wall fastest. Escape steering holds this
      (recomputed per step) so a hugging tip walks out of the halo
@@ -301,7 +323,7 @@ export class TendrilEngine {
 
   /* ---- spawning ---------------------------------------------------- */
 
-  spawn(xPx: number, yPx: number, heading: number, width: number, fromPort: number) {
+  spawn(xPx: number, yPx: number, heading: number, width: number, fromPort: number, force = false) {
     const w = this.world;
     const x = xPx / CELL;
     const y = yPx / CELL;
@@ -322,13 +344,18 @@ export class TendrilEngine {
       let ny = cy;
       while (ny < w.rows - 1 && this.blockedAt(cx, ny, 0)) ny++;
       if (ny >= w.rows - 1) return null;
-      return this.makeTip(cx + 0.5, ny + 0.5, heading, width, fromPort);
+      return this.makeTip(cx + 0.5, ny + 0.5, heading, width, fromPort, force);
     }
-    return this.makeTip(x, y, heading, width, fromPort);
+    return this.makeTip(x, y, heading, width, fromPort, force);
   }
 
-  private makeTip(x: number, y: number, heading: number, width: number, fromPort: number) {
-    if (this.tips.length >= this.maxTips) return null;
+  private makeTip(x: number, y: number, heading: number, width: number, fromPort: number, force = false) {
+    /* Cascade spawns (force) may exceed the tip cap by a small
+       reserve: the gardener keeps the cap full of hero tips, and a
+       docked port whose children cannot spawn hands nothing off,
+       which starved the deep cascade on narrow pages (wave 4). The
+       reserve is bounded so the cap's cost discipline still holds. */
+    if (this.tips.length >= this.maxTips + (force ? 3 : 0)) return null;
     const tip: Tip = {
       x,
       y,
@@ -351,6 +378,10 @@ export class TendrilEngine {
       hug: 0,
       escape: 0,
       escapeDir: 0,
+      straight: 0,
+      turnSum: 0,
+      curveDir: this.rand() < 0.5 ? -1 : 1,
+      prevHeading: heading,
       hist: [],
       histT: 0,
     };
@@ -395,6 +426,7 @@ export class TendrilEngine {
           Math.PI / 2 + (this.rand() - 0.5) * 0.6,
           0.55 + this.rand() * 0.2,
           portIdx,
+          true,
         );
         if (tip && this.rand() < 0.85) tip.target = this.chooseTarget(portIdx);
       }
@@ -408,7 +440,7 @@ export class TendrilEngine {
       const cx = Math.round(s.x / CELL);
       const cy = Math.round(s.y / CELL);
       if (!this.blockedAt(cx, cy, 0)) {
-        const tip = this.spawn(s.x, s.y, Math.PI / 2 + (this.rand() - 0.5) * 0.5, 0.55 + this.rand() * 0.2, portIdx);
+        const tip = this.spawn(s.x, s.y, Math.PI / 2 + (this.rand() - 0.5) * 0.5, 0.55 + this.rand() * 0.2, portIdx, true);
         if (tip && this.rand() < 0.8) tip.target = this.chooseTarget(portIdx);
       }
     }
@@ -416,12 +448,23 @@ export class TendrilEngine {
 
   /* ---- docking ----------------------------------------------------- */
 
-  private portNear(cx: number, cy: number): number {
+  private portNear(cx: number, cy: number, tip: Tip): number {
     const px = cx * CELL + CELL / 2;
     const py = cy * CELL + CELL / 2;
     let best = -1;
     let bestD = CELL * 1.7;
     this.world.ports.forEach((p, i) => {
+      /* Target-aware docking (wave 4): a seeker docks only at the
+         port it is seeking. On a narrow page every anchor stacks
+         along the same gutter line, so an indiscriminate portNear
+         intercepted each deep-bound seeker at the first anchor it
+         passed: the tip retired, the shallow port re-docked, and
+         the deep ports starved (measured: diff docked 4x in one
+         pregrow while checks, its seekers' actual target, never
+         docked at all). Pure wanderers (target -1) still dock
+         opportunistically at any port, which is where the early
+         pregrow docks come from. */
+      if (tip.target >= 0 && i !== tip.target) return;
       if (this.time - this.portDockedAt[i] < 50) return; // cooldown
       const dx = Math.max(p.x - px, 0, px - (p.x + p.w));
       const dy = Math.max(p.y - py, 0, py - (p.y + p.h));
@@ -520,6 +563,14 @@ export class TendrilEngine {
     for (let r = 0; r < regions; r++) {
       this.explored[r] = channel[r] > 0 ? Math.min(1, this.regionTrail[r] / channel[r]) : 1;
     }
+  }
+
+  /* Per-region settled glyph counts, index-aligned with the
+     explored fractions in stats(). The component's pregrow grows to
+     coverage against these: a region "holds settled network" when
+     its count clears a floor derived from its own budget. */
+  regionSettled(): number[] {
+    return Array.from(this.regionTrail);
   }
 
   regionBudget(region: number) {
@@ -682,6 +733,12 @@ export class TendrilEngine {
         if (Math.floor(other.y / w.regionRows) === region && other.state === "grow") regionTips++;
       }
 
+      /* Head cell and openness, computed once per step: the
+         open-field curvature rules below key on both. */
+      const headCx = Math.min(w.cols - 1, Math.max(0, Math.round(tip.x)));
+      const headCy = Math.min(w.rows - 1, Math.max(0, Math.round(tip.y)));
+      const open = this.opennessAt(headCx, headCy);
+
       /* Steering: wander + cost probes + frontier pull. A seeker
          scores its probes on the target port's BFS distance field
          first (gradient descent: guaranteed progress around walls),
@@ -710,6 +767,17 @@ export class TendrilEngine {
           if (dProbe < 0) continue; // cannot approach the target this way
           score = dProbe + score * 0.2;
         }
+        /* Open-field straight-run penalty (wave 4): past ~7 straight
+           cells on open ground, the continue-straight probe pays a
+           growing toll and turning probes pay progressively less, so
+           a run bends instead of extending. Channels (openness 0)
+           never pay it: a gutter stream is supposed to run straight.
+           Capped so it bends the walk without overriding walls, the
+           distance field, or the frontier. */
+        if (open > 0 && tip.straight > 7) {
+          const over = Math.min(tip.straight - 7, 16);
+          score += open * over * 0.06 * (1 - Math.min(1, Math.abs(rel) / 1.55));
+        }
         /* Frontier pull: reward probes that close on the frontier.
            This is the cascade's engine at rest: without it, headings
            diffuse rotationally in open space and the network pools at
@@ -736,20 +804,54 @@ export class TendrilEngine {
       const bend =
         Math.max(-0.5, Math.min(0.5, angDiff(frontierHeading, tip.heading + bestAngle))) * 0.12;
       const isSeeker = tip.target >= 0 && !!seekField;
+      /* Wander deepens with openness (wave 4): on open ground the
+         heading noise nearly doubles, so paths meander where there
+         is room to meander; in channels it keeps its old weight. */
       let desired =
-        tip.heading + bestAngle + wander(tip.seed, this.time) * (isSeeker ? 0.15 : 0.35) + (isSeeker ? 0 : bend);
+        tip.heading +
+        bestAngle +
+        wander(tip.seed, this.time) * (isSeeker ? 0.15 : 0.35 * (1 + open * 0.9)) +
+        (isSeeker ? 0 : bend);
+      /* Open-field curvature (wave 4): a smooth turn target that
+         grows with the length of the current straight run. Once a
+         run passes ~9 cells on open ground, the desired heading
+         leads progressively further toward the tip's curve side
+         (up to ~0.8 rad), so the run resolves into an arc spread
+         over several cells by the normal turn clamp instead of a
+         one-cell right angle at a wall or seam. The accounting below
+         zeroes the run once ~0.5 rad of real turn has accumulated,
+         which switches the term off and lets the new heading run.
+         Seekers feel it at 40%: en route across open ground they
+         arc too, but their approach is governed by the path below. */
+      if (open > 0.25 && tip.escape <= 0 && tip.straight > 9) {
+        const over = Math.min(tip.straight - 9, 18);
+        desired += tip.curveDir * over * 0.045 * open * (isSeeker ? 0.4 : 1);
+      }
 
       /* Hybrid docking: inside the approach zone (BFS distance <= 26
          cells), a seeker stops free-wandering and follows the port's
          precomputed anchored path by waypoint pursuit. The gradient
          probes above still run and mostly agree; the path is what
-         makes the arrival precise instead of hopeful. */
+         makes the arrival precise instead of hopeful. In whole-page
+         mode (the pregrow fast-forward, live or static) the zone is
+         unbounded: gradient probes percolate through the one-cell
+         diagonal gaps a narrow page is full of, losing seekers to
+         bump-turns and stuck retirements at random, so a 390px
+         cascade arrived by luck (in one measured world the frontier
+         stalled three regions short at the sim ceiling). The route
+         is the field's own free path, so following it from any
+         distance is the same physics with the guessing removed:
+         every settled cell is still laid by a moving head walking
+         real ground, and live-mode aesthetics are untouched because
+         live steps never run whole-page. */
+      let onRoute = false;
       if (seekField && tip.target >= 0) {
         const route = this.world.ports[tip.target]?.approach;
         const hcx = Math.min(w.cols - 1, Math.max(0, Math.round(tip.x)));
         const hcy = Math.min(w.rows - 1, Math.max(0, Math.round(tip.y)));
         const dHere = seekField[hcy * w.cols + hcx];
-        if (route && route.length > 1 && dHere >= 0 && dHere <= 26) {
+        if (route && route.length > 1 && dHere >= 0 && (dHere <= 26 || this.wholePageActive)) {
+          onRoute = true;
           let best = -1;
           let bestD = Infinity;
           const from = tip.wp < 0 ? 0 : Math.max(0, tip.wp - 6);
@@ -786,11 +888,16 @@ export class TendrilEngine {
          circling (the closed ring around one content block is the
          extreme case); escape toward the frontier and drop any
          approach pursuit so the loop cannot re-form on the path. */
-      const headCx = Math.min(w.cols - 1, Math.max(0, Math.round(tip.x)));
-      const headCy = Math.min(w.rows - 1, Math.max(0, Math.round(tip.y)));
       const haloHere = this.haloAt(headCx, headCy);
       if (tip.escape <= 0) {
-        if (haloHere > 0.5) tip.hug += dt;
+        /* A route-following tip is never "hugging": the extracted
+           route is free ground by construction, and inside a narrow
+           channel high halo is the route's normal condition, not a
+           symptom. Without this exemption the hug guard fired every
+           second or so inside the 390px gutters and its escape kept
+           overriding the pursuit, so seekers roamed (laying plenty
+           of trail) but never arrived (wave 4, measured). */
+        if (haloHere > 0.5 && !onRoute) tip.hug += dt;
         else tip.hug = Math.max(0, tip.hug - dt * 2);
         if (tip.hug > 0.7) {
           tip.escapeDir = this.haloDescent(tip.x, tip.y, tip.heading, scrollY);
@@ -807,7 +914,7 @@ export class TendrilEngine {
           const h0 = tip.hist[0];
           const trav = tip.traveled - h0.traveled;
           const disp = Math.hypot(tip.x - h0.x, tip.y - h0.y);
-          if (trav > 20 && disp < trav * 0.22) {
+          if (trav > 20 && disp < trav * 0.22 && !onRoute) {
             tip.escapeDir =
               haloHere > 0.2
                 ? this.haloDescent(tip.x, tip.y, tip.heading, scrollY)
@@ -820,6 +927,8 @@ export class TendrilEngine {
           }
         }
       }
+      /* A stale escape never overrides an engaged route. */
+      if (onRoute) tip.escape = 0;
       if (tip.escape > 0) {
         tip.escape -= dt;
         /* Near a wall the descent direction tracks the gradient;
@@ -851,7 +960,7 @@ export class TendrilEngine {
         moved += sub;
         this.lay(tip, cx, cy);
         /* Dock check at the head cell. */
-        const port = this.portNear(cx, cy);
+        const port = this.portNear(cx, cy, tip);
         if (port >= 0) {
           this.beginDock(tip, port);
           break;
@@ -879,6 +988,22 @@ export class TendrilEngine {
       }
 
       tip.traveled += moved;
+      /* Straight-run accounting (wave 4): distance accrues to the
+         current run only while the heading genuinely holds. Any
+         committed turn (steering, bump recovery, escape) feeds the
+         leaked turn sum; ~0.5 rad of accumulated turn ends the run
+         and sometimes flips the preferred curve side, so successive
+         arcs do not all bend the same way into a circle. */
+      const turned = Math.abs(angDiff(tip.heading, tip.prevHeading));
+      tip.prevHeading = tip.heading;
+      tip.turnSum = tip.turnSum * Math.exp(-dt / 1.2) + turned;
+      if (tip.turnSum > 0.5) {
+        tip.straight = 0;
+        tip.turnSum = 0;
+        if (this.rand() < 0.35) tip.curveDir = -tip.curveDir;
+      } else {
+        tip.straight += moved;
+      }
       if (moved < tip.speed * dt * 0.25) tip.stuck += dt;
       else tip.stuck = Math.max(0, tip.stuck - dt * 2);
 
