@@ -146,6 +146,34 @@
   --neutral: var(--muted); --neutral-bg: var(--bg2);
   color-scheme: dark;
 }
+
+/* Morph seam tokens: the inverted world's palette, defined on the
+   seam element per page theme (the values are the OPPOSITE theme's
+   tokens). MorphSeam's canvas reads --morph-ground / --morph-ink to
+   paint the far world; the [data-morph="on"] override below then
+   re-points the band's own tokens at them, but only once the canvas
+   has drawn — with no JS the seam defines these variables and
+   nothing consumes them, so the band keeps the page theme. */
+:root[data-theme="dark"] .morph-seam {
+  --morph-ground: #faf8f1; --morph-ground2: #f2eee2;
+  --morph-ink: #171410; --morph-ink-soft: #3a352c; --morph-muted: #6b6455;
+  --morph-line: #e3ddce; --morph-line2: #cfc7b4;
+  --morph-accent: #b5412f; --morph-accent-text: #b5412f; --morph-accent-bg: #f6e6df;
+}
+:root[data-theme="light"] .morph-seam, :root:not([data-theme]) .morph-seam {
+  --morph-ground: #0b0c0a; --morph-ground2: #11120f;
+  --morph-ink: #f4f2ea; --morph-ink-soft: #d8d4c8; --morph-muted: #a39c8b;
+  --morph-line: #35342c; --morph-line2: #393830;
+  --morph-accent: #e08c79; --morph-accent-text: #e08c79; --morph-accent-bg: #3d2820;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .morph-seam {
+    --morph-ground: #faf8f1; --morph-ground2: #f2eee2;
+    --morph-ink: #171410; --morph-ink-soft: #3a352c; --morph-muted: #6b6455;
+    --morph-line: #e3ddce; --morph-line2: #cfc7b4;
+    --morph-accent: #b5412f; --morph-accent-text: #b5412f; --morph-accent-bg: #f6e6df;
+  }
+}
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
     --mode: dark;
@@ -412,6 +440,28 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
   padding-top: 28px; padding-bottom: 4px; border-top: 1px solid var(--line2);
   font-family: var(--mono); color: var(--muted); }
 .report-band + .site-foot { margin-top: 28px; }
+
+/* The morph seam (home page only): a full-bleed wrapper carrying
+   the boundary bands above and below the report band. The band's
+   own margin-top moves to the wrapper (same page rhythm), its top
+   rule is replaced by the glyph boundary, and the footer's spacing
+   rule follows the wrapper instead. The canvas paints the far
+   ground and both boundaries in page space; the band rides above
+   it (position + DOM order). Token inversion applies only under
+   [data-morph="on"], which MorphSeam sets after its first draw. */
+.morph-seam { position: relative; margin-top: clamp(56px, 10vw, 92px); padding: 110px 0; }
+.morph-canvas { position: absolute; inset: 0; pointer-events: none; }
+.morph-seam .report-band { margin-top: 0; position: relative; }
+.morph-seam[data-morph="on"] .report-band { border-top: none; }
+.morph-seam + .site-foot { margin-top: 28px; }
+.morph-seam[data-morph="on"] {
+  --bg: var(--morph-ground); --bg2: var(--morph-ground2); --card: var(--morph-ground);
+  --ink: var(--morph-ink); --ink-soft: var(--morph-ink-soft);
+  --muted: var(--morph-muted); --faint: var(--morph-muted);
+  --line: var(--morph-line); --line2: var(--morph-line2);
+  --accent: var(--morph-accent); --accent-text: var(--morph-accent-text);
+  --accent-bg: var(--morph-accent-bg); --accent-mark: var(--morph-accent);
+}
 .report-band-label { margin: 0 0 4px; font-size: 12px; letter-spacing: .04em;
   text-transform: uppercase; color: var(--faint); }
 .report-band-src { margin: 0 0 16px; font-size: 12px; line-height: 1.65; color: var(--faint); }

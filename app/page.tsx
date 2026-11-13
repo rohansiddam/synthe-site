@@ -13,6 +13,7 @@ import { HomeEffects } from "./components/HomeEffects";
 import { CopyButton } from "./components/CopyButton";
 import { SegControl } from "./components/SegControl";
 import { PartnerForm } from "./components/PartnerForm";
+import { MorphSeam } from "./components/MorphSeam";
 import { ReportBand, SiteFoot } from "./components/SiteFoot";
 import { WorkedExample } from "./components/WorkedExample";
 import { ChecksScene, MergeScene, ReportScene } from "./components/Scenes";
@@ -253,7 +254,9 @@ export default function HomePage() {
           </RevealDiv>
         </RevealSection>
       </main>
-      <ReportBand variant="home" />
+      <MorphSeam>
+        <ReportBand variant="home" />
+      </MorphSeam>
       <SiteFoot />
       <HomeEffects />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON_LD }} />

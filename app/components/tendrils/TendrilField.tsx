@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { CELL, TendrilEngine, type DynRect } from "./engine";
+import { inversionRects, onInversionChange } from "./inversion";
 import { measure, type MeasureResult, type Rect } from "./measure";
 import { FONT_SPEC, SpriteAtlas, glyphChar, type Palette } from "./sprites";
 
@@ -51,9 +52,19 @@ function readPalette(): Palette {
     const n = parseInt(m[1], 16);
     return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
   };
+  const bg = parse(cs.getPropertyValue("--bg"), [250, 248, 241]);
+  /* The inverted ink lives on the seam element (its --morph-ink is
+     the opposite theme's ink, set in globals.css). Until a seam
+     exists the value is never drawn, so the page ground stands in. */
+  let invInk = bg;
+  const seam = document.querySelector(".morph-seam");
+  if (seam) {
+    invInk = parse(getComputedStyle(seam).getPropertyValue("--morph-ink"), bg);
+  }
   return {
     ink: parse(cs.getPropertyValue("--ink"), [23, 20, 16]),
     accent: parse(cs.getPropertyValue("--accent"), [181, 65, 47]),
+    invInk,
   };
 }
 
@@ -161,6 +172,19 @@ export function TendrilField() {
       const r0 = Math.max(0, Math.floor(scrollY / CELL) - 1);
       const r1 = Math.min(w.rows - 1, Math.ceil((scrollY + vh) / CELL) + 1);
       const clipY = headerClipPx;
+      /* The morph seam's inverted region: cells whose centre falls
+         inside it draw with the inverted ink, so the network stays
+         legible on the far ground. Positions are untouched. */
+      const inv = inversionRects();
+      const invKind = (cx: number, cy: number): "ink" | "inkInv" => {
+        if (!inv.length) return "ink";
+        const px = cx * CELL + CELL / 2;
+        const py = cy * CELL + CELL / 2;
+        for (const r of inv) {
+          if (px >= r.x && px < r.x + r.w && py >= r.y && py < r.y + r.h) return "inkInv";
+        }
+        return "ink";
+      };
       let drawn = 0;
       for (let cy = r0; cy <= r1; cy++) {
         const rowOff = cy * w.cols;
@@ -170,7 +194,7 @@ export function TendrilField() {
           const i = rowOff + cx;
           const d = engine.trail[i];
           if (d <= 0.05) continue;
-          const sp = atlas.get(glyphChar(engine.glyph[i], d), "ink", 0.2 + d * 0.58);
+          const sp = atlas.get(glyphChar(engine.glyph[i], d), invKind(cx, cy), 0.2 + d * 0.58);
           if (sp) {
             ctx.drawImage(sp, cx * CELL, yPx, CELL, CELL);
             drawn++;
@@ -216,14 +240,14 @@ export function TendrilField() {
           const by = Math.floor(cell / w.cols);
           if (by < r0 || by > r1) continue;
           if (by * CELL - scrollY < clipY) continue; // header band keep-out
-          const sp = atlas.get(glyphChar(engine.glyph[cell], 0.7), "ink", 0.72 - b * 0.11);
+          const sp = atlas.get(glyphChar(engine.glyph[cell], 0.7), invKind(bx, by), 0.72 - b * 0.11);
           if (sp) {
             ctx.drawImage(sp, bx * CELL, by * CELL - scrollY, CELL, CELL);
             drawn++;
           }
         }
         const headCh = tip.width >= 0.62 ? "@" : tip.width >= 0.45 ? "#" : "%";
-        const sp = atlas.get(headCh, "ink", 1);
+        const sp = atlas.get(headCh, invKind(cx, cy), 1);
         if (sp) {
           ctx.drawImage(sp, cx * CELL, yPx, CELL, CELL);
           drawn++;
@@ -693,6 +717,20 @@ export function TendrilField() {
     });
     themeObs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
+    /* The morph seam can mount after the field: when it registers
+       its rect, the inverted ink becomes knowable. Re-read it and
+       re-bake if it changed, so inverted cells are not stuck with
+       the stand-in colour from boot. */
+    const offInversion = onInversionChange(() => {
+      const next = readPalette();
+      if (next.invInk.join() !== palette.invInk.join()) {
+        palette = next;
+        atlas = new SpriteAtlas(palette, dpr);
+        if (engine) engine.version++;
+        if (isStatic()) render();
+      }
+    });
+
     const fontsSet = document.fonts as FontFaceSet & {
       addEventListener?: (t: string, cb: () => void) => void;
     };
@@ -720,6 +758,7 @@ export function TendrilField() {
       window.removeEventListener("scroll", onScrollStatic);
       window.removeEventListener("scroll", onScrollAny);
       window.clearTimeout(scrollStopTimer);
+      offInversion();
       themeObs.disconnect();
       ro.disconnect();
       headObs.disconnect();

@@ -16,7 +16,12 @@ import { CELL, RAMP } from "./engine";
 export type Palette = {
   ink: [number, number, number];
   accent: [number, number, number];
+  /* The morph seam's ink: the colour tendrils take inside the
+     inverted region, so they read on the far ground. */
+  invInk: [number, number, number];
 };
+
+export type SpriteKind = "ink" | "accent" | "inkInv";
 
 export const FONT_SPEC = `${CELL}px "IBM Plex Mono"`;
 export const FONT_STACK = '"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace';
@@ -64,7 +69,7 @@ export class SpriteAtlas {
   constructor(palette: Palette, ss: number) {
     this.ss = ss;
     const size = Math.max(2, Math.round(CELL * ss));
-    const bake = (char: string, kind: "ink" | "accent", rgb: [number, number, number], alpha: number) => {
+    const bake = (char: string, kind: SpriteKind, rgb: [number, number, number], alpha: number) => {
       const c = document.createElement("canvas");
       c.width = size;
       c.height = size;
@@ -79,12 +84,13 @@ export class SpriteAtlas {
     };
     for (const char of CHARS) {
       for (const a of INK_LEVELS) bake(char, "ink", palette.ink, a);
+      for (const a of INK_LEVELS) bake(char, "inkInv", palette.invInk, a);
       for (const a of ACCENT_LEVELS) bake(char, "accent", palette.accent, a);
     }
   }
 
-  get(char: string, kind: "ink" | "accent", alpha: number): HTMLCanvasElement | null {
-    const levels = kind === "ink" ? INK_LEVELS : ACCENT_LEVELS;
+  get(char: string, kind: SpriteKind, alpha: number): HTMLCanvasElement | null {
+    const levels = kind === "accent" ? ACCENT_LEVELS : INK_LEVELS;
     const key = `${char}|${kind}|${levels[levelFor(levels, alpha)]}`;
     return this.sprites.get(key) ?? null;
   }
