@@ -1,7 +1,12 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import { demoRun } from "@/lib/runData";
+import {
+  AnimatePresence,
+  motion,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
+import { demoRun, type DiffLine } from "@/lib/runData";
 import { CardHead } from "./kit";
 
 /* The PR card: the demo run's real merge, PR #8 in synthelabs/support-bot.
@@ -9,7 +14,10 @@ import { CardHead } from "./kit";
    reads Open, then Merged; a unified diff with line numbers, red removals
    and green additions in soft tints. The diff lines are the kept lines of
    the change the PR actually made to prompt.md, verbatim excerpts of the
-   recorded before/after prompts (see lib/runData.ts). The pill swap is
+   recorded before/after prompts (see lib/runData.ts). Lane V2: while
+   round 1 is being tested the diff composes line by line on a motion
+   value (each line eases from dim to full as the change is written),
+   and at the merge beat the additions flash once as the pill flips,
    the card's one shared-element-style transition (C3): the same pill,
    in the same place, becoming the merged state at the loop's peak.
    GitHub's merged purple is deliberately not imported: on this site the
@@ -45,7 +53,40 @@ function StatePill({ merged }: { merged: boolean }) {
   );
 }
 
-export function PullRequestCard({ merged }: { merged: boolean }) {
+/** One diff line, activated by the composition value: line i runs
+    from dim to full as the value crosses i..i+1, with a small settle
+    from the left. Motion-value driven, so composing costs no React
+    renders. At rest (value at its max) every line reads full. */
+function DiffRow({
+  line,
+  index,
+  diff,
+}: {
+  line: DiffLine;
+  index: number;
+  diff: MotionValue<number>;
+}) {
+  const opacity = useTransform(diff, [index, index + 1], [0.22, 1]);
+  const x = useTransform(diff, [index, index + 1], [6, 0]);
+  return (
+    <motion.div className={`console-diff-line is-${line.kind}`} style={{ opacity, x }}>
+      <span className="console-diff-sign" aria-hidden="true">
+        {line.kind === "add" ? "+" : line.kind === "del" ? "−" : " "}
+      </span>
+      <span className="console-diff-text">{line.text}</span>
+    </motion.div>
+  );
+}
+
+export function PullRequestCard({
+  merged,
+  diff,
+}: {
+  merged: boolean;
+  /** Composition position, 0..(diff lines). Starts at max: the
+      recorded, merged diff, fully written. */
+  diff: MotionValue<number>;
+}) {
   const pr = demoRun.pullRequest;
   return (
     <>
@@ -57,14 +98,13 @@ export function PullRequestCard({ merged }: { merged: boolean }) {
       <p className="console-pr-title">
         {pr.title} <span className="console-pr-num">#{pr.number}</span>
       </p>
-      <div className="console-diff" role="img" aria-label={`Diff of prompt.md in pull request ${pr.number}: ${pr.fullTitle}`}>
+      <div
+        className={merged ? "console-diff is-merged" : "console-diff"}
+        role="img"
+        aria-label={`Diff of prompt.md in pull request ${pr.number}: ${pr.fullTitle}`}
+      >
         {pr.diff.map((line, i) => (
-          <div key={i} className={`console-diff-line is-${line.kind}`}>
-            <span className="console-diff-sign" aria-hidden="true">
-              {line.kind === "add" ? "+" : line.kind === "del" ? "−" : " "}
-            </span>
-            <span className="console-diff-text">{line.text}</span>
-          </div>
+          <DiffRow key={i} line={line} index={i} diff={diff} />
         ))}
       </div>
       <p className="console-meta">

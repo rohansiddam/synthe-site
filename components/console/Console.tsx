@@ -9,7 +9,10 @@ import {
 } from "framer-motion";
 import { demoRun } from "@/lib/runData";
 import {
+  CHECK_FLIP_AT,
   CYCLE_MS,
+  DIFF_AT,
+  DIFF_MS,
   DRAW_AT,
   DRAW_MS,
   DRAW_UNITS,
@@ -17,11 +20,12 @@ import {
   HOLD_MS,
   LOOP_MS,
   MERGE_PHASE,
+  PHASE_STARTS,
+  REPORT_AT,
   RESET_MS,
-  SPEND_FILL_AT,
-  SPEND_MS,
+  SPEND_STEP_MS,
   activeRound,
-  checksPassing,
+  checksFlipped,
   phaseAt,
   roundsDone,
 } from "./timeline";
@@ -33,22 +37,45 @@ import { PullRequestCard } from "./PullRequestCard";
 import { SpendCard } from "./SpendCard";
 import { ReportCard } from "./ReportCard";
 
-/* The living console (Lane N2; self-playing loop by Lane N5): the
-   hero's worked example as a bento of six cards, each one a real
-   artifact of a recorded run. The console is just playing. It has no
-   controls and needs none: when it first scrolls into view the cards
-   assemble and the cycle starts; each cycle plays the record
-   (~12s), rests on the final recorded state for a 5s beat, eases
-   back to the start over 800ms, and plays again. Scrolled out of
-   view it pauses mid-cycle and resumes where it left off. The
-   server renders the final state, so the page is complete with
-   JavaScript off, with reduced motion, and before hydration
-   (Postel's law). The replay never invents data: it steps through
-   the states the runs actually recorded, on the timeline in
-   timeline.ts, and the score line is drawn by a continuous eased
-   tween along the recorded points, never point-to-point jumps. */
+/* The living console (Lane N2; self-playing loop by Lane N5; every
+   card alive internally by Lane V2): the hero's worked example as a
+   bento of six cards, each one a real artifact of a recorded run.
+   The console is just playing. It has no controls and needs none:
+   when it first scrolls into view the cards assemble and the cycle
+   starts; each cycle plays the record (~12s), rests on the final
+   recorded state for a 5s beat, eases back to the start over 800ms,
+   and plays again. Scrolled out of view it pauses mid-cycle and
+   resumes where it left off. The server renders the final state, so
+   the page is complete with JavaScript off, with reduced motion,
+   and before hydration (Postel's law).
+   Inside the cycle, each card runs its own part of the record on
+   the cues in timeline.ts: the climb draws continuously, the diff
+   composes line by line while round 1 is tested, the checks settle
+   one at a time off the merge beat, spend accumulates round by
+   round (holding where a round recorded no cost), and the report
+   prints line by line at the end. The continuous values run on
+   framer-motion tweens registered with the conductor, so a pause
+   freezes all of them at once; React state changes only when a
+   phase, a check count, or the report flag actually flips. */
 
 const SPEND_PCT = (demoRun.spendUsd / demoRun.budgetUsd) * 100;
+const DIFF_LINES = demoRun.pullRequest.diff.length;
+
+/** Cumulative spend targets (percent of budget) as each demo round
+    resolves: rounds 1, 2 and 4 add their recorded costs; round 3
+    recorded no cost, so its target holds; the last target is the
+    recorded total spend, which the parts round to. */
+const SPEND_STEPS: { at: number; pct: number }[] = (() => {
+  /* Rounds resolve at phases 2, 4, 5 and 6 (see ROUNDS_DONE in
+     timeline.ts), so their spend lands at those phase starts. */
+  const resolveAt = [PHASE_STARTS[2], PHASE_STARTS[4], PHASE_STARTS[5], PHASE_STARTS[6]];
+  let acc = 0;
+  return demoRun.rounds.map((r, i) => {
+    if (r.costUsd !== null) acc += r.costUsd;
+    const usd = i === demoRun.rounds.length - 1 ? demoRun.spendUsd : acc;
+    return { at: resolveAt[i], pct: (usd / demoRun.budgetUsd) * 100 };
+  });
+})();
 
 /** The climb: symmetric ease-in-out, so the line gathers pace and
     lands softly exactly on the merge beat. */
@@ -59,17 +86,28 @@ const RESET_EASE = [0.65, 0, 0.35, 1] as const;
 
 type Tween = ReturnType<typeof animate>;
 
+/** A live tween, tracked so the conductor can pause, resume and
+    stop every card's motion as one. Finished tweens are skipped:
+    replaying one would restart a card's part from its beginning. */
+interface Live {
+  ctrl: Tween;
+  done: boolean;
+}
+
 export function Console() {
   const controls = useAnimationControls();
   const reduceMotion = useReducedMotion();
   const shellRef = useRef<HTMLDivElement>(null);
   const [phase, setPhase] = useState(FINAL_PHASE);
   const [playing, setPlaying] = useState(false);
+  const [checksStep, setChecksStep] = useState<number>(CHECK_FLIP_AT.length);
+  const [reportPrinted, setReportPrinted] = useState(true);
   const [expanded, setExpanded] = useState(true);
   /* Continuous values, rendered at their recorded finals so SSR,
      no-JS and reduced motion all show the complete record. */
   const draw = useMotionValue(DRAW_UNITS);
   const spend = useMotionValue(SPEND_PCT);
+  const diff = useMotionValue(DIFF_LINES);
 
   /* On phones the grid shows three cards, the rest behind one labeled
      expansion (Hick's law). The expansion starts open so no-JS phones
@@ -97,12 +135,13 @@ export function Console() {
     let cycleStart = 0;
     let phaseCur = FINAL_PHASE;
     let playingCur = false;
+    let checksCur: number = CHECK_FLIP_AT.length;
+    let printedCur = true;
     let drawStarted = false;
-    let spendStarted = false;
+    let diffStarted = false;
     let resetStarted = false;
-    let drawTween: Tween | null = null;
-    let spendTween: Tween | null = null;
-    let resetTweens: Tween[] = [];
+    let spendStarted: boolean[] = SPEND_STEPS.map(() => false);
+    let live: Live[] = [];
 
     const setPhaseIf = (p: number) => {
       if (p !== phaseCur) {
@@ -116,68 +155,107 @@ export function Console() {
         setPlaying(v);
       }
     };
-    const stopTweens = () => {
-      drawTween?.stop();
-      spendTween?.stop();
-      resetTweens.forEach((t) => t.stop());
-      drawTween = null;
-      spendTween = null;
-      resetTweens = [];
+    const setChecksIf = (n: number) => {
+      if (n !== checksCur) {
+        checksCur = n;
+        setChecksStep(n);
+      }
+    };
+    const setPrintedIf = (v: boolean) => {
+      if (v !== printedCur) {
+        printedCur = v;
+        setReportPrinted(v);
+      }
+    };
+
+    const reg = (ctrl: Tween): Live => {
+      const entry: Live = { ctrl, done: false };
+      ctrl.then(() => {
+        entry.done = true;
+      });
+      live.push(entry);
+      return entry;
+    };
+    const pauseLive = () => live.forEach((e) => {
+      if (!e.done) e.ctrl.pause();
+    });
+    const playLive = () => live.forEach((e) => {
+      if (!e.done) e.ctrl.play();
+    });
+    const stopLive = () => {
+      live.forEach((e) => e.ctrl.stop());
+      live = [];
     };
 
     const beginCycle = (now: number) => {
-      stopTweens();
+      stopLive();
       cycleStart = now;
       pausedTotal = 0;
       drawStarted = false;
-      spendStarted = false;
+      diffStarted = false;
       resetStarted = false;
+      spendStarted = SPEND_STEPS.map(() => false);
       draw.set(0);
       spend.set(0);
+      diff.set(0);
       setPhaseIf(0);
+      setChecksIf(0);
+      setPrintedIf(false);
       setPlayingIf(true);
     };
 
     /* The conductor: one cheap interval derives the cycle state from
-       elapsed time. It only touches React state when a phase or the
-       playing flag actually changes; the continuous values (score
-       draw, spend fill) run on framer-motion tweens, which pause and
-       resume with the cycle. */
+       elapsed time. It only touches React state when a phase, the
+       playing flag, the flipped-check count or the report flag
+       actually changes; the continuous values (score draw, diff
+       composition, spend accumulation) run on registered tweens,
+       which pause and resume with the cycle. */
     const tick = () => {
       if (disposed || paused || !started) return;
       const t = performance.now() - cycleStart - pausedTotal;
       if (t < LOOP_MS) {
         setPlayingIf(true);
         setPhaseIf(phaseAt(t));
+        setChecksIf(checksFlipped(t));
+        setPrintedIf(t >= REPORT_AT);
         if (!drawStarted && t >= DRAW_AT) {
           drawStarted = true;
-          drawTween = animate(draw, DRAW_UNITS, {
-            duration: DRAW_MS / 1000,
-            ease: CLIMB_EASE,
-          });
+          reg(animate(draw, DRAW_UNITS, { duration: DRAW_MS / 1000, ease: CLIMB_EASE }));
         }
-        if (!spendStarted && t >= SPEND_FILL_AT) {
-          spendStarted = true;
-          spendTween = animate(spend, SPEND_PCT, {
-            duration: SPEND_MS / 1000,
-            ease: "easeOut",
-          });
+        if (!diffStarted && t >= DIFF_AT) {
+          diffStarted = true;
+          reg(animate(diff, DIFF_LINES, { duration: DIFF_MS / 1000, ease: "easeInOut" }));
         }
+        SPEND_STEPS.forEach((step, i) => {
+          if (!spendStarted[i] && t >= step.at) {
+            spendStarted[i] = true;
+            if (Math.abs(spend.get() - step.pct) > 0.001) {
+              reg(
+                animate(spend, step.pct, {
+                  duration: SPEND_STEP_MS / 1000,
+                  ease: "easeOut",
+                }),
+              );
+            }
+          }
+        });
       } else if (t < LOOP_MS + HOLD_MS) {
         /* The rest beat: the finished record, held inside the cycle. */
         setPlayingIf(false);
         setPhaseIf(FINAL_PHASE);
+        setChecksIf(CHECK_FLIP_AT.length);
+        setPrintedIf(true);
       } else if (t < CYCLE_MS) {
         if (!resetStarted) {
           resetStarted = true;
           setPlayingIf(false);
           setPhaseIf(0);
-          drawTween?.stop();
-          spendTween?.stop();
-          resetTweens = [
-            animate(draw, 0, { duration: (RESET_MS / 1000) * 0.75, ease: RESET_EASE }),
-            animate(spend, 0, { duration: (RESET_MS / 1000) * 0.6, ease: RESET_EASE }),
-          ];
+          setChecksIf(0);
+          setPrintedIf(false);
+          stopLive();
+          reg(animate(draw, 0, { duration: (RESET_MS / 1000) * 0.75, ease: RESET_EASE }));
+          reg(animate(spend, 0, { duration: (RESET_MS / 1000) * 0.6, ease: RESET_EASE }));
+          reg(animate(diff, 0, { duration: (RESET_MS / 1000) * 0.7, ease: RESET_EASE }));
         }
       } else {
         beginCycle(performance.now());
@@ -199,17 +277,13 @@ export function Console() {
               /* Back in view: resume mid-cycle, where it left off. */
               paused = false;
               pausedTotal += performance.now() - pausedAt;
-              drawTween?.play();
-              spendTween?.play();
-              resetTweens.forEach((t) => t.play());
+              playLive();
             }
           } else if (started && !paused) {
             /* Off-screen: freeze the cycle, tweens included. */
             paused = true;
             pausedAt = performance.now();
-            drawTween?.pause();
-            spendTween?.pause();
-            resetTweens.forEach((t) => t.pause());
+            pauseLive();
           }
         });
       },
@@ -220,9 +294,9 @@ export function Console() {
       disposed = true;
       window.clearInterval(interval);
       io.disconnect();
-      stopTweens();
+      stopLive();
     };
-  }, [controls, reduceMotion, draw, spend]);
+  }, [controls, reduceMotion, draw, spend, diff]);
 
   const done = roundsDone(phase);
   const merged = phase >= MERGE_PHASE;
@@ -246,17 +320,17 @@ export function Console() {
             <RunCard done={done} active={activeRound(phase, playing)} />
           </CardShell>
           <CardShell index={2} className="cell-checks" controls={controls} labelledBy="console-checks-h">
-            <ChecksCard passing={checksPassing(phase)} />
+            <ChecksCard flipped={checksStep} />
           </CardShell>
           <div className={expanded ? "console-more is-open" : "console-more"}>
             <CardShell index={3} className="cell-pr" controls={controls} labelledBy="console-pr-h">
-              <PullRequestCard merged={merged} />
+              <PullRequestCard merged={merged} diff={diff} />
             </CardShell>
             <CardShell index={4} className="cell-spend" controls={controls} labelledBy="console-spend-h">
               <SpendCard pct={spend} />
             </CardShell>
             <CardShell index={5} className="cell-report" controls={controls} labelledBy="console-report-h">
-              <ReportCard />
+              <ReportCard printed={reportPrinted} />
             </CardShell>
           </div>
         </div>

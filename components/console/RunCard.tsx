@@ -4,7 +4,11 @@ import { CardHead, RoundState } from "./kit";
 /* The run card: the demo run's four rounds, in their recorded order,
    resolving one at a time as the replay reaches them. States render
    as the logo mark in its locked, stale, refused and open states with
-   the state word in mono (see RoundState in kit.tsx). The failed
+   the state word in mono (see RoundState in kit.tsx). Lane V2: each
+   row carries a state pip on its rail (hollow while queued, breathing
+   while the round is being tested, filled in the outcome's colour
+   once it resolves), and a round's cost and note ease in as it
+   resolves rather than sitting there from the start. The failed
    round reads as failed (never smoothed into a skip), and its cost
    reads as not recorded, because the record says its cost is
    unknown. */
@@ -33,6 +37,13 @@ export function RunCard({
         {demoRun.rounds.map((r) => {
           const isDone = r.round <= done;
           const isActive = r.round === active;
+          const pipKind = isDone
+            ? r.outcome === "no winner"
+              ? "no-winner"
+              : r.outcome
+            : isActive
+              ? "testing"
+              : "queued";
           return (
             <li
               key={r.round}
@@ -44,7 +55,10 @@ export function RunCard({
                     : "console-round"
               }
             >
-              <span className="console-round-n">Round {r.round}</span>
+              <span className="console-round-n">
+                <span className={`console-pip is-${pipKind}`} aria-hidden="true" />
+                Round {r.round}
+              </span>
               {isDone ? (
                 <RoundState
                   kind={
