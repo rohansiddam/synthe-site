@@ -39,7 +39,8 @@ const OBSTACLE_SEL = [
   "a", "button", "input", "textarea", "select", "label", "img", "table",
   "pre", "form", "code",
   ".card", ".cmd", ".term", ".warn", ".copy", ".seg", ".wx-diff",
-  ".scene-file", ".report-band-lines", ".partner-box",
+  ".scene-file", ".report-band-lines", ".partner-box", ".hero-emblem",
+  ".ascii-mark",
   "[class*='cell']", "[data-port]",
 ].join(",");
 
@@ -293,23 +294,52 @@ export function measure(doc: Document): MeasureResult {
       }
     }
   }
-  /* Obstacle halo: one dear ring around every wall, gentler inside the
-     gutters where the channel is tight by nature. */
-  for (let cy = 0; cy < rows; cy++) {
-    for (let cx = 0; cx < cols; cx++) {
-      const i = cy * cols + cx;
-      if (!blocked[i]) continue;
+  /* Obstacle repulsion: a smooth gradient off every wall, not a
+     single dear ring. A one-ring halo at flat cost lets a tip skate
+     the perimeter at constant score and trace the outline of the
+     block it is skirting; a gradient makes every step along the wall
+     lose to the step away from it, so heads deflect into open
+     channel well before they can slide. Multi-source BFS from the
+     walls, four cells deep, gives each free cell its distance to the
+     nearest wall; strength falls 1 / 0.55 / 0.3 / 0.15 across it.
+     Gentler inside the gutters, where the channel is tight by
+     nature, but the gradient still centres tendrils in the channel
+     instead of hugging its edges. */
+  const haloDist = new Uint8Array(cols * rows);
+  {
+    const queue: number[] = [];
+    for (let i = 0; i < cols * rows; i++) if (blocked[i]) queue.push(i);
+    for (let qi = 0; qi < queue.length; qi++) {
+      const cur = queue[qi];
+      const d = haloDist[cur] + 1;
+      if (d > 4) continue;
+      const cx = cur % cols;
+      const cy = Math.floor(cur / cols);
       for (let dy = -1; dy <= 1; dy++) {
         for (let dx = -1; dx <= 1; dx++) {
+          if (dx === 0 && dy === 0) continue;
           const nx = cx + dx;
           const ny = cy + dy;
           if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) continue;
-          const j = ny * cols + nx;
-          if (blocked[j]) continue;
-          const px = nx * CELL + CELL / 2;
-          cost[j] = Math.max(cost[j], inGutter(px) ? 1.25 : 2.3);
+          const ni = ny * cols + nx;
+          if (blocked[ni] || haloDist[ni] !== 0) continue;
+          if (dx !== 0 && dy !== 0 && (blocked[cy * cols + nx] || blocked[ny * cols + cx])) continue;
+          haloDist[ni] = d;
+          queue.push(ni);
         }
       }
+    }
+  }
+  const HALO_STRENGTH = [0, 1, 0.55, 0.3, 0.15];
+  const halo = new Float32Array(cols * rows);
+  for (let i = 0; i < cols * rows; i++) {
+    if (blocked[i]) continue;
+    const s = HALO_STRENGTH[haloDist[i]] ?? 0;
+    halo[i] = s;
+    if (s > 0) {
+      const px = (i % cols) * CELL + CELL / 2;
+      const repel = 1.15 + s * (inGutter(px) ? 1.8 : 3.4);
+      if (repel > cost[i]) cost[i] = repel;
     }
   }
 
@@ -356,6 +386,7 @@ export function measure(doc: Document): MeasureResult {
     rows,
     blocked,
     cost,
+    halo,
     ports,
     heroSources: sources,
     regionRows,
@@ -406,10 +437,14 @@ export function measure(doc: Document): MeasureResult {
           const ni = ny * cols + nx;
           const d = field[ni];
           if (d < 0 || d > field[cur]) continue;
-          if (d < nextD || (d === nextD && cost[ni] < nextCost)) {
+          /* Tie-break on cost plus repulsion: among equal-distance
+             steps, the anchored route runs mid-channel instead of
+             hugging the wall the shortest path would skim. */
+          const key = cost[ni] + halo[ni] * 2.0;
+          if (d < nextD || (d === nextD && key < nextCost)) {
             next = ni;
             nextD = d;
-            nextCost = cost[ni];
+            nextCost = key;
           }
         }
       }

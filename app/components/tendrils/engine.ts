@@ -10,8 +10,12 @@
 export const CELL = 11;
 
 /* Glyph atlas. A trail cell stores one byte: family * 32 + seed.
+   Trails only ever write family 0, the density ramp: a letter or a
+   digit floating in a margin reads as debris, not as a path, so the
+   SYNTHE letters and digits live exclusively inside the emblem.
    Family 0 renders from the density ramp (so a thinning cell visibly
-   steps down the ramp as it fades), 1 is a letter of SYNTHE, 2 a digit. */
+   steps down the ramp as it fades). Families 1 and 2 are retained
+   only as byte-encoding history; nothing writes them any more. */
 /* Trail ramp: six visible glyphs, kept short on purpose (the dense
    ramp lives in the emblem, not in the trails). */
 export const RAMP = " .:-=+*";
@@ -50,6 +54,11 @@ export type World = {
   rows: number;
   blocked: Uint8Array;
   cost: Float32Array;
+  /* Repulsion strength per cell, 0..1: a smooth gradient off every
+     wall (1 at one cell out, gone by five). Steering reads it to
+     deflect heads into open channel before they can slide along a
+     wall, and the escape logic reads it to break wall-hugging. */
+  halo: Float32Array;
   ports: PortGeom[];
   heroSources: { x: number; y: number }[]; // page px
   regionRows: number; // grid rows per density region (~one viewport)
@@ -80,6 +89,11 @@ export type Tip = {
   fromPort: number; // port index this tip sprouted from, -1 = hero
   target: number; // port index this tip is seeking, -1 = pure wanderer
   wp: number; // cursor into the target's approach path, -1 = not on it
+  hug: number; // seconds spent on high-repulsion ground by a wall
+  escape: number; // seconds of forced break-away steering remaining
+  escapeDir: number; // heading the escape steering holds
+  hist: { x: number; y: number; traveled: number }[]; // loop guard samples
+  histT: number; // seconds since the last loop-guard sample
 };
 
 export type Pulse = {
@@ -165,6 +179,8 @@ export class TendrilEngine {
     const old = this.world;
     const oldTrail = this.trail;
     const oldGlyph = this.glyph;
+    const oldDockedAt = this.portDockedAt;
+    const oldDockCount = this.portDockCount;
     this.world = world;
     const n = world.cols * world.rows;
     this.trail = new Float32Array(n);
@@ -183,16 +199,36 @@ export class TendrilEngine {
         this.glyph[m] = oldGlyph[o];
       }
     }
+    /* Dock state carries over, matched by port name. Page height is
+       not stable on this site (the console's replay cycle grows and
+       collapses its section by ~121px), so worlds swap several times
+       a minute; resetting counts and cooldowns on every swap kept
+       every seeker targeted at the first port forever and the
+       cascade never advanced past it. */
     this.portDockedAt = new Float32Array(world.ports.length).fill(-1000);
     this.portDockCount = new Uint8Array(world.ports.length);
+    world.ports.forEach((p, i) => {
+      const oi = old.ports.findIndex((op) => op.name === p.name);
+      if (oi >= 0 && oldDockedAt[oi] !== undefined) {
+        this.portDockedAt[i] = oldDockedAt[oi];
+        this.portDockCount[i] = oldDockCount[oi];
+      }
+    });
+    /* Tip paths and the pulse pool are cell indices: they stay
+       valid across a swap when the column count is unchanged (the
+       common case; height oscillation does not touch them). Only a
+       real width change invalidates them. */
+    const sameCols = old.cols === world.cols;
     for (const tip of this.tips) {
       tip.x = Math.min(Math.max(tip.x, 1), world.cols - 2);
       tip.y = Math.min(Math.max(tip.y, 1), world.rows - 2);
-      tip.path = [];
+      if (!sameCols) tip.path = [];
       tip.wp = -1; // approach paths were re-anchored with the world
     }
-    this.paths = [];
-    this.pulses = [];
+    if (!sameCols) {
+      this.paths = [];
+      this.pulses = [];
+    }
     this.recount();
     this.version++;
   }
@@ -223,6 +259,32 @@ export class TendrilEngine {
       }
     }
     return false;
+  }
+
+  private haloAt(cx: number, cy: number) {
+    if (!this.inBounds(cx, cy)) return 0;
+    return this.world.halo[cy * this.world.cols + cx] ?? 0;
+  }
+
+  /* Steepest descent of the repulsion field around a point: the
+     heading that leaves a wall fastest. Escape steering holds this
+     (recomputed per step) so a hugging tip walks out of the halo
+     instead of skating along it. */
+  private haloDescent(x: number, y: number, fallback: number, scrollY: number) {
+    let best = fallback;
+    let bestScore = Infinity;
+    for (let k = 0; k < 8; k++) {
+      const a = (k * Math.PI) / 4;
+      const px = Math.round(x + Math.cos(a) * 2.4);
+      const py = Math.round(y + Math.sin(a) * 2.4);
+      if (this.blockedAt(px, py, scrollY)) continue;
+      const score = this.haloAt(px, py) * 3 + (this.world.cost[py * this.world.cols + px] ?? 1) * 0.2;
+      if (score < bestScore) {
+        bestScore = score;
+        best = a;
+      }
+    }
+    return best;
   }
 
   private costAt(cx: number, cy: number, scrollY: number) {
@@ -277,6 +339,11 @@ export class TendrilEngine {
       fromPort,
       target: -1,
       wp: -1,
+      hug: 0,
+      escape: 0,
+      escapeDir: 0,
+      hist: [],
+      histT: 0,
     };
     this.tips.push(tip);
     return tip;
@@ -304,6 +371,26 @@ export class TendrilEngine {
   spawnFromPort(portIdx: number) {
     const p = this.world.ports[portIdx];
     if (!p) return;
+    /* Children sprout from the port's dock anchor, not from fixed
+       spots below the port's rect: an interior port's bottom edge is
+       embedded in neighbouring content (the score card's children
+       landed inside the console grid and never spawned at all, which
+       killed the cascade at its first hop). The anchor is reachable
+       free ground by construction, and the anchored approach paths
+       are extracted anchor to anchor, so the hop geometry matches. */
+    if (p.dockX !== undefined && p.dockY !== undefined) {
+      for (let k = 0; k < 2; k++) {
+        const tip = this.spawn(
+          (p.dockX + 0.5) * CELL,
+          (p.dockY + 0.5) * CELL,
+          Math.PI / 2 + (this.rand() - 0.5) * 0.6,
+          0.55 + this.rand() * 0.2,
+          portIdx,
+        );
+        if (tip && this.rand() < 0.85) tip.target = this.chooseTarget(portIdx);
+      }
+      return;
+    }
     const spots = [0.3, 0.7].map((f) => ({
       x: p.x + p.w * f,
       y: p.y + p.h + CELL * 0.8,
@@ -384,10 +471,11 @@ export class TendrilEngine {
     const target = 0.42 + tip.width * 0.34; // settled mid density
     if (this.trail[i] < target) {
       if (this.trail[i] <= 0.02) {
+        /* Ramp only. A lone letter or digit in a margin reads as
+           floating debris; the ramp reads as a stream line at any
+           zoom, light end first. */
         const h = hash(i * 3.7 + this.time * 0.013);
-        if (h < 0.62) this.glyph[i] = FAMILY_RAMP * 32 + (Math.floor(h * 997) % 32);
-        else if (h < 0.83) this.glyph[i] = FAMILY_LETTER * 32 + (Math.floor(h * 991) % LETTERS.length);
-        else this.glyph[i] = FAMILY_DIGIT * 32 + (Math.floor(h * 983) % DIGITS.length);
+        this.glyph[i] = FAMILY_RAMP * 32 + (Math.floor(h * 997) % 32);
         const region = Math.floor(cy / w.regionRows);
         if (this.regionTrail[region] !== undefined) this.regionTrail[region]++;
       }
@@ -468,6 +556,8 @@ export class TendrilEngine {
       state: t.state,
       path: t.path.length,
       stuck: Math.round(t.stuck * 10) / 10,
+      target: t.target >= 0 ? this.world.ports[t.target]?.name : null,
+      from: t.fromPort >= 0 ? this.world.ports[t.fromPort]?.name : "hero",
     }));
   }
 
@@ -547,15 +637,16 @@ export class TendrilEngine {
         continue;
       }
 
-      /* Region tip cap: a tip that wanders into a crowded region slows
-         and stops laying (it still draws its head), preventing hair. */
+      /* Region tip count gates forking only. Laying is never gated:
+         a head that travels without laying leaves a broken trail,
+         and a broken trail reads as scattered debris. Density is
+         governed by the decay budget, which thins whole trails down
+         the ramp instead of punching holes in them. */
       const region = Math.floor(tip.y / w.regionRows);
       let regionTips = 0;
       for (const other of this.tips) {
         if (Math.floor(other.y / w.regionRows) === region && other.state === "grow") regionTips++;
       }
-      const overBudget = this.regionTrail[region] > this.regionBudget(region);
-      const canLay = regionTips <= 3 && !overBudget;
 
       /* Steering: wander + cost probes + frontier pull. A seeker
          scores its probes on the target port's BFS distance field
@@ -600,11 +691,19 @@ export class TendrilEngine {
       }
       /* A gentle capped bend toward the frontier on top of the probe
          choice: persistent enough to drift the walk page-ward, weak
-         enough that wander and the cost field still shape the path. */
+         enough that wander and the cost field still shape the path.
+         Seekers are exempt from the bend and get a quieter wander:
+         they already have somewhere to be, and in a narrow channel
+         (the hero/console seam is a handful of rows tall) the
+         down-page bend just grinds them against the channel's lower
+         wall, bump-turn after bump-turn, while the distance gradient
+         is trying to walk them along it. */
       const frontierHeading = frontierY >= tip.y * CELL ? Math.PI / 2 : -Math.PI / 2;
       const bend =
         Math.max(-0.5, Math.min(0.5, angDiff(frontierHeading, tip.heading + bestAngle))) * 0.12;
-      let desired = tip.heading + bestAngle + wander(tip.seed, this.time) * 0.35 + bend;
+      const isSeeker = tip.target >= 0 && !!seekField;
+      let desired =
+        tip.heading + bestAngle + wander(tip.seed, this.time) * (isSeeker ? 0.15 : 0.35) + (isSeeker ? 0 : bend);
 
       /* Hybrid docking: inside the approach zone (BFS distance <= 26
          cells), a seeker stops free-wandering and follows the port's
@@ -643,6 +742,58 @@ export class TendrilEngine {
           tip.wp = -1;
         }
       }
+      /* Wall-hug bookkeeping and the two break-away guards. The
+         repulsion gradient in the cost field deflects most wall
+         approaches; these guards handle what deflection misses, so
+         a tip can never settle into tracing a content outline.
+         Hug guard: too long on high-repulsion ground means the tip
+         is sliding along a wall; escape down the halo gradient.
+         Loop guard: a tip that travels far but barely displaces is
+         circling (the closed ring around one content block is the
+         extreme case); escape toward the frontier and drop any
+         approach pursuit so the loop cannot re-form on the path. */
+      const headCx = Math.min(w.cols - 1, Math.max(0, Math.round(tip.x)));
+      const headCy = Math.min(w.rows - 1, Math.max(0, Math.round(tip.y)));
+      const haloHere = this.haloAt(headCx, headCy);
+      if (tip.escape <= 0) {
+        if (haloHere > 0.5) tip.hug += dt;
+        else tip.hug = Math.max(0, tip.hug - dt * 2);
+        if (tip.hug > 0.7) {
+          tip.escapeDir = this.haloDescent(tip.x, tip.y, tip.heading, scrollY);
+          tip.escape = 1.0;
+          tip.hug = 0;
+        }
+      }
+      tip.histT += dt;
+      if (tip.histT >= 0.5) {
+        tip.histT = 0;
+        tip.hist.push({ x: tip.x, y: tip.y, traveled: tip.traveled });
+        if (tip.hist.length > 14) tip.hist.shift();
+        if (tip.escape <= 0 && tip.hist.length >= 10) {
+          const h0 = tip.hist[0];
+          const trav = tip.traveled - h0.traveled;
+          const disp = Math.hypot(tip.x - h0.x, tip.y - h0.y);
+          if (trav > 20 && disp < trav * 0.22) {
+            tip.escapeDir =
+              haloHere > 0.2
+                ? this.haloDescent(tip.x, tip.y, tip.heading, scrollY)
+                : frontierY >= tip.y * CELL
+                  ? Math.PI / 2
+                  : -Math.PI / 2;
+            tip.escape = 1.1;
+            tip.hist.length = 0;
+            tip.wp = -1;
+          }
+        }
+      }
+      if (tip.escape > 0) {
+        tip.escape -= dt;
+        /* Near a wall the descent direction tracks the gradient;
+           in open space it holds the frontier break-away heading. */
+        if (haloHere > 0.2) tip.escapeDir = this.haloDescent(tip.x, tip.y, tip.escapeDir, scrollY);
+        desired = tip.escapeDir;
+      }
+
       const turn = angDiff(desired, tip.heading);
       const maxTurn = 2.7 * dt;
       tip.heading += Math.max(-maxTurn, Math.min(maxTurn, turn));
@@ -664,7 +815,7 @@ export class TendrilEngine {
         tip.x = nx;
         tip.y = ny;
         moved += sub;
-        if (canLay) this.lay(tip, cx, cy);
+        this.lay(tip, cx, cy);
         /* Dock check at the head cell. */
         const port = this.portNear(cx, cy);
         if (port >= 0) {
@@ -672,6 +823,27 @@ export class TendrilEngine {
           break;
         }
       }
+      /* Arrival without a dock: the seeker reached its target's
+         anchor ground while the port is on its post-dock cooldown,
+         so portNear let it pass. Left alone it would camp the
+         distance field's minimum, orbiting the anchor and laying a
+         dense blob in the seam (the exact failure the cooldown
+         carry-over across world swaps exposed). Move it on to the
+         next port that wants a dock, or release it as a wanderer. */
+      if (tip.state === "grow" && tip.target >= 0) {
+        const field = this.world.distFields[tip.target];
+        if (field && this.time - this.portDockedAt[tip.target] < 50) {
+          const hx = Math.min(w.cols - 1, Math.max(0, Math.round(tip.x)));
+          const hy = Math.min(w.rows - 1, Math.max(0, Math.round(tip.y)));
+          const dHere = field[hy * w.cols + hx];
+          if (dHere >= 0 && dHere <= 2) {
+            tip.target = this.chooseTarget(tip.target);
+            tip.wp = -1;
+            tip.hist.length = 0;
+          }
+        }
+      }
+
       tip.traveled += moved;
       if (moved < tip.speed * dt * 0.25) tip.stuck += dt;
       else tip.stuck = Math.max(0, tip.stuck - dt * 2);

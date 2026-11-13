@@ -88,6 +88,8 @@ export function TendrilField() {
 
     let renders = 0;
     let drawnCells = 0;
+    let pregrowMs = 0;
+    let pregrowSimSeconds = 0;
     let frameCostEma = 0;
     let rafDeltaEma = 16;
     let govChecks = 0;
@@ -288,6 +290,8 @@ export function TendrilField() {
           scrollPaused: scrollActive,
           renders,
           drawnCells,
+          pregrowMs: Math.round(pregrowMs),
+          pregrowSimSeconds,
           frameCostMs: Math.round(frameCostEma * 100) / 100,
           rafDeltaMs: Math.round(rafDeltaEma * 10) / 10,
           dpr,
@@ -311,9 +315,32 @@ export function TendrilField() {
         return;
       }
 
+      /* Pregrow: fast-forward the simulation ~30 sim-seconds before
+         the live loop starts, so the page is born with a connected
+         network through the first sections and the dock cascade
+         already staged downward, instead of spending its first half
+         minute as a few glyphs around the hero. The world is fully
+         measured above, so the pregrow respects the same obstacle
+         grid as live growth. It runs after mount (the page has
+         painted; init already awaited the font), in 2 sim-second
+         slices with a yield between them, and its main-thread cost
+         is measured into the debug stats as pregrowMs. The
+         reduced-motion path above keeps its own 90s+ static
+         fast-forward and never reaches here. */
+      const PREGROW_SECONDS = 30;
+      const SLICE_SECONDS = 2;
+      for (let doneS = 0; doneS < PREGROW_SECONDS && !disposed; doneS += SLICE_SECONDS) {
+        const t0 = performance.now();
+        engine.fastForward(Math.min(SLICE_SECONDS, PREGROW_SECONDS - doneS));
+        pregrowMs += performance.now() - t0;
+        pregrowSimSeconds = Math.min(PREGROW_SECONDS, doneS + SLICE_SECONDS);
+        if (doneS + SLICE_SECONDS < PREGROW_SECONDS) {
+          await new Promise((r) => window.setTimeout(r, 0));
+        }
+      }
+      if (disposed) return;
       engine.spawnFromHero();
-      window.setTimeout(() => !disposed && engine?.spawnFromHero(), 1300);
-      window.setTimeout(() => !disposed && engine?.spawnFromHero(), 3200);
+      render();
 
       let last = performance.now();
       let lastScrollY = window.scrollY;

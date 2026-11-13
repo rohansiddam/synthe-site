@@ -11,7 +11,7 @@
    the real face arrived. The component re-bakes on fonts.loadingdone
    in case the face swaps in late. */
 
-import { CELL, DIGITS, FAMILY_DIGIT, FAMILY_LETTER, LETTERS, RAMP } from "./engine";
+import { CELL, RAMP } from "./engine";
 
 export type Palette = {
   ink: [number, number, number];
@@ -25,7 +25,10 @@ export const FONT_STACK = '"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo,
 export const INK_LEVELS = [0.16, 0.27, 0.38, 0.5, 0.63, 0.76, 0.89, 1];
 export const ACCENT_LEVELS = [0.38, 0.62, 0.85, 1];
 
-const CHARS = Array.from(new Set([...RAMP.slice(1), ...LETTERS, ...DIGITS]));
+/* The trail alphabet is the ramp and nothing else (wave 2): letters
+   and digits in a margin read as floating debris, not as a path.
+   They remain in the emblem, which has its own renderer. */
+const CHARS = Array.from(new Set([...RAMP.slice(1)]));
 
 function levelFor(levels: number[], alpha: number) {
   let best = 0;
@@ -40,14 +43,16 @@ function levelFor(levels: number[], alpha: number) {
   return best;
 }
 
-/* Decode a trail cell's glyph byte at a given settled density. Ramp
-   cells re-derive their character from density, so a thinning cell
-   steps down the ramp as it fades; letters and digits are stable. */
+/* Decode a trail cell at a given settled density. The character is
+   re-derived from density, so a thinning cell steps down the ramp
+   (from * through + = - : to .) as it fades, and only clears once it
+   has faded through the light end: lightness is expressed by glyph
+   choice, never by a missing cell in the middle of a path. The
+   stored byte's seed is unused now that the ramp is the whole
+   alphabet; it is kept in the encoding for stability across world
+   swaps within a session. */
 export function glyphChar(code: number, density: number): string {
-  const family = Math.floor(code / 32);
-  const seed = code % 32;
-  if (family === FAMILY_LETTER) return LETTERS[seed % LETTERS.length];
-  if (family === FAMILY_DIGIT) return DIGITS[seed % DIGITS.length];
+  void code;
   const idx = Math.max(1, Math.min(RAMP.length - 1, Math.floor(density * RAMP.length)));
   return RAMP[idx];
 }
