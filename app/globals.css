@@ -963,3 +963,44 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
     animation: n5-breathe 3.8s cubic-bezier(.45, 0, .55, 1) infinite alternate; }
   html:not(.motion-paused) .pg-home .console-head-halo { animation: n5-halo 2.9s cubic-bezier(.22, 1, .36, 1) infinite; }
 }
+
+/* ================= Lane D2: dither studies (app/dither-motion) =================
+   Exploration route only. Every rule is scoped under .pg-dither; the
+   production pages never carry that class. The canvases draw in the
+   site's tokens, so no colors are defined here. */
+.pg-dither .d2-wrap { width: 100%; max-width: var(--page-width); margin: 0 auto;
+  padding: 0 var(--gutter); box-sizing: border-box; }
+.pg-dither .d2-head { padding: clamp(40px, 7vw, 72px) 0 4px; max-width: 720px; }
+.pg-dither .d2-title { margin: 10px 0 12px; font-size: clamp(34px, 5vw, 54px);
+  line-height: 1.05; letter-spacing: -.02em; font-weight: 560; }
+.pg-dither .d2-lede { margin: 0; font-size: 16px; line-height: 1.6; color: var(--muted);
+  text-wrap: pretty; }
+.pg-dither .d2-section { margin-top: clamp(48px, 8vw, 84px); }
+.pg-dither .d2-sec-head { display: flex; flex-wrap: wrap; align-items: baseline;
+  gap: 6px 20px; margin-bottom: 18px; }
+.pg-dither .d2-sec-title { margin: 0; font: 500 13px/1.5 var(--mono);
+  letter-spacing: .05em; text-transform: uppercase; color: var(--ink); }
+.pg-dither .d2-sec-note { margin: 0; flex: 1 1 420px; font-size: 14px; line-height: 1.55;
+  color: var(--muted); text-wrap: pretty; }
+.pg-dither .d2-card { background: var(--card); border: 1px solid var(--line);
+  border-radius: 10px; height: 100%; box-sizing: border-box; }
+.pg-dither .d2-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  align-items: stretch; }
+@media (max-width: 960px) {
+  .pg-dither .d2-duo { grid-template-columns: 1fr; }
+}
+.pg-dither .d2-canvas { display: block; width: 100%; height: auto; }
+.pg-dither .d2-climb-canvas { aspect-ratio: 560 / 348; }
+.pg-dither .d2-trans { max-width: 720px; }
+.pg-dither .d2-trans .console-card-in { position: relative; }
+.pg-dither .d2-trans-content { display: flex; flex-direction: column; gap: 12px; }
+.pg-dither .d2-trans-canvas { position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; }
+.pg-dither .d2-record { position: relative; padding-top: 54px; }
+.pg-dither .d2-record-canvas { position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; }
+.pg-dither .d2-record .report-band { position: relative; z-index: 1; margin-top: 0;
+  max-width: none; padding-left: 0; padding-right: 0; }
+.pg-dither .d2-foot-note { margin: clamp(48px, 8vw, 80px) 0 64px;
+  font: 12px/1.7 var(--mono); color: var(--faint); max-width: 72ch; }
+/* ================= end Lane D2 ================= */
