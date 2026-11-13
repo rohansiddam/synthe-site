@@ -56,7 +56,7 @@ export default function DocsPage() {
               </li>
             </ul>
           </RevealSection>
-          <RevealSection solo className="block" id="setup" data-toc-target="" aria-labelledby="setup-h">
+          <RevealSection solo className="block" id="setup" data-toc-target="" data-port="docs-checks" aria-labelledby="setup-h">
             <h2 id="setup-h">Set it up</h2>
             <p>On your main branch, in the repo, run:</p>
             <div className="cmd" data-port="docs-install">
