@@ -4,7 +4,6 @@ import { Providers } from "./providers";
 import { SiteHead } from "./components/SiteHead";
 import { BackToTop } from "./components/BackToTop";
 import { SmoothScroll } from "./components/SmoothScroll";
-import { TendrilField } from "./components/tendrils/TendrilField";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -85,7 +84,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <BackToTop />
           </div>
           <SmoothScroll />
-          <TendrilField />
         </Providers>
       </body>
     </html>
