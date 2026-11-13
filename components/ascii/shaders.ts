@@ -4,9 +4,15 @@
  *   1. The logo field (LOGO_VERTEX / LOGO_FRAGMENT): the Synthe mark drawn
  *      out of IBM Plex Mono glyphs. A dense monospace grid samples the logo
  *      texture's luminance per cell and maps it to a character ramp; a
- *      u_time-driven hash flicker swaps glyphs inside their density band;
- *      a u_scroll-driven simplex flow field warps the logo's UVs so the
- *      light/dark boundaries move like liquid displacement while scrolling.
+ *      u_time-driven hash flicker swaps glyphs inside their density band.
+ *      The mark is flat (interior luminance 1.0), so the interior's
+ *      effective luminance is modulated by layered simplex noise: the
+ *      body resolves into mixed glyphs, with real letters and digits
+ *      woven into its mid-density zones, while edge and crest cells stay
+ *      at the top of the ramp so the silhouette stays crisp. Scrolling
+ *      first strains the mark (a small residual warp, tension) and then,
+ *      with u_extend, extrudes glyph tendrils from its lower contour
+ *      that reach down the viewport and dissolve at their tips.
  *   2. The glyph contour (CONTOUR_VERTEX / CONTOUR_FRAGMENT): topographic
  *      contour lines, in the hero field's fbm language, drawn entirely from
  *      mono glyphs at low contrast as a background presence behind copy.
@@ -71,82 +77,147 @@ export const LOGO_FRAGMENT = /* glsl */ `
 precision highp float;
 
 uniform sampler2D u_texture;   /* logo: R = half A coverage, G = half B coverage */
-uniform sampler2D u_atlas;     /* glyph atlas, one row of u_rampCount glyphs */
+uniform sampler2D u_atlas;     /* glyph atlas: top row = ramp, bottom row = letters */
 uniform vec2  u_resolution;    /* drawing buffer size, px */
 uniform float u_cell;          /* monospace cell size, buffer px */
 uniform vec2  u_grid;          /* grid dimensions in cells */
 uniform float u_time;          /* seconds, frozen under reduced motion */
 uniform float u_scroll;        /* smoothed scroll energy, 0..1 */
 uniform float u_progress;      /* smoothed scroll progress, 0..1 */
-uniform vec2  u_logoOffset;    /* logo rect origin in plane UV */
-uniform vec2  u_logoSize;      /* logo rect size in plane UV */
+uniform vec2  u_logoOffset;    /* logo rect origin in plane UV (base, unraised) */
+uniform vec2  u_logoSize;      /* logo rect size in plane UV (base, unraised) */
 uniform float u_rampCount;     /* glyphs in the ramp (10) */
+uniform float u_letterCount;   /* glyphs in the letter row (16) */
 uniform vec3  u_bg;            /* site --bg */
 uniform vec3  u_ink;           /* site --ink: half A tint */
 uniform vec3  u_accent;        /* site --accent: half B tint + luminance peaks */
 uniform vec3  u_faint;         /* site --muted: ambient speckle */
 uniform float u_ambient;       /* ambient speckle strength, 0..1 */
 uniform float u_debug;         /* 0 off; 1 raw texture; 2 luminance; 3 ramp index */
+uniform vec4  u_tendrils[16];  /* anchors in texture space: u, bottomV, half (0 A / 1 B), active */
+uniform float u_extend;        /* eased scroll extension, 0..1: tendril growth */
+uniform float u_raise;         /* eased raise of the mark, 0..1, follows u_extend */
+uniform float u_tendrilCeil;   /* centre.y above which no tendril can reach */
 
 varying vec2 vUv;
 
 ${NOISE_GLSL}
+
+/* A tendril's centreline x at depth d below its source. Two summed
+   sines give an organic sway that grows with depth; kept cheap (no
+   noise calls) because it runs per anchor per fragment. */
+float tendrilPathX(float srcX, float d, float phase) {
+  float sway = sin(d * 24.0 + phase + u_time * 0.35) * 0.55
+             + sin(d * 53.0 - phase * 1.7 - u_time * 0.21) * 0.30;
+  return srcX + sway * 0.020 * min(1.0, 0.25 + d * 3.0);
+}
 
 void main() {
   vec2 cellId = floor(gl_FragCoord.xy / u_cell);
   vec2 cellUv = fract(gl_FragCoord.xy / u_cell);
   vec2 centre = (cellId + 0.5) / u_grid;
 
-  /* --- Scroll flow: warp the logo's UVs with a simplex flow field. ---
-     The warp is small at rest (a slow liquid breathing) and grows with
-     smoothed scroll energy, so scrolling makes the light/dark boundary
-     of the mark swell, drift and fold; the glyph field, being a pure
-     function of the warped luminance, ripples with it. Progress also
-     slides the noise domain, so scrolling down and up do not replay
-     the same warp. */
+  /* --- The raised rect. As u_extend grows the mark lifts and shrinks
+     slightly, freeing the lower viewport; warp, breakup and tendril
+     anchors all read this same rect, so the mark and its tendrils can
+     never disagree about where the mark is. --- */
+  vec2 rectS = u_logoSize * (1.0 - 0.18 * u_raise);
+  vec2 rectO = u_logoOffset + vec2(u_logoSize.x * 0.09, u_logoSize.y * 0.15) * u_raise;
+
+  /* --- Residual warp: strain, not flow. A whisper of the v1 liquid
+     warp (about a fifth of its amplitude) that reads as tension in the
+     mark while it is being pulled; the scroll gesture's real output is
+     the tendrils below. Progress still slides the noise domain so
+     scrolling down and up do not replay the same strain. --- */
   vec2 flowP = centre * 3.0;
   vec2 flow = vec2(
     snoise(flowP + vec2(u_time * 0.050 + u_progress * 6.0, u_progress * 2.0)),
     snoise(flowP + vec2(19.19, 7.31) + vec2(-u_time * 0.040, u_progress * 5.0)));
-  float warpAmt = 0.010 + u_scroll * 0.13;
+  float warpAmt = 0.004 + u_scroll * 0.024;
   vec2 warped = centre + flow * warpAmt;
 
-  vec2 logoUv = (warped - u_logoOffset) / u_logoSize;
+  vec2 logoUv = (warped - rectO) / rectS;
   vec3 tex = texture2D(u_texture, logoUv).rgb;
   float covA = tex.r;
   float covB = tex.g;
   float lum = max(covA, covB);
   bool isB = covB > covA;
 
+  /* --- Interior vs edge. The mark is flat, so "interior" cannot come
+     from luminance: it is solid coverage whose neighbourhood is also
+     solid (gradient near zero). Edge and partial-coverage cells keep
+     the raw luminance, so the silhouette's glyphs stay at the top of
+     the ramp and the outline stays crisp at any distance. --- */
+  vec2 duv = (1.0 / u_grid) / rectS;
+  vec3 tL = texture2D(u_texture, logoUv - vec2(duv.x, 0.0)).rgb;
+  vec3 tR = texture2D(u_texture, logoUv + vec2(duv.x, 0.0)).rgb;
+  vec3 tD = texture2D(u_texture, logoUv - vec2(0.0, duv.y)).rgb;
+  vec3 tU = texture2D(u_texture, logoUv + vec2(0.0, duv.y)).rgb;
+  float gL = max(tL.r, tL.g);
+  float gR = max(tR.r, tR.g);
+  float gD = max(tD.r, tD.g);
+  float gU = max(tU.r, tU.g);
+  float grad = max(max(abs(gL - lum), abs(gR - lum)), max(abs(gD - lum), abs(gU - lum)));
+  float interior = smoothstep(0.985, 1.0, lum) * (1.0 - clamp(grad * 2.2, 0.0, 1.0));
+
+  /* --- Breakup: modulate the interior's effective luminance with
+     layered simplex noise (coarse zones, mid variation, fine grain),
+     partially quantized into patches so the body reads as distinct
+     composition zones, the way the reference band has a hex field
+     here and terrain there, not as uniform static. The result spans
+     the middle and top of the ramp: =, +, *, #, %, @ mixed. --- */
+  float zoneN = snoise(logoUv * 2.4 + vec2(3.7, 9.1));
+  float midN = snoise(logoUv * 6.5 + vec2(-5.2, 1.3) + vec2(u_time * 0.015, 0.0));
+  float fineN = (hash21(cellId * 13.73) - 0.5) * 0.16; /* per-cell grain, no third noise call */
+  float modN = clamp(0.58 + zoneN * 0.30 + midN * 0.20 + fineN, 0.05, 1.0);
+  modN = mix(modN, floor(modN * 5.0) / 5.0 + 0.10, 0.35);
+  float lumEff = mix(lum, 0.36 + 0.64 * modN, interior);
+
   /* --- Luminance to character ramp, with in-band flicker. ---
-     The continuous luminance picks the ramp level; a fast hash tick
-     (about 11 steps/sec, each cell re-rolled with its own phase) then
-     swaps the glyph one level up or down inside its own density band.
-     The flicker is masked off in empty background and near-solid fill,
-     so the silhouette stays legible while the interior boils. */
+     The effective luminance picks the ramp level; a fast hash tick
+     (about 11 steps/sec) swaps the glyph one level up or down inside
+     its own density band. The flicker is masked off in empty
+     background and only damped near the very top of the ramp, so the
+     crest stays steady while the body boils gently. */
   float maxIdx = u_rampCount - 1.0;
-  float base = lum * maxIdx;
   float tick = floor(u_time * 11.0);
   float gate = hash21(cellId + tick * 0.7317);
   float dir = hash21(cellId * 1.3713 + tick * 1.9131);
   float swap = step(0.60, gate) * sign(dir - 0.5);
-  float flickMask = smoothstep(0.03, 0.18, lum) * (1.0 - smoothstep(0.92, 1.0, lum));
-  float idx = clamp(floor(base + 0.5 + swap * flickMask), 0.0, maxIdx);
+  float flickMask = smoothstep(0.03, 0.18, lumEff) * (1.0 - smoothstep(0.93, 1.0, lumEff) * 0.75);
+  float idx = clamp(floor(lumEff * maxIdx + 0.5 + swap * flickMask), 0.0, maxIdx);
+
+  /* --- Letters in the body. Interior cells in the mid-density bands
+     may draw from the atlas's letter row instead of the ramp: the
+     letters of SYNTHE and the digits, the mark's own substance. The
+     pick re-rolls slowly (2 s tick) so letters hold still long enough
+     to read, then quietly change. Crest and edge cells never do this:
+     the outline stays pure ramp. --- */
+  float letterTick = floor(u_time * 0.5);
+  float lh = hash21(cellId * 3.171 + letterTick * 0.9173);
+  float letterP = interior * 0.42
+    * smoothstep(0.40, 0.55, lumEff) * (1.0 - smoothstep(0.82, 0.95, lumEff));
+  float useLetter = step(lh, letterP);
+  float letterIdx = floor(hash21(cellId * 7.77 + 4.2) * u_letterCount);
 
   /* --- Colour: the mark's halves keep their identity through the map.
      Half A renders in ink, half B in the brick accent. On half A the
-     highest luminance band warms slightly toward the accent (a logo is
-     flat, so a strong peak blend would flood the whole half; 0.22 keeps
-     it a warmth at the crest, not a recolour). */
+     highest effective-luminance band warms slightly toward the accent
+     (a logo is flat, so a strong peak blend would flood the whole
+     half; 0.22 keeps it a warmth at the crest, not a recolour). */
   vec3 tint = isB ? u_accent : u_ink;
-  float peak = smoothstep(0.78, 1.0, lum);
+  float peak = smoothstep(0.78, 1.0, lumEff);
   tint = mix(tint, u_accent, isB ? 0.0 : peak * 0.22);
 
-  vec2 atlasUv = vec2((idx + cellUv.x) / u_rampCount, cellUv.y);
-  float glyph = texture2D(u_atlas, atlasUv).a;
+  /* Atlas rows: ramp occupies the top half of the texture (v 0.5..1),
+     letters the bottom half (v 0..0.5); see logoTexture.ts. */
+  vec2 rampUv = vec2((idx + cellUv.x) / u_rampCount, 0.5 + cellUv.y * 0.5);
+  vec2 letterUv = vec2((letterIdx + cellUv.x) / u_letterCount, cellUv.y * 0.5);
+  float glyph = mix(texture2D(u_atlas, rampUv).a,
+                    texture2D(u_atlas, letterUv).a, useLetter);
 
   if (u_debug > 0.5 && u_debug < 1.5) { gl_FragColor = vec4(tex, 1.0); return; }
-  if (u_debug > 1.5 && u_debug < 2.5) { gl_FragColor = vec4(vec3(lum), 1.0); return; }
+  if (u_debug > 1.5 && u_debug < 2.5) { gl_FragColor = vec4(vec3(lumEff), 1.0); return; }
   if (u_debug > 2.5) { gl_FragColor = vec4(vec3(idx / maxIdx), 1.0); return; }
 
   vec3 col = mix(u_bg, tint, glyph);
@@ -158,9 +229,78 @@ void main() {
     float sp = snoise(centre * 22.0 + vec2(u_time * 0.15, -u_time * 0.10));
     float on = step(0.93, sp) * u_ambient;
     if (on > 0.0) {
-      vec2 dotUv = vec2((1.0 + cellUv.x) / u_rampCount, cellUv.y);
+      vec2 dotUv = vec2((1.0 + cellUv.x) / u_rampCount, 0.5 + cellUv.y * 0.5);
       float dotGlyph = texture2D(u_atlas, dotUv).a;
       col = mix(col, u_faint, dotGlyph * on * 0.45);
+    }
+  }
+
+  /* --- Tendrils: glyph streams extruded from the mark's lower
+     contour. Each anchor (scanned from the real mark raster on the
+     CPU) grows a stream whose length is u_extend times its share of
+     the drop to the viewport floor. Streams sway, taper and thin with
+     depth; some fork once into a thinner branch; near the tip the
+     density falls through the ramp until only sparse dots remain.
+     Gated to fragments below the mark so the loop is skipped for most
+     of the frame at rest. --- */
+  if (u_extend > 0.002 && centre.y < u_tendrilCeil && lum < 0.6) {
+    float best = 0.0;
+    vec3 bestTint = u_ink;
+    float bestIdx = 1.0;
+    float bestLetter = -1.0;
+    for (int i = 0; i < 16; i++) {
+      vec4 a = u_tendrils[i];
+      if (a.w < 0.5) continue;
+      vec2 src = rectO + a.xy * rectS;
+      if (centre.y > src.y + 0.005) continue;
+      float fi = float(i);
+      float lenF = 0.80 + 0.45 * hash21(vec2(fi * 1.31, 7.7));
+      float len = (src.y + 0.10) * lenF * u_extend;
+      float d = src.y - centre.y;
+      if (len < 0.004 || d > len) continue;
+      float t01 = d / len;
+      float phase = hash21(vec2(fi * 3.77, 1.3)) * 17.0;
+      float cellW = 1.0 / u_grid.x;
+
+      float px = tendrilPathX(src.x, d, phase);
+      float wdt = mix(1.45, 0.45, t01) * cellW;
+      float dens = (1.0 - smoothstep(wdt * 0.4, wdt, abs(centre.x - px)))
+                 * pow(1.0 - t01, 0.8);
+
+      float forkH = hash21(vec2(fi * 5.13, 2.9));
+      if (forkH < 0.5) {
+        float fd = len * (0.30 + 0.30 * hash21(vec2(fi * 9.31, 4.7)));
+        if (d > fd && len - fd > 0.004) {
+          float dirF = hash21(vec2(fi * 7.77, 8.3)) > 0.5 ? 1.0 : -1.0;
+          float bx = tendrilPathX(src.x, fd, phase) + dirF * (d - fd) * 0.85;
+          bx += sin(d * 31.0 + phase * 2.3 + u_time * 0.3) * 0.006
+              * min(1.0, (d - fd) * 8.0);
+          float bw = mix(0.80, 0.25, (d - fd) / (len - fd)) * cellW;
+          float bd = (1.0 - smoothstep(bw * 0.4, bw, abs(centre.x - bx)))
+                   * pow(1.0 - t01, 0.8) * 0.75;
+          dens = max(dens, bd);
+        }
+      }
+
+      if (dens > best) {
+        best = dens;
+        bestTint = a.z > 0.5 ? u_accent : u_ink;
+        bestIdx = clamp(floor(dens * maxIdx + 0.5), 1.0, maxIdx);
+        float lt = hash21(cellId * 5.37 + fi * 0.731);
+        bestLetter = (d < len * 0.28 && lt < 0.20)
+          ? floor(hash21(cellId * 9.13 + fi) * u_letterCount) : -1.0;
+      }
+    }
+    if (best > 0.03) {
+      float tg;
+      if (bestLetter >= 0.0) {
+        tg = texture2D(u_atlas, vec2((bestLetter + cellUv.x) / u_letterCount,
+                                     cellUv.y * 0.5)).a;
+      } else {
+        tg = texture2D(u_atlas, vec2((bestIdx + cellUv.x) / u_rampCount,
+                                     0.5 + cellUv.y * 0.5)).a;
+      }
+      col = mix(col, bestTint, tg * clamp(best * 2.2, 0.0, 1.0));
     }
   }
 
@@ -233,7 +373,9 @@ void main() {
   float swap = step(0.80, gate) * sign(dir - 0.5);
   float idx = clamp(floor(base + 0.5 + swap * step(0.05, lineI)), 1.0, maxIdx);
 
-  vec2 atlasUv = vec2((idx + cellUv.x) / u_rampCount, cellUv.y);
+  /* The atlas has two rows since lane v2; the ramp lives in the top
+     half of the texture (v 0.5..1). */
+  vec2 atlasUv = vec2((idx + cellUv.x) / u_rampCount, 0.5 + cellUv.y * 0.5);
   float glyph = texture2D(u_atlas, atlasUv).a;
 
   /* Fade the whorl out towards the section edges so it sits behind the
@@ -250,3 +392,11 @@ void main() {
 /** The character ramp, index 0 (space) to 9 (densest). Shared by the
  *  atlas builder and the page legend so they can never drift apart. */
 export const RAMP = [" ", ".", ":", "-", "=", "+", "*", "#", "%", "@"];
+
+/** The letter row of the atlas: the letters of SYNTHE plus the digits.
+ *  Interior cells of the logo field (and young tendrils) draw from this
+ *  row so the mark's body is real characters, not one repeated glyph. */
+export const LETTERS = [
+  "S", "Y", "N", "T", "H", "E",
+  "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+];

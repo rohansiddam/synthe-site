@@ -1,20 +1,21 @@
 import type { Metadata } from "next";
 import { AsciiScene } from "../../components/ascii/AsciiScene";
 import { ContourGlyphs } from "../../components/ascii/ContourGlyphs";
-import { SkylineDivider } from "../../components/ascii/SkylineDivider";
+import { GlyphBridge } from "../../components/ascii/GlyphBridge";
 import { WordField } from "../../components/ascii/WordField";
 
 export const metadata: Metadata = {
   title: "Synthe — the mark in type (ASCII prototype)",
   description:
-    "Exploration prototype: the Synthe mark drawn out of IBM Plex Mono glyphs by a WebGL shader, with scroll-driven flow, a dithered terrain section edge and a glyph contour form.",
+    "Exploration prototype: the Synthe mark drawn out of IBM Plex Mono glyphs by a WebGL shader, its body broken into mixed letters and digits, scroll-strained with glyph tendrils, a living glyph-field bridge into the report band, and a glyph contour form.",
 };
 
 /* /ascii: an exploration lane page (lane/ascii-shader), not production.
- * Three treatments on one tall scroll:
+ * Four treatments on one tall scroll:
  *   1. the logo field (fixed WebGL canvas behind the first sections),
- *   2. a dithered terrain skyline as the section edge into the band,
- *   3. a glyph-contour whorl behind the morning report inside the band.
+ *   2. a glyph-field bridge where paper dissolves into the band,
+ *   3. a glyph-contour whorl behind the morning report inside the band,
+ *   4. the word field, Synthe's own phrases forming the climb.
  * The theme toggle in the site header drives every canvas. */
 export default function AsciiPage() {
   return (
@@ -25,19 +26,20 @@ export default function AsciiPage() {
         <p className="ascii-kicker">Synthe · exploration lane · treatment 01</p>
         <h1 className="ascii-title">The mark, drawn in type.</h1>
         <p className="ascii-sub">
-          The Synthe logo, sampled cell by cell and rebuilt from IBM Plex Mono glyphs. It flickers
-          inside its own density, and it flows when you scroll.
+          The Synthe logo, sampled cell by cell and rebuilt from IBM Plex Mono glyphs: letters,
+          digits and density marks mixed through its body, never one repeated character. Scroll,
+          and it strains, then reaches down the page in glyph tendrils.
         </p>
         <p className="ascii-depth ascii-depth-hero">scroll 000 · the field is live</p>
       </section>
 
       <section className="ascii-spacer">
-        <p className="ascii-depth">scroll 100 · the warp follows smoothed scroll, never the raw wheel</p>
-        <p className="ascii-depth ascii-depth-low">scroll 200 · still the same recorded mark, displaced</p>
-        <p className="ascii-depth ascii-depth-edge">treatment 02 · the edge ahead is the climb, stepped</p>
+        <p className="ascii-depth">scroll 100 · the mark strains first: a small warp, tension before reach</p>
+        <p className="ascii-depth ascii-depth-low">scroll 200 · tendrils grow from the lower edge, longer the deeper you scroll</p>
+        <p className="ascii-depth ascii-depth-edge">treatment 02 · ahead, a glyph field bridges paper and charcoal, cell by cell</p>
       </section>
 
-      <SkylineDivider />
+      <GlyphBridge />
 
       <section className="ascii-band">
         <ContourGlyphs />

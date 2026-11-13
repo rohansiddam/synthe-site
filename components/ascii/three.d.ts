@@ -18,6 +18,13 @@ declare module "three" {
     z: number;
     copy(v: Vector3): this;
   }
+  export class Vector4 {
+    constructor(x?: number, y?: number, z?: number, w?: number);
+    x: number;
+    y: number;
+    z: number;
+    w: number;
+  }
   export class Camera {}
   export class Scene {
     add(obj: unknown): void;

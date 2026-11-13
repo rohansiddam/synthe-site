@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { LOGO_FRAGMENT, LOGO_VERTEX, RAMP } from "./shaders";
-import { MARK_FRACTION, createGlyphAtlas, createLogoTexture } from "./logoTexture";
+import { LETTERS, LOGO_FRAGMENT, LOGO_VERTEX, RAMP } from "./shaders";
+import { MARK_FRACTION, computeTendrilAnchors, createGlyphAtlas, createLogoTexture } from "./logoTexture";
 import { fullscreenMesh, makeRenderer, observeTheme, prefersReducedMotion, readPalette } from "./glBase";
 
 /* The hero of the /ascii lane: a fixed, full-viewport WebGL canvas that
@@ -11,12 +11,16 @@ import { fullscreenMesh, makeRenderer, observeTheme, prefersReducedMotion, readP
  *
  * Behaviour contract (founder motion rules):
  *  - window scroll drives the shader from anywhere on the page, lerp-
- *    smoothed in JS before upload (u_progress and u_scroll energy), so
- *    the morph never jumps with the raw wheel;
- *  - rendering pauses when the tab is hidden or the hero has scrolled
- *    far out of view (the later sections are opaque and cover it);
+ *    smoothed in JS before upload (u_progress, u_scroll energy and
+ *    u_extend), so nothing ever jumps with the raw wheel;
+ *  - u_extend is the hero-zone scroll fraction (full by about 1.85
+ *    viewport heights, as the bridge arrives): it raises the mark and
+ *    grows the glyph tendrils out of its lower contour. Scrolling back
+ *    up retracts them through the same lerp;
+ *  - rendering pauses when the tab is hidden or the hero zone has
+ *    scrolled out of view (the later sections are opaque and cover it);
  *  - prefers-reduced-motion renders exactly one static frame: frozen
- *    time, no scroll morph (re-rendered only on resize / theme flip);
+ *    time, no strain, no tendrils (re-rendered only on resize / flip);
  *  - pixel ratio is capped at 1.75 and the grid cell at 11 CSS px.
  */
 export function AsciiScene() {
@@ -42,6 +46,9 @@ export function AsciiScene() {
     let progressTarget = 0;
     let progress = 0;
     let energy = 0;
+    let extendTarget = 0;
+    let extend = 0;
+    let maxBottomV = 0;
     let lastScrollY = window.scrollY;
     let time = reduced ? 4.2 : 0;
     let frames = 0;
@@ -52,6 +59,10 @@ export function AsciiScene() {
       const doc = document.documentElement;
       const max = doc.scrollHeight - window.innerHeight;
       progressTarget = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      /* Extension is a hero-zone measure, not a whole-page one: the
+         tendrils are full-length once the visitor has scrolled about
+         1.85 viewport heights, just as the bridge section arrives. */
+      extendTarget = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 1.85)));
     };
 
     const applyPalette = () => {
@@ -90,6 +101,11 @@ export function AsciiScene() {
       material.uniforms.u_logoOffset.value = new THREE.Vector2((1 - sizeX) / 2, (1 - sizeY) / 2);
       material.uniforms.u_logoSize.value = new THREE.Vector2(sizeX, sizeY);
 
+      /* The highest point any tendril source can sit at, with the mark
+         fully raised; the shader skips its tendril loop above this. */
+      const ceilY = (1 - sizeY) / 2 + sizeY * 0.15 + maxBottomV * sizeY * 0.82 + 0.03;
+      material.uniforms.u_tendrilCeil.value = Math.min(1, ceilY);
+
       writeLegend(cols, rows, 0);
       if (reduced) renderOnce();
     };
@@ -99,7 +115,7 @@ export function AsciiScene() {
       if (!el) return;
       el.textContent =
         `grid ${cols} x ${rows} · cell 11px · ramp '${RAMP.join("")}' · ` +
-        `${fps} fps · scroll ${progress.toFixed(2)} · u_scroll ${energy.toFixed(2)}`;
+        `${fps} fps · scroll ${progress.toFixed(2)} · extend ${extend.toFixed(2)}`;
     };
 
     function renderOnce() {
@@ -107,6 +123,11 @@ export function AsciiScene() {
       material.uniforms.u_time.value = time;
       material.uniforms.u_progress.value = reduced ? 0 : progress;
       material.uniforms.u_scroll.value = reduced ? 0 : energy;
+      material.uniforms.u_extend.value = reduced ? 0 : extend;
+      /* Raise is the smoothstep of extension, so the mark starts
+         lifting only once the tendrils are underway, then settles. */
+      const e = reduced ? 0 : extend;
+      material.uniforms.u_raise.value = e * e * (3 - 2 * e);
       renderer.render(scene, new THREE.Camera());
     }
 
@@ -114,16 +135,22 @@ export function AsciiScene() {
       raf = requestAnimationFrame(loop);
       if (document.hidden) return;
       /* The opaque sections below cover the fixed canvas; stop paying
-         for it once the hero is well out of view. */
-      if (window.scrollY > window.innerHeight * 1.35) return;
+         for it once the bridge and band have taken over the viewport.
+         The window runs through the whole spacer so the tendrils can
+         grow and retract across it. */
+      if (window.scrollY > window.innerHeight * 2.7) return;
 
       const dt = Math.min(0.05, (now - lastFrame) / 1000);
       lastFrame = now;
       time += dt;
 
       /* Smooth the scroll inputs: progress trails its target, energy
-         charges fast on scroll deltas and discharges slowly. */
+         charges fast on scroll deltas and discharges slowly, and
+         extension trails at the same rate as progress so tendrils
+         grow and retract like a physical reach, never a snap. */
       progress += (progressTarget - progress) * 0.06;
+      extend += (extendTarget - extend) * 0.055;
+      if (Math.abs(extendTarget - extend) < 0.0015) extend = extendTarget;
       const dy = Math.abs(window.scrollY - lastScrollY);
       lastScrollY = window.scrollY;
       const energyTarget = Math.min(1, dy / 55);
@@ -145,6 +172,8 @@ export function AsciiScene() {
       atlasTex = await createGlyphAtlas();
       if (disposed) return;
       logoTex = createLogoTexture();
+      const tendrils = computeTendrilAnchors();
+      maxBottomV = tendrils.maxBottomV;
 
       renderer = makeRenderer(canvas);
       scene = new THREE.Scene();
@@ -161,18 +190,24 @@ export function AsciiScene() {
         u_logoOffset: { value: new THREE.Vector2(0, 0) },
         u_logoSize: { value: new THREE.Vector2(1, 1) },
         u_rampCount: { value: RAMP.length },
+        u_letterCount: { value: LETTERS.length },
         u_bg: { value: palette.bg },
         u_ink: { value: palette.ink },
         u_accent: { value: palette.accent },
         u_faint: { value: palette.faint },
         u_ambient: { value: 0.6 },
         u_debug: { value: Number(new URLSearchParams(window.location.search).get("debug") ?? 0) || 0 },
+        u_tendrils: { value: tendrils.anchors },
+        u_extend: { value: 0 },
+        u_raise: { value: 0 },
+        u_tendrilCeil: { value: 0.5 },
       });
       material = built.material;
       scene.add(built.mesh);
 
       updateScrollTarget();
       progress = progressTarget;
+      extend = extendTarget;
       resize();
       stopTheme = observeTheme(applyPalette);
       window.addEventListener("resize", resize);
