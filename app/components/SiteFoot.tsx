@@ -1,4 +1,6 @@
 import { HALF_A, HALF_B, HoverArrow } from "./Mark";
+import { RevealSection } from "./Reveal";
+import { CountUp } from "./CountUp";
 
 /* The shared footer: identical on every page. */
 export function SiteFoot() {
@@ -40,7 +42,7 @@ export function SiteFoot() {
    the arrow link; Docs uses its plain text link, as on the static pages. */
 export function ReportBand({ variant }: { variant: "home" | "docs" }) {
   return (
-    <section className="report-band" aria-labelledby="morning-report-h">
+    <RevealSection solo className="report-band" aria-labelledby="morning-report-h">
       <h2 className="report-band-label" id="morning-report-h">
         The morning report
       </h2>
@@ -50,7 +52,10 @@ export function ReportBand({ variant }: { variant: "home" | "docs" }) {
       <div className="report-band-lines">
         <p>
           <span className="rb-key">Checks passed</span>
-          <span className="rb-val">89% of the time, up from 72%. Held-out score 50% to 80%.</span>
+          <span className="rb-val">
+            <CountUp value={89} suffix="%" /> of the time, up from <CountUp value={72} suffix="%" />.
+            Held-out score <CountUp value={50} suffix="%" /> to <CountUp value={80} suffix="%" />.
+          </span>
         </p>
         <p>
           <span className="rb-key">Merged</span>
@@ -61,7 +66,10 @@ export function ReportBand({ variant }: { variant: "home" | "docs" }) {
         </p>
         <p>
           <span className="rb-key">Spend</span>
-          <span className="rb-val">$0.32 of a $3 budget.</span>
+          <span className="rb-val">
+            <CountUp value={0.32} decimals={2} prefix="$" /> of a <CountUp value={3} prefix="$" />{" "}
+            budget.
+          </span>
         </p>
       </div>
       {variant === "home" ? (
@@ -73,6 +81,6 @@ export function ReportBand({ variant }: { variant: "home" | "docs" }) {
           Read the full report
         </a>
       )}
-    </section>
+    </RevealSection>
   );
 }

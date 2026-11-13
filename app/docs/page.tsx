@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CopyButton } from "../components/CopyButton";
+import { RevealDiv, RevealSection } from "../components/Reveal";
 import { ReportBand, SiteFoot } from "../components/SiteFoot";
 
 export const metadata: Metadata = {
@@ -21,7 +22,7 @@ export default function DocsPage() {
     <>
       <main id="main" className="pg-docs" tabIndex={-1}>
         <div className="doc">
-          <div className="doc-hero">
+          <RevealDiv root solo className="doc-hero">
             <p className="eyebrow">Docs</p>
             <h1>Get started with Synthe</h1>
             <p className="lede">
@@ -39,8 +40,8 @@ export default function DocsPage() {
                 and help you get running.
               </span>
             </p>
-          </div>
-          <section className="block" id="need" data-toc-target aria-labelledby="need-h">
+          </RevealDiv>
+          <RevealSection solo className="block" id="need" data-toc-target="" aria-labelledby="need-h">
             <h2 id="need-h">What you need</h2>
             <ul>
               <li>
@@ -61,8 +62,8 @@ export default function DocsPage() {
                 Anthropic key, and you need neither code.
               </li>
             </ul>
-          </section>
-          <section className="block" id="setup" data-toc-target aria-labelledby="setup-h">
+          </RevealSection>
+          <RevealSection solo className="block" id="setup" data-toc-target="" aria-labelledby="setup-h">
             <h2 id="setup-h">Set it up</h2>
             <p>On your main branch, in the repo, run:</p>
             <div className="cmd">
@@ -92,8 +93,8 @@ export default function DocsPage() {
                 Automatic merges land on your main branch. If it deploys your app, choose review.
               </p>
             </div>
-          </section>
-          <section className="block" id="commands" data-toc-target aria-labelledby="commands-h">
+          </RevealSection>
+          <RevealSection solo className="block" id="commands" data-toc-target="" aria-labelledby="commands-h">
             <h2 id="commands-h">While it runs</h2>
             <div className="tablewrap">
               <table>
@@ -126,8 +127,8 @@ export default function DocsPage() {
               </table>
             </div>
             <p>You can keep editing your prompt. After Synthe changes it, pull before you edit.</p>
-          </section>
-          <section className="block" id="data" data-toc-target aria-labelledby="data-h">
+          </RevealSection>
+          <RevealSection solo className="block" id="data" data-toc-target="" aria-labelledby="data-h">
             <h2 id="data-h">Your data at the event</h2>
             <p>
               During the event, Synthe shares your prompt, your test cases and how the run goes
@@ -139,8 +140,8 @@ export default function DocsPage() {
               </a>
               .
             </p>
-          </section>
-          <section className="block" id="remove" data-toc-target aria-labelledby="remove-h">
+          </RevealSection>
+          <RevealSection solo className="block" id="remove" data-toc-target="" aria-labelledby="remove-h">
             <h2 id="remove-h">Stop or remove it</h2>
             <p>
               Run <code>npx synthe stop</code> at any time. To remove it, also delete{" "}
@@ -161,7 +162,7 @@ export default function DocsPage() {
                 Report a problem
               </a>
             </div>
-          </section>
+          </RevealSection>
         </div>
       </main>
       <ReportBand variant="docs" />

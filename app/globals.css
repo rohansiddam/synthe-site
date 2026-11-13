@@ -905,3 +905,60 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 @media (prefers-reduced-motion: reduce) {
   .pg-home .console-check, .pg-home .console-check-icon { transition: none; }
 }
+
+/* ------------------------------------------------------------------
+   Lane N5 motion pass (2026-11-12). Everything here is transform or
+   opacity, eased on the site's curves, and the continuous motions
+   are gated to no-preference and to the motion-paused QA hook, so
+   reduced motion keeps the complete static site. Section entrances
+   and the console cycle live in the components (framer-motion);
+   this block carries the CSS-owned pieces: eased console state
+   changes, the seg control's sliding thumb, nav and footer link
+   underline sweeps, and the hero's two ambient motions. */
+
+/* Rounds and states resolve with eased transitions, not snaps. */
+.pg-home .console-round { transition: opacity .35s var(--ease-ui); }
+
+/* The seg control's thumb: the pressed segment's ink, slid between
+   segments by framer-motion's shared layout (SegControl.tsx). The
+   base rule's pressed background gives way to the thumb. */
+.pg-home .seg button { position: relative; }
+.pg-home .seg button[aria-pressed="true"] { background: transparent; }
+.pg-home .seg-thumb { position: absolute; inset: 0; border-radius: 4px; background: var(--ink); }
+.pg-home .seg-label { position: relative; z-index: 1; }
+
+/* Link underline sweep: nav and footer links grow a hairline from
+   the left on hover and on keyboard focus. */
+.topnav > a:not(.nav-cta), .footer-nav a { position: relative; }
+.topnav > a:not(.nav-cta)::after, .footer-nav a::after { content: ""; position: absolute; left: 0; right: 0; height: 1px;
+  background: currentColor; transform: scaleX(0); transform-origin: left center;
+  transition: transform .22s var(--ease-ui); pointer-events: none; }
+.topnav > a:not(.nav-cta)::after { bottom: 7px; }
+.footer-nav a::after { bottom: -3px; }
+@media (hover: hover) {
+  .topnav > a:not(.nav-cta):hover::after, .footer-nav a:hover::after { transform: scaleX(1); }
+}
+.topnav > a:not(.nav-cta):focus-visible::after, .footer-nav a:focus-visible::after { transform: scaleX(1); }
+
+/* Ambient hero motions. The merge mark breathes on a slow sine-like
+   ease, alternate-palindromic so the loop has no restart hitch; the
+   rested score head radiates a soft ring that fades fully before it
+   restarts, for the same reason. Static fallbacks: with reduced
+   motion the mark simply sits locked and the head wears a still
+   ring. */
+.pg-home .console-head-halo { fill: none; stroke: var(--accent); stroke-width: 1.6; opacity: .45;
+  transform-box: fill-box; transform-origin: center; }
+@keyframes n5-breathe {
+  from { transform: scale(1); opacity: .94; }
+  to { transform: scale(1.1); opacity: 1; }
+}
+@keyframes n5-halo {
+  0% { transform: scale(.55); opacity: .5; }
+  70% { opacity: 0; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.motion-paused) .pg-home .console-merge-mark { transform-box: fill-box; transform-origin: center;
+    animation: n5-breathe 3.8s cubic-bezier(.45, 0, .55, 1) infinite alternate; }
+  html:not(.motion-paused) .pg-home .console-head-halo { animation: n5-halo 2.9s cubic-bezier(.22, 1, .36, 1) infinite; }
+}

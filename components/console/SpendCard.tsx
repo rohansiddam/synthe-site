@@ -1,5 +1,12 @@
 "use client";
 
+import { useState } from "react";
+import {
+  motion,
+  useMotionValueEvent,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
 import { demoRun } from "@/lib/runData";
 import { CardHead } from "./kit";
 
@@ -10,10 +17,18 @@ import { CardHead } from "./kit";
    bars: an 8px track with a line border and a quiet fill), not
    Astryx's ProgressBar, whose geometry is compiled into Astryx and
    would read as a template part (brand directive, see kit.tsx). The
-   progressbar semantics are kept by hand. The fill animates from 0
-   to the recorded share as the loop's last phase settles. */
+   progressbar semantics are kept by hand. Lane N5: the fill is a
+   motion value tweened by the console's cycle, so it fills and
+   drains on the same eased curves as everything else, with no
+   per-frame re-render; it rests at the recorded share. */
 
-export function SpendCard({ pct }: { pct: number }) {
+export function SpendCard({ pct }: { pct: MotionValue<number> }) {
+  const width = useTransform(pct, (v) => `${v}%`);
+  const [now, setNow] = useState(() => Math.round(pct.get()));
+  useMotionValueEvent(pct, "change", (v) => {
+    const r = Math.round(v);
+    setNow((prev) => (prev === r ? prev : r));
+  });
   return (
     <>
       <CardHead id="console-spend-h" eyebrow="Spend · demo run" />
@@ -26,9 +41,9 @@ export function SpendCard({ pct }: { pct: number }) {
         aria-label="Demo run spend against its budget"
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-valuenow={Math.round(pct)}
+        aria-valuenow={now}
       >
-        <div className="console-meter-fill" style={{ width: `${pct}%` }} />
+        <motion.div className="console-meter-fill" style={{ width }} />
       </div>
       <p className="console-meta">
         {demoRun.rounds.length} rounds · {demoRun.models}
