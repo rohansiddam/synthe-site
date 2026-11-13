@@ -25,19 +25,11 @@ export default function DocsPage() {
             <p className="eyebrow">Docs</p>
             <h1>Get started with Synthe</h1>
             <p className="lede">
-              A short quickstart for hackathon teams. Everything else is in the{" "}
+              A short quickstart. Everything else is in the{" "}
               <a className="textlink" href="https://github.com/synthelabs/synthe#readme">
                 README on GitHub
               </a>
               .
-            </p>
-            <p className="event-callout">
-              <span className="dot" aria-hidden="true"></span>
-              <span>
-                <strong>At the event? Come find us outside WEB 1230 before you start.</strong>{" "}
-                We'll give you your event code and team code, which let Synthe run on our API key,
-                and help you get running.
-              </span>
             </p>
           </div>
           <section className="block" id="need" data-toc-target aria-labelledby="need-h">
@@ -55,11 +47,6 @@ export default function DocsPage() {
                 , signed in with <code>gh auth login</code>, and Node{" "}
                 <span data-fact="node_min">20</span> or later.
               </li>
-              <li>
-                Your event code and team code, for Synthe's API key.{" "}
-                <strong>Come find us outside WEB 1230</strong> to get them. Or use your own
-                Anthropic key, and you need neither code.
-              </li>
             </ul>
           </section>
           <section className="block" id="setup" data-toc-target aria-labelledby="setup-h">
@@ -74,7 +61,7 @@ export default function DocsPage() {
             </div>
             <p>
               Say what your agent should get better at, confirm the checks Synthe proposes, paste
-              your codes or key, and choose automatic merges or review. When the run ends, open the{" "}
+              your key, and choose automatic merges or review. When the run ends, open the{" "}
               <strong>Synthe: prompt report</strong> issue in your repo.
             </p>
             <p>Using Claude Code, Cursor or Codex? Tell it:</p>

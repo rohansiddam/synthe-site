@@ -99,9 +99,8 @@ export default function HomePage() {
             </div>
             <p className="event-callout">
               <span className="dot" aria-hidden="true"></span>
-              <span>
-                <strong>At the event? Come find us outside WEB 1230 for your codes.</strong> They
-                let Synthe run on our API key, so you don't need your own.
+              <span className="record">
+                Crimson Hacks, November 2026: three winning teams built with Synthe.
               </span>
             </p>
           </div>
@@ -200,25 +199,11 @@ export default function HomePage() {
         </section>
 
         <section className="steps wrap" id="start-tonight" aria-labelledby="steps-h">
-          <h2 id="steps-h">
-            Start it with one command. <span>At the event, it's on us.</span>
-          </h2>
+          <h2 id="steps-h">Start it with one command.</h2>
           <ol className="step-cards">
             <li className="step">
               <span className="num" aria-hidden="true">
                 1
-              </span>
-              <div className="step-head">
-                <h3>Get your codes.</h3>
-                <p className="step-sub">
-                  Come find us outside WEB 1230 for the codes that let Synthe use our API key. Or
-                  use your own Anthropic key.
-                </p>
-              </div>
-            </li>
-            <li className="step">
-              <span className="num" aria-hidden="true">
-                2
               </span>
               <div className="step-head">
                 <h3>Run one command.</h3>
@@ -231,7 +216,7 @@ export default function HomePage() {
             </li>
             <li className="step">
               <span className="num" aria-hidden="true">
-                3
+                2
               </span>
               <div className="step-head">
                 <h3>Confirm your checks.</h3>

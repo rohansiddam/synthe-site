@@ -55,8 +55,14 @@ const THEME_INIT = `document.documentElement.classList.add("js");
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
       <head>
+        {/* The theme-init script must be a real element inside <head>: as a
+            child of <html> outside <head>, React relocated it to the top of
+            <body> in the export, where its execution depends on that
+            relocation instead of the document order guaranteeing it runs
+            before first paint. In <head> it is a blocking script: it sets
+            data-theme and the js class before the body is parsed. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
         <meta httpEquiv="Content-Security-Policy" content={CSP} />
         <link
           rel="preload"

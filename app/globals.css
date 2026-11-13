@@ -438,6 +438,7 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
 .pg-home .event-callout { display: flex; gap: 12px; align-items: flex-start; margin: 24px 0 0; padding: 16px 20px; border-radius: 8px; background: var(--sys-bg); border: 1px solid var(--line2); color: var(--ink); font-size: 16px; line-height: 1.5; max-width: 48ch; text-wrap: pretty; }
 .pg-home .event-callout .dot { flex: none; width: 8px; height: 8px; margin-top: 8px; border-radius: 50%; background: var(--sys); }
 .pg-home .event-callout strong { font-weight: 600; }
+.pg-home .event-callout .record { font-family: var(--mono); font-size: 14px; }
 .pg-home .arrow-link:focus-visible, .pg-home .copy:focus-visible, .pg-home .card:has(.go:focus-visible), .pg-home .seg button:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 6px; }
 
 /* The living field behind the hero: a CSS still first, then a slow WebGL field fades in on top. */
