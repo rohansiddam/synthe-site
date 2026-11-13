@@ -1,5 +1,14 @@
 import type { Metadata } from "next";
 import { HeroField } from "./components/HeroField";
+import { HeroDrift } from "./components/HeroDrift";
+import {
+  RevealArticle,
+  RevealDiv,
+  RevealH2,
+  RevealLi,
+  RevealP,
+  RevealSection,
+} from "./components/Reveal";
 import { Console } from "@/components/console/Console";
 import { HomeEffects } from "./components/HomeEffects";
 import { CopyButton } from "./components/CopyButton";
@@ -81,7 +90,7 @@ export default function HomePage() {
     <>
       <main id="main" className="pg-home" tabIndex={-1}>
         <HeroField />
-        <section className="hero wrap" id="start">
+        <HeroDrift>
           <h1>Your AI agent gets better on its own.</h1>
           <div className="hero-copy">
             <p className="lede">
@@ -104,15 +113,15 @@ export default function HomePage() {
               </span>
             </p>
           </div>
-        </section>
+        </HeroDrift>
 
                 <Console />
 
-        <section className="how wrap" aria-labelledby="how-h">
-          <h2 className="section-h" id="how-h">
+        <RevealSection className="how wrap" aria-labelledby="how-h">
+          <RevealH2 className="section-h" id="how-h">
             How it works
-          </h2>
-          <div className="proof">
+          </RevealH2>
+          <RevealDiv className="proof">
             <p>
               It already works in public.{" "}
               <span className="muted">
@@ -122,10 +131,10 @@ export default function HomePage() {
             <a className="arrow-link" href="https://github.com/synthelabs/support-bot">
               See the public demo run <HoverArrow />
             </a>
-          </div>
+          </RevealDiv>
 
           <div className="cards">
-            <article className="card">
+            <RevealArticle className="card">
               <div className="card-head">
                 <h3>Your checks decide.</h3>
                 <p className="card-sub">In plain sentences, say what a good reply does.</p>
@@ -153,8 +162,8 @@ export default function HomePage() {
               >
                 <GoArrow />
               </a>
-            </article>
-            <article className="card">
+            </RevealArticle>
+            <RevealArticle className="card">
               <div className="card-head">
                 <h3>Only the prompt changes.</h3>
                 <p className="card-sub">Tests are simulated, so check the results yourself.</p>
@@ -178,8 +187,8 @@ export default function HomePage() {
               <a className="go" href="/status.html" aria-label="Limits and your data">
                 <GoArrow />
               </a>
-            </article>
-            <article className="card">
+            </RevealArticle>
+            <RevealArticle className="card">
               <div className="card-head">
                 <h3>You choose how wins land.</h3>
                 <p className="card-sub">If your main branch deploys your app, choose review.</p>
@@ -194,14 +203,14 @@ export default function HomePage() {
               >
                 <GoArrow />
               </a>
-            </article>
+            </RevealArticle>
           </div>
-        </section>
+        </RevealSection>
 
-        <section className="steps wrap" id="start-tonight" aria-labelledby="steps-h">
-          <h2 id="steps-h">Start it with one command.</h2>
+        <RevealSection className="steps wrap" id="start-tonight" aria-labelledby="steps-h">
+          <RevealH2 id="steps-h">Start it with one command.</RevealH2>
           <ol className="step-cards">
-            <li className="step">
+            <RevealLi className="step">
               <span className="num" aria-hidden="true">
                 1
               </span>
@@ -213,8 +222,8 @@ export default function HomePage() {
                 text="npx synthe@latest init"
                 ariaLabel="Copy the command npx synthe@latest init"
               />
-            </li>
-            <li className="step">
+            </RevealLi>
+            <RevealLi className="step">
               <span className="num" aria-hidden="true">
                 2
               </span>
@@ -224,9 +233,9 @@ export default function HomePage() {
                   Choose merge or review, then open the report issue when the run ends.
                 </p>
               </div>
-            </li>
+            </RevealLi>
           </ol>
-          <div className="agent-line">
+          <RevealDiv className="agent-line">
             <p>
               <strong>Using Claude Code, Cursor or Codex?</strong>{" "}
               <span className="muted">Tell it:</span>
@@ -236,23 +245,25 @@ export default function HomePage() {
               text="Set up Synthe in this repo. Run npx synthe@latest guide and follow it."
               ariaLabel="Copy the instruction for your coding agent"
             />
-          </div>
-          <p className="share-note">
+          </RevealDiv>
+          <RevealP className="share-note">
             At the event, Synthe shares your prompt, test cases and how the run goes with the Synthe
             team, never your code. Turn it off any time with <code>"share": "none"</code> in{" "}
             <code>synthe.json</code>.{" "}
             <a className="textlink" href="/status.html#data">
               Your data
             </a>
-          </p>
-        </section>
+          </RevealP>
+        </RevealSection>
 
-        <section className="contact wrap" id="partner" aria-labelledby="partner-h">
-          <h2 id="partner-h">
+        <RevealSection className="contact wrap" id="partner" aria-labelledby="partner-h">
+          <RevealH2 id="partner-h">
             Using AI agents in production? <span>Talk to us.</span>
-          </h2>
-          <PartnerForm />
-        </section>
+          </RevealH2>
+          <RevealDiv>
+            <PartnerForm />
+          </RevealDiv>
+        </RevealSection>
       </main>
       <ReportBand variant="home" />
       <SiteFoot />

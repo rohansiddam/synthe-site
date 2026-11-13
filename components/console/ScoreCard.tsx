@@ -1,5 +1,10 @@
+"use client";
+
+import { useState } from "react";
+import { useMotionValueEvent, type MotionValue } from "framer-motion";
 import { dogfoodRun } from "@/lib/runData";
 import { HALF_A, HALF_B } from "@/app/components/Mark";
+import { DRAW_UNITS } from "./timeline";
 import { CardHead } from "./kit";
 
 /* The score card (largest): Synthe's own dogfood run, the Bean & Byte
@@ -11,7 +16,13 @@ import { CardHead } from "./kit";
    x-axis says so rather than inventing points (no fabricated
    numbers). Round 7's dip is the run's honest shape: it is the old
    prompt's score, recorded the round the fix merged, and the
-   footnote says exactly that. */
+   footnote says exactly that.
+   Lane N5: the draw is continuous. Console.tsx tweens a motion
+   value along the recorded polyline and this card interpolates the
+   head between points, so the line flows instead of jumping point
+   to point. At rest the head carries a slow radiating pulse and the
+   merge mark breathes; both are CSS keyframes on sine-like eases,
+   gated to no-preference motion in globals.css. */
 
 const W = 560;
 const H = 348;
@@ -30,24 +41,61 @@ const POINTS = dogfoodRun.series.map((p) => ({
   y: py(p.scorePct),
 }));
 const FULL_PATH = POINTS.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ");
+const MERGE_INDEX = POINTS.findIndex((p) => p.round === dogfoodRun.mergedRound);
+
+const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+const fadeIn = (v: number, at: number, span: number) => clamp01((v - (at - span)) / span);
+
+/** The head's position at draw value v (0..DRAW_UNITS): linear along
+    each recorded segment, eased by the tween that drives v. */
+function headAt(v: number) {
+  const c = Math.min(Math.max(v, 0), DRAW_UNITS);
+  const i = Math.min(Math.floor(c), POINTS.length - 2);
+  const f = c - i;
+  const a = POINTS[i];
+  const b = POINTS[i + 1];
+  return {
+    x: a.x + (b.x - a.x) * f,
+    y: a.y + (b.y - a.y) * f,
+    score: a.scorePct + (b.scorePct - a.scorePct) * f,
+    round: POINTS[Math.round(c)].round,
+  };
+}
+
+const fmtScore = (s: number) => {
+  const r = Math.round(s * 10) / 10;
+  return Number.isInteger(r) ? `${r}` : `${r.toFixed(1)}`;
+};
 
 export function ScoreCard({
-  drawn,
+  draw,
   beat,
 }: {
-  /** How many of the 11 measured points are on the line so far. */
-  drawn: number;
+  /** Continuous draw position along the series, 0..DRAW_UNITS.
+      Starts at DRAW_UNITS: the recorded final state. */
+  draw: MotionValue<number>;
   /** True in the merge beat, when the final point lands. */
   beat: boolean;
 }) {
-  const shown = POINTS.slice(0, Math.max(drawn, 0));
-  const current = shown[shown.length - 1];
-  const path = shown
-    .map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`)
+  const [v, setV] = useState(DRAW_UNITS);
+  useMotionValueEvent(draw, "change", (latest) => setV(latest));
+
+  const head = headAt(v);
+  const whole = Math.floor(Math.min(v, DRAW_UNITS));
+  const shownPts = POINTS.slice(0, whole + 1);
+  const linePts =
+    v > 0.02
+      ? [...shownPts.slice(0, -1), { x: head.x, y: head.y }]
+      : shownPts.slice(0, 1);
+  const path = linePts
+    .map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(1)},${p.y.toFixed(1)}`)
     .join(" ");
-  const area = shown.length
-    ? `${path} L${shown[shown.length - 1].x},${py(0)} L${shown[0].x},${py(0)} Z`
-    : "";
+  const area =
+    v > 0.02
+      ? `${path} L${head.x.toFixed(1)},${py(0)} L${shownPts[0].x},${py(0)} Z`
+      : "";
+  const atRest = v >= DRAW_UNITS - 0.001;
+
   return (
     <>
       <CardHead
@@ -55,9 +103,7 @@ export function ScoreCard({
         eyebrow={`${dogfoodRun.label} · ${dogfoodRun.agent}`}
         right={
           <span className="console-readout" aria-live="off">
-            {current
-              ? `Round ${current.round} · ${current.scorePct}%`
-              : `Round ${dogfoodRun.series[0].round} · ${dogfoodRun.firstMeasured}%`}
+            {`Round ${head.round} · ${fmtScore(head.score)}%`}
           </span>
         }
       />
@@ -73,17 +119,17 @@ export function ScoreCard({
         role="img"
         aria-label={`Line chart of the dogfood run's held-out score: ${dogfoodRun.firstMeasured}% at round 4, rising to ${dogfoodRun.lastMeasured}% by round 14. Round 7 merged a fix.`}
       >
-        {[0, 50, 100].map((v) => (
-          <g key={v}>
+        {[0, 50, 100].map((g) => (
+          <g key={g}>
             <line
               x1={PAD.left}
               x2={W - PAD.right}
-              y1={py(v)}
-              y2={py(v)}
+              y1={py(g)}
+              y2={py(g)}
               className="console-gridline"
             />
-            <text x={PAD.left - 8} y={py(v) + 4} className="console-axis" textAnchor="end">
-              {v}
+            <text x={PAD.left - 8} y={py(g) + 4} className="console-axis" textAnchor="end">
+              {g}
             </text>
           </g>
         ))}
@@ -91,41 +137,52 @@ export function ScoreCard({
             chart's destination is honest context, not a surprise. */}
         <path d={FULL_PATH} className="console-line-ghost" />
         {area ? <path d={area} className="console-area" /> : null}
-        {path ? <path d={path} className="console-line" /> : null}
-        {shown.map((p) => {
-          const isMerged = p.round === dogfoodRun.mergedRound;
-          const isLast = p === current && drawn >= POINTS.length;
+        {v > 0.02 ? <path d={path} className="console-line" /> : null}
+        {POINTS.map((p, i) => {
+          if (i === MERGE_INDEX) return null;
           return (
-            <g key={p.round}>
-              {isMerged ? (
-                <g
-                  className="mark"
-                  transform={`translate(${(p.x - 8.5).toFixed(1)} ${(p.y - 9).toFixed(1)}) scale(0.0618)`}
-                  aria-hidden="true"
-                >
-                  <path className="half a" d={HALF_A} />
-                  <path className="half b" d={HALF_B} />
-                </g>
-              ) : (
-                <circle
-                  cx={p.x}
-                  cy={p.y}
-                  r={4}
-                  className={
-                    isLast && beat
-                      ? "console-dot console-dot-beat"
-                      : "console-dot"
-                  }
-                />
-              )}
-              {isMerged ? (
-                <text x={p.x} y={p.y + 22} className="console-dot-label" textAnchor="middle">
-                  merged
-                </text>
-              ) : null}
-            </g>
+            <circle
+              key={p.round}
+              cx={p.x}
+              cy={p.y}
+              r={4}
+              className="console-dot"
+              opacity={fadeIn(v, i, 0.2)}
+            />
           );
         })}
+        {/* The merge point carries the mark itself, breathing at rest. */}
+        {MERGE_INDEX >= 0 ? (
+          <g opacity={fadeIn(v, MERGE_INDEX, 0.25)}>
+            <g
+              transform={`translate(${(POINTS[MERGE_INDEX].x - 8.5).toFixed(1)} ${(POINTS[MERGE_INDEX].y - 9).toFixed(1)}) scale(0.0618)`}
+              aria-hidden="true"
+            >
+              <g className="mark console-merge-mark">
+                <path className="half a" d={HALF_A} />
+                <path className="half b" d={HALF_B} />
+              </g>
+            </g>
+            <text
+              x={POINTS[MERGE_INDEX].x}
+              y={POINTS[MERGE_INDEX].y + 22}
+              className="console-dot-label"
+              textAnchor="middle"
+            >
+              merged
+            </text>
+          </g>
+        ) : null}
+        {/* The head: a soft pulse radiates from it once the climb rests. */}
+        {atRest ? (
+          <circle cx={head.x} cy={head.y} r={4.5} className="console-head-halo" aria-hidden="true" />
+        ) : null}
+        <circle
+          cx={head.x}
+          cy={head.y}
+          r={4}
+          className={beat ? "console-dot console-dot-beat" : "console-dot"}
+        />
         <text x={px(X0)} y={H - 8} className="console-axis" textAnchor="middle">
           Round {X0}
         </text>

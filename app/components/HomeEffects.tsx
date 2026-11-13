@@ -7,10 +7,12 @@ import { useEffect } from "react";
      The prompt sequence runs when the prompt sheet is on screen; on a phone
      the report waits until it is visible, instead of finishing below the
      fold. It always ends in the complete static result (flow-ready removed).
-   - Scroll reveal: offscreen, noncritical groups rise in on arrival;
-     groups already in view stay still. Without JS they remain visible.
    - The card pointer glow: a soft accent light follows the pointer around
-     the border (fine pointers only), in pixels, rAF-throttled. */
+     the border (fine pointers only), in pixels, rAF-throttled.
+   Lane N5 removed the scroll-reveal block that used to live here: section
+   entrances are the Reveal components' job now (framer-motion whileInView
+   choreography in app/components/Reveal.tsx), and two systems hiding the
+   same sections would fight. */
 export function HomeEffects() {
   useEffect(() => {
     const root = document.documentElement;
@@ -115,26 +117,6 @@ export function HomeEffects() {
           document.removeEventListener("visibilitychange", onVisibility);
         });
       }
-    }
-
-    /* ---- Scroll reveal: one arrival per chapter ---- */
-    if (!reduceMotion && !root.classList.contains("motion-paused") && "IntersectionObserver" in window) {
-      const arrivals = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
-            entry.target.classList.remove("reveal-pending");
-            arrivals.unobserve(entry.target);
-          });
-        },
-        { threshold: 0.15, rootMargin: "0px 0px -10% 0px" },
-      );
-      document.querySelectorAll(".proof, .cards, .steps, .contact").forEach((section) => {
-        if (section.getBoundingClientRect().top <= window.innerHeight) return;
-        section.classList.add("scroll-reveal", "reveal-pending");
-        arrivals.observe(section);
-      });
-      cleanups.push(() => arrivals.disconnect());
     }
 
     /* ---- Card pointer glow ---- */
