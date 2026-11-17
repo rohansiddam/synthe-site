@@ -1,0 +1,106 @@
+/* SplitFlap: a dark Solari board on the card surface. Each cell is
+   a flap tile: two shaded halves split by the seam line across its
+   middle, riffling around the seam while it cycles. */
+
+.sf-board {
+  background: #14120e;
+  border-radius: 12px;
+  padding: 20px 18px 22px;
+  box-sizing: border-box;
+}
+
+.sf-header {
+  margin: 0 0 14px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: rgba(250, 248, 241, 0.45);
+}
+
+.sf-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sf-row {
+  display: flex;
+  gap: 3px;
+  perspective: 320px;
+}
+
+.sf-cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: calc(1ch + 9px);
+  height: 2em;
+  overflow: hidden;
+  border-radius: 3px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 15px;
+  line-height: 1;
+  color: #faf8f1;
+  background: linear-gradient(
+    to bottom,
+    #26231c 0%,
+    #211e18 48%,
+    #171510 52%,
+    #1e1b16 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(250, 248, 241, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(250, 248, 241, 0.05);
+}
+
+/* The seam: the dark gap between the tile's two halves. */
+.sf-cell::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  margin-top: -0.5px;
+  background: rgba(0, 0, 0, 0.65);
+  pointer-events: none;
+}
+
+.sf-cellFlip {
+  animation: sfFlip 0.12s ease-in-out infinite;
+}
+
+@keyframes sfFlip {
+  0% {
+    transform: rotateX(0deg);
+  }
+  50% {
+    transform: rotateX(-68deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .sf-board {
+    padding: 16px 12px 18px;
+  }
+
+  .sf-row {
+    gap: 2px;
+  }
+
+  .sf-cell {
+    width: calc(1ch + 6px);
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-cellFlip {
+    animation: none;
+  }
+}

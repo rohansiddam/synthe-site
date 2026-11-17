@@ -1388,3 +1388,16 @@ html.theme-fade body { transition: background-color var(--duration-ui) var(--eas
   .pg-docs .doc-hero-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
   .pg-docs .docs-emblem { order: -1; width: 56px; margin-top: 0; }
 }
+
+/* ClayNav pill: the theme switch quietened inside the pill (the module
+   CSS loader cannot parse :global(), so these overrides live here). */
+.clay-theme .themeswitch { min-height: 40px; border-color: transparent; background: transparent; }
+.clay-theme .themeswitch:hover { border-color: var(--line2); }
+
+/* The nav is a fixed floating pill now: anchored sections and headings
+   need clearance so jumps do not hide them under the pill. */
+main section[id], main h2[id], main h3[id] { scroll-margin-top: 106px; }
+
+/* Docs main sat directly under the old in-flow header; give it the same
+   clearance under the fixed pill. */
+.pg-docs { padding-top: 92px; }

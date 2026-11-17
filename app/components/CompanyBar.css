@@ -1,0 +1,100 @@
+/* CompanyBar: narrow marquee, hairline rules, edge fade masks like
+   Clay's customer wall. The track holds two identical halves and
+   loops by translating -50%. */
+
+.cb-bar {
+  height: 58px;
+  box-sizing: border-box;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 10%,
+    #000 90%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 10%,
+    #000 90%,
+    transparent
+  );
+}
+
+.cb-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: cbScroll 55s linear infinite;
+}
+
+.cb-bar:hover .cb-track {
+  animation-play-state: paused;
+}
+
+@keyframes cbScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.cb-half {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+.cb-itemWrap {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+}
+
+.cb-item {
+  font-family: "Archivo", sans-serif;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.cb-anchor {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.cb-tier2 {
+  font-size: 21px;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.cb-tier3 {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.cb-sep {
+  flex: none;
+  width: 5px;
+  height: 5px;
+  margin: 0 30px;
+  background: var(--accent);
+  transform: rotate(45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cb-track {
+    animation: none;
+  }
+}

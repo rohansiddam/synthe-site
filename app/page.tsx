@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
-import { HeroDrift } from "./components/HeroDrift";
-import { WireframeMark } from "./components/WireframeMark";
 import {
-  RevealArticle,
   RevealDiv,
   RevealH2,
-  RevealLi,
   RevealSection,
 } from "./components/Reveal";
 import { Console } from "@/components/console/Console";
@@ -15,9 +11,14 @@ import { SegControl } from "./components/SegControl";
 import { PartnerForm } from "./components/PartnerForm";
 import { MorphSeam } from "./components/MorphSeam";
 import { ReportBand, SiteFoot } from "./components/SiteFoot";
-import { WorkedExample } from "./components/WorkedExample";
-import { ChecksScene, MergeScene, ReportScene } from "./components/Scenes";
-import { GoArrow, HoverArrow, Mark } from "./components/Mark";
+import { HoverArrow, Mark } from "./components/Mark";
+import { DitherField } from "./components/DitherField";
+import { InstallDirectly } from "./components/InstallDirectly";
+import { TiltReportCard } from "./components/TiltReportCard";
+import { CompanyBar } from "./components/CompanyBar";
+import { FeatureTabs } from "./components/FeatureTabs";
+import { InstallTerminal } from "./components/InstallTerminal";
+import "./page.css";
 
 export const metadata: Metadata = {
   title: "Synthe: your AI agent gets better on its own",
@@ -91,143 +92,81 @@ export default function HomePage() {
   return (
     <>
       <main id="main" className="pg-home" tabIndex={-1}>
-        <HeroDrift>
-          <div className="hero-main">
-            <h1>Your AI agent gets better on its own.</h1>
-            <div className="hero-copy">
-              <p className="lede">
+        <section className={"pg-hero"}>
+          <DitherField />
+          <div className={"pg-heroScrim"} aria-hidden="true" />
+          <div className={"pg-heroInner"}>
+            <div className={"pg-heroText"}>
+              <h1 className={"pg-heroTitle"}>Your AI agent gets better on its own.</h1>
+              <p className={"pg-heroLede"}>
                 <strong>You say what good looks like.</strong> Synthe tests changes to your agent's
                 prompt in your own GitHub repo, and keeps only what wins.
               </p>
-              <div className="actions">
+              <div className={"pg-heroActions"}>
                 <CopyButton
                   text="npx synthe@latest init"
                   ariaLabel="Copy the command npx synthe@latest init"
                 />
-                <a className="arrow-link" href="#start-tonight">
+                <a className={"pg-howStart"} href="#start-tonight">
                   How to start <HoverArrow />
                 </a>
               </div>
-              <p className="event-callout">
-                <span className="dot" aria-hidden="true"></span>
-                <span className="record">
+              <div className={"pg-heroInstall"}>
+                <InstallDirectly />
+              </div>
+              <p className={"pg-eventLine"}>
+                <span className={"pg-eventDot"} aria-hidden="true"></span>
+                <span>
                   Crimson Hacks, November 2026: three winning teams built with Synthe.
                 </span>
               </p>
             </div>
+            <div className={"pg-heroCard"}>
+              <TiltReportCard />
+            </div>
           </div>
-          <div className="hero-emblem">
-            <WireframeMark className="hero-emblem-mark" />
-          </div>
-        </HeroDrift>
+        </section>
 
-                <Console />
+        <CompanyBar />
 
-        <RevealSection className="how wrap" aria-labelledby="how-h">
+        <RevealSection className="how wrap" id="how" aria-labelledby="how-h">
           <RevealH2 className="section-h" id="how-h">
             How it works
           </RevealH2>
-
-          <WorkedExample />
-
-          <div className="cards">
-            <RevealArticle className="card">
-              <div className="card-head">
-                <h3>Your checks decide.</h3>
-              </div>
-              <div className="viz">
-                <ChecksScene />
-              </div>
-              <a
-                className="go"
-                href="https://github.com/synthelabs/support-bot/blob/main/synthe.json"
-                aria-label="See the checks Synthe ran"
-              >
-                <GoArrow />
-              </a>
-            </RevealArticle>
-            <RevealArticle className="card">
-              <div className="card-head">
-                <h3>Only the prompt changes.</h3>
-              </div>
-              <div className="viz">
-                <MergeScene />
-              </div>
-              <a
-                className="go"
-                href="https://github.com/synthelabs/support-bot/pull/8"
-                aria-label="See a change Synthe merged"
-              >
-                <GoArrow />
-              </a>
-            </RevealArticle>
-            <RevealArticle className="card">
-              <div className="card-head">
-                <h3>You get the report.</h3>
-              </div>
-              <div className="viz">
-                <ReportScene />
-              </div>
-              <a
-                className="go"
-                href="https://github.com/synthelabs/support-bot/issues/3"
-                aria-label="Read the full report"
-              >
-                <GoArrow />
-              </a>
-            </RevealArticle>
-          </div>
+          <FeatureTabs />
         </RevealSection>
+
+        <Console />
 
         <RevealSection className="steps wrap" id="start-tonight" aria-labelledby="steps-h">
           <RevealH2 id="steps-h">Start it with one command.</RevealH2>
-          <div className="steps-strip">
-            <svg
-              className="steps-climb"
-              viewBox="0 0 1000 56"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-            >
-              <path d="M4 48 L580 40 L996 6" />
-            </svg>
-            <span className="steps-dot is-1" aria-hidden="true" />
-            <span className="steps-dot is-2" aria-hidden="true" />
-            <Mark className="steps-mark" />
-            <ol className="step-cards">
-              <RevealLi className="step">
-                <span className="num" aria-hidden="true">
+          <div className={"pg-startGrid"}>
+            <RevealDiv>
+              <InstallTerminal />
+            </RevealDiv>
+            <div className={"pg-startSteps"}>
+              <div className={"pg-startCard"}>
+                <span className={"pg-stepNum"} aria-hidden="true">
                   1
                 </span>
-                <div className="step-head">
-                  <h3>Run one command.</h3>
-                </div>
+                <h3 className={"pg-stepTitle"}>Run one command.</h3>
                 <CopyButton
                   text="npx synthe@latest init"
                   ariaLabel="Copy the command npx synthe@latest init"
                   dataPort="install"
                 />
-              </RevealLi>
-              <RevealLi className="step">
-                <span className="num" aria-hidden="true">
+              </div>
+              <div className={"pg-startCard"}>
+                <span className={"pg-stepNum"} aria-hidden="true">
                   2
                 </span>
-                <div className="step-head">
-                  <h3>Confirm your checks.</h3>
-                </div>
+                <h3 className={"pg-stepTitle"}>Confirm your checks.</h3>
                 <div className="seg-anchor">
                   <SegControl />
                 </div>
-              </RevealLi>
-            </ol>
+              </div>
+            </div>
           </div>
-          <RevealDiv className="agent-line">
-            <p className="agent-label">For your coding agent:</p>
-            <CopyButton
-              variant="text"
-              text="Set up Synthe in this repo. Run npx synthe@latest guide and follow it."
-              ariaLabel="Copy the instruction for your coding agent"
-            />
-          </RevealDiv>
         </RevealSection>
 
         <RevealSection className="contact wrap" id="partner" aria-labelledby="partner-h">

@@ -1,0 +1,189 @@
+/* Landing page composition for the Clay-pattern rebuild (2026-11-16).
+   Hero: the dither field (DitherField) fills the band; a scrim keeps the
+   headline zone readable; the morning-report tilt card sits in the grid.
+   Start section: terminal + step cards. Tokens come from globals.pg-css. */
+
+.pg-hero {
+  position: relative;
+  background: #0e0d0c;
+  color: #faf8f1;
+  overflow: hidden;
+  padding: calc(max(var(--head-h, 0px), 88px) + 42px) 0 88px;
+}
+
+.pg-heroScrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(1000px 620px at 24% 38%, rgba(14, 13, 12, 0.86), rgba(14, 13, 12, 0) 64%),
+    radial-gradient(760px 420px at 12% 96%, rgba(14, 13, 12, 0.62), rgba(14, 13, 12, 0) 70%),
+    linear-gradient(to bottom, rgba(14, 13, 12, 0.42), rgba(14, 13, 12, 0) 30%),
+    linear-gradient(to top, rgba(14, 13, 12, 0.5), rgba(14, 13, 12, 0) 24%);
+}
+
+.pg-heroInner {
+  position: relative;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 430px);
+  gap: 56px;
+  align-items: center;
+}
+
+.pg-heroTitle {
+  font-family: "Archivo", sans-serif;
+  font-weight: 580;
+  font-size: clamp(46px, 5.6vw, 82px);
+  line-height: 0.99;
+  letter-spacing: -0.032em;
+  color: #faf8f1;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.pg-heroLede {
+  margin: 26px 0 0;
+  max-width: 34em;
+  font-size: 20px;
+  line-height: 1.52;
+  color: rgba(250, 248, 241, 0.84);
+  text-shadow: 0 1px 14px rgba(14, 13, 12, 0.55);
+}
+
+.pg-heroLede strong {
+  color: #ffffff;
+  font-weight: 620;
+}
+
+.pg-heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  margin-top: 30px;
+}
+
+.pg-howStart {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 560;
+  font-size: 16.5px;
+  color: #faf8f1;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(250, 248, 241, 0.4);
+  padding-bottom: 2px;
+}
+
+.pg-howStart:hover {
+  border-bottom-color: #faf8f1;
+}
+
+.pg-heroInstall {
+  margin-top: 36px;
+}
+
+.pg-eventLine {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 34px 0 0;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(250, 248, 241, 0.82);
+  text-shadow: 0 1px 10px rgba(14, 13, 12, 0.6);
+}
+
+.pg-eventDot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ec5358;
+  transform: translateY(-1px);
+}
+
+.pg-heroCard {
+  justify-self: end;
+  width: 100%;
+  max-width: 430px;
+}
+
+/* ---------- Start section: terminal + steps ---------- */
+
+.pg-startGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: 42px;
+  align-items: start;
+  margin-top: 10px;
+}
+
+.pg-startSteps {
+  display: grid;
+  gap: 18px;
+}
+
+.pg-startCard {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px 22px 24px;
+}
+
+.pg-stepNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.pg-stepTitle {
+  font-family: "Archivo", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin: 0 0 14px;
+}
+
+@media (max-width: 900px) {
+  .pg-hero {
+    padding: calc(max(var(--head-h, 0px), 84px) + 26px) 0 60px;
+  }
+
+  .pg-heroInner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+    padding: 0 18px;
+  }
+
+  .pg-heroTitle {
+    font-size: clamp(40px, 11.4vw, 54px);
+  }
+
+  .pg-heroLede {
+    font-size: 18px;
+  }
+
+  .pg-heroCard {
+    justify-self: stretch;
+  }
+
+  .pg-startGrid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 26px;
+  }
+}

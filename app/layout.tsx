@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Providers } from "./providers";
-import { SiteHead } from "./components/SiteHead";
+import { ClayNav } from "./components/ClayNav";
 import { BackToTop } from "./components/BackToTop";
 import { SmoothScroll } from "./components/SmoothScroll";
 import "./globals.css";
@@ -79,7 +79,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <a className="skip-link" href="#main">
               Skip to content
             </a>
-            <SiteHead />
+            <ClayNav />
             {children}
             <BackToTop />
           </div>

@@ -1,0 +1,162 @@
+/* TiltReportCard: the morning report as a tilting DOM card.
+   Tokens come from the :root custom properties in app/globals.tc-css. */
+
+.tc-wrapper {
+  perspective: 900px;
+  width: 100%;
+  max-width: 430px;
+}
+
+.tc-card {
+  --glare-x: 50%;
+  --glare-y: 50%;
+  --glare-opacity: 0;
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 22px;
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow:
+    0 1px 2px rgb(23 20 16 / 0.05),
+    0 12px 32px -12px rgb(23 20 16 / 0.18),
+    0 32px 64px -32px rgb(23 20 16 / 0.22);
+  font-family: "Archivo", sans-serif;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* Specular highlight: a soft radial glare whose position and opacity are
+   driven from the component through CSS custom properties, chased in the
+   same rAF loop as the tilt. */
+.tc-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: var(--glare-opacity);
+  background: radial-gradient(
+    420px circle at var(--glare-x) var(--glare-y),
+    rgb(255 255 255 / 0.9),
+    rgb(246 230 223 / 0.35) 42%,
+    transparent 70%
+  );
+  transform: translateZ(1px);
+}
+
+.tc-topRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.tc-eyebrow {
+  margin: 0;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.tc-markWrap {
+  flex: none;
+  line-height: 0;
+}
+
+.tc-markWrap svg {
+  width: 26px;
+  height: 28px;
+  display: block;
+}
+
+.tc-climb {
+  margin-top: 18px;
+}
+
+.tc-climbSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.tc-climbPath {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tc-startDot {
+  fill: var(--card);
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.tc-endDot {
+  fill: var(--accent);
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.tc-climbLabel {
+  font-family: "Archivo", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  fill: var(--ink);
+}
+
+.tc-rows {
+  margin: 14px 0 0;
+  padding: 0;
+}
+
+.tc-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.tc-row:first-child {
+  border-top: none;
+}
+
+.tc-rowLabel {
+  flex: none;
+  margin: 0;
+  color: var(--muted);
+}
+
+.tc-rowValue {
+  margin: 0;
+  color: var(--ink-soft);
+  text-align: right;
+}
+
+.tc-verdict {
+  color: var(--ok);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tc-card {
+    transform: none !important;
+  }
+
+  .tc-glare {
+    display: none;
+  }
+}

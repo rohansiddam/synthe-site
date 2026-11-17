@@ -1,0 +1,146 @@
+/* FeatureTabs: Clay's flow pattern. Options list left (38%),
+   visual panel right; stacked with the list above the panel on
+   mobile. The active option carries the dwell progress bar. */
+
+.ft-root {
+  display: grid;
+  grid-template-columns: minmax(0, 38%) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+  font-family: "Archivo", sans-serif;
+}
+
+.ft-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ft-option {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px 18px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 200ms ease;
+}
+
+.ft-option:hover {
+  background: var(--bg2);
+}
+
+.ft-optionActive {
+  background: var(--bg2);
+}
+
+.ft-optionActive:hover {
+  background: var(--bg2);
+}
+
+.ft-optionTitle {
+  display: block;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--muted);
+}
+
+.ft-optionActive .ft-optionTitle {
+  color: var(--ink);
+}
+
+.ft-optionBody {
+  display: block;
+  margin-top: 6px;
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.ft-progressTrack {
+  display: block;
+  height: 3px;
+  margin-top: 12px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.ft-progressFill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--accent);
+  transform-origin: left center;
+  animation: ftFill 6.5s linear forwards;
+}
+
+.ft-progressPaused {
+  animation-play-state: paused;
+}
+
+@keyframes ftFill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.ft-panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 20px;
+  min-height: 340px;
+  box-sizing: border-box;
+}
+
+.ft-panelInner {
+  animation: ftPop 260ms ease-out both;
+}
+
+@keyframes ftPop {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 860px) {
+  .ft-root {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .ft-panel {
+    min-height: 280px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ft-progressFill {
+    animation: none;
+    transform: scaleX(1);
+    opacity: 0.3;
+  }
+
+  .ft-panelInner {
+    animation: none;
+  }
+
+  .ft-option {
+    transition: none;
+  }
+}

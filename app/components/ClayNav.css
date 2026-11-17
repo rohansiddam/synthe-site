@@ -1,0 +1,475 @@
+/* ClayNav: the Clay-pattern floating pill navigation.
+   Formatting follows the Clay study: a white pill floating over the
+   hero, a hover mega-dropdown with mono eyebrow groups, and a mobile
+   drill-in panel. Colours and fonts come from the design tokens in
+   globals.cn-css (:root): Archivo for text, IBM Plex Mono for eyebrow
+   labels, Hanken Grotesk for the wordmark. */
+
+.cn-head {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(1240px, calc(100% - 32px));
+  z-index: 60;
+  font-family: var(--sans);
+  color: var(--ink);
+}
+
+/* ---------- The pill ---------- */
+
+.cn-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 58px;
+  box-sizing: border-box;
+  padding: 0 10px 0 20px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 1px 2px rgb(23 20 16 / 0.05), 0 8px 24px rgb(23 20 16 / 0.08);
+  transition: box-shadow 200ms var(--ease-ui, ease-out);
+}
+
+.cn-scrolled .cn-pill {
+  box-shadow: 0 1px 2px rgb(23 20 16 / 0.06), 0 12px 32px rgb(23 20 16 / 0.16);
+}
+
+/* ---------- Wordmark ---------- */
+
+.cn-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--ink);
+  text-decoration: none;
+  flex: none;
+}
+
+.cn-wordmarkLogo {
+  width: 24px;
+  height: 25px;
+  flex: none;
+}
+
+.cn-wordmarkText {
+  font-family: var(--wordmark);
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+/* ---------- Desktop items ---------- */
+
+.cn-desktopNav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 16px;
+}
+
+.cn-productWrap {
+  display: flex;
+  align-items: center;
+}
+
+.cn-navItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 44px;
+  padding: 0 12px;
+  background: none;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--duration-ui, 200ms) var(--ease-ui, ease-out),
+    background-color var(--duration-ui, 200ms) var(--ease-ui, ease-out);
+}
+
+.cn-navItem:hover {
+  color: var(--ink);
+  background: var(--bg2);
+}
+
+.cn-navItem[aria-current="page"] {
+  color: var(--ink);
+  box-shadow: inset 0 -2px 0 var(--accent);
+  border-radius: 0;
+}
+
+.cn-chev {
+  flex: none;
+  transition: transform 180ms ease-out;
+}
+
+.cn-chevOpen {
+  transform: rotate(180deg);
+}
+
+/* ---------- Right cluster ---------- */
+
+.cn-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  flex: none;
+}
+
+/* ThemeToggle stays the global .cn-themeswitch control; the .cn-clay-theme
+   overrides that quieten it inside the pill live in globals.cn-css (the
+   Tailwind CSS loader cannot parse :global() in module files). */
+.cn-themeWrap {
+  display: inline-flex;
+  align-items: center;
+}
+
+.cn-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  box-sizing: border-box;
+  padding: 0 18px;
+  margin-left: 6px;
+  background: var(--ink);
+  color: var(--bg);
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--duration-ui, 200ms) var(--ease-ui, ease-out),
+    transform var(--duration-press, 120ms) var(--ease-ui, ease-out);
+}
+
+.cn-cta:hover {
+  background: var(--ink-soft);
+  border-color: var(--ink-soft);
+}
+
+.cn-cta:active {
+  transform: scale(0.97);
+}
+
+/* ---------- Mega-dropdown ---------- */
+
+.cn-mega {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+  min-height: 335px;
+  padding: 28px 32px 32px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgb(23 20 16 / 0.05), 0 24px 48px rgb(23 20 16 / 0.14);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 180ms ease-out, transform 180ms ease-out,
+    visibility 0s 180ms;
+}
+
+.cn-megaOpen {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition: opacity 180ms ease-out, transform 180ms ease-out, visibility 0s;
+}
+
+.cn-megaGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+}
+
+.cn-megaEyebrow {
+  margin: 0 0 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cn-megaList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.cn-megaLink {
+  display: grid;
+  gap: 2px;
+  padding: 8px 10px;
+  margin: 0 -10px;
+  border-radius: 10px;
+  color: var(--ink);
+  text-decoration: none;
+  transition: background-color 150ms ease-out;
+}
+
+.cn-megaLink:hover {
+  background: var(--bg2);
+}
+
+.cn-megaLinkLabel {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.cn-megaLinkDesc {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+/* ---------- Hamburger + mobile panel ---------- */
+
+.cn-burger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-left: 4px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.cn-burger:hover {
+  border-color: var(--line2);
+}
+
+.cn-burger:active {
+  transform: scale(0.97);
+}
+
+.cn-burgerLines {
+  display: grid;
+  gap: 5px;
+  width: 20px;
+}
+
+.cn-burgerLines span {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 180ms ease-out, opacity 120ms ease-out;
+}
+
+.cn-mobileOpen .cn-burgerLines span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.cn-mobileOpen .cn-burgerLines span:nth-child(2) {
+  opacity: 0;
+}
+
+.cn-mobileOpen .cn-burgerLines span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.cn-mobilePanel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+  max-height: calc(100dvh - 96px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 10px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgb(23 20 16 / 0.05), 0 24px 48px rgb(23 20 16 / 0.14);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 180ms ease-out, transform 180ms ease-out,
+    visibility 0s 180ms;
+}
+
+.cn-mobilePanelOpen {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition: opacity 180ms ease-out, transform 180ms ease-out, visibility 0s;
+}
+
+.cn-mobileRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 52px;
+  padding: 12px 14px;
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--line);
+  font: inherit;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.cn-mobileRow:first-child {
+  border-top: none;
+}
+
+.cn-mobileRow[aria-current="page"] {
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.cn-mobileChev {
+  flex: none;
+  transform: rotate(-90deg);
+  color: var(--muted);
+}
+
+.cn-mobileBack {
+  justify-content: flex-start;
+  color: var(--ink-soft);
+}
+
+.cn-mobileBackChev {
+  flex: none;
+  transform: rotate(90deg);
+  color: var(--muted);
+}
+
+.cn-mobileGroup {
+  padding: 16px 14px 8px;
+  border-top: 1px solid var(--line);
+}
+
+.cn-mobileGroup .cn-megaEyebrow {
+  margin-bottom: 8px;
+}
+
+.cn-mobileSubRow {
+  display: grid;
+  gap: 2px;
+  padding: 10px 0;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+/* ---------- Focus ---------- */
+
+.cn-wordmark:focus-visible,
+.cn-navItem:focus-visible,
+.cn-cta:focus-visible,
+.cn-burger:focus-visible,
+.cn-megaLink:focus-visible,
+.cn-mobileRow:focus-visible,
+.cn-mobileSubRow:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 900px) {
+  .cn-desktopNav {
+    display: none;
+  }
+
+  .cn-talkLink {
+    display: none;
+  }
+
+  .cn-themeWrap {
+    display: none;
+  }
+
+  .cn-burger {
+    display: inline-flex;
+  }
+
+  .cn-mobilePanel {
+    display: block;
+  }
+
+  .cn-mega {
+    display: none;
+  }
+
+  .cn-pill {
+    padding: 0 8px 0 16px;
+  }
+
+  .cn-cta {
+    min-height: 40px;
+    padding: 0 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  .cn-wordmarkText {
+    font-size: 21px;
+  }
+
+  .cn-cta {
+    font-size: 13px;
+    padding: 0 12px;
+  }
+}
+
+/* ---------- Reduced motion: no slide animations ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .cn-pill,
+  .cn-mega,
+  .cn-mobilePanel,
+  .cn-chev,
+  .cn-burgerLines span,
+  .cn-cta,
+  .cn-navItem,
+  .cn-megaLink {
+    transition: none !important;
+  }
+
+  .cn-mega,
+  .cn-mobilePanel {
+    transform: none;
+  }
+
+  .cn-cta:active,
+  .cn-burger:active {
+    transform: none;
+  }
+}
