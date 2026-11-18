@@ -1,0 +1,19 @@
+/* hero4.css — hero atmosphere layer (REF-ORI.md). Loaded AFTER
+   hero3.css. Styles only the atmosphere canvas: a WebGL fog
+   layer above the whorl canvas, below the content container
+   (z-index 2), carrying the brand tokens hero4.js reads at
+   runtime. No layout rules; hero3's geometry is untouched. */
+.hero-atmo-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  z-index: 1; /* ties the whorl canvas; DOM order (inserted
+                 after it) paints the fog above the field,
+                 the content container at z-index 2 stays on top */
+  background-color: #8c2f36; /* uBase source + fail-soft ground */
+  color: #ec5358;            /* uTint source (never painted) */
+  --h4-deep: #5f1d23;        /* uDeep source */
+}

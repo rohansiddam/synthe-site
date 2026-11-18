@@ -1,0 +1,88 @@
+/* ==================================================================
+   Lane C: the wall, rebuilt as ONE ROW of logo lockups in a
+   narrower centered strip. Load after clone-fixes.css (any position
+   after it; rules are scoped under .wall2 and out-specify the base build's
+   .home-logo_base). Markup + integration notes: WALL2.md.
+
+   The strip keeps the base build's logos module (data-module="logos" on
+   .home-logo_base): the module wraps the base in its track, clones
+   the base to tile seamlessly, and drifts it at 24 px/s with hover
+   pause and drag. Everything visual is scoped so the module's own
+   inline styles (track, copy transforms) are untouched.
+   ================================================================== */
+
+.wall2 {
+  /* .section_home-logo already carries the base build's bottom section
+     padding; add the matching top rhythm so the strip breathes
+     between the hero and the prompt box. */
+  padding-top: 2rem; /* 32px */
+}
+
+.wall2__inner {
+  max-width: 1120px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem; /* 24px */
+  padding-right: 1.5rem;
+}
+
+/* The module's parent (it inserts the track here). The base build's
+   .home-logo_wrap is overflow:auto; the track clips itself, so the
+   wrap must not. */
+.wall2__wrap {
+  overflow: visible;
+  width: 100%;
+}
+
+/* One row, natural content width (the module measures this width
+   as one drift period, so it must be the tiles' true width, never
+   a stretched 100%). */
+.wall2 .home-logo_base.wall2__base {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 0.5rem; /* 8px between tiles */
+  padding: 0;
+  width: max-content;
+  flex: none;
+}
+
+/* A tile is a lockup only: the real mark + the company name.
+   Slim card treatment (cream paper white, alpha hairline, 16px
+   radius), 72px tall, text vertically centred with the mark. */
+.wall2__tile {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem; /* 10px mark to name */
+  height: 4.5rem; /* 72px */
+  padding: 0 1.25rem; /* 20px */
+  background: #fffdf9;
+  border: 1px solid rgb(14 13 12 / 0.08);
+  border-radius: 1rem;
+  flex: none;
+}
+
+.wall2__img {
+  height: 1.5rem; /* 24px mark */
+  width: auto;
+  flex: none;
+}
+
+.wall2__name {
+  font-family: var(--sans);
+  font-size: 0.9375rem; /* 15px */
+  font-weight: 500;
+  line-height: 1;
+  color: #0e0d0c;
+  white-space: nowrap;
+}
+
+/* Reduced motion: the module does not build its track, so the
+   single row wraps inside the strip as a static set instead of
+   overflowing it. */
+@media (prefers-reduced-motion: reduce) {
+  .wall2 .home-logo_base.wall2__base {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+}

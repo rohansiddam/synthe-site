@@ -1,0 +1,671 @@
+/* ================================================================
+   Shift section v2 ("One loop. Everywhere your agents work.")
+   Rework of shift-section.css after founder review (see
+   SHIFT2.md). What changed and why:
+
+   - The section no longer paints a full-bleed black slab. It sits
+     on the page's cream ground (#f4f3f0, measured from the shipped
+     page around this section) with the page's normal section
+     padding and the same 1280px wrap, and the charcoal lives in
+     ONE contained stage card (#0e0d0c, radius 16px, the page's
+     card-shadow family). Headline and lede are charcoal on cream.
+   - The rows are the loop's three ARTIFACTS (Pull request,
+     prompt.md, Morning report), not destinations: the mono label
+     on the right names where each one lands (GitHub, Your repo,
+     Repo issue). GitHub is named once, in row 1's label.
+   - Mechanics are unchanged from v1 (which ported Spline's
+     "One scene." export section): geometry on .45s
+     cubic-bezier(.22,1,.36,1), panel fade .25s, prompt typing
+     60ms + 5ms/char, inactive rows .35, the active row's rule
+     filling linearly over 6000ms to drive the auto-cycle.
+     Class prefix is sh2- throughout; shift-section.js needs one
+     selector patch (.shift-fill -> .sh2-fill), specified in
+     SHIFT2.md. All spacing on the 4px scale.
+   ================================================================ */
+
+.sh2 {
+  --sh2-ease: cubic-bezier(.22, 1, .36, 1);
+  --sh2-dur: .45s;
+  --sh2-ground: #f4f3f0;
+  --sh2-ink: #0e0d0c;
+  --sh2-ink-dim: rgba(14, 13, 12, .72);
+  --sh2-ink-mute: rgba(14, 13, 12, .66); /* WCAG wiring fix (stage-2 integration): at .55 the .sh2-renderer row labels (12px, on the cream ground) measured 4.18:1, failing AA; at .66 they measure ~5.2:1. The token's only other use is the decorative .sh2-arrow glyph. */
+  --sh2-ink-lede: rgba(14, 13, 12, .64);
+  --sh2-line: rgba(14, 13, 12, .16);
+  --sh2-red: #ec5358;
+  --sh2-moss: #7fb069;
+  --sh2-cream: #fdf6ec;
+  --sh2-cream-dim: rgba(253, 246, 236, .72);
+  --sh2-cream-mute: rgba(253, 246, 236, .55);
+  --sh2-cream-line: rgba(253, 246, 236, .16);
+  --sh2-cream-line-2: rgba(253, 246, 236, .28);
+  background: var(--sh2-ground);
+  color: var(--sh2-ink);
+  padding: 96px 24px;
+}
+
+.sh2-wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* ---- head: H2 left, lede right (the reference's split head) ---- */
+.sh2-head {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 48px;
+  align-items: end;
+  margin-bottom: 48px;
+}
+
+.sh2-h2 {
+  /* Lane A's Section headline level (TYPE-SYSTEM.md .ts-h2):
+     48px / 530 / 1.0 / -0.04em, with the dial's 530 carried at
+     Archivo's static 500 per the type system's rounding note.
+     Audit fix (D14): the previous 56/600/-0.01em level was
+     invented outside the table. Steps below mirror .ts-h2:
+     40px at <=991px (interpolated step), 32px at the phone step. */
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 48px;
+  line-height: 1.0;
+  letter-spacing: -0.04em;
+  margin: 0;
+}
+
+.sh2-h2 span {
+  display: block;
+}
+
+.sh2-lede {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--sh2-ink-lede);
+  margin: 0;
+  max-width: 46ch;
+  justify-self: end;
+}
+
+/* ---- stack: stage card over rows ---- */
+.sh2-stack {
+  display: grid;
+  gap: 32px;
+}
+
+/* ---- stage: ONE contained charcoal card on the cream ground ---- */
+.sh2-stage {
+  /* The room the prompt panel takes is measured in stage units
+     (cqw) so the same value sizes the panel (a width) and the
+     artifact's slide (a transform, whose % basis would otherwise
+     be the artifact itself). Fallback first for older engines. */
+  --sh2-panel-w: min(40%, 440px);
+  --sh2-panel-w: min(40cqw, 440px);
+  --sh2-room: calc(var(--sh2-panel-w) + 88px);
+  container-type: inline-size;
+  position: relative;
+  height: clamp(420px, 46vw, 640px);
+  border-radius: 16px;
+  background: var(--sh2-ink);
+  box-shadow: 0 16px 40px rgba(27, 26, 24, .14);
+  overflow: hidden;
+  isolation: isolate;
+  outline: none;
+}
+
+.sh2-stage:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--sh2-red), 0 16px 40px rgba(27, 26, 24, .14);
+}
+
+/* The staged artifact: a repo window that bleeds off the bottom
+   edge of the card. Closed it sits centred; open it slides right
+   by half the room the prompt panel takes, on the reference's
+   curve. One step lighter than the card so it reads as a window
+   sitting on it. */
+.sh2-artifact {
+  position: absolute;
+  z-index: 1;
+  top: 48px;
+  bottom: -1px;
+  left: 50%;
+  width: min(720px, calc(100% - 96px));
+  transform: translateX(-50%);
+  transition: transform var(--sh2-dur) var(--sh2-ease), opacity var(--sh2-dur) var(--sh2-ease);
+  background: #1b1a18;
+  border-radius: 12px 12px 0 0;
+  box-shadow: inset 0 0 0 1px var(--sh2-cream-line-2);
+  display: flex;
+  flex-direction: column;
+}
+
+.sh2-stage.is-open .sh2-artifact {
+  transform: translateX(calc(-50% + var(--sh2-room) / 2));
+}
+
+.sh2-bar {
+  flex: none;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--sh2-cream-line);
+  position: relative;
+}
+
+.sh2-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.sh2-dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--sh2-cream-line-2);
+}
+
+.sh2-win-title {
+  position: absolute;
+  left: 50%;
+  translate: -50%;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 20px;
+  color: var(--sh2-cream-mute);
+  background: rgba(255, 255, 255, .05);
+  border-radius: 6px;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+.sh2-artifact-body {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Artifact surfaces crossfade with the outgoing one blurred ~4px:
+   the base state IS the blurred/faded state, so removing .is-active
+   blurs the leaver while the enterer un-blurs. No dead gap. */
+.sh2-surface {
+  position: absolute;
+  inset: 0;
+  padding: 24px;
+  opacity: 0;
+  filter: blur(4px);
+  pointer-events: none;
+  transition: opacity var(--sh2-dur) var(--sh2-ease), filter var(--sh2-dur) var(--sh2-ease);
+}
+
+.sh2-surface.is-active {
+  opacity: 1;
+  filter: blur(0);
+  pointer-events: auto;
+}
+
+/* Record surfaces in the site's language, dark variant (they live
+   inside the charcoal card): Archivo header over a red rule, IBM
+   Plex Mono lines, dashed dividers, moss only for "Kept". */
+.sh2-rec-h {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--sh2-cream);
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--sh2-red);
+  margin-bottom: 6px;
+}
+
+.sh2-rec-tag {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: .02em;
+  text-transform: none;
+  color: var(--sh2-red);
+  white-space: nowrap;
+}
+
+.sh2-rec-l {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--sh2-cream-dim);
+  padding: 6px 0;
+  border-top: 1px dashed rgba(253, 246, 236, .18);
+}
+
+.sh2-rec-h + .sh2-rec-l {
+  border-top: none;
+}
+
+.sh2-rec-l.is-note {
+  display: block;
+  color: var(--sh2-cream-dim);
+}
+
+.sh2-rec-v {
+  color: var(--sh2-cream);
+  font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.sh2-rec-v.is-kept {
+  color: var(--sh2-moss);
+}
+
+/* Diff / file-content block inside a surface */
+.sh2-code {
+  /* Audit fix (F1b, WCAG): an explicit cream base color. Without
+     it the plain lines inherited the section's charcoal ink and
+     measured 1.12:1 on the #1b1a18 window, effectively invisible;
+     cream measures 16.21:1. The classed lines (.is-minus/.is-plus/
+     .is-new) keep their own colors, all >=4.5:1 on the window. */
+  color: var(--sh2-cream);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 8px 0;
+  border-top: 1px dashed rgba(253, 246, 236, .18);
+  border-bottom: 1px dashed rgba(253, 246, 236, .18);
+  padding: 8px 0;
+}
+
+.sh2-code div {
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.sh2-code .is-minus {
+  color: #f0a3a7;
+  background: rgba(236, 83, 88, .08);
+}
+
+.sh2-code .is-plus {
+  color: #a9c795;
+  background: rgba(127, 176, 105, .1);
+}
+
+.sh2-code .is-new {
+  color: var(--sh2-cream);
+  background: rgba(236, 83, 88, .1);
+  box-shadow: inset 2px 0 0 var(--sh2-red);
+}
+
+/* ---- veil (the reference's gradient scrim behind the panel) ---- */
+.sh2-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(90deg, rgba(0, 0, 0, .6), rgba(0, 0, 0, .36) 55%, rgba(0, 0, 0, .26));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+}
+
+.sh2-stage.is-open .sh2-veil {
+  opacity: 1;
+}
+
+/* ---- prompt panel (revealed by the shift, inside the card) ---- */
+.sh2-panel {
+  position: absolute;
+  z-index: 3;
+  left: 32px;
+  top: 32px;
+  bottom: 28px;
+  width: var(--sh2-panel-w);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 16px;
+  opacity: 0;
+  transform: translateX(-12px);
+  pointer-events: none;
+  transition: opacity .25s, transform var(--sh2-dur) var(--sh2-ease);
+}
+
+.sh2-stage.is-open .sh2-panel {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.sh2-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--sh2-cream);
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--sh2-red);
+}
+
+.sh2-copy {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .02em;
+  text-transform: none;
+  color: var(--sh2-cream);
+  background: none;
+  border: 1px solid var(--sh2-cream-line-2);
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.sh2-copy:hover {
+  background: rgba(255, 255, 255, .06);
+}
+
+.sh2-block {
+  align-self: start;
+  background: rgba(255, 255, 255, .04);
+  box-shadow: inset 0 0 0 1px var(--sh2-cream-line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--sh2-cream);
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 76px;
+}
+
+.sh2-caret {
+  display: inline-block;
+  width: 8px;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: -.15em;
+  background: var(--sh2-red);
+  opacity: 0;
+}
+
+.sh2-caret.is-live {
+  opacity: 1;
+  animation: sh2-blink 1s step-end infinite;
+}
+
+@keyframes sh2-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.sh2-panel-foot {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--sh2-cream-mute);
+  margin: 0;
+}
+
+.sh2-panel-foot code {
+  color: var(--sh2-cream);
+  font-family: inherit;
+}
+
+.sh2-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- artifact rows (on the cream ground, charcoal text) ---- */
+.sh2-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 48px;
+}
+
+.sh2-item {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  width: 100%;
+  padding: 22px 0 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: opacity .3s;
+}
+
+.sh2-item:not(.is-on) {
+  opacity: .35;
+}
+
+.sh2-item:not(.is-on):hover {
+  opacity: .8;
+}
+
+.sh2-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--sh2-line);
+  overflow: hidden;
+}
+
+.sh2-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--sh2-ink);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.sh2-fill.is-filling {
+  animation: sh2-fill 6000ms linear forwards;
+}
+
+@keyframes sh2-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.sh2-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: -.01em;
+  color: var(--sh2-ink);
+}
+
+.sh2-icon {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--sh2-ink);
+}
+
+.sh2-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.sh2-arrow {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: var(--sh2-ink-mute);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity .25s, transform .25s cubic-bezier(.2, .8, .2, 1);
+}
+
+.sh2-item:hover .sh2-arrow,
+.sh2-item:focus-visible .sh2-arrow {
+  opacity: 1;
+  transform: none;
+}
+
+.sh2-item:focus-visible {
+  outline: none;
+}
+
+.sh2-item:focus-visible .sh2-name-text {
+  text-decoration: underline;
+  text-decoration-color: var(--sh2-red);
+  text-underline-offset: .2em;
+}
+
+.sh2-renderer {
+  margin-left: auto;
+  padding-top: 3px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--sh2-ink-mute);
+  white-space: nowrap;
+}
+
+.sh2-desc {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--sh2-ink-dim);
+  margin: 0;
+}
+
+/* ---- tablet ---- */
+@media (max-width: 991px) {
+  .sh2-h2 {
+    font-size: 40px;
+  }
+}
+
+/* ---- phone (the reference switches at 760px; so do we) ---- */
+@media (max-width: 760px) {
+  .sh2 {
+    padding: 64px 16px;
+  }
+
+  /* .ts-h2 phone step (32px at <=767px in the table); this
+     section's own phone switch is 760px. */
+  .sh2-h2 {
+    font-size: 32px;
+  }
+
+  .sh2-head {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .sh2-lede {
+    justify-self: start;
+  }
+
+  .sh2-stack {
+    gap: 24px;
+  }
+
+  .sh2-stage {
+    height: 440px;
+  }
+
+  /* No room to slide on a phone: the artifact fades back and the
+     prompt becomes the reference's own inset overlay card. */
+  .sh2-artifact {
+    top: 24px;
+    width: calc(100% - 32px);
+  }
+
+  .sh2-stage.is-open .sh2-artifact {
+    transform: translateX(-50%);
+    opacity: .3;
+  }
+
+  .sh2-panel {
+    inset: 12px;
+    width: auto;
+    background: rgba(12, 12, 12, .94);
+    box-shadow: inset 0 0 0 1px var(--sh2-cream-line-2);
+    border-radius: 12px;
+    padding: 16px;
+    transform: translateY(8px);
+  }
+
+  .sh2-stage.is-open .sh2-panel {
+    transform: none;
+  }
+
+  .sh2-list {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .sh2-item {
+    padding: 20px 0;
+  }
+
+  .sh2-arrow {
+    opacity: 1;
+    transform: none;
+  }
+
+  .sh2-surface {
+    padding: 16px;
+  }
+
+  .sh2-rec-l,
+  .sh2-code {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 479px) {
+  .sh2-stage {
+    height: 420px;
+  }
+}
+
+/* ---- reduced motion: instant swaps, no sliding, no cycling ---- */
+@media (prefers-reduced-motion: reduce) {
+  .sh2 *,
+  .sh2 *::before,
+  .sh2 *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

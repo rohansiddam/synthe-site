@@ -1,0 +1,261 @@
+/* ------------------------------------------------------------------
+   PROMPT SECTION, FINISH + REVEAL (prompt3, supersedes prompt2's
+   finish layer; prompt2.css stays loaded underneath)
+
+   Founder verdict on prompt2, reviewed on the live page: the
+   result "looks tacky and CHEAP, and there is no animation flow
+   it just abruptly cuts to that. and I do not like the font for
+   the system prompt. Look at our reverse engineered one for
+   Spline and see how nice that is."
+
+   Three fixes, all in this file plus prompt3.js:
+
+   1. FINISH. Studied live on the Spline clone (see PROMPT3.md):
+      one surface, an inset 1px ring that brightens on focus, a
+      soft real shadow, quiet translucent chips, clean sans type
+      at 16/24. Translated to the light Stark system: the outer
+      card gains a whisper shadow; the goal field (the base build's own
+      .home-action_scale surface) becomes a white composer with
+      an inset ring and soft shadow instead of a beige inset; the
+      chips become quiet filled pills; the result stops being two
+      more beige panels (see 3).
+   2. REVEAL. promptbox.js only flips the result panel's
+      `hidden` attribute; prompt3.js watches that attribute and
+      expands the region (height + margin, .45s
+      cubic-bezier(.22,1,.36,1)) while the blocks stagger in,
+      Copy last. The classes live at the bottom of this file.
+   3. FONT. The generated prompt leaves IBM Plex Mono: it is set
+      in Archivo 16px/1.6 as open text on the card, the way
+      Spline's prompt text reads. Mono remains only in the
+      `npx synthe@latest init` command strip, which is code.
+
+   Every promptbox.js / behavior.js hook is unchanged; no markup
+   changes. Load AFTER prompt2.css. Scoped to
+   .section_input-action throughout.
+   ------------------------------------------------------------------ */
+
+.section_input-action {
+  --p3-ink: #0e0d0c;
+  --p3-soft: rgb(14 13 12 / 0.64);
+  --p3-ring: rgb(14 13 12 / 0.1);
+  --p3-ring-focus: rgb(14 13 12 / 0.2);
+  --p3-fill: rgb(14 13 12 / 0.04);
+  --p3-fill-hover: rgb(14 13 12 / 0.07);
+  --p3-line: rgb(14 13 12 / 0.08);
+  --p3-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---- The card ----------------------------------------------------
+   prompt2 defined it by its border alone and it read flat.
+   A soft, deep, low-alpha shadow gives it the finished lift
+   Spline's box gets from its ring + blur. Border stays. */
+.section_input-action .home-action_content {
+  box-shadow:
+    0 1px 2px rgb(14 13 12 / 0.04),
+    0 20px 44px -20px rgb(14 13 12 / 0.16);
+}
+
+/* ---- The composer (goal field) -----------------------------------
+   The base build's .home-action_scale is the surface behind the textarea
+   (absolute, inset 0) and homepage.js already pulses its scale
+   and transitions its box-shadow. prompt2 made it a beige inset
+   with a border. prompt3 makes it Spline's box in light form:
+   white, radius 18px, an inset 1px ring (Spline: white .06,
+   brightening to .12 on focus; here: charcoal .10 → .20), and a
+   soft shadow under it. No border, no fill. */
+.section_input-action .home-action_scale {
+  background-color: #fff;
+  border: none;
+  border-radius: 1.125rem; /* 18px */
+  box-shadow:
+    inset 0 0 0 1px var(--p3-ring),
+    0 1px 2px rgb(14 13 12 / 0.05),
+    0 12px 28px -12px rgb(14 13 12 / 0.14);
+  transition: box-shadow 0.35s var(--p3-ease);
+}
+.section_input-action .home-action_wrap:hover .home-action_scale {
+  box-shadow:
+    inset 0 0 0 1px rgb(14 13 12 / 0.14),
+    0 1px 2px rgb(14 13 12 / 0.05),
+    0 12px 28px -12px rgb(14 13 12 / 0.14);
+}
+.section_input-action .home-action_wrap:focus-within .home-action_scale {
+  box-shadow:
+    inset 0 0 0 1px var(--p3-ring-focus),
+    0 1px 2px rgb(14 13 12 / 0.05),
+    0 16px 32px -12px rgb(14 13 12 / 0.18);
+}
+.section_input-action .home-action_input {
+  border-radius: 1.125rem; /* match the composer */
+  line-height: 1.5; /* 16/24, Spline's textarea measure */
+}
+
+/* ---- Chips --------------------------------------------------------
+   Spline's chips are quiet: translucent fill, 60% text, no
+   border, brightening on hover (.2s). Light translation: ink at
+   4% fill, ink at 78% for the label, 36px tall like Spline's. */
+.section_input-action .tab-btn.cc-light {
+  background-color: var(--p3-fill);
+  border-color: transparent;
+  color: rgb(14 13 12 / 0.78);
+  min-height: 2.25rem; /* 36px */
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.section_input-action .tab-btn.cc-light:hover {
+  background-color: var(--p3-fill-hover);
+  border-color: transparent;
+  color: var(--p3-ink);
+}
+
+/* ---- Result region ------------------------------------------------
+   No more stacked panels. The region is a ruled-off part of the
+   same card; the prompt is open text; the command strip is the
+   one filled element left, because it is a code chip. */
+.section_input-action .synthe-promptbox_result {
+  box-sizing: border-box; /* prompt3.js animates height against this */
+}
+
+/* ---- Side-by-side iteration (against the Spline box) -------------
+   Judged against spline-box-1440.png: Spline's box is 116px for
+   one text line plus its inside actions row, so its void is
+   occupied. Ours cannot move the action row inside the field
+   (markup is fixed), so the field tightens instead: desktop
+   min-height 128 -> 112px, the chips row pulls 4px closer, and
+   the result region's 32/32 air around its rule becomes 28/28. */
+@media (min-width: 768px) {
+  .section_input-action .home-action_input {
+    min-height: 7rem; /* 112px */
+  }
+  .section_input-action .home-action_button-list {
+    margin-top: 0.75rem; /* 12px */
+  }
+  .section_input-action .synthe-promptbox_result {
+    margin-top: 1.75rem; /* 28px */
+    padding-top: 1.75rem;
+  }
+}
+.section_input-action .synthe-promptbox_prompt {
+  background: transparent;
+  border: none;
+  border-left: 2px solid #ec5358; /* the generated-artifact marker */
+  border-radius: 0;
+  padding: 0 0 0 1rem; /* 16px off the marker */
+  margin: 0.75rem 0 0; /* 12px under the label row */
+  font-family: var(--sans);
+  font-size: 1rem; /* 16px */
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--p3-ink);
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+.section_input-action .synthe-promptbox_cmd {
+  background-color: var(--p3-fill);
+  border: none;
+  border-radius: 0.625rem; /* 10px */
+  padding: 0.75rem 1rem; /* 12 / 16 */
+  font-size: 0.875rem; /* 14px, mono stays for the command */
+  line-height: 1.5;
+}
+
+/* ---- Reveal (driven by prompt3.js) --------------------------------
+   prompt3.js adds .p3-revealing for the length of the reveal and
+   sets inline height/margin endpoints; the transition and the
+   child stagger live here. Without JS (or under reduced motion,
+   where the JS never arms) none of this applies and the panel
+   appears in its settled state, exactly as before. */
+.section_input-action .synthe-promptbox_result.p3-revealing {
+  overflow: hidden;
+  transition:
+    height 0.45s var(--p3-ease),
+    margin-top 0.45s var(--p3-ease);
+}
+.section_input-action .p3-revealing .synthe-promptbox_result-label {
+  animation: p3-in 0.38s var(--p3-ease) 0.05s both;
+}
+.section_input-action .p3-revealing .synthe-promptbox_prompt {
+  animation: p3-in 0.38s var(--p3-ease) 0.12s both;
+}
+.section_input-action .p3-revealing .synthe-promptbox_divider {
+  animation: p3-fade 0.38s var(--p3-ease) 0.19s both;
+}
+.section_input-action .p3-revealing .synthe-promptbox_cmd {
+  animation: p3-in 0.38s var(--p3-ease) 0.26s both;
+}
+.section_input-action .p3-revealing .synthe-promptbox_note {
+  animation: p3-in 0.38s var(--p3-ease) 0.33s both;
+}
+.section_input-action .p3-revealing .synthe-promptbox_copy {
+  animation: p3-in 0.38s var(--p3-ease) 0.4s both;
+}
+@keyframes p3-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes p3-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* Regeneration height glide: prompt3.js adds .p3-resizing when
+   the rewritten prompt wraps to a different height. */
+.section_input-action .synthe-promptbox_result.p3-resizing {
+  overflow: hidden;
+  transition: height 0.3s var(--p3-ease);
+}
+/* Regeneration: prompt3.js flags the prompt element when its
+   text is rewritten while the panel is open. */
+.section_input-action .synthe-promptbox_prompt.p3-refreshing {
+  animation: p3-refresh 0.24s var(--p3-ease);
+}
+@keyframes p3-refresh {
+  from {
+    opacity: 0.3;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section_input-action .synthe-promptbox_result.p3-revealing,
+  .section_input-action .synthe-promptbox_result.p3-resizing {
+    transition: none;
+  }
+  .section_input-action .p3-revealing .synthe-promptbox_result-label,
+  .section_input-action .p3-revealing .synthe-promptbox_prompt,
+  .section_input-action .p3-revealing .synthe-promptbox_divider,
+  .section_input-action .p3-revealing .synthe-promptbox_cmd,
+  .section_input-action .p3-revealing .synthe-promptbox_note,
+  .section_input-action .p3-revealing .synthe-promptbox_copy,
+  .section_input-action .synthe-promptbox_prompt.p3-refreshing {
+    animation: none;
+  }
+  .section_input-action .home-action_scale {
+    transition: none;
+  }
+}
+
+/* ---- Phone -------------------------------------------------------- */
+@media (max-width: 767px) {
+  .section_input-action .home-action_scale {
+    border-radius: 1rem; /* 16px */
+  }
+  .section_input-action .home-action_input {
+    border-radius: 1rem;
+  }
+  .section_input-action .synthe-promptbox_cmd {
+    padding: 0.75rem 1rem;
+  }
+}

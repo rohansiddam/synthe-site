@@ -1,0 +1,98 @@
+/* ==================================================================
+   Lane C overrides: nav notch + dropdown. Load AFTER
+   assets/synthe/fixes.css (which loads after clone-fixes.css and
+   The base build's nav.css). Spec: NAV2.md. All spacing on the 4px scale.
+   ================================================================== */
+
+/* ------------------------------------------------------------------
+   1. THE NOTCH IS THE BASE BUILD'S INDENT, NOT A WHITE TAB
+
+   The base build's notch is a mask cut in the nav bar's bottom edge, drawn by
+   the two [data-nav-menu-notch-layer] children that the base build's nav.js
+   appends to .nav__layout (the [data-nav-menu-notch] element). The
+   cut's size is --nav-corner-on (0 = no cut, 1 = the full 25 x 9
+   notch) and its position is --nav-corner-x; nav.css reads both
+   variables ON THE LAYERS.
+
+   Lane 5 pinned --nav-corner-on: 0 in fixes.css and substituted a
+   white SVG tab (.synthe-nav-notch) that hangs below the bar: the
+   "white nub" the founder rejected. Three facts make the built-in
+   cut restorable without touching the base build's machinery:
+
+   - nav.css registers both variables with @property inherits:false,
+     so the values nav-fx.js writes on .nav__layout never reach the
+     layers. Re-registering them here (this file loads after nav.css,
+     so these @property rules win) makes them inherit.
+   - the base build's nav.js initialises the layers with an inline
+     --nav-corner-on: 0, which would beat inheritance. The layer rule
+     below forces both variables to inherit the layout's driven
+     values with !important, so Lane 5's spring (nav-fx.js) is the
+     single driver, exactly as the base build's own JS drives the layers.
+   - The show/hide fade comes from nav-fx.js's existing fade state
+     (the base build's 0.26 s in / 0.20 s out, sine.out), written to the layout
+     as --nav-corner-on by the one-line nav-fx.js addition specified
+     in NAV2.md. fixes.css's `.nav__layout { --nav-corner-on: 0 }`
+     becomes inert: the inline JS write overrides it while running,
+     and 0 is the correct rest value before the first hover.
+   ------------------------------------------------------------------ */
+
+/* Retire Lane 5's white tab. The element stays in the DOM and
+   nav-fx.js still animates it; it is simply never painted. */
+.synthe-nav-notch {
+  display: none;
+}
+
+/* Re-register the base build's notch variables as inheriting (see above). */
+@property --nav-corner-x {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+@property --nav-corner-on {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+/* The layers take the layout's driven values, overriding the stale
+   inline --nav-corner-on: 0 that the base build's nav.js initialised them
+   with. Scoped to the bar's own layers; the dropdown wrapper's
+   layers (a different element) are untouched. */
+.nav__layout > [data-nav-menu-notch-layer] {
+  --nav-corner-x: inherit !important;
+  --nav-corner-on: inherit !important;
+}
+
+/* ------------------------------------------------------------------
+   2. PRODUCT DROPDOWN: PANEL HEIGHT IS ITS CONTENT
+
+   Lane 5 fixed the panel's width and columns; the height stayed
+   257px because the ad card's empty media box (.nav__ad--card-bg,
+   aspect-ratio 12/7 = 146px tall at the card's width, its image
+   layer display:none in this build) plus the card's min-height:
+   100% stretch set the panel's height, while the link groups end
+   at 129px. Remove the empty media box and the stretch: the card
+   becomes its text (label + title at the top, 16px padding), the
+   slot hugs the card, and the panel's height is driven by the
+   tallest link group again. Desktop only, same breakpoint Lane 5
+   used; the mobile menu is untouched. Ad-card copy changes are
+   markup, specified in NAV2.md.
+   ------------------------------------------------------------------ */
+@media (min-width: 992px) {
+  .nav__ad--slot {
+    align-self: flex-start;
+  }
+  .nav__ad--card {
+    min-height: 0;
+  }
+  .nav__ad--block {
+    min-height: 0;
+  }
+  .nav__ad--card-bg {
+    display: none; /* the empty 12/7 media box */
+  }
+  .nav__ad--content-m {
+    padding: 1rem; /* 16px every side */
+    justify-content: flex-start;
+  }
+}

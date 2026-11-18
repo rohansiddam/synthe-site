@@ -1,0 +1,24 @@
+/* reps2.css — Lane H: reps (morning report) section headline fix.
+ *
+ * the base build's shared stylesheet paints .home-reps_span in slushie-400,
+ * a teal (measured rgb(0, 139, 173) on the built page). Synthe
+ * headlines are one solid colour. This section-scoped rule
+ * (specificity 0,2,0, over the base build's 0,1,0) makes the span take the
+ * headline's own colour, so the h3 reads as a single charcoal
+ * headline. No gradient, no background-clip:text.
+ */
+.section_home-reps .home-reps_span {
+  color: inherit;
+}
+
+/* Eyebrow rule — integrator-applied extension of Lane H (stage 3).
+ * REPS2.md's residual: the section eyebrow "THE MORNING REPORT"
+ * carries the base build's cc-slushie-400 class and renders the same teal
+ * (rgb(0, 139, 173)) the headline span did. The founder's
+ * no-the base build-colors verdict reads section-wide, so the eyebrow takes
+ * the section's charcoal by the same inherit mechanism (its parent
+ * chain computes to the section's charcoal). Section-scoped,
+ * specificity 0,2,0 over the cc- class rule. */
+.section_home-reps .eyebrow-text {
+  color: inherit;
+}

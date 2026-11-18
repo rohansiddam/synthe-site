@@ -1,3 +1,103 @@
+/* site.css — Synthe warm system v0.2, shared components (phase 1:
+   canvas, buttons, nav, footer). Loads LAST on every page. Visual only:
+   nav geometry, the notch, dropdowns and the phone menu are untouched
+   (their behaviour lives in site.js and nav-fx.js). */
 
-.skip-link { position: absolute; left: 16px; top: -64px; z-index: 1000; padding: 10px 14px; border-radius: 10px; background: var(--ink); color: var(--canvas); font: 500 15px/1.2 var(--sans); text-decoration: none; transition: top 160ms cubic-bezier(0.22, 1, 0.36, 1); }
+/* ---------- one canvas ----------
+   Full-width bands that only tinted a section become the canvas. The
+   deep red hero bands and how.html's dark gate stay until their phases. */
+.page-wrapper { background-color: var(--canvas); }
+.section_home-flow,
+.section_home-features,
+.section_home-logo,
+.section_input-action,
+.sh2,
+.how-trio, .how-frame, .how-step { background-color: transparent; }
+
+/* ---------- buttons (SYSTEM.md §6) ---------- */
+.btn,
+.b2-btn {
+  min-height: 40px;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 16px;
+  padding-right: 16px;
+  border-radius: var(--r-control);
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.2;
+  align-items: center;
+}
+/* primary: ink on canvas */
+.btn.w-inline-block:not(.u-bg-oat-200):not(.cc-lime):not(.cc-card-light):not(.cc-white):not(.cc-oat),
+.b2-btn-primary {
+  background-color: var(--ink);
+  color: var(--canvas);
+}
+/* secondary: raised with a hairline ring */
+.btn.u-bg-oat-200,
+.b2-btn-secondary {
+  background-color: var(--raised);
+  color: var(--ink);
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px var(--line-3);
+}
+.btn.u-bg-oat-200:hover,
+.b2-btn-secondary:hover { box-shadow: inset 0 0 0 1px rgba(20, 19, 18, 0.32); }
+.b2-btn-primary:hover { background-color: #2b2926; }
+
+/* ---------- nav ---------- */
+.nav__link--p,
+.nav__list--link,
+.nav_2_menu-item {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ink-2);
+}
+.nav__list--link:hover .nav__link--p,
+.nav_2_menu-item:hover { color: var(--ink); }
+.nav__brand--link { color: var(--ink); }
+.nav2_wrap .btn { min-height: 40px; }
+
+/* ---------- footer ---------- */
+.b2-card {
+  background-color: var(--stone);
+  border-radius: var(--r-frame);
+}
+.b2-grid .ts-foothead { color: var(--ink); }
+.b2-link {
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: color 160ms cubic-bezier(0.22, 1, 0.36, 1), background-size 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.b2-link:hover { color: var(--ink); background-size: 100% 1px; }
+.b2-credit { color: var(--ink-3); border-top-color: var(--line-2); }
+.b2-credit .ts-small { font-size: 14px; }
+
+/* nav dropdown group titles: sentence case, quiet */
+.nav__content--header-label,
+.nav__ad--content-m .eyebrow-text {
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+/* phone menu: GitHub is the secondary action, Get started the primary */
+.btn.cc-oat {
+  background-color: var(--raised);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--line-3);
+}
+
+.skip-link { position: absolute; left: 16px; top: -64px; z-index: 1000; padding: 10px 14px; border-radius: 10px; background: var(--ink); color: var(--canvas); font: 500 15px/1.2 var(--sans); text-decoration: none; }
 .skip-link:focus { top: 16px; }

@@ -1,0 +1,469 @@
+/* ==========================================================================
+   How it works page (how.html) — page-specific styles.
+   Lane: HOW. Requires, loaded before this file, in order:
+   base.css, nav.css, clone-fixes.css (fonts), type-system.css,
+   fixes.css, nav2.css, bottom2.css, flow3.css.
+   Everything here is scoped to .how-* classes. Type levels come only
+   from TYPE-SYSTEM.md (the .ts-* classes plus the sanctioned hero row,
+   set explicitly on .how-h1). Grounds are flat Stark palette colors.
+   All spacing values are multiples of 4.
+   ========================================================================== */
+
+:root {
+  --how-ease: cubic-bezier(0.22, 1, 0.36, 1); /* the site's crossfade curve (flow2/shift2) */
+  --how-line: rgba(14, 13, 12, 0.08); /* the landing's hairline alpha (was 0.12, a third alpha found nowhere in the system) */
+  --how-cream-78: rgba(254, 253, 251, 0.78); /* secondary text on the hero red */
+  --how-cream-80: rgba(254, 253, 251, 0.8);  /* body text on charcoal */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: #f4f3f0; /* the page ground the footer was designed on */
+}
+
+/* The container the footer uses (95%, max 80rem), shared by every
+   section on this page so all left edges agree. */
+.how-wrap {
+  width: 95%;
+  max-width: 80rem;
+  margin-inline: auto;
+}
+
+/* ------------------------------------------------------------------ */
+/* Hero — deep brand red, sanctioned hero type row                     */
+/* ------------------------------------------------------------------ */
+.how-hero {
+  padding: 168px 0 64px; /* bottom = --ts-section-pad-y, so the hero->frame divide matches every other divide (was 72) */
+}
+/* Sanctioned hero row (TYPE-SYSTEM.md, founder amendment 2026-11-17):
+   48px / 500 / LH 56px / -0.06em desktop; 30px / 500 / LH 37px phone.
+   This is the level the landing hero (.hfx-h1) runs at; .ts-hero is
+   The base build's 88px row and does NOT govern this page. */
+.how-h1 {
+  font-family: var(--ts-font);
+  font-size: 48px;
+  font-weight: 500;
+  line-height: 56px;
+  letter-spacing: -0.06em;
+  margin: 24px 0 0; /* eyebrow -> headline gap (--ts-gap-eyebrow) */
+  max-width: 720px;
+}
+.how-hero_lede {
+  margin-top: 16px; /* --ts-gap-hero-lede */
+  max-width: 640px;
+}
+.how-hero_sub {
+  margin-top: 20px;
+  max-width: 600px;
+  color: var(--how-cream-78);
+}
+
+/* Step index: the stepper's node language, static. A rail of seven
+   Mark nodes linking to the step sections below. */
+.how-index {
+  position: relative;
+  display: flex;
+  margin-top: 48px;
+}
+.how-index_rail {
+  position: absolute;
+  top: 16px;
+  left: calc(100% / 14);
+  right: calc(100% / 14);
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(254, 253, 251, 0.35);
+}
+.how-index_item {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px;
+  color: var(--ts-ink-on-dark);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.how-index_node {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--ts-paper);
+  border: 1px solid rgba(254, 253, 251, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s var(--how-ease);
+}
+.how-index_node svg {
+  display: block;
+  width: 14px;
+  height: 15px;
+}
+.how-index_num {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--how-cream-78);
+}
+.how-index_name {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: center;
+}
+.how-index_item:hover .how-index_node {
+  border-color: var(--ts-signal);
+}
+.how-index_item:hover .how-index_name {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.how-index_item:focus-visible {
+  outline: 2px solid var(--ts-ink-on-dark);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Framing section — "Any agent. Any goal."                            */
+/* ------------------------------------------------------------------ */
+.how-frame {
+  background: var(--ts-paper);
+  color: var(--ts-charcoal);
+  padding: 64px 0;
+}
+.how-h2 {
+  margin-top: 24px; /* eyebrow -> headline gap */
+}
+.how-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  margin-top: 32px; /* header block -> content gap */
+}
+.how-col_body {
+  margin-top: 12px;
+}
+.how-setup {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--how-line);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px 20px;
+}
+.how-cmd {
+  display: inline-block;
+  font-family: var(--ts-mono);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  background: var(--ts-paper-warm);
+  border: 1px solid rgba(14, 13, 12, 0.08);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.how-setup_text {
+  max-width: 540px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Step sections — text column + the landing page's designed surface   */
+/* ------------------------------------------------------------------ */
+.how-step {
+  padding: 64px 0;
+  scroll-margin-top: 88px;
+}
+.how-step--paper {
+  background: var(--ts-paper);
+}
+/* .fl3 (flow3.css) supplies the cream ground for the alternate steps
+   and the design tokens the surfaces run on. */
+.how-step_grid {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: 48px;
+  align-items: start;
+}
+/* Flipped steps swap sides but keep the surface in the wide track. */
+.how-step--flip .how-step_grid {
+  grid-template-columns: 7fr 5fr;
+}
+.how-step--flip .how-step_text {
+  grid-column: 2;
+}
+.how-step--flip .how-surface {
+  grid-column: 1;
+}
+.how-step .how-h2 {
+  margin-top: 24px;
+}
+/* Scoped under .how-step (0,2,0): every step section carries the
+   .fl3 class, and flow3.css's `.fl3 p` reset (0,1,1) otherwise
+   zeroes these margins (it beat the bare classes at 0,1,0, and the
+   step text rendered with no headline or paragraph gaps). The same
+   pattern as .how-step .how-h2 above, whose 24px survived. */
+.how-step .how-step_lead {
+  margin-top: 20px; /* headline -> body gap */
+}
+.how-step .how-step_body {
+  margin-top: 16px; /* paragraph gap */
+}
+.how-surface {
+  min-width: 0;
+}
+/* The landing stepper stacks its panels in one grid cell and shows
+   one at a time; here each surface stands on its own, fully visible,
+   no transition state. */
+.how-surface .fl3-panel {
+  grid-area: auto;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  filter: none;
+  pointer-events: auto;
+}
+
+/* ------------------------------------------------------------------ */
+/* Merge gate band — charcoal                                        */
+/* ------------------------------------------------------------------ */
+.how-gate {
+  padding: 64px 0;
+  scroll-margin-top: 88px;
+}
+.how-gate_lead {
+  margin-top: 20px;
+  color: var(--how-cream-80);
+}
+.how-gate_rows {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  margin-top: 32px;
+}
+.how-gate_row {
+  border-top: 2px solid var(--ts-signal);
+  padding-top: 16px;
+}
+.how-gate_text {
+  margin-top: 12px;
+  color: var(--how-cream-80);
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll reveal: the shared system (identical spec on the Docs and   */
+/* Partner pages): content groups rise 24px and fade in over .6s on   */
+/* the site's ease, staggered 60ms within a group, triggered by       */
+/* IntersectionObserver at ~15% visibility, playing once. The hero    */
+/* group settles on load; each section's blocks follow as they scroll */
+/* into view. The step surfaces (.how-surface) are never reveal       */
+/* items: they are flow3 scenes that play on their own clock, and     */
+/* nothing in this system may hide or delay them.                     */
+/*                                                                    */
+/* The pre-reveal state exists only under html.how-reveal, a class    */
+/* the inline script adds in the same task that tags the items: with  */
+/* no JS, with reduced motion, or if the script fails, nothing is     */
+/* ever hidden and every group renders in its final state.            */
+/* ------------------------------------------------------------------ */
+html.how-reveal .how-rv {
+  opacity: 0;
+  transform: translateY(24px);
+}
+html.how-reveal .how-rv.is-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s var(--how-ease), transform 0.6s var(--how-ease);
+  transition-delay: var(--how-rv-delay, 0ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  html.how-reveal .how-rv { opacity: 1; transform: none; transition: none; }
+}
+@media print {
+  html.how-reveal .how-rv { opacity: 1; transform: none; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Tablet step                                                         */
+/* ------------------------------------------------------------------ */
+@media (max-width: 991px) {
+  .how-step_grid,
+  .how-step--flip .how-step_grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .how-step--flip .how-step_text,
+  .how-step--flip .how-surface {
+    grid-column: auto; /* single column: text first, surface below */
+  }
+  .how-cols,
+  .how-gate_rows {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Phone step                                                          */
+/* ------------------------------------------------------------------ */
+@media (max-width: 767px) {
+  .how-hero {
+    padding: 128px 0 40px; /* bottom = phone section pad, matching every other divide (was 48) */
+  }
+  .how-h1 {
+    font-size: 30px;
+    line-height: 37px;
+  }
+  .how-frame,
+  .how-step,
+  .how-gate {
+    padding: 40px 0;
+  }
+  .how-index {
+    flex-wrap: wrap;
+    row-gap: 20px;
+    margin-top: 40px;
+  }
+  .how-index_rail {
+    display: none;
+  }
+  .how-index_item {
+    flex: 1 1 30%;
+  }
+  .how-index_node {
+    width: 28px;
+    height: 28px;
+  }
+  /* The flip selector is repeated at its own specificity (0,2,0):
+     the <=991 flip rule otherwise outranks this block and flipped
+     steps kept the 40px stack gap while plain steps took 32px. */
+  .how-step_grid,
+  .how-step--flip .how-step_grid {
+    gap: 32px;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Trio — Notion pattern, REF-HOW-REPORT.md (HOW3)                     */
+/* Three verb-led cards under the hero, each carrying a static         */
+/* settled render of the real flow3 window that proves the verb.       */
+/* The embeds are bare .fl3-window blocks with no .fl3-panel           */
+/* ancestor, so flow3.js never attaches a player and the scenes        */
+/* render at their settled end state. Ground: verified by computed     */
+/* style against #step-2 — the non-paper steps render on               */
+/* var(--fl3-cream) (rgb 253 246 236), which this section takes.        */
+/* Margins are scoped under .how-trio (0,2,0): the section carries     */
+/* .fl3, whose reset (.fl3 h2 / .fl3 p, 0,1,1) otherwise zeroes        */
+/* them — the HOW2 defect-1 pattern.                                   */
+/* ------------------------------------------------------------------ */
+.how-trio {
+  padding: 64px 0;
+  background: var(--fl3-cream);
+}
+.how-trio .how-h2 {
+  margin-top: 24px; /* eyebrow -> headline gap */
+}
+.how-trio_grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px; /* .how-cols / .how-gate_rows gap on this page */
+  margin-top: 32px; /* --ts-gap-head-content */
+}
+.how-tcard {
+  background: var(--fl3-card); /* #ffffff */
+  border: 1px solid rgba(14, 13, 12, 0.08); /* the page's hairline alpha */
+  border-radius: 20px; /* .fl3-panel radius */
+  box-shadow: var(--fl3-shadow-card);
+  padding: 24px;
+  min-width: 0;
+}
+.how-trio .how-tcard_body {
+  margin-top: 12px; /* .how-col_body value on this page */
+}
+.how-tcard_stage {
+  position: relative;
+  margin-top: 20px; /* card title -> content gap, TYPE-SYSTEM mapping */
+  height: 272px;
+  overflow: hidden;
+}
+.how-tcard_tag {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+}
+.how-tcard_link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  font-size: 14px; /* .ts-small, weight 500 */
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--ts-charcoal);
+  text-decoration: none;
+}
+.how-tcard_link svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+.how-tcard_link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+@media (max-width: 991px) {
+  .how-trio_grid {
+    grid-template-columns: 1fr;
+    gap: 32px; /* .how-cols responsive values */
+  }
+}
+@media (max-width: 767px) {
+  .how-trio {
+    padding: 40px 0;
+  }
+  .how-tcard_stage {
+    height: 248px;
+  }
+}
+
+/* Panel 7's document header (REF-HOW-REPORT.md §5.1): the report
+   sheet labels itself, Granola's pattern. The rule is specced for
+   flow3.css beside the report block; it lives here for this page
+   because flow3.css is outside this lane's edit scope — the
+   integrator carries the same rule into flow3.css and FLOW3.md
+   for the landing seat (hand-off recorded in HOW3.md). */
+.fl3-report_h {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 12px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid var(--fl3-line);
+}
+
+/* Nav tightness fix (independent audit F1, 2026-11-18): the
+   landing carries this rule in nav3.css, which the sub-pages do
+   not load. The shared chrome markup needs the same 32px list
+   shift at >=992px so the brand -> Product gap matches the base build's
+   +26.1px here too. Append-only; nothing above is modified. */
+@media (min-width: 992px) {
+  .nav__list--main {
+    margin-left: 32px;
+  }
+}

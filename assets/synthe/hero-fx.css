@@ -1,0 +1,232 @@
+/* hero-fx.css — Spline-style hero headline for Synthe.
+   Interaction system measured from Spline's homepage hero (see
+   ../spline-landing/HERO.md): selection-box pick word with a self-typing
+   loop, hover pops for "team" / "agents", spotlight dimming to 25%.
+   All timings and curves are Spline's coded values, not approximations.
+   Colours are custom properties: defaults are Spline's dark-ground values;
+   the integrator overrides --hfx-fg / --hfx-mute / --hfx-ground to suit the
+   surface the headline sits on. Zero dependencies. */
+
+.hfx-h1 {
+  --hfx-fg: #eee;
+  --hfx-mute: #8a8a8a;
+  --hfx-panel: #101010;
+  --hfx-line-2: #2e2e2e;
+  --hfx-steel: #8eb2f2;
+  --hfx-ground: #cf333d;       /* surface behind the headline (selection-handle fill); default = Synthe hero ground */
+  --hfx-underline: #3e3e3e;
+  --hfx-hover: #9a9a9a;
+  --hfx-chip: #181818;
+  margin: 0 auto;
+  max-width: 1040px;
+  text-align: center;
+  font-family: var(--sans);
+  font-size: 48px;
+  line-height: 56px;
+  font-weight: 500;
+  letter-spacing: -0.06em;
+  color: var(--hfx-fg);
+}
+@media (max-width: 820px) {
+  .hfx-h1 { font-size: 36px; line-height: 44px; }
+}
+
+.hfx-line { display: block; }
+.hfx-mute { color: var(--hfx-mute); }
+.hfx-plain, .hfx-pick, .hfx-who { transition: opacity .25s ease; }
+
+.hfx-sr {
+  position: absolute; width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- the pick word ("prompt"): selection box + self-typing ---------- */
+
+.hfx-pick {
+  position: relative;
+  display: inline-grid;
+  vertical-align: baseline;
+}
+/* sizer reserves the full word's width at all times: no layout shift, ever */
+.hfx-pick-sizer {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  white-space: nowrap;
+}
+.hfx-pick-typed {
+  grid-area: 1 / 1;
+  justify-self: start;
+  white-space: nowrap;
+}
+.hfx-caret {
+  display: none;
+  width: .055em;
+  height: .78em;
+  margin-left: 1px;
+  vertical-align: -0.08em;
+  background: var(--hfx-steel);
+  animation: hfx-blink .9s step-end infinite;
+}
+.hfx-pick[data-state="typing"] .hfx-caret { display: inline-block; }
+/* the sizer carries a ghost caret (Spline does the same): the reserved
+   width includes the caret, so the pick is one constant width in every
+   state and the headline never shifts while typing */
+.hfx-caret--ghost { display: inline-block !important; visibility: hidden; animation: none; }
+@keyframes hfx-blink { 50% { opacity: 0; } }
+
+.hfx-selbox {
+  position: absolute;
+  top: .06em; right: -.1em; bottom: .02em; left: -.08em;
+  border: 1.5px solid var(--hfx-steel);
+  pointer-events: none;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity .25s ease, transform .35s cubic-bezier(.2,.8,.2,1);
+}
+.hfx-pick[data-state="typing"] .hfx-selbox { opacity: 0; transform: scale(.94); }
+.hfx-hd {
+  position: absolute;
+  width: 7px; height: 7px;
+  background: var(--hfx-ground);
+  border: 1.5px solid var(--hfx-steel);
+  box-sizing: border-box;
+}
+.hfx-hd--tl { top: -4px; left: -4px; }
+.hfx-hd--tr { top: -4px; right: -4px; }
+.hfx-hd--bl { bottom: -4px; left: -4px; }
+.hfx-hd--br { bottom: -4px; right: -4px; }
+
+/* ---------- the who words ("team" / "agents"): hover pops ---------- */
+
+.hfx-who {
+  position: relative;
+  cursor: pointer;
+  transition: opacity .25s ease, color .2s ease;
+}
+/* underline: the shimmer gradient rests at 100% 0, where its visible slice
+   is flat #3e3e3e — so the resting underline and the sweep share one layer */
+.hfx-who::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  bottom: calc(.02em - 2px);
+  height: max(1.5px, .032em);
+  background-image: linear-gradient(90deg, var(--hfx-underline) 40%, #d9d9d9 50%, var(--hfx-underline) 60%);
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+/* shimmer copy of the word, gradient clipped to the glyphs */
+.hfx-who::before {
+  content: attr(data-word);
+  position: absolute;
+  left: 0; top: 0;
+  color: transparent;
+  background-image: linear-gradient(90deg, transparent 38%, #fff 50%, transparent 62%);
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  pointer-events: none;
+}
+.hfx-who:hover, .hfx-who:focus-visible { color: var(--hfx-hover); }
+.hfx-who:hover::before, .hfx-who:focus-visible::before,
+.hfx-who:hover::after, .hfx-who:focus-visible::after {
+  animation: hfx-shimmer 3.2s linear infinite;
+}
+@keyframes hfx-shimmer {
+  0% { background-position: 100% 0; }
+  50%, 100% { background-position: -150% 0; }
+}
+.hfx-who:focus-visible {
+  outline: 1.5px solid var(--hfx-steel);
+  outline-offset: 3px;
+}
+
+/* the pop: pill anchored to the word, bottom edge 2px above the word's top.
+   --dx (set by hero-fx.js) shifts it only to keep 16px viewport clearance. */
+.hfx-pop {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 2px);
+  z-index: 5;
+  display: flex;
+  padding: 5px;
+  border: 1px solid var(--hfx-line-2);
+  border-radius: 999px;
+  background: var(--hfx-panel);
+  box-shadow: 0 16px 40px -12px rgba(0,0,0,.85);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(calc(-50% + var(--dx, 0px)), 8px);
+  transition: opacity .2s ease, transform .35s cubic-bezier(.2,.8,.2,1), visibility 0s linear .2s;
+}
+.hfx-who:hover .hfx-pop, .hfx-who:focus-within .hfx-pop {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(calc(-50% + var(--dx, 0px)), 0);
+  transition: opacity .2s ease, transform .35s cubic-bezier(.2,.8,.2,1), visibility 0s;
+}
+.hfx-stack { display: flex; align-items: center; line-height: 1; }
+.hfx-stack > * {
+  flex: none;
+  width: 32px; height: 32px;
+  margin-left: -5px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--hfx-panel);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: scale(.4);
+  transition: transform .45s cubic-bezier(.2,.9,.3,1.35), opacity .2s ease;
+}
+.hfx-stack > *:first-child { margin-left: 0; }
+.hfx-stack > *:nth-child(1) { transition-delay: 0ms, 0ms; }
+.hfx-stack > *:nth-child(2) { transition-delay: 50ms, 50ms; }
+.hfx-stack > *:nth-child(3) { transition-delay: 100ms, 100ms; }
+.hfx-stack > *:nth-child(4) { transition-delay: 150ms, 150ms; }
+.hfx-stack > *:nth-child(5) { transition-delay: 200ms, 200ms; }
+.hfx-who:hover .hfx-stack > *, .hfx-who:focus-within .hfx-stack > * {
+  opacity: 1;
+  transform: scale(1);
+}
+/* team avatars: initials */
+.hfx-av {
+  background: var(--av-bg, var(--hfx-line-2));
+  color: var(--av-fg, var(--hfx-fg));
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+/* agent chips: dark circle, 17px monochrome mark */
+.hfx-chip { background: var(--hfx-chip); }
+.hfx-chip img { width: 17px; height: 17px; display: block; }
+/* github.svg ships dark-filled; invert it to sit with the white mono marks */
+.hfx-chip img.hfx-invert { filter: brightness(0) invert(1); }
+
+/* ---------- spotlight dimming: everything but the active word to 25% ----------
+   Primary: :has() (what Spline ships). Fallback: hero-fx.js adds .hfx-spot
+   to the h1 and data-hfx-on="true" to the active word. Same values either way. */
+.hfx-h1:has(.hfx-who:hover) .hfx-plain,
+.hfx-h1:has(.hfx-who:focus-within) .hfx-plain,
+.hfx-h1.hfx-spot .hfx-plain { opacity: .25; }
+.hfx-h1:has(.hfx-who:hover) .hfx-pick,
+.hfx-h1:has(.hfx-who:focus-within) .hfx-pick,
+.hfx-h1.hfx-spot .hfx-pick { opacity: .25; }
+.hfx-h1:has(.hfx-who:hover) .hfx-who:not(:hover),
+.hfx-h1:has(.hfx-who:focus-within) .hfx-who:not(:focus-within),
+.hfx-h1.hfx-spot .hfx-who:not([data-hfx-on="true"]) { opacity: .25; }
+
+/* ---------- reduced motion: static headline, box shown, pops snap ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .hfx-pop, .hfx-selbox, .hfx-who, .hfx-plain, .hfx-pick { transition: none !important; }
+  .hfx-stack > * { transition: none !important; transition-delay: 0s !important; }
+  .hfx-who::before, .hfx-who::after { animation: none !important; }
+  .hfx-caret { animation: none !important; }
+}

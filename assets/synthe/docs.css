@@ -1,0 +1,375 @@
+/* ==========================================================================
+   Docs page — clay-synthe. Page-specific styles for docs.html only.
+
+   Layout: docs convention (left sidebar nav + content column) built
+   entirely from the site's system: type levels and rhythm tokens from
+   assets/synthe/type-system.css (Lane A), Stark palette, flat grounds,
+   4px spacing scale, alpha borders, no gradients of any kind, eyebrows
+   and group labels as plain uppercase text (never pills).
+
+   Palette pairings (all measured on the rendered page, see DOCS.md):
+   - charcoal #0e0d0c on paper #fffdf9            (body, headings)
+   - rgba(14,13,12,0.72) on #fffdf9               (secondary text)
+   - rgba(14,13,12,0.64) on #fffdf9               (sidebar group labels,
+                                                   table heads: small text,
+                                                   still >= 4.5:1 measured)
+   - cream #fefdfb on deep red #8c2f36            (band headline + lede)
+   - cream #fefdfb on charcoal #0e0d0c            (code blocks)
+   - deep red #8c2f36 on warm cream #f7f3ec       (warn label)
+   Signal red #ec5358 appears only as the sidebar active rule (a
+   graphic accent, not text). Moss appears nowhere on this page.
+   ========================================================================== */
+
+.docs-page,
+.docs-page * { box-sizing: border-box; }
+
+.docs-page {
+  font-family: var(--ts-font);
+  background-color: var(--ts-paper);
+  color: var(--ts-charcoal);
+}
+
+/* Same container geometry as the footer (.b2-wrap): 95%, max 80rem,
+   side inset 48px desktop / 40px tablet / 24px phone. */
+.docs-wrap {
+  width: 95%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 48px;
+}
+@media (max-width: 991px) { .docs-wrap { padding-inline: 40px; } }
+@media (max-width: 767px) { .docs-wrap { padding-inline: 24px; } }
+
+/* ------------------------------------------------------------------ */
+/* Header band — the hero band treatment at docs scale                 */
+/* ------------------------------------------------------------------ */
+.docs-band {
+  background-color: var(--ts-hero-red);
+  color: var(--ts-ink-on-dark);
+  padding-top: 136px;   /* clears the fixed nav, measured in the rig */
+  padding-bottom: 64px;
+}
+@media (max-width: 767px) {
+  .docs-band { padding-top: 112px; padding-bottom: 40px; }
+}
+.docs-eyebrow { color: var(--ts-ink-on-dark); margin-bottom: 24px; }
+.docs-h1 { color: var(--ts-ink-on-dark); max-width: 640px; }
+.docs-lede { margin-top: 16px; max-width: 600px; }
+.docs-lede a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.docs-lede a:focus-visible {
+  outline: 2px solid var(--ts-ink-on-dark);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Shell — sidebar + content                                           */
+/* ------------------------------------------------------------------ */
+.docs-shell {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  gap: 56px;
+  padding-top: 64px;    /* --ts-section-pad-y */
+  padding-bottom: 64px; /* --ts-section-pad-y (was 80px, off-token) */
+}
+
+.docs-side-nav { position: sticky; top: 96px; }
+.docs-group { margin-bottom: 32px; }
+.docs-group:last-child { margin-bottom: 0; }
+.docs-group-label {
+  color: rgba(14, 13, 12, 0.64);
+  margin-bottom: 12px;
+  padding-left: 14px;
+}
+.docs-side-link {
+  display: block;
+  padding: 8px 12px;
+  border-left: 2px solid rgba(14, 13, 12, 0.08);
+  color: rgba(14, 13, 12, 0.72);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-decoration: none;
+}
+.docs-side-link:hover { color: var(--ts-charcoal); }
+.docs-side-link.is-active {
+  color: var(--ts-charcoal);
+  font-weight: 500;
+  border-left-color: var(--ts-signal);
+}
+.docs-side-link:focus-visible {
+  outline: 2px solid var(--ts-charcoal);
+  outline-offset: 2px;
+}
+
+/* Phone/tablet: the sidebar collapses to a link row above the content,
+   group labels off, the active rule moves to the bottom edge. */
+@media (max-width: 991px) {
+  .docs-shell { grid-template-columns: minmax(0, 1fr); gap: 40px; padding-top: 40px; padding-bottom: 40px; }
+  .docs-side-nav {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(14, 13, 12, 0.08);
+  }
+  .docs-group { display: contents; }
+  .docs-group-label { display: none; }
+  .docs-side-link {
+    border-left: 0;
+    border-bottom: 2px solid transparent;
+    padding: 8px 4px;
+  }
+  .docs-side-link.is-active { border-bottom-color: var(--ts-signal); }
+}
+
+/* ------------------------------------------------------------------ */
+/* Content column                                                      */
+/* ------------------------------------------------------------------ */
+.docs-main { max-width: 720px; min-width: 0; }
+
+.docs-sec {
+  padding: 64px 0;      /* --ts-section-pad-y (was 40px at every width) */
+  border-top: 1px solid rgba(14, 13, 12, 0.08);
+  scroll-margin-top: 88px;
+}
+.docs-sec:first-child { border-top: 0; padding-top: 0; }
+.docs-sec:last-child { padding-bottom: 0; }
+/* Phone section padding is the 40px token step; the scroll-margin
+   stays 88px at every width so anchor landings match the desktop
+   contract exactly (the old 76px phone override landed at 76px). */
+@media (max-width: 767px) { .docs-sec { padding: 40px 0; } }
+
+.docs-sec h2 { margin-bottom: 20px; }          /* --ts-gap-head-body */
+.docs-sec h3 { margin: 32px 0 12px; }
+.docs-sec p { margin-bottom: 16px; max-width: 68ch; }
+.docs-sec p:last-child { margin-bottom: 0; }
+.docs-soft { color: rgba(14, 13, 12, 0.72); }
+
+.docs-list {
+  padding-left: 20px;
+  margin: 0 0 16px;
+  display: grid;
+  gap: 8px;
+  max-width: 68ch;
+}
+.docs-list:last-child { margin-bottom: 0; }
+
+/* Inline code: quiet warm chip, mono only because the content is code. */
+.docs-main code {
+  font-family: var(--ts-mono);
+  font-size: 0.88em;
+  background: var(--ts-paper-warm);
+  border: 1px solid rgba(14, 13, 12, 0.08);
+  border-radius: 8px;
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+/* Command / prompt blocks: charcoal record surface, cream mono text. */
+.docs-cmd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ts-charcoal);
+  color: var(--ts-ink-on-dark);
+  border-radius: 12px;
+  padding: 8px 8px 8px 20px;
+  margin-bottom: 16px;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.docs-cmd code {
+  flex: 1;
+  white-space: pre;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: inherit;
+}
+.docs-cmd .docs-prompt-sign { color: rgba(254, 253, 251, 0.56); }
+.docs-cmd--term { align-items: flex-start; padding: 16px 8px 16px 20px; }
+.docs-cmd--term code { white-space: pre-wrap; font-size: 14px; line-height: 1.65; }
+@media (max-width: 767px) { .docs-cmd code { font-size: 14px; } }
+
+.docs-copy {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 16px;
+  background: var(--ts-ink-on-dark);
+  color: var(--ts-charcoal);
+  border: 0;
+  border-radius: 8px;
+  font-family: var(--ts-font);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  cursor: pointer;
+}
+.docs-copy:focus-visible {
+  outline: 2px solid var(--ts-ink-on-dark);
+  outline-offset: 2px;
+}
+
+/* Merge-setting callout: warm surface, deep-red label (signal red at
+   label size would fail AA on cream; the deep shade is the brand's
+   own red at text weight). */
+.docs-warn {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--ts-paper-warm);
+  border: 1px solid rgba(14, 13, 12, 0.16);
+  border-radius: 12px;
+  /* The landing's small-card shadow (flow3 --fl3-shadow-sm): this is
+     the one true card surface in the column, so it carries the card
+     finish; the charcoal command blocks stay flat, like the landing
+     prompt card's inset code panel. */
+  box-shadow: 0 1px 2px rgba(14, 13, 12, 0.05),
+    0 8px 20px -10px rgba(14, 13, 12, 0.18);
+  padding: 16px 20px;
+  /* Last block of its section: no trailing margin, so the section
+     divide below it measures the same as every other divide (the old
+     16px margin made this one divide 16px wider than the rest). */
+  margin-bottom: 0;
+  max-width: 68ch;
+}
+.docs-warn-icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  color: var(--ts-hero-red);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.docs-warn-label {
+  display: block;
+  color: var(--ts-hero-red);
+  margin-bottom: 4px;
+}
+.docs-warn p { margin: 0; max-width: none; }
+
+/* The loop: numbered steps, mono numerals, hairline between. */
+.docs-steps { list-style: none; margin: 0; padding: 0; max-width: 68ch; }
+.docs-steps li {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: 16px;
+  /* The shared Webflow stylesheet gives li an 8px bottom margin;
+     left in, it padded every step row by 8px and leaked 8px past
+     the end of the list into the section divide. Rhythm here is
+     padding only. */
+  margin: 0;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(14, 13, 12, 0.08);
+}
+.docs-steps li:first-child { padding-top: 0; }
+.docs-steps li:last-child { border-bottom: 0; padding-bottom: 0; }
+.docs-step-num {
+  font-family: var(--ts-mono);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: rgba(14, 13, 12, 0.64);
+  padding-top: 1px;
+}
+.docs-steps p { margin: 0; max-width: none; }
+.docs-step-name { font-weight: 500; }
+
+/* Commands table. */
+.docs-tablewrap { overflow-x: auto; margin-bottom: 16px; }
+.docs-table { border-collapse: collapse; width: 100%; font-size: 16px; line-height: 1.4; }
+.docs-table th, .docs-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 12px 24px 12px 0;
+  border-bottom: 1px solid rgba(14, 13, 12, 0.08);
+}
+.docs-table th:last-child, .docs-table td:last-child { padding-right: 0; }
+.docs-table tbody tr:last-child td { border-bottom: 0; }
+.docs-table th { color: rgba(14, 13, 12, 0.64); border-bottom-color: rgba(14, 13, 12, 0.16); }
+.docs-table td:first-child { white-space: nowrap; }
+@media (max-width: 767px) {
+  .docs-table { font-size: 14px; }
+  .docs-table th, .docs-table td { padding-right: 16px; }
+  .docs-table th:last-child, .docs-table td:last-child { padding-right: 0; }
+}
+
+/* Text links inside copy and the closing link row. */
+.docs-textlink {
+  color: var(--ts-charcoal);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.docs-textlink:focus-visible {
+  outline: 2px solid var(--ts-charcoal);
+  outline-offset: 2px;
+}
+.docs-next { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 24px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+/* Phone: long inline paths may wrap inside prose instead of forcing
+   the column wide (table cells keep nowrap; the table wrapper scrolls). */
+@media (max-width: 767px) {
+  .docs-sec p code, .docs-sec li code { white-space: normal; overflow-wrap: anywhere; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll reveal: the shared system (identical spec on the How and    */
+/* Partner pages): content groups rise 24px and fade in over .6s on   */
+/* the site's ease, staggered 60ms within a group, triggered by       */
+/* IntersectionObserver at ~15% visibility, playing once. The hero    */
+/* band settles on load; each section's blocks follow as they scroll  */
+/* into view, so the page flows section by section.                   */
+/*                                                                    */
+/* The pre-reveal state exists only under html.docs-reveal, a class   */
+/* the inline script adds in the same task that tags the items: with  */
+/* no JS, with reduced motion, or if the script fails, nothing is     */
+/* ever hidden and every group renders in its final state.            */
+/* ------------------------------------------------------------------ */
+html.docs-reveal .docs-rv {
+  opacity: 0;
+  transform: translateY(24px);
+}
+html.docs-reveal .docs-rv.is-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--docs-rv-delay, 0ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  html.docs-reveal .docs-rv { opacity: 1; transform: none; transition: none; }
+}
+@media print {
+  html.docs-reveal .docs-rv { opacity: 1; transform: none; }
+}
+
+/* Nav tightness fix (independent audit F1, 2026-11-18): the
+   landing carries this rule in nav3.css, which the sub-pages do
+   not load. The shared chrome markup needs the same 32px list
+   shift at >=992px so the brand -> Product gap matches the base build's
+   +26.1px here too. Append-only; nothing above is modified. */
+@media (min-width: 992px) {
+  .nav__list--main {
+    margin-left: 32px;
+  }
+}

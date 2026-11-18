@@ -1,0 +1,2 @@
+[brand-menu=menu]{position:absolute;visibility:hidden;opacity:0;z-index:50;transition:none;top:100%;left:0}[brand-menu=copy],
+[brand-menu=download]{position:relative;overflow:hidden}[brand-menu=label]{transition:none}[brand-menu=done]{position:absolute;display:flex;padding:inherit;pointer-events:none;align-items: center;transition:none;inset:0}

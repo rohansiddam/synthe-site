@@ -1,0 +1,274 @@
+/* ------------------------------------------------------------------
+   PROMPT SECTION, REDESIGN (Lane D, supersedes the Lane 5 result
+   card in fixes.css section 4)
+
+   The section is the base build's own sculptor component, restyled to the base build's
+   product-UI standard in Synthe's brand: one white card on the
+   page's cream ground, the goal field as a quiet cream inset, chips
+   as clean pills, one signal-red primary, and the generated prompt
+   as a plain code panel. No uppercase mono eyebrows, no stacked
+   labels, no shadows, no gradients, no glows.
+
+   Type (measured from the base build's CSS on this page, see PROMPT2.md):
+   headline = heading-style-h3, Archivo 48/48 w500 desktop,
+   32/32 phone (the base build's own classes, untouched). Body 16/1.5,
+   small 14/1.3. Mono appears only where the content is code:
+   the generated prompt and the install command.
+
+   Spacing on the 4px scale: 8 / 12 / 16 / 24 / 32 / 64.
+   Radii follow the base build's card family: card 24, field 16, panels and
+   buttons 12, chips pill. Borders are 1px alpha charcoal.
+
+   Load AFTER fixes.css. Every selector is scoped to
+   .section_input-action so nothing leaks to other sections.
+   All promptbox.js / behavior.js hooks are class- and role-based
+   and unchanged; see PROMPT2.md for the hook inventory.
+   ------------------------------------------------------------------ */
+
+.section_input-action {
+  --p2-ink: #0e0d0c;
+  --p2-red: #ec5358;
+  --p2-red-hover: #cf333d;
+  --p2-cream: #faf8f1;
+  --p2-border: rgb(14 13 12 / 0.08);
+  --p2-border-strong: rgb(14 13 12 / 0.16);
+  --p2-text-soft: rgb(14 13 12 / 0.64);
+}
+
+/* The white card: the base build's section panel, in white on the cream
+   ground, defined by its alpha border (no shadow). */
+.section_input-action .home-action_content {
+  background-color: #fff;
+  border: 1px solid var(--p2-border);
+  border-radius: 1.5rem; /* 24px */
+  padding: 4rem 1.5rem; /* 64 / 24 */
+}
+
+/* Headline keeps the base build's h3 scale and centred title; only the
+   rhythm under it is set here. */
+.section_input-action .home-action_title {
+  margin-bottom: 2rem; /* 32px */
+}
+
+/* ---- Goal field ------------------------------------------------
+   The scale div becomes the field: cream inset, alpha border,
+   no shadow (the base build's drop shadow and ring are removed). */
+.section_input-action .home-action_scale {
+  background-color: var(--p2-cream);
+  border: 1px solid var(--p2-border);
+  border-radius: 1rem; /* 16px */
+  box-shadow: none;
+}
+.section_input-action .home-action_wrap:focus-within .home-action_scale {
+  border-color: var(--p2-border-strong);
+}
+.section_input-action .home-action_input {
+  background: transparent;
+  border: none;
+  border-radius: 1rem;
+  margin: 0;
+  padding: 1.25rem 1.25rem 1.5rem; /* 20 / 20 / 24 */
+  min-height: 8rem; /* 128px */
+  font-size: 1rem; /* 16px */
+  line-height: 1.5;
+  color: var(--p2-ink);
+  caret-color: var(--p2-red);
+}
+.section_input-action .home-action_input:focus {
+  outline: none;
+}
+
+/* ---- Chips + primary row ---------------------------------------
+   The base build's oat bar is removed; the row sits directly under the
+   field on the white card. */
+.section_input-action .home-action_button-list {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  margin: 1rem 0 0; /* 16px under the field */
+  padding: 0;
+  gap: 0.75rem; /* 12px */
+}
+.section_input-action .home-action_button-group {
+  gap: 0.5rem; /* 8px */
+  flex-wrap: wrap;
+}
+.section_input-action .tab-btn.cc-light {
+  background-color: #fff;
+  border: 1px solid var(--p2-border-strong);
+  border-radius: 999px;
+  padding: 0.5rem 1rem; /* 8 / 16 */
+  color: var(--p2-ink);
+  transition: background-color 0.15s linear, border-color 0.15s linear;
+}
+.section_input-action .tab-btn.cc-light .text-size-small {
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.3;
+  font-weight: 500;
+  color: inherit;
+}
+.section_input-action .tab-btn.cc-light:hover {
+  background-color: var(--p2-cream);
+  border-color: rgb(14 13 12 / 0.28);
+}
+.section_input-action .tab-btn.cc-light:focus-visible,
+.section_input-action .home-action_button:focus-visible,
+.section_input-action .synthe-promptbox_copy:focus-visible {
+  outline: 2px solid rgb(236 83 88 / 0.55);
+  outline-offset: 2px;
+}
+
+/* ---- Primary button ---------------------------------------------
+   Signal red family, the base build's button radius. The list instance
+   carries the visible "Generate" label (desktop); the in-field
+   instance stays icon-only at the base build's own size (it is the phone
+   instance). WCAG wiring fix (stage-2 integration): the resting
+   ground is #cf333d, not #ec5358 — white on #ec5358 measures
+   3.53:1 and fails AA for the 16px label; #cf333d measures
+   5.01:1 (the same step the hero ground took, clone-fixes.css).
+   Hover goes one step deeper to the hero ground #8c2f36 (7.03:1).
+   --p2-red itself is unchanged (caret, accents). */
+.section_input-action .home-action_button {
+  background-color: #cf333d;
+  color: #fff;
+  border: none;
+  border-radius: 0.75rem; /* 12px */
+  transition: background-color 0.15s linear;
+}
+.section_input-action .home-action_button:hover {
+  background-color: #8c2f36;
+}
+.section_input-action .home-action_button-list .home-action_button {
+  width: auto; /* The base build fixes the icon button at 3rem; the labelled primary sizes to its content */
+  height: 2.75rem; /* 44px */
+  min-width: 2.75rem;
+  padding: 0 1.25rem; /* 20px */
+  gap: 0.5rem; /* 8px */
+  font-family: var(--sans);
+  font-size: 1rem; /* 16px */
+  font-weight: 500;
+}
+.section_input-action .home-action_button .icon-rg {
+  width: 1.25rem; /* 20px */
+  height: 1.25rem;
+  flex: none;
+}
+.section_input-action .synthe-action_label {
+  white-space: nowrap;
+}
+
+/* ---- Result ------------------------------------------------------
+   Not another card: a ruled-off region of the same white card.
+   One small sentence-case label, the prompt as a code panel, a
+   divider, the command as a matching code strip, one body line. */
+.section_input-action .synthe-promptbox_result {
+  margin-top: 2rem; /* 32px */
+  padding: 2rem 0 0; /* 32px */
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--p2-border);
+  border-radius: 0;
+  box-shadow: none;
+  text-align: left;
+}
+.section_input-action .synthe-promptbox_result[hidden] {
+  display: none;
+}
+.section_input-action .synthe-promptbox_result-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.section_input-action .synthe-promptbox_result-label {
+  font-family: var(--sans);
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.3;
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--p2-text-soft);
+  margin: 0;
+}
+.section_input-action .synthe-promptbox_copy {
+  flex: none;
+  font-family: var(--sans);
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--p2-ink);
+  background-color: #fff;
+  border: 1px solid var(--p2-border-strong);
+  border-radius: 0.5rem; /* 8px */
+  padding: 0.5rem 1rem; /* 8 / 16 */
+  cursor: pointer;
+  transition: background-color 0.15s linear, border-color 0.15s linear;
+}
+.section_input-action .synthe-promptbox_copy:hover {
+  background-color: var(--p2-cream);
+  border-color: rgb(14 13 12 / 0.28);
+}
+.section_input-action .synthe-promptbox_prompt {
+  background-color: var(--p2-cream);
+  border: 1px solid var(--p2-border);
+  border-radius: 0.75rem; /* 12px */
+  padding: 1rem 1.25rem; /* 16 / 20 */
+  margin: 0.75rem 0 0; /* 12px under the label row */
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.6;
+  color: var(--p2-ink);
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+.section_input-action .synthe-promptbox_divider {
+  border-top: 1px solid var(--p2-border);
+  margin-top: 1.5rem; /* 24px */
+}
+.section_input-action .synthe-promptbox_cmd {
+  display: block;
+  background-color: var(--p2-cream);
+  border: 1px solid var(--p2-border);
+  border-radius: 0.75rem; /* 12px */
+  padding: 0.75rem 1.25rem; /* 12 / 20 */
+  margin-top: 1.5rem; /* 24px below the divider */
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.6;
+  color: var(--p2-ink);
+}
+.section_input-action .synthe-promptbox_note {
+  margin: 1rem 0 0; /* 16px */
+  font-family: var(--sans);
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.55;
+  color: var(--p2-text-soft);
+}
+
+/* ---- Phone ------------------------------------------------------ */
+@media (max-width: 767px) {
+  .section_input-action .home-action_content {
+    border-radius: 1.25rem; /* 20px */
+    padding: 2.5rem 1rem 2rem; /* 40 / 16 / 32 */
+  }
+  .section_input-action .home-action_title {
+    margin-bottom: 1.5rem; /* 24px */
+  }
+  /* Clear the in-field primary so goal text never runs under it,
+     and size the field so the idle text fits without a scrollbar. */
+  .section_input-action .home-action_input {
+    padding-bottom: 4.5rem; /* 72px */
+    min-height: 10.5rem; /* 168px */
+  }
+  .section_input-action .synthe-promptbox_result {
+    margin-top: 1.5rem; /* 24px */
+    padding-top: 1.5rem;
+  }
+  .section_input-action .synthe-promptbox_prompt {
+    padding: 1rem;
+  }
+  .section_input-action .synthe-promptbox_cmd {
+    padding: 0.75rem 1rem;
+  }
+}

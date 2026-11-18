@@ -1,0 +1,35 @@
+/* nav3.css — nav spacing specced to the base build's (founder review
+   2026-11-18: "the nav bar feels a bit tight, spec it to the same
+   width and spacing as the base build's"). Loaded AFTER nav2.css. GEOMETRY
+   ONLY: the notch (nav2.css + nav-fx.js), the content-fitted
+   129px dropdown and every nav behaviour are untouched.
+
+   Measured on the pristine the base build clone vs this build, both at
+   1440 (full table in HERO3.md): the bar shell is already the base build's
+   own — container max-width 2000px, bar 1368px wide, 36px inset
+   from each viewport edge, height 57.8px, layout padding
+   24px L/R and 7.52/8.48px T/B, link padding 8px, link box gaps
+   4.2px, right-cluster gaps 0 + the oat button's 8px
+   margin-right, last button flush at layout-right minus 24px.
+   Every one of those values is identical in both builds, because
+   the shell is the base build's CSS.
+
+   The ONE deviation: brand -> first link. The base build: brand box ends
+   x=132, first link box starts x=158.1, a +26.1px gap. Here:
+   Synthe's lockup is 104px wide (the base build's wordmark is 72px) but the
+   list sits at the same x=158.1, so the link box starts 5.9px
+   BEFORE the brand box ends, and the visible text gap —
+   "Synthe" wordmark text ends x=163.9, "Product" text starts
+   x=166.1 — is 2.2px. That is the tightness. Fix: shift the list
+   right by the 32px difference (26.1 - (-5.9)), restoring the base build's
+   +26.1px box gap and ~34px text gap. The start cluster is
+   left-anchored and the middle free space absorbs the shift
+   (measured 706.8px of it at 1440); the right cluster does not
+   move, and nav-fx.js measures item positions live, so the notch
+   follows the shifted items on its own. */
+
+@media (min-width: 992px) {
+  .nav__list--main {
+    margin-left: 32px;
+  }
+}

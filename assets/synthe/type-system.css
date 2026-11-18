@@ -1,0 +1,209 @@
+/* ==========================================================================
+   Synthe type system — the base build's measured type structure, Archivo's voice.
+
+   Every size, weight, leading and tracking value in this file was measured
+   on the base build's homepage (computed styles + the base build's own CSS variables + a DOM
+   probe of the pristine clone at 1440px and 390px, 2026-11-17).
+   Full table, sources and mapping: TYPE-SYSTEM.md in this tree's root.
+
+   The base build sets Roobert VF with a continuous weight dial (530 section heads,
+   575 hero, 560 semibold emphasis). Archivo ships to this page as static
+   weights, so the dial is rounded: 530 -> 500, 560 -> 600, 575 -> 600.
+   Tracking values are the base build's own em values, unchanged: they scale with
+   size, which is the part of the base build's system that makes big type feel set
+   rather than typed.
+
+   HARD RULES (baked in, do not override downstream):
+   - No gradient text anywhere. No background-clip:text, ever.
+   - No gradient section washes. Grounds are flat palette colors.
+   - No purple, no glass, no sparkle/glow treatments on type.
+   - Signal red is an accent (rules, marks, one word at most), never a
+     text field color for body copy and never a headline color on paper.
+   - Moss is reserved for pass / kept states in records. Nothing else.
+   ========================================================================== */
+
+/* ------------------------------------------------------------------ */
+/* Palette tokens                                                      */
+/* ------------------------------------------------------------------ */
+:root {
+  --ts-charcoal: #0e0d0c;        /* primary text on light grounds      */
+  --ts-hero-red: #8c2f36;        /* hero ground: deep brand red        */
+  --ts-signal: #ec5358;          /* signal red: accents only           */
+  --ts-paper: #fffdf9;           /* cream paper ground (the base build footer)   */
+  --ts-paper-warm: #f7f3ec;      /* secondary cream surface            */
+  --ts-ink-on-dark: #fefdfb;     /* text on hero red / charcoal        */
+  --ts-moss: #7fb069;            /* pass / kept states only            */
+  --ts-muted-on-paper: rgba(14, 13, 12, 0.64);  /* secondary text      */
+  --ts-muted-on-dark: rgba(254, 253, 251, 0.72);/* secondary on dark   */
+
+  --ts-font: var(--sans);
+  --ts-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+/* ------------------------------------------------------------------ */
+/* Type scale tokens (desktop >= 992px; steps below)                   */
+/* ------------------------------------------------------------------ */
+:root {
+  /* hero headline — the base build 88px / wght 575 / 1.0 / -0.04em */
+  --ts-hero-size: 88px;   --ts-hero-weight: 500;  --ts-hero-lh: 1.0;  --ts-hero-ls: -0.04em;
+  /* display headline — the base build 72px / wght 530 / 1.0 / -0.03em (flow H2) */
+  --ts-display-size: 72px; --ts-display-weight: 500; --ts-display-lh: 1.0; --ts-display-ls: -0.03em;
+  /* section headline — the base build 48px / wght 530 / 1.0 / -0.04em */
+  --ts-h2-size: 48px;     --ts-h2-weight: 500;    --ts-h2-lh: 1.0;    --ts-h2-ls: -0.04em;
+  /* headline small — the base build generic h2 var 44px / 530 / 1.1 / -0.02em (footer CTA) */
+  --ts-h2sm-size: 44px;   --ts-h2sm-weight: 500;  --ts-h2sm-lh: 1.1;  --ts-h2sm-ls: -0.02em;
+  /* subhead — the base build h3 var scale 32px / 500 / 1.1 / -0.02em */
+  --ts-h3-size: 32px;     --ts-h3-weight: 500;    --ts-h3-lh: 1.1;    --ts-h3-ls: -0.02em;
+  /* card title — the base build feature/updates cards 24px / wght 530 / 1.3 / 0 */
+  --ts-card-size: 24px;   --ts-card-weight: 500;  --ts-card-lh: 1.3;  --ts-card-ls: 0em;
+  /* lede — the base build paragraph-large 24px / 400 / 1.3 / 0 (hero subhead) */
+  --ts-lede-size: 24px;   --ts-lede-weight: 400;  --ts-lede-lh: 1.3;  --ts-lede-ls: 0em;
+  /* body large — the base build paragraph-medium 20px / 400 / 1.3 / 0 (section intros) */
+  --ts-bodylg-size: 20px; --ts-bodylg-weight: 400; --ts-bodylg-lh: 1.3; --ts-bodylg-ls: 0em;
+  /* body — the base build paragraph-regular 16px / 400 / 1.4 / 0 */
+  --ts-body-size: 16px;   --ts-body-weight: 400;  --ts-body-lh: 1.4;  --ts-body-ls: 0em;
+  /* small — the base build paragraph-small 14px / 400 / 1.3 / 0 */
+  --ts-small-size: 14px;  --ts-small-weight: 400; --ts-small-lh: 1.3; --ts-small-ls: 0em;
+  /* caption — the base build wall text 12px / 400 / 1.3 / 0 */
+  --ts-caption-size: 12px; --ts-caption-weight: 400; --ts-caption-lh: 1.3; --ts-caption-ls: 0em;
+  /* micro — the base build wall stat labels 10px / 500 / 1.15 / 0 (stat captions only) */
+  --ts-micro-size: 10px;  --ts-micro-weight: 500; --ts-micro-lh: 1.15; --ts-micro-ls: 0em;
+  /* eyebrow — the base build homepage eyebrow 12px / 600 / 1.5 / +0.25em uppercase */
+  --ts-eyebrow-size: 12px; --ts-eyebrow-weight: 500; --ts-eyebrow-lh: 1.5; --ts-eyebrow-ls: 0.25em;
+  /* record label — the base build mono eyebrow 12px / 500 / 1.2 / +0.1em uppercase, in Plex Mono */
+  --ts-label-size: 12px;  --ts-label-weight: 500; --ts-label-lh: 1.2; --ts-label-ls: 0.1em;
+  /* button — the base build CTA 18px / 500 / 1.5 / -0.01em, padding .5em 1em */
+  --ts-button-size: 18px; --ts-button-weight: 500; --ts-button-lh: 1.5; --ts-button-ls: -0.01em;
+  /* nav link — the base build 14px (0.875rem) / 400 / 1.5 / 0 */
+  --ts-nav-size: 14px;    --ts-nav-weight: 400;   --ts-nav-lh: 1.5;   --ts-nav-ls: 0em;
+  /* footer column head — the base build 12px / 600 / 1.1 / +0.12em uppercase */
+  --ts-foothead-size: 12px; --ts-foothead-weight: 500; --ts-foothead-lh: 1.1; --ts-foothead-ls: 0.12em;
+  /* footer link — the base build 14px / 400 / 1.1 / 0 */
+  --ts-footlink-size: 14px; --ts-footlink-weight: 400; --ts-footlink-lh: 1.1; --ts-footlink-ls: 0em;
+
+  /* Vertical rhythm — measured gaps (see TYPE-SYSTEM.md) */
+  --ts-section-pad-y: 64px;   /* modal section padding, desktop        */
+  --ts-gap-eyebrow: 24px;     /* eyebrow bottom -> headline top        */
+  --ts-gap-head-body: 20px;   /* headline bottom -> body/lede top      */
+  --ts-gap-head-content: 32px;/* header block bottom -> content top    */
+  --ts-gap-hero-lede: 16px;   /* hero headline bottom -> lede top      */
+  --ts-gap-lede-cta: 24px;    /* lede bottom -> CTA row top            */
+}
+
+/* The base build's middle step (Webflow max-width 991px). Display and section
+   headline steps here are interpolated on the base build's own step pattern;
+   they are flagged as such in TYPE-SYSTEM.md. */
+@media (max-width: 991px) {
+  :root {
+    --ts-hero-size: 64px;
+    --ts-display-size: 56px;
+    --ts-h2-size: 40px;
+    --ts-h2sm-size: 36px;
+    --ts-h3-size: 28px;
+    --ts-card-size: 22.4px;
+  }
+}
+
+/* Phone step (Webflow max-width 767px; every value below was probed
+   rendered at 390px, except where TYPE-SYSTEM.md flags otherwise). */
+@media (max-width: 767px) {
+  :root {
+    --ts-hero-size: 41.6px;
+    --ts-display-size: 40px;
+    --ts-h2-size: 32px;
+    --ts-h2sm-size: 32px;  --ts-h2sm-lh: 1.2;
+    --ts-h3-size: 20px;
+    --ts-card-size: 20px;
+    --ts-lede-size: 22.4px;
+    --ts-button-size: 16px;
+    --ts-section-pad-y: 40px;
+    --ts-gap-lede-cta: 20px;
+  }
+}
+
+@media (max-width: 479px) {
+  :root {
+    --ts-lede-size: 20px;
+    --ts-bodylg-size: 18px;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Base classes — one per level. All carry margin: 0; vertical rhythm  */
+/* comes from the --ts-gap-* tokens applied by layout, as on the base build      */
+/* (whose heading styles also carry margin-bottom: 0).                 */
+/* ------------------------------------------------------------------ */
+.ts-hero, .ts-display, .ts-h2, .ts-h2sm, .ts-h3, .ts-card-title,
+.ts-lede, .ts-body-lg, .ts-body, .ts-small, .ts-caption, .ts-micro,
+.ts-eyebrow, .ts-label, .ts-button, .ts-nav,
+.ts-foothead, .ts-footlink {
+  font-family: var(--ts-font);
+  margin: 0;
+}
+
+.ts-hero    { font-size: var(--ts-hero-size);    font-weight: var(--ts-hero-weight);    line-height: var(--ts-hero-lh);    letter-spacing: var(--ts-hero-ls); }
+.ts-display { font-size: var(--ts-display-size); font-weight: var(--ts-display-weight); line-height: var(--ts-display-lh); letter-spacing: var(--ts-display-ls); }
+.ts-h2      { font-size: var(--ts-h2-size);      font-weight: var(--ts-h2-weight);      line-height: var(--ts-h2-lh);      letter-spacing: var(--ts-h2-ls); }
+.ts-h2sm    { font-size: var(--ts-h2sm-size);    font-weight: var(--ts-h2sm-weight);    line-height: var(--ts-h2sm-lh);    letter-spacing: var(--ts-h2sm-ls); }
+.ts-h3      { font-size: var(--ts-h3-size);      font-weight: var(--ts-h3-weight);      line-height: var(--ts-h3-lh);      letter-spacing: var(--ts-h3-ls); }
+.ts-card-title { font-size: var(--ts-card-size); font-weight: var(--ts-card-weight);   line-height: var(--ts-card-lh);   letter-spacing: var(--ts-card-ls); }
+.ts-lede    { font-size: var(--ts-lede-size);    font-weight: var(--ts-lede-weight);    line-height: var(--ts-lede-lh);    letter-spacing: var(--ts-lede-ls); }
+.ts-body-lg { font-size: var(--ts-bodylg-size);  font-weight: var(--ts-bodylg-weight);  line-height: var(--ts-bodylg-lh);  letter-spacing: var(--ts-bodylg-ls); }
+.ts-body    { font-size: var(--ts-body-size);    font-weight: var(--ts-body-weight);    line-height: var(--ts-body-lh);    letter-spacing: var(--ts-body-ls); }
+.ts-small   { font-size: var(--ts-small-size);   font-weight: var(--ts-small-weight);   line-height: var(--ts-small-lh);   letter-spacing: var(--ts-small-ls); }
+.ts-caption { font-size: var(--ts-caption-size); font-weight: var(--ts-caption-weight); line-height: var(--ts-caption-lh); letter-spacing: var(--ts-caption-ls); }
+.ts-micro   { font-size: var(--ts-micro-size);   font-weight: var(--ts-micro-weight);   line-height: var(--ts-micro-lh);   letter-spacing: var(--ts-micro-ls); }
+
+.ts-eyebrow {
+  font-size: var(--ts-eyebrow-size); font-weight: var(--ts-eyebrow-weight);
+  line-height: var(--ts-eyebrow-lh); letter-spacing: var(--ts-eyebrow-ls);
+  text-transform: uppercase;
+}
+
+/* Record/data labels: the base build sets its library eyebrow in its mono face;
+   Synthe's equivalent is IBM Plex Mono (the page's record voice). */
+.ts-label {
+  font-family: var(--ts-mono);
+  font-size: var(--ts-label-size); font-weight: var(--ts-label-weight);
+  line-height: var(--ts-label-lh); letter-spacing: var(--ts-label-ls);
+  text-transform: uppercase;
+}
+
+.ts-button {
+  font-size: var(--ts-button-size); font-weight: var(--ts-button-weight);
+  line-height: var(--ts-button-lh); letter-spacing: var(--ts-button-ls);
+  padding: 0.5em 1em; /* The base build .btn padding; rendered CTA box 47px desktop / 42px phone */
+  white-space: nowrap;
+}
+
+.ts-nav       { font-size: var(--ts-nav-size);       font-weight: var(--ts-nav-weight);       line-height: var(--ts-nav-lh);       letter-spacing: var(--ts-nav-ls); }
+.ts-foothead  { font-size: var(--ts-foothead-size);  font-weight: var(--ts-foothead-weight);  line-height: var(--ts-foothead-lh);  letter-spacing: var(--ts-foothead-ls); text-transform: uppercase; }
+.ts-footlink  { font-size: var(--ts-footlink-size);  font-weight: var(--ts-footlink-weight);  line-height: var(--ts-footlink-lh);  letter-spacing: var(--ts-footlink-ls); }
+
+/* Emphasis inside body levels: the base build's text-weight-medium is the 530
+   dial, text-weight-semibold is 560. In Archivo: 500 and 600. */
+.ts-w-medium   { font-weight: 500; }
+.ts-w-semibold { font-weight: 500; }
+
+/* ------------------------------------------------------------------ */
+/* Palette application — flat grounds only. No gradients, no washes.   */
+/* ------------------------------------------------------------------ */
+.ts-ground-hero {
+  background-color: var(--ts-hero-red);
+  color: var(--ts-ink-on-dark);
+}
+.ts-ground-paper {
+  background-color: var(--ts-paper);
+  color: var(--ts-charcoal);
+}
+.ts-ground-charcoal {
+  background-color: var(--ts-charcoal);
+  color: var(--ts-ink-on-dark);
+}
+/* Signal red: rules, the Mark's states, a single accent word. Never a
+   ground for text blocks, never a headline color on paper. */
+.ts-accent { color: var(--ts-signal); }
+/* Moss: pass / kept verdicts inside records only. */
+.ts-pass { color: var(--ts-moss); }
+.ts-muted-paper { color: var(--ts-muted-on-paper); }
+.ts-muted-dark  { color: var(--ts-muted-on-dark); }

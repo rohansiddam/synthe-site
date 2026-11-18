@@ -1,0 +1,633 @@
+/* ================================================================
+   Shift section ("One loop. Everywhere your agents work.")
+   A Publish-style hover-shift section modelled on the mechanics
+   measured in Spline's "One scene." export section (see
+   SHIFT-SECTION.md at the clay-synthe root for the source numbers):
+   geometry moves on .45s cubic-bezier(.22,1,.36,1), the prompt
+   panel fades/slides in over .25s/.45s, inactive rows sit at .35
+   opacity, and the active row's rule fills over 6000ms linear
+   before the section advances. Synthe's own composition, content
+   and Stark palette throughout. All spacing on the 4px scale.
+   ================================================================ */
+
+.shift {
+  --sh-ease: cubic-bezier(.22, 1, .36, 1);
+  --sh-dur: .45s;
+  --sh-cream: #fdf6ec;
+  --sh-dim: rgba(253, 246, 236, .72);
+  --sh-mute: rgba(253, 246, 236, .55);
+  --sh-line: rgba(253, 246, 236, .16);
+  --sh-line-2: rgba(253, 246, 236, .28);
+  --sh-red: #ec5358;
+  --sh-moss: #7fb069;
+  background: #0e0d0c;
+  color: var(--sh-cream);
+  padding: 96px 24px;
+}
+
+.shift-wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* ---- head: H2 left, lede right (the reference's split head) ---- */
+.shift-head {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 48px;
+  align-items: end;
+  margin-bottom: 48px;
+}
+
+.shift-h2 {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 56px;
+  line-height: 1.04;
+  letter-spacing: -.01em;
+  margin: 0;
+}
+
+.shift-h2 span {
+  display: block;
+}
+
+.shift-lede {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--sh-mute);
+  margin: 0;
+  max-width: 46ch;
+  justify-self: end;
+}
+
+/* ---- stack: stage over rows ---- */
+.shift-stack {
+  display: grid;
+  gap: 32px;
+}
+
+/* ---- stage (the dark panel) ---- */
+.shift-stage {
+  /* The room the prompt panel takes is measured in stage units
+     (cqw) so the same value sizes the panel (a width) and the
+     artifact's slide (a transform, whose % basis would otherwise
+     be the artifact itself). Fallback first for older engines. */
+  --sh-panel-w: min(40%, 440px);
+  --sh-panel-w: min(40cqw, 440px);
+  --sh-room: calc(var(--sh-panel-w) + 88px);
+  container-type: inline-size;
+  position: relative;
+  height: clamp(420px, 46vw, 640px);
+  border-radius: 16px;
+  background: #1b1a18;
+  overflow: hidden;
+  isolation: isolate;
+  outline: none;
+}
+
+.shift-stage:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--sh-red);
+}
+
+/* The staged artifact: a repo window that bleeds off the bottom
+   edge. Closed it sits centred; open it slides right by half the
+   room the prompt panel takes, on the reference's curve. */
+.shift-artifact {
+  position: absolute;
+  z-index: 1;
+  top: 48px;
+  bottom: -1px;
+  left: 50%;
+  width: min(720px, calc(100% - 96px));
+  transform: translateX(-50%);
+  transition: transform var(--sh-dur) var(--sh-ease), opacity var(--sh-dur) var(--sh-ease);
+  background: #0c0c0c;
+  border-radius: 12px 12px 0 0;
+  box-shadow: inset 0 0 0 1px var(--sh-line-2);
+  display: flex;
+  flex-direction: column;
+}
+
+.shift-stage.is-open .shift-artifact {
+  transform: translateX(calc(-50% + var(--sh-room) / 2));
+}
+
+.shift-bar {
+  flex: none;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--sh-line);
+  position: relative;
+}
+
+.shift-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.shift-dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--sh-line-2);
+}
+
+.shift-win-title {
+  position: absolute;
+  left: 50%;
+  translate: -50%;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 20px;
+  color: var(--sh-mute);
+  background: rgba(255, 255, 255, .05);
+  border-radius: 6px;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+.shift-artifact-body {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Artifact surfaces crossfade with the outgoing one blurred ~4px:
+   the base state IS the blurred/faded state, so removing .is-active
+   blurs the leaver while the enterer un-blurs. No dead gap. */
+.shift-surface {
+  position: absolute;
+  inset: 0;
+  padding: 24px;
+  opacity: 0;
+  filter: blur(4px);
+  pointer-events: none;
+  transition: opacity var(--sh-dur) var(--sh-ease), filter var(--sh-dur) var(--sh-ease);
+}
+
+.shift-surface.is-active {
+  opacity: 1;
+  filter: blur(0);
+  pointer-events: auto;
+}
+
+/* Record surfaces in the site's language, dark variant: Archivo
+   header over a red rule, IBM Plex Mono lines, dashed dividers. */
+.shift-rec-h {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--sh-cream);
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--sh-red);
+  margin-bottom: 6px;
+}
+
+.shift-rec-tag {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: .02em;
+  text-transform: none;
+  color: var(--sh-red);
+  white-space: nowrap;
+}
+
+.shift-rec-l {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--sh-dim);
+  padding: 6px 0;
+  border-top: 1px dashed rgba(253, 246, 236, .18);
+}
+
+.shift-rec-h + .shift-rec-l {
+  border-top: none;
+}
+
+.shift-rec-l.is-note {
+  display: block;
+  color: var(--sh-dim);
+}
+
+.shift-rec-v {
+  color: var(--sh-cream);
+  font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.shift-rec-v.is-kept {
+  color: var(--sh-moss);
+}
+
+/* Diff / file-content block inside a surface */
+.shift-code {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 8px 0;
+  border-top: 1px dashed rgba(253, 246, 236, .18);
+  border-bottom: 1px dashed rgba(253, 246, 236, .18);
+  padding: 8px 0;
+}
+
+.shift-code div {
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.shift-code .is-minus {
+  color: #f0a3a7;
+  background: rgba(236, 83, 88, .08);
+}
+
+.shift-code .is-plus {
+  color: #a9c795;
+  background: rgba(127, 176, 105, .1);
+}
+
+.shift-code .is-new {
+  color: var(--sh-cream);
+  background: rgba(236, 83, 88, .1);
+  box-shadow: inset 2px 0 0 var(--sh-red);
+}
+
+/* ---- veil (the reference's gradient scrim behind the panel) ---- */
+.shift-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(90deg, rgba(0, 0, 0, .6), rgba(0, 0, 0, .36) 55%, rgba(0, 0, 0, .26));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+}
+
+.shift-stage.is-open .shift-veil {
+  opacity: 1;
+}
+
+/* ---- prompt panel (revealed by the shift) ---- */
+.shift-panel {
+  position: absolute;
+  z-index: 3;
+  left: 32px;
+  top: 32px;
+  bottom: 28px;
+  width: var(--sh-panel-w);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 16px;
+  opacity: 0;
+  transform: translateX(-12px);
+  pointer-events: none;
+  transition: opacity .25s, transform var(--sh-dur) var(--sh-ease);
+}
+
+.shift-stage.is-open .shift-panel {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.shift-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--sh-cream);
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--sh-red);
+}
+
+.shift-copy {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .02em;
+  text-transform: none;
+  color: var(--sh-cream);
+  background: none;
+  border: 1px solid var(--sh-line-2);
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.shift-copy:hover {
+  background: rgba(255, 255, 255, .06);
+}
+
+.shift-block {
+  align-self: start;
+  background: rgba(255, 255, 255, .04);
+  box-shadow: inset 0 0 0 1px var(--sh-line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--sh-cream);
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 76px;
+}
+
+.shift-caret {
+  display: inline-block;
+  width: 8px;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: -.15em;
+  background: var(--sh-red);
+  opacity: 0;
+}
+
+.shift-caret.is-live {
+  opacity: 1;
+  animation: shift-blink 1s step-end infinite;
+}
+
+@keyframes shift-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.shift-panel-foot {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--sh-mute);
+  margin: 0;
+}
+
+.shift-panel-foot code {
+  color: var(--sh-cream);
+  font-family: inherit;
+}
+
+.shift-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- platform rows ---- */
+.shift-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 48px;
+}
+
+.shift-item {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  width: 100%;
+  padding: 22px 0 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: opacity .3s;
+}
+
+.shift-item:not(.is-on) {
+  opacity: .35;
+}
+
+.shift-item:not(.is-on):hover {
+  opacity: .8;
+}
+
+.shift-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--sh-line);
+  overflow: hidden;
+}
+
+.shift-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--sh-cream);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.shift-fill.is-filling {
+  animation: shift-fill 6000ms linear forwards;
+}
+
+@keyframes shift-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.shift-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: -.01em;
+  color: var(--sh-cream);
+}
+
+.shift-icon {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  color: var(--sh-cream);
+}
+
+.shift-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.shift-arrow {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: var(--sh-mute);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity .25s, transform .25s cubic-bezier(.2, .8, .2, 1);
+}
+
+.shift-item:hover .shift-arrow,
+.shift-item:focus-visible .shift-arrow {
+  opacity: 1;
+  transform: none;
+}
+
+.shift-item:focus-visible {
+  outline: none;
+}
+
+.shift-item:focus-visible .shift-name-text {
+  text-decoration: underline;
+  text-decoration-color: var(--sh-red);
+  text-underline-offset: .2em;
+}
+
+.shift-renderer {
+  margin-left: auto;
+  padding-top: 3px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--sh-mute);
+  white-space: nowrap;
+}
+
+.shift-desc {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--sh-dim);
+  margin: 0;
+}
+
+/* ---- tablet ---- */
+@media (max-width: 991px) {
+  .shift-h2 {
+    font-size: 40px;
+  }
+}
+
+/* ---- phone (the reference switches at 760px; so do we) ---- */
+@media (max-width: 760px) {
+  .shift {
+    padding: 64px 16px;
+  }
+
+  .shift-head {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .shift-lede {
+    justify-self: start;
+  }
+
+  .shift-stack {
+    gap: 24px;
+  }
+
+  .shift-stage {
+    height: 440px;
+  }
+
+  /* No room to slide on a phone: the artifact fades back and the
+     prompt becomes the reference's own inset overlay card. */
+  .shift-artifact {
+    top: 24px;
+    width: calc(100% - 32px);
+  }
+
+  .shift-stage.is-open .shift-artifact {
+    transform: translateX(-50%);
+    opacity: .3;
+  }
+
+  .shift-panel {
+    inset: 12px;
+    width: auto;
+    background: rgba(12, 12, 12, .94);
+    border-radius: 12px;
+    padding: 16px;
+    transform: translateY(8px);
+  }
+
+  .shift-stage.is-open .shift-panel {
+    transform: none;
+  }
+
+  .shift-list {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .shift-item {
+    padding: 20px 0;
+  }
+
+  .shift-arrow {
+    opacity: 1;
+    transform: none;
+  }
+
+  .shift-surface {
+    padding: 16px;
+  }
+
+  .shift-rec-l,
+  .shift-code {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 479px) {
+  .shift-h2 {
+    font-size: 32px;
+  }
+
+  .shift-stage {
+    height: 420px;
+  }
+}
+
+/* ---- reduced motion: instant swaps, no sliding, no cycling ---- */
+@media (prefers-reduced-motion: reduce) {
+  .shift *,
+  .shift *::before,
+  .shift *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

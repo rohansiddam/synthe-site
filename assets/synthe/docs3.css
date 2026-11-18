@@ -1,0 +1,139 @@
+/* ==========================================================================
+   Docs entry block (docs3), clay-synthe. Styles for docs.html only,
+   layered after docs.css; every selector is scoped to .docs-entry.
+
+   The entry system at the top of the content column (REF-DOCS.md):
+   Clerk Docs' three front doors (task, part, reference) with Vercel
+   Docs' agent-first ordering, expressed in this page's own system.
+   The machine door (agent strip) leads, the task cards follow, then
+   the part list, the reference list, and Reports / Manage last.
+
+   All values are the page's own tokens (TYPE-SYSTEM.md, docs.css):
+   warm paper ground, the two border alphas (0.08 soft, 0.16 strong),
+   radius 12px, the small-card shadow on the agent strip only, group
+   labels as plain uppercase ts-label text, 4px spacing scale. No new
+   colors, no gradients, no icons, no motion beyond border/color
+   transitions on the site's ease.
+
+   Rhythm: .docs-entry carries no top padding and no border. Its
+   padding-bottom (64px desktop, 40px phone) plus #need's regained
+   border-top and padding-top (it stops being :first-child of
+   .docs-main) reproduce the settled section divide exactly:
+   64 + 1 + 64 = 129px desktop, 40 + 1 + 40 = 81px phone.
+   ========================================================================== */
+
+.docs-entry { padding-bottom: 64px; }
+@media (max-width: 767px) { .docs-entry { padding-bottom: 40px; } }
+
+/* Group labels: the sidebar's label pattern (ts-label, muted tone,
+   12px to its content), with the sidebar's 32px group gap above and
+   no left inset (the sidebar's inset clears its active rule; the
+   entry has no rule). Inside the Reports/Manage pair the pair itself
+   carries the group gap, so its labels take no top margin. */
+.docs-entry-label {
+  color: rgba(14, 13, 12, 0.64);
+  margin: 32px 0 12px;
+}
+.docs-entry-pair .docs-entry-label { margin-top: 0; }
+
+/* Element 1: the agent strip. The one primary door: warm ground,
+   strong border, the page's small-card shadow (the .docs-warn
+   finish). A link only; the copyable prompt stays canonical in
+   #setup. */
+.docs-entry-agent {
+  display: block;
+  background: var(--ts-paper-warm);
+  border: 1px solid rgba(14, 13, 12, 0.16);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(14, 13, 12, 0.05),
+    0 8px 20px -10px rgba(14, 13, 12, 0.18);
+  padding: 20px;
+  color: var(--ts-charcoal);
+  text-decoration: none;
+  transition: border-color 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.docs-entry-agent-title {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--ts-charcoal);
+}
+
+/* Element 2: the task cards. Flat like the page's command blocks:
+   warm ground, soft border, no shadow. Whole card is one link. */
+.docs-entry-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+@media (max-width: 767px) {
+  .docs-entry-cards { grid-template-columns: 1fr; gap: 16px; }
+}
+.docs-entry-card {
+  display: block;
+  background: var(--ts-paper-warm);
+  border: 1px solid rgba(14, 13, 12, 0.08);
+  border-radius: 12px;
+  padding: 20px;
+  color: var(--ts-charcoal);
+  text-decoration: none;
+  transition: border-color 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.docs-entry-card:hover,
+.docs-entry-agent:hover { border-color: rgba(14, 13, 12, 0.16); }
+
+/* Elements 3 and 4: the part and reference lists. Borderless, on
+   the page ground, Clerk's feature-list form at this page's gaps. */
+.docs-entry-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 32px;
+}
+@media (max-width: 767px) {
+  .docs-entry-list { grid-template-columns: 1fr; gap: 24px; }
+}
+.docs-entry-item {
+  display: block;
+  color: var(--ts-charcoal);
+  text-decoration: none;
+}
+.docs-entry-item .docs-entry-title {
+  transition: color 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.docs-entry-item:hover .docs-entry-title { color: var(--ts-charcoal); }
+
+/* Element 5: Reports and Manage, two half-width groups side by
+   side, stacking on phone. */
+.docs-entry-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 32px;
+  margin-top: 32px;
+}
+@media (max-width: 767px) {
+  .docs-entry-pair { grid-template-columns: 1fr; gap: 24px; }
+}
+
+/* Shared title / description levels for every door. */
+.docs-entry-title {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--ts-charcoal);
+}
+.docs-entry-desc {
+  display: block;
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: rgba(14, 13, 12, 0.72);
+}
+
+/* The page's standard focus treatment on every entry link. */
+.docs-entry a:focus-visible {
+  outline: 2px solid var(--ts-charcoal);
+  outline-offset: 2px;
+}

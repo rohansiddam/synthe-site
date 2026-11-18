@@ -1,0 +1,1620 @@
+/* Synthe flow + feature sections, third design (flow3 lane).
+   The flow section rebuilt as living product scenes: a weighted
+   stepper rail over per-panel-height stages, each panel a product
+   window whose content plays (checks settle, messages arrive, a
+   diff composes, bars animate, gates check and the Mark locks, a
+   timeline walks back, a report prints). Scene motion is driven by
+   flow3.js state classes; the base state of every element is its
+   settled end state, so no-JS and reduced-motion render the
+   finished scene, static.
+   Feature cards: the flow2 restyle carried over verbatim (this
+   file replaces flow2.css wholesale; see the feature block below).
+   Load LAST in <head>, after clone-fixes.css and fixes.css.
+   Palette is flat Stark only: charcoal, cream paper, signal red,
+   moss. No washes, no coloured fields, no tinted headline text. */
+
+/* ================================================================
+   FLOW SECTION
+   ================================================================ */
+.fl3 {
+  --fl3-ink: #0e0d0c;
+  --fl3-ink-70: rgba(14, 13, 12, 0.7);
+  --fl3-ink-60: rgba(14, 13, 12, 0.6);
+  --fl3-line: rgba(14, 13, 12, 0.09);
+  --fl3-line-strong: rgba(14, 13, 12, 0.16);
+  --fl3-cream: #fdf6ec;
+  --fl3-card: #ffffff;
+  --fl3-paper: #fffdf9;
+  --fl3-warm: #f7f3ec;
+  --fl3-red: #ec5358;
+  --fl3-red-deep: #b5412f;
+  --fl3-red-tint: rgba(236, 83, 88, 0.08);
+  --fl3-moss: #7fb069;
+  --fl3-moss-deep: #3f6d33;
+  --fl3-moss-tint: rgba(127, 176, 105, 0.16);
+  --fl3-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --fl3-shadow-card: 0 1px 2px rgba(14, 13, 12, 0.05),
+    0 20px 44px -20px rgba(14, 13, 12, 0.22);
+  --fl3-shadow-sm: 0 1px 2px rgba(14, 13, 12, 0.05),
+    0 8px 20px -10px rgba(14, 13, 12, 0.18);
+  --fl3-shadow-float: 0 2px 4px rgba(14, 13, 12, 0.06),
+    0 18px 36px -10px rgba(14, 13, 12, 0.28);
+  background: var(--fl3-cream);
+  color: var(--fl3-ink);
+  font-family: var(--sans);
+}
+.fl3 *,
+.fl3 *::before,
+.fl3 *::after {
+  box-sizing: border-box;
+}
+.fl3 h2,
+.fl3 h3,
+.fl3 p,
+.fl3 ul {
+  margin: 0;
+}
+.fl3 ul {
+  padding: 0;
+  list-style: none;
+}
+
+.fl3-head {
+  max-width: 720px;
+  margin-bottom: 8px;
+}
+
+/* --- stepper rail: weighted nodes on a real track --- */
+.fl3-stepper {
+  position: relative;
+  display: flex;
+  margin: 44px 0 30px;
+}
+.fl3-rail {
+  position: absolute;
+  top: 21px;
+  left: calc(100% / 14);
+  right: calc(100% / 14);
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(14, 13, 12, 0.1);
+}
+.fl3-rail_fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: var(--fl3-ink);
+  transition: width 0.45s var(--fl3-ease);
+}
+.fl3-step {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 0 4px;
+  background: none;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.fl3-step_node {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--fl3-card);
+  border: 1px solid var(--fl3-line-strong);
+  box-shadow: 0 1px 2px rgba(14, 13, 12, 0.06),
+    0 8px 18px -8px rgba(14, 13, 12, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s var(--fl3-ease),
+    border-color 0.3s var(--fl3-ease), box-shadow 0.3s var(--fl3-ease),
+    transform 0.3s var(--fl3-ease);
+}
+@media (hover: hover) {
+  .fl3-step:hover .fl3-step_node {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 3px rgba(14, 13, 12, 0.06),
+      0 14px 24px -8px rgba(14, 13, 12, 0.3);
+  }
+}
+.fl3-mark {
+  display: block;
+  width: 20px;
+  height: 21px;
+}
+.fl3-mark_a,
+.fl3-mark_b {
+  fill: var(--fl3-ink);
+  opacity: 0.22;
+  transition: opacity 0.3s var(--fl3-ease), fill 0.3s var(--fl3-ease),
+    transform 0.45s var(--fl3-ease);
+}
+.fl3-step.is-done .fl3-mark_a,
+.fl3-step.is-done .fl3-mark_b {
+  opacity: 1;
+}
+.fl3-step.is-active .fl3-step_node {
+  background: var(--fl3-ink);
+  border-color: var(--fl3-ink);
+  box-shadow: 0 0 0 5px rgba(236, 83, 88, 0.18),
+    0 10px 22px -8px rgba(14, 13, 12, 0.45);
+}
+.fl3-step.is-active .fl3-mark_a {
+  fill: var(--fl3-cream);
+  opacity: 1;
+}
+.fl3-step.is-active .fl3-mark_b {
+  fill: var(--fl3-red);
+  opacity: 1;
+}
+.fl3-step_text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.fl3-step_num {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fl3-ink-60);
+  line-height: 1.2;
+}
+.fl3-step_name {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.25;
+  text-align: center;
+  color: var(--fl3-ink-60);
+}
+.fl3-step.is-done .fl3-step_name {
+  color: var(--fl3-ink-70);
+}
+.fl3-step.is-active .fl3-step_name {
+  color: var(--fl3-ink);
+  font-weight: 500;
+}
+.fl3-step.is-active .fl3-step_num {
+  color: var(--fl3-red-deep);
+}
+.fl3-step:focus-visible {
+  outline: 2px solid var(--fl3-red);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+.fl3-status {
+  display: none;
+}
+
+/* --- stage: per-panel height, animated by flow3.js --- */
+.fl3-stage {
+  position: relative;
+  transition: height 0.45s var(--fl3-ease);
+}
+.fl3-panel {
+  background: var(--fl3-card);
+  border: 1px solid var(--fl3-line);
+  border-radius: 20px;
+  box-shadow: var(--fl3-shadow-card);
+  padding: 26px 28px 24px;
+}
+.fl3-stage .fl3-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(18px);
+  filter: blur(4px);
+  pointer-events: none;
+  transition: opacity 0.45s var(--fl3-ease),
+    transform 0.45s var(--fl3-ease), filter 0.45s var(--fl3-ease),
+    visibility 0s linear 0.45s;
+}
+.fl3-stage[data-dir="back"] .fl3-panel {
+  transform: translateX(-18px);
+}
+.fl3-stage .fl3-panel.is-active {
+  position: relative;
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+  filter: blur(0);
+  pointer-events: auto;
+  z-index: 2;
+  transition: opacity 0.45s var(--fl3-ease),
+    transform 0.45s var(--fl3-ease), filter 0.45s var(--fl3-ease),
+    visibility 0s;
+}
+.fl3-stage .fl3-panel.is-leaving {
+  position: absolute;
+  opacity: 0;
+  visibility: visible;
+  transform: translateX(-18px);
+  filter: blur(4px);
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 0.45s var(--fl3-ease),
+    transform 0.45s var(--fl3-ease), filter 0.45s var(--fl3-ease),
+    visibility 0s;
+}
+.fl3-stage[data-dir="back"] .fl3-panel.is-leaving {
+  transform: translateX(16px);
+}
+
+.fl3-panel_head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px 24px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.fl3-panel_title {
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+.fl3-panel_lead {
+  margin-top: 6px;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--fl3-ink-60);
+  max-width: 520px;
+}
+.fl3-panel_meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.fl3-panel_foot {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--fl3-line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px 20px;
+  flex-wrap: wrap;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--fl3-ink-60);
+}
+
+/* --- chips (flow2 language, carried over) --- */
+.fl3-chip,
+.fl3-tag,
+.fl3-round,
+.fl3-pass,
+.fl3-fail,
+.fl3-kept,
+.fl3-merged,
+.fl3-learn,
+.fl3-held,
+.fl3-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.2;
+  padding: 5px 12px;
+  white-space: nowrap;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+}
+.fl3-chip {
+  background: var(--fl3-cream);
+  color: var(--fl3-ink);
+}
+.fl3-tag {
+  border: 1px solid rgba(236, 83, 88, 0.45);
+  background: var(--fl3-red-tint);
+  color: var(--fl3-red-deep);
+}
+.fl3-round {
+  background: rgba(14, 13, 12, 0.06);
+  color: var(--fl3-ink-60);
+}
+.fl3-pass {
+  background: var(--fl3-moss-tint);
+  color: var(--fl3-moss-deep);
+}
+.fl3-fail {
+  background: var(--fl3-red-tint);
+  color: var(--fl3-red-deep);
+}
+.fl3-kept {
+  background: var(--fl3-moss);
+  color: var(--fl3-ink);
+  font-weight: 500;
+}
+.fl3-merged {
+  background: rgba(127, 176, 105, 0.24);
+  color: #35612a;
+  font-weight: 500;
+}
+.fl3-learn {
+  border: 1px solid var(--fl3-line-strong);
+  color: var(--fl3-ink-70);
+}
+.fl3-held {
+  background: var(--fl3-ink);
+  color: var(--fl3-cream);
+}
+.fl3-state {
+  border: 1px solid var(--fl3-line-strong);
+  color: var(--fl3-ink);
+  background: var(--fl3-card);
+}
+.fl3-ic {
+  width: 12px;
+  height: 12px;
+  flex: none;
+}
+
+/* --- the product window + scene --- */
+.fl3-window {
+  position: relative;
+  border: 1px solid rgba(14, 13, 12, 0.1);
+  border-radius: 16px;
+  background: var(--fl3-paper);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 1px 3px rgba(14, 13, 12, 0.05);
+}
+.fl3-window--bare {
+  overflow: hidden;
+}
+.fl3-win_bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(14, 13, 12, 0.07);
+}
+.fl3-win_label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--fl3-ink);
+}
+.fl3-mark--bar {
+  width: 13px;
+  height: 14px;
+}
+.fl3-mark--bar .fl3-mark_a {
+  opacity: 1;
+}
+.fl3-mark--bar .fl3-mark_b {
+  fill: var(--fl3-red-deep);
+  opacity: 1;
+}
+.fl3-scene {
+  position: relative;
+  padding: 18px 20px 20px;
+  transition: opacity 0.25s var(--fl3-ease);
+}
+.fl3-window--bare .fl3-scene {
+  padding: 0;
+}
+.fl3-scene.fl3-dip {
+  opacity: 0;
+}
+
+/* Scene pre-states: only once flow3.js marks the panel live.
+   Without .fl3-live every element sits at its settled end state. */
+.fl3-live .sc-row {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.45s var(--fl3-ease),
+    transform 0.45s var(--fl3-ease);
+}
+.fl3-live .sc-row.s-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fl3-live .sc-pop {
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.28s var(--fl3-ease),
+    transform 0.28s var(--fl3-ease);
+}
+.fl3-live .sc-pop.s-in {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* --- panel 1: checks settle, switches flip on --- */
+.fl3-checks li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--fl3-line);
+}
+.fl3-checks li:last-child {
+  border-bottom: 0;
+}
+.fl3-check_name {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+.fl3-check_rule {
+  margin-top: 2px;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--fl3-ink-60);
+}
+.fl3-swbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+.fl3-sw {
+  position: relative;
+  width: 34px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--fl3-moss);
+  transition: background 0.3s var(--fl3-ease);
+}
+.fl3-sw_knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(14, 13, 12, 0.3);
+  transform: translateX(14px);
+}
+.fl3-on_t {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--fl3-ink-60);
+  transition: opacity 0.3s var(--fl3-ease);
+}
+.fl3-live .fl3-sw {
+  background: rgba(14, 13, 12, 0.18);
+}
+.fl3-live .fl3-sw_knob {
+  transform: translateX(0);
+}
+.fl3-live .fl3-on_t {
+  opacity: 0.4;
+}
+.fl3-live .s-on .fl3-sw {
+  background: var(--fl3-moss);
+}
+.fl3-live .s-on .fl3-sw_knob {
+  animation: fl3-knob-settle 0.45s var(--fl3-ease) forwards;
+}
+.fl3-live .s-on .fl3-on_t {
+  opacity: 1;
+}
+@keyframes fl3-knob-settle {
+  0% {
+    transform: translateX(0);
+  }
+  70% {
+    transform: translateX(15.5px);
+  }
+  100% {
+    transform: translateX(14px);
+  }
+}
+.fl3-guard {
+  margin-top: 14px;
+  background: var(--fl3-card);
+  border: 1px solid var(--fl3-line);
+  border-radius: 12px;
+  box-shadow: var(--fl3-shadow-sm);
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.fl3-guard_label {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fl3-red-deep);
+  margin-bottom: 4px;
+}
+
+/* --- panel 2: messages arrive --- */
+.fl3-msgs li {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--fl3-line);
+}
+.fl3-msgs li:last-child {
+  border-bottom: 0;
+}
+.fl3-chan {
+  flex: none;
+  width: 56px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fl3-ink-60);
+}
+.fl3-msg_t {
+  flex: 1 1 auto;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.fl3-msgs .fl3-learn,
+.fl3-msgs .fl3-held {
+  flex: none;
+}
+.fl3-morecard {
+  margin-top: 14px;
+  background: var(--fl3-card);
+  border: 1px solid var(--fl3-line);
+  border-radius: 12px;
+  box-shadow: var(--fl3-shadow-sm);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+.fl3-more_n {
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+.fl3-more_s {
+  font-size: 0.875rem;
+  color: var(--fl3-ink-60);
+}
+
+/* --- panel 3: the diff composes --- */
+.fl3-diff_h {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  background: var(--fl3-warm);
+  padding: 10px 16px;
+  font-size: 0.8125rem;
+  color: var(--fl3-ink-60);
+}
+.fl3-diff_file {
+  font-weight: 500;
+  color: var(--fl3-ink);
+}
+.fl3-diff_stat b {
+  font-weight: 500;
+}
+.fl3-plus {
+  color: var(--fl3-moss-deep);
+}
+.fl3-minus {
+  color: var(--fl3-red-deep);
+}
+.fl3-line {
+  display: flex;
+  gap: 12px;
+  padding: 8px 16px;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+.fl3-line + .fl3-line {
+  border-top: 1px solid rgba(14, 13, 12, 0.04);
+}
+.fl3-sign {
+  flex: none;
+  width: 14px;
+  text-align: center;
+  font-weight: 500;
+}
+.fl3-line.is-del {
+  background: var(--fl3-red-tint);
+}
+.fl3-line.is-del .fl3-sign {
+  color: var(--fl3-red-deep);
+}
+.fl3-line.is-add {
+  background: var(--fl3-moss-tint);
+}
+.fl3-line.is-add .fl3-sign {
+  color: var(--fl3-moss-deep);
+}
+.fl3-live .fl3-line.is-add.sc-row {
+  transform: translateX(10px);
+}
+.fl3-live .fl3-line.is-add.sc-row.s-in {
+  transform: translateX(0);
+}
+.fl3-caret {
+  display: inline-block;
+  width: 8px;
+  height: 1.02em;
+  margin-left: 4px;
+  vertical-align: text-bottom;
+  background: var(--fl3-red-deep);
+  opacity: 0;
+}
+.fl3-live .s-in .fl3-caret {
+  opacity: 1;
+  animation: fl3-blink 0.9s step-end infinite;
+}
+@keyframes fl3-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* --- panel 4: bars animate, verdicts stamp --- */
+.fl3-test {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 8px 36px;
+}
+.fl3-score {
+  margin-bottom: 20px;
+}
+.fl3-score_h {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+.fl3-score_label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fl3-ink-60);
+}
+.fl3-score_n {
+  font-size: 1rem;
+  color: var(--fl3-ink-60);
+}
+.fl3-score_n b {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--fl3-ink);
+}
+.fl3-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(14, 13, 12, 0.07);
+  overflow: hidden;
+}
+.fl3-bar + .fl3-bar {
+  margin-top: 6px;
+}
+.fl3-bar_i {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.9s var(--fl3-ease);
+}
+.fl3-bar_i.is-old {
+  width: var(--w-old);
+  background: #cfc8b8;
+}
+.fl3-bar_i.is-new {
+  width: var(--w-new);
+  background: var(--fl3-red);
+}
+.fl3-live .fl3-bar_i {
+  width: 0;
+}
+.fl3-live .s-old .fl3-bar_i.is-old {
+  width: var(--w-old);
+}
+.fl3-live .s-new .fl3-bar_i.is-new {
+  width: var(--w-new);
+}
+.fl3-score_f {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: var(--fl3-ink-60);
+}
+.fl3-out_h {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fl3-ink-60);
+  margin-bottom: 4px;
+}
+.fl3-out {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--fl3-line);
+  font-size: 0.9375rem;
+}
+.fl3-out:last-child {
+  border-bottom: 0;
+}
+.fl3-live .fl3-out.is-failrow.s-pulse {
+  animation: fl3-failpulse 1.2s var(--fl3-ease);
+}
+@keyframes fl3-failpulse {
+  0%,
+  100% {
+    background: transparent;
+  }
+  35% {
+    background: var(--fl3-red-tint);
+  }
+}
+.fl3-stats {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.fl3-statcard {
+  background: var(--fl3-card);
+  border: 1px solid var(--fl3-line);
+  border-radius: 12px;
+  box-shadow: var(--fl3-shadow-sm);
+  padding: 12px 14px;
+}
+.fl3-stat_label {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fl3-ink-60);
+  margin-bottom: 4px;
+}
+.fl3-stat_value {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* --- panel 5: gates check, the Mark locks, Kept stamps --- */
+.fl3-scene--pr {
+  padding: 20px 22px 24px;
+}
+.fl3-pr_h {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.fl3-pr_markbox {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--fl3-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+.fl3-mark--lock {
+  width: 18px;
+  height: 19px;
+}
+.fl3-mark--lock .fl3-mark_a {
+  opacity: 1;
+}
+.fl3-mark--lock .fl3-mark_b {
+  fill: var(--fl3-red-deep);
+  opacity: 1;
+}
+.fl3-live .fl3-mark--lock .fl3-mark_a {
+  opacity: 0.55;
+}
+.fl3-live .fl3-mark--lock .fl3-mark_b {
+  transform: translate(10px, 12px);
+}
+.fl3-live .s-locked .fl3-mark--lock .fl3-mark_a {
+  opacity: 1;
+}
+.fl3-live .s-locked .fl3-mark--lock .fl3-mark_b {
+  transform: translate(0, 0);
+}
+.fl3-pr_no {
+  font-size: 1rem;
+  color: var(--fl3-ink-60);
+}
+.fl3-merged {
+  transition: background 0.45s var(--fl3-ease),
+    color 0.45s var(--fl3-ease);
+}
+.fl3-live .fl3-merged {
+  background: rgba(14, 13, 12, 0.06);
+  color: var(--fl3-ink-60);
+}
+.fl3-live .fl3-merged.s-on {
+  background: rgba(127, 176, 105, 0.24);
+  color: #35612a;
+}
+.fl3-pr_t {
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+.fl3-pr_m {
+  margin-top: 4px;
+  font-size: 0.875rem;
+  color: var(--fl3-ink-60);
+}
+.fl3-gates {
+  margin-top: 14px;
+}
+.fl3-gate {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--fl3-line);
+}
+.fl3-gate:last-child {
+  border-bottom: 0;
+}
+.fl3-gate_n {
+  flex: 1 1 auto;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+.fl3-gate_v {
+  font-size: 0.9375rem;
+  color: var(--fl3-ink-60);
+  text-align: right;
+}
+.fl3-gate_st {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  min-width: 92px;
+}
+.fl3-ring {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(14, 13, 12, 0.25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  transition: border-color 0.3s var(--fl3-ease),
+    background 0.3s var(--fl3-ease);
+}
+.fl3-ring svg {
+  width: 11px;
+  height: 11px;
+  opacity: 0;
+  transition: opacity 0.2s var(--fl3-ease);
+}
+.fl3-checkpath {
+  fill: none;
+  stroke: var(--fl3-moss-deep);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 14;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.35s var(--fl3-ease);
+}
+.fl3-pass_t {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--fl3-moss-deep);
+  transition: opacity 0.3s var(--fl3-ease),
+    transform 0.3s var(--fl3-ease);
+}
+.fl3-live .fl3-pass_t {
+  opacity: 0;
+  transform: translateX(4px);
+}
+.fl3-live .fl3-ring svg {
+  opacity: 0;
+}
+.fl3-live .fl3-checkpath {
+  stroke-dashoffset: 14;
+}
+.fl3-live .sc-gate.s-on .fl3-ring {
+  border-color: var(--fl3-moss-deep);
+  background: var(--fl3-moss-tint);
+}
+.fl3-live .sc-gate.s-on .fl3-ring svg {
+  opacity: 1;
+}
+.fl3-live .sc-gate.s-on .fl3-checkpath {
+  stroke-dashoffset: 0;
+}
+.fl3-live .sc-gate.s-on .fl3-pass_t {
+  opacity: 1;
+  transform: translateX(0);
+}
+.fl3-stamp {
+  position: absolute;
+  right: 22px;
+  bottom: -16px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--fl3-moss);
+  color: var(--fl3-ink);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.2;
+  padding: 9px 16px;
+  border-radius: 10px;
+  box-shadow: var(--fl3-shadow-float);
+}
+.fl3-live .sc-stamp {
+  opacity: 0;
+  transform: scale(1.5) translateY(8px);
+  transition: opacity 0.3s var(--fl3-ease),
+    transform 0.3s var(--fl3-ease);
+}
+.fl3-live .sc-stamp.s-in {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+.fl3-panel[data-scene="merge"] .fl3-panel_foot {
+  margin-top: 28px;
+}
+
+/* --- panel 6: the timeline walks back --- */
+.fl3-tl {
+  position: relative;
+  padding-left: 30px;
+}
+.fl3-tl_line {
+  position: absolute;
+  left: 5px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  border-radius: 2px;
+  background: rgba(14, 13, 12, 0.14);
+  transform-origin: top center;
+}
+.fl3-live .fl3-tl_line {
+  transform: scaleY(0);
+  transition: transform 0.9s var(--fl3-ease);
+}
+.fl3-live .fl3-tl.s-in .fl3-tl_line {
+  transform: scaleY(1);
+}
+.fl3-tl_cursor {
+  position: absolute;
+  left: -1px;
+  top: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--fl3-paper);
+  border: 3px solid var(--fl3-red);
+  box-shadow: 0 1px 4px rgba(14, 13, 12, 0.3);
+  opacity: 0;
+  z-index: 2;
+  transition: top 0.85s var(--fl3-ease), opacity 0.3s var(--fl3-ease);
+}
+.fl3-live .fl3-tl_cursor.s-show {
+  opacity: 1;
+}
+.fl3-live .fl3-tl_cursor.s-pos3 {
+  top: 62%;
+}
+.fl3-live .fl3-tl_cursor.s-pos1 {
+  top: 3px;
+}
+.fl3-ev {
+  position: relative;
+  padding-bottom: 20px;
+}
+.fl3-ev:last-child {
+  padding-bottom: 2px;
+}
+.fl3-ev_dot {
+  position: absolute;
+  left: -29px;
+  top: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--fl3-ink);
+}
+.fl3-ev.is-drop .fl3-ev_dot {
+  background: var(--fl3-red);
+}
+.fl3-live .fl3-ev_dot {
+  transform: scale(0.3);
+  transition: transform 0.35s var(--fl3-ease);
+}
+.fl3-live .sc-ev.s-in .fl3-ev_dot {
+  transform: scale(1);
+}
+.fl3-live .sc-ev.s-pulse .fl3-ev_dot {
+  animation: fl3-dotpulse 0.9s var(--fl3-ease);
+}
+@keyframes fl3-dotpulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(127, 176, 105, 0.55);
+  }
+  100% {
+    box-shadow: 0 0 0 10px rgba(127, 176, 105, 0);
+  }
+}
+.fl3-live .sc-ev {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.45s var(--fl3-ease),
+    transform 0.45s var(--fl3-ease);
+}
+.fl3-live .sc-ev.s-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+.fl3-ev_h {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+.fl3-ev_t {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+.fl3-ev_when {
+  flex: none;
+  font-size: 0.8125rem;
+  color: var(--fl3-ink-60);
+}
+.fl3-ev_p {
+  margin-top: 2px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--fl3-ink-60);
+}
+.fl3-ev_stats {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.fl3-ev_stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--fl3-line-strong);
+  border-radius: 999px;
+  padding: 4px 11px;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  color: var(--fl3-ink-70);
+}
+.fl3-ev_stat b {
+  font-weight: 500;
+  color: var(--fl3-ink);
+}
+.fl3-nowcard {
+  margin-top: 16px;
+  background: var(--fl3-card);
+  border: 1px solid var(--fl3-line);
+  border-radius: 12px;
+  box-shadow: var(--fl3-shadow-sm);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.fl3-nowcard .fl3-state {
+  border: 0;
+  padding: 0;
+  font-weight: 500;
+}
+
+/* --- panel 7: the report prints --- */
+.fl3-window--paper .fl3-scene {
+  padding: 22px 24px 26px;
+}
+.fl3-report_back {
+  position: absolute;
+  inset: 30px 18px 18px 30px;
+  background: var(--fl3-cream);
+  border: 1px solid rgba(14, 13, 12, 0.08);
+  border-radius: 14px;
+}
+.fl3-report {
+  position: relative;
+  z-index: 1;
+  background: var(--fl3-card);
+  border: 1px solid rgba(14, 13, 12, 0.1);
+  border-radius: 14px;
+  box-shadow: var(--fl3-shadow-sm);
+  padding: 20px 22px;
+}
+/* Panel 7's document header (REF-HOW-REPORT.md §5.1): the report
+   sheet labels itself, Granola's pattern. The identical rule to
+   the one HOW3 seats in how.css for the How page; it lives here
+   for the landing seat, beside the report block it heads.
+   Integrator addition, 2026-11-18 (HOW3.md's named hand-off). */
+.fl3-report_h {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 12px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid var(--fl3-line);
+}
+.fl3-lead {
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--fl3-line);
+}
+.fl3-rec {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--fl3-line);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+.fl3-rec_l {
+  flex: none;
+  font-weight: 500;
+  color: var(--fl3-ink-60);
+}
+.fl3-rec_v {
+  font-weight: 500;
+  text-align: right;
+}
+.fl3-rounds {
+  margin-top: 6px;
+}
+.fl3-rounds li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--fl3-line);
+}
+.fl3-rounds li:last-child {
+  border-bottom: 0;
+}
+.fl3-rd_n {
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+.fl3-rd_v {
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+.fl3-rd_v.is-kept {
+  color: var(--fl3-moss-deep);
+}
+.fl3-rd_v.is-none {
+  color: var(--fl3-ink-60);
+  font-weight: 500;
+}
+.fl3-rd_v.is-failed {
+  color: var(--fl3-red-deep);
+}
+
+/* --- responsive --- */
+@media (max-width: 1023px) {
+  .fl3-step_name {
+    font-size: 0.8125rem;
+  }
+}
+@media (max-width: 900px) {
+  .fl3-test {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 767px) {
+  .fl3-stepper {
+    margin: 32px 0 22px;
+  }
+  .fl3-rail {
+    top: 16px;
+  }
+  .fl3-step_node {
+    width: 36px;
+    height: 36px;
+  }
+  .fl3-mark {
+    width: 16px;
+    height: 17px;
+  }
+  .fl3-step_text {
+    display: none;
+  }
+  .fl3-status {
+    display: block;
+    text-align: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--fl3-ink-60);
+    margin: -6px 0 18px;
+  }
+  .fl3-panel {
+    padding: 20px 16px 18px;
+    border-radius: 16px;
+  }
+  .fl3-scene {
+    padding: 14px 14px 16px;
+  }
+  .fl3-window--paper .fl3-scene {
+    padding: 16px 14px 20px;
+  }
+  .fl3-scene--pr {
+    padding: 16px 16px 20px;
+  }
+  .fl3-stamp {
+    right: 14px;
+    bottom: -14px;
+    font-size: 0.875rem;
+    padding: 8px 14px;
+  }
+  .fl3-stats {
+    grid-template-columns: 1fr;
+  }
+  .fl3-gate_st {
+    min-width: 0;
+  }
+  .fl3-gate_v {
+    display: none;
+  }
+  .fl3-report {
+    padding: 16px;
+  }
+  .fl3-report_back {
+    inset: 24px 8px 12px 20px;
+  }
+  .fl3-panel_title {
+    font-size: 1.25rem;
+  }
+}
+
+/* --- reduced motion: settled scenes, static --- */
+@media (prefers-reduced-motion: reduce) {
+  .fl3 *,
+  .fl3 *::before,
+  .fl3 *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ================================================================
+   FEATURE CARDS (flow2 restyle carried over verbatim; this block
+   replaces the flow2.css feature block so flow3.css can stand
+   alone on index.html)
+   ================================================================ */
+.section_home-features {
+  --fl2-ink: #0e0d0c;
+  --fl2-ink-70: rgba(14, 13, 12, 0.7);
+  --fl2-line: rgba(14, 13, 12, 0.09);
+  --fl2-line-strong: rgba(14, 13, 12, 0.16);
+  --fl2-cream: #fdf6ec;
+  --fl2-card: #ffffff;
+  --fl2-red-deep: #b5412f;
+  color: var(--fl2-ink);
+}
+.section_home-features .home-features_header .heading-style-h3 {
+  font-size: 1.875rem;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--fl2-ink);
+}
+.section_home-features .home-features_header .home-features_eyebrow {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--fl2-ink-70);
+  max-width: 560px;
+}
+.section_home-features .home-features_grid {
+  gap: 20px;
+}
+.section_home-features .feature-card {
+  background: var(--fl2-card);
+  border: 1px solid var(--fl2-line);
+  border-radius: 20px;
+  padding: 24px;
+}
+.section_home-features .feature-card_icon,
+.section_home-features .feature-card_icon-alt {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 10px;
+  background: var(--fl2-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.section_home-features .feature-card_icon svg,
+.section_home-features .feature-card_icon-alt svg {
+  width: 18px;
+  height: 19px;
+}
+.section_home-features .feature-card_icon .synthe-mark-top,
+.section_home-features .feature-card_icon-alt .synthe-mark-top {
+  fill: var(--fl2-ink);
+}
+.section_home-features .feature-card_icon .synthe-mark-bottom,
+.section_home-features .feature-card_icon-alt .synthe-mark-bottom {
+  fill: var(--fl2-red-deep);
+}
+.section_home-features .feature-card_title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--fl2-ink);
+}
+.section_home-features .feature-card_text {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--fl2-ink-70);
+}
+.section_home-features .feature-card_link {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--fl2-ink);
+}
+
+/* ================================================================
+   INTEGRATOR EXTENSION (flow3 wiring, see INTEGRATION.md):
+   FLOW3.md states this file carries flow2.css's feature-panels
+   block verbatim. As authored, the block above styles a
+   .feature-card markup that does not exist on index.html; the
+   built features section runs on the base build's .home-feature_* markup,
+   whose audited restyle (Lane E, incl. the audit fix round:
+   charcoal ink pin, white cards, plain-text eyebrows) lives only
+   in flow2.css. That block is therefore appended below, byte
+   verbatim from flow2.css, so flow3.css stands alone exactly as
+   the wiring spec intends and the features section renders
+   unchanged. The .feature-card block above matches nothing on
+   the page and is inert.
+   ================================================================ */
+/* ================================================================
+   FEATURE PANELS (existing stacked-card markup, restyled)
+   flow2.css loads last; these rules retire the pastel theme fields
+   and the coloured headline spans, and put the cards on the same
+   cream field / white card system as the flow section.
+   ================================================================ */
+.section_home-features {
+  background: var(--fl2-cream, #fdf6ec);
+}
+/* The base build sets the per-theme ink (var(--_theme--terra-card---
+   text-primary): navy / rust / olive / plum) as the colour of the
+   item itself, so every child without its own colour inherits a
+   theme tint. Start the inheritance from charcoal instead, so no
+   per-theme colour survives anywhere in the subtree. Children
+   with their own declared colours (description, call-outs,
+   eyebrows, links) are unaffected. */
+.section_home-features .home-feature_item {
+  color: #0e0d0c;
+}
+.section_home-features .home-feature_theme.cc-top,
+.section_home-features .home-feature_theme.cc-tangerine,
+.section_home-features .home-feature_theme.cc-lime,
+.section_home-features .home-feature_theme.cc-dragonfruit {
+  background: #ffffff;
+  border: 1px solid rgba(14, 13, 12, 0.09);
+}
+/* The pastel field actually paints on the inner item, keyed off the
+   theme class; retire it there too. */
+.section_home-features .home-feature_theme.cc-top .home-feature_item,
+.section_home-features .home-feature_theme.cc-tangerine .home-feature_item,
+.section_home-features .home-feature_theme.cc-lime .home-feature_item,
+.section_home-features .home-feature_theme.cc-dragonfruit .home-feature_item {
+  background: #ffffff;
+}
+/* The primary card button takes a theme colour per card in the base build's
+   system (blue / rust / olive / magenta); bring it to charcoal. */
+.section_home-features .home-feature_theme .btn.cc-card-dark {
+  background: #0e0d0c;
+  color: #fdf6ec;
+}
+/* The secondary card link takes the theme ink in the base build's system
+   (navy / rust / olive / plum, via --_theme--terra-card---
+   text-primary); bring it to charcoal. Its background already
+   computes white in every theme, and its hover treatment never
+   recoloured the ink (measured), so only the ink is pinned, at
+   rest and on hover alike. */
+.section_home-features .home-feature_theme .btn.cc-card-light {
+  color: #0e0d0c;
+}
+.section_home-features .home-feature_theme .btn.cc-card-light:hover {
+  color: #0e0d0c;
+}
+.section_home-features .home-feature_title,
+.section_home-features .home-feature_title h3 {
+  color: #0e0d0c;
+}
+.section_home-features .home-feature_title .home-feature_span {
+  color: #0e0d0c;
+  -webkit-text-fill-color: #0e0d0c;
+  background: none;
+}
+.section_home-features .home-feature_description p {
+  color: rgba(14, 13, 12, 0.72);
+}
+/* Card eyebrows are plain text in the type system's eyebrow form
+   (Lane A table: 12px / 600 / 1.5 / +0.25em uppercase, charcoal on
+   the white card, ~19:1). The badge chrome is retired: no
+   background, no border, no radius, no pill padding or overlap
+   margin, and the empty motif pills (the stacked discs that sat
+   beside the label) are hidden, leaving the label text alone. */
+.section_home-features .home-feature_pill {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  width: auto;
+  height: auto;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+.section_home-features .home-feature_pill:not(.cc-active) {
+  display: none;
+}
+.section_home-features .home-feature_pill.cc-active {
+  background: transparent;
+  color: #0e0d0c;
+}
+.section_home-features .home-feature_pill .eyebrow-text {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #0e0d0c;
+}
+.section_home-features .call-out_item p {
+  color: #0e0d0c;
+}
+
+/* Integrator extension (continued): the lane block at the top of
+   this file's feature section also sets `color: var(--fl2-ink)`
+   on .section_home-features itself. The pre-flow3 build computed
+   the section's color as rgb(0, 0, 0) (inherited); restore that
+   so the features section's computed styles are identical to the
+   audited build, not merely near-identical. Every descendant that
+   carries text declares its own color in the blocks above. */
+.section_home-features {
+  color: inherit;
+}
+
+/* ================================================================
+   FLOW4 ADDITIONS (REF-RAMP): the live strip, the window-bar
+   tallies, and the ticking in-scene figures. Everything above is
+   flow3.css byte-identical; this block is the only delta. Tokens
+   are flow3's own. The only accent spent is the strip's live dot
+   (signal red, red's existing "live" job); ticking figures stay
+   ink and no tick flashes colour.
+   ================================================================ */
+.fl4-livebar {
+  display: flex; align-items: center; flex-wrap: wrap;
+  gap: 10px 28px;
+  border-top: 1px solid var(--fl3-line);
+  border-bottom: 1px solid var(--fl3-line);
+  padding: 10px 2px; margin-bottom: 20px;
+}
+.fl4-live_dot {
+  flex: none; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--fl3-red);
+  animation: fl4-dot 2s var(--fl3-ease) infinite;
+}
+@keyframes fl4-dot {
+  0% { box-shadow: 0 0 0 0 var(--fl3-red-tint); }
+  70% { box-shadow: 0 0 0 6px rgba(236, 83, 88, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(236, 83, 88, 0); }
+}
+.fl4-live_item { display: inline-flex; align-items: baseline; gap: 8px; }
+.fl4-live_n {
+  font-size: 1rem; font-weight: 500; color: var(--fl3-ink);
+  font-variant-numeric: tabular-nums;
+}
+.fl4-live_l { font-size: 0.8125rem; color: var(--fl3-ink-60); }
+.fl4-live_tag {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.2;
+  padding: 5px 12px;
+  white-space: nowrap;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+  border: 1px solid rgba(236, 83, 88, 0.45);
+  background: var(--fl3-red-tint);
+  color: var(--fl3-red-deep);
+}
+.fl4-tally {
+  margin-left: auto; font-size: 0.8125rem; color: var(--fl3-ink-60);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.fl4-tally b, .fl4-num {
+  font-weight: 500; color: var(--fl3-ink);
+  font-variant-numeric: tabular-nums;
+}
+/* REF-RAMP section 3.2: the diffstat keeps its audited colours
+   (moss-deep plus, red-deep minus); the .fl4-num ink above must
+   not recolour the numerals inside it. */
+.fl3-plus .fl4-num { color: var(--fl3-moss-deep); }
+.fl3-minus .fl4-num { color: var(--fl3-red-deep); }
+/* Fixed slots so ticking never shifts a line: sized to the
+   settled value's digit count (every in-scene figure is at most
+   2 digits). The strip's figures carry data-strip, not
+   data-fl4-num, and take no slot; their growth is the ticker's
+   nature, as on Ramp. */
+[data-fl4-num] { display: inline-block; min-width: 2ch; text-align: right; }
+/* The page's visually-hidden pattern (hero-fx.css .hfx-sr),
+   reused for the settled screen-reader readings. */
+.fl4-sr {
+  position: absolute; width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (max-width: 767px) {
+  .fl4-livebar { gap: 6px 16px; }
+  .fl4-live_tag { display: none; } /* panels carry the Sample tags */
+}
+@media (prefers-reduced-motion: reduce) {
+  .fl4-live_dot { animation: none; }
+}
