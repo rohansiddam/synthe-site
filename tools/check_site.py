@@ -5,8 +5,9 @@
 
 It fails (exit 1) when:
   - a number on a page disagrees with facts.json (see tools/facts.py)
-  - the header or the footer differs between pages
-  - a page misses the shared head: CSP, site.css, site.js, title, description, skip link, main
+  - the header or the footer differs between pages of the same family
+  - a page misses the shared head (legacy pages: CSP, site.css, site.js, theme script; every page:
+    title, description, skip link, main)
   - a page loads anything from another origin (scripts, styles, fonts, images)
   - outward-facing copy contains an em dash (DESIGN_PLAYBOOK.md, section 8)
   - a px font size is off the type scale, or a padding, margin or gap is off the 4px grid
@@ -30,6 +31,9 @@ import facts  # noqa: E402
 import stamp  # noqa: E402
 
 PAGES = sorted(SITE.glob("*.html"))
+# Two page families since the 2026-11-18 warm launch: the warm-system pages (nav2 header, b2 footer,
+# assets/synthe/*) and the legacy pages of the earlier product (site-head header, site.css, site.js).
+WARM = {"index.html", "how.html", "docs.html", "partner.html"}
 COPY_FILES = PAGES + [SITE / "llms.txt", SITE / "llms-full.txt", SITE / ".well-known" / "security.txt"]
 IN_CI = os.environ.get("GITHUB_ACTIONS") == "true"
 
@@ -66,12 +70,16 @@ def noindex(html: str) -> bool:
 for problem in facts.mismatches(facts.load()):
     err(f"facts: {problem}")
 
-# 2. shared chrome and head
+# 2. shared chrome and head (compared within each family)
 headers, footers = {}, {}
 for p in PAGES:
     h = text(p)
-    head = block(h, r'<header class="site-head">.*?</header>')
-    foot = block(h, r'<footer class="site-foot">.*?</footer>')
+    if p.name in WARM:
+        head = block(h, r'<div data-nav-height="" class="nav2_wrap.*?</nav>')
+        foot = block(h, r'<div class="b2-card">.*?</nav>')
+    else:
+        head = block(h, r'<header class="site-head">.*?</header>')
+        foot = block(h, r'<footer class="site-foot">.*?</footer>')
     if not head:
         err(f"{p.name}: no shared site header")
     else:
@@ -80,18 +88,21 @@ for p in PAGES:
         err(f"{p.name}: no shared site footer")
     else:
         footers[p.name] = foot
-    must = {
-        "CSP meta tag": 'http-equiv="Content-Security-Policy"',
-        "site.css": 'href="/site.css?v=',
-        "site.js": 'src="/site.js?v=',
-        "skip link": 'class="skip-link" href="#main"',
-        "<main id=main>": '<main id="main">',
-        "meta description": '<meta name="description"',
-        "theme head script": 'localStorage.getItem("synthe-theme")',
-    }
+    must = {"skip link": 'class="skip-link" href="#main"'}
+    if p.name not in WARM:
+        must.update({
+            "CSP meta tag": 'http-equiv="Content-Security-Policy"',
+            "site.css": 'href="/site.css?v=',
+            "site.js": 'src="/site.js?v=',
+            "theme head script": 'localStorage.getItem("synthe-theme")',
+        })
     for label, needle in must.items():
         if needle not in h:
             err(f"{p.name}: missing {label}")
+    if not re.search(r'<main id="main"[\s>]', h):
+        err(f"{p.name}: missing <main id=main>")
+    if not re.search(r'<meta (?:name="description"[^>]*content="[^"]+"|content="[^"]+"[^>]*name="description")', h):
+        err(f"{p.name}: missing meta description")
     if len(re.findall(r"<h1[\s>]", h)) != 1:
         err(f"{p.name}: needs exactly one <h1>")
     if not re.search(r"<title>[^<]+</title>", h):
@@ -102,12 +113,15 @@ for p in PAGES:
                 err(f"{p.name}: missing {needle}")
 
 for name, group in (("header", headers), ("footer", footers)):
-    variants = {}
-    for page, html in group.items():
-        variants.setdefault(html, []).append(page)
-    if len(variants) > 1:
-        sizes = sorted(variants.values(), key=len, reverse=True)
-        err(f"the {name} differs between pages: {' | '.join(', '.join(v) for v in sizes)}")
+    for family in (True, False):
+        variants = {}
+        for page, html in group.items():
+            if (page in WARM) == family:
+                variants.setdefault(html, []).append(page)
+        if len(variants) > 1:
+            sizes = sorted(variants.values(), key=len, reverse=True)
+            fam = "warm" if family else "legacy"
+            err(f"the {name} differs between {fam} pages: {' | '.join(', '.join(v) for v in sizes)}")
 
 # 3. nothing loads from another origin
 external = [
@@ -201,20 +215,21 @@ def visible(html: str) -> str:
 
 
 index_html = text(SITE / "index.html")
-fs = re.search(r'id="partner-form"[^>]*data-formspree="([^"]*)"', index_html)
+form_page = "index.html" if 'id="partner-form"' in index_html else "partner.html"
+fs = re.search(r'id="partner-form"[^>]*data-formspree="([^"]*)"', text(SITE / form_page))
 if not fs:
-    err("index.html: the partner form has no data-formspree attribute")
+    err(f"{form_page}: the partner form has no data-formspree attribute")
 else:
     form_id = fs.group(1).strip()
     copy = {name: visible(text(SITE / name)) for name in ("index.html", "status.html")}
     if not form_id:
-        warn("index.html: the partner form uses the email fallback (no Formspree form ID). See HOSTING.md.")
+        warn(f"{form_page}: the partner form uses the email fallback (no Formspree form ID). See HOSTING.md.")
         for name, html in copy.items():
             if "Formspree" in html:
                 err(f"{name}: copy mentions Formspree, but the form sends nothing there (data-formspree is empty)")
     else:
         if not re.fullmatch(r"[A-Za-z0-9]+", form_id):
-            err(f"index.html: data-formspree '{form_id}' doesn't look like a Formspree form ID")
+            err(f"{form_page}: data-formspree '{form_id}' doesn't look like a Formspree form ID")
         for name, html in copy.items():
             if "Formspree" not in html:
                 err(f"{name}: the form posts to Formspree, so this page's privacy copy must say so")
