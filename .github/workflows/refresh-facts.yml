@@ -24,7 +24,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python3 -m pip install --quiet pytest
+      # Install the checker itself: its tests need the synthe-mcp console script and cryptography>=41
+      # (pyproject.toml). Without them 15 tests fail and 37 error, and the refresh rightly refuses to publish.
+      - run: python3 -m pip install --quiet pytest ./_synthe
       - name: Re-measure and update the pages
         run: |
           python3 tools/facts.py refresh --synthe _synthe
