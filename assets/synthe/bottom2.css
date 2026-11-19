@@ -1,22 +1,4 @@
-/* ==========================================================================
-   Page bottom — closing CTA + footer, rebuilt on one grid and one scale.
-   Lane G deliverable. Requires assets/synthe/type-system.css loaded
-   BEFORE this file (the .ts-* classes and --ts-* tokens come from it);
-   load this file after clone-fixes.css. Self-contained: every selector
-   is scoped to .b2-footer, no the base build footer classes are used or overridden.
 
-   One grid: CTA and footer card live in the same .b2-wrap container
-   (width 95%, max-width 80rem, the page's .container-regular geometry)
-   and share the same side inset (48px desktop / 40px tablet / 24px
-   phone), so their content left edges are identical by construction,
-   not by two paddings that happen to agree.
-
-   One scale: every spacing value is a multiple of 4 —
-   80 / 64 / 48 / 40 / 32 / 24 / 20 / 16 / 8 / 4.
-   Type comes only from the Lane A classes (.ts-h2sm headline,
-   .ts-body-lg lede, .ts-button, .ts-foothead, .ts-footlink, .ts-small).
-   Flat grounds only: no gradients, no washes (type-system hard rules).
-   ========================================================================== */
 
 .b2-footer,
 .b2-footer * { box-sizing: border-box; }
@@ -27,27 +9,27 @@
   background: transparent;
 }
 
-/* The one container both blocks share. */
+
 .b2-wrap {
   width: 95%;
   max-width: 80rem;
   margin-inline: auto;
 }
 
-/* ------------------------------------------------------------------ */
-/* Closing CTA                                                         */
-/* ------------------------------------------------------------------ */
+
+
+
 .b2-cta { padding: 80px 48px 64px; }
 
-.b2-cta-title { max-width: 640px; }              /* wraps to two lines, as before */
-.b2-cta-lede  { margin-top: 20px; max-width: 560px; }  /* --ts-gap-head-body */
+.b2-cta-title { max-width: 640px; }              
+.b2-cta-lede  { margin-top: 20px; max-width: 560px; }  
 
 .b2-cta-actions {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;   /* left-aligned at every width */
+  justify-content: flex-start;   
   gap: 8px;
-  margin-top: 24px;              /* --ts-gap-lede-cta */
+  margin-top: 24px;              
 }
 
 .b2-btn {
@@ -89,14 +71,14 @@
   color: var(--ts-muted-on-paper);
 }
 
-/* ------------------------------------------------------------------ */
-/* Footer card                                                         */
-/* ------------------------------------------------------------------ */
+
+
+
 .b2-card {
   background: var(--ts-paper-warm);
   border-radius: 32px;
   padding: 48px 48px 0;
-  margin-bottom: 24px;           /* floats like the page's other cards */
+  margin-bottom: 24px;           
 }
 
 .b2-grid {
@@ -105,7 +87,7 @@
   column-gap: 40px;
   row-gap: 24px;
 }
-.b2-col { display: flex; flex-direction: column; gap: 16px; }  /* head -> list */
+.b2-col { display: flex; flex-direction: column; gap: 16px; }  
 .b2-list {
   list-style: none;
   margin: 0;
@@ -117,8 +99,7 @@
 .b2-link { color: var(--ts-charcoal); text-decoration: none; }
 .b2-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 
-/* Credit bar: 1fr auto 1fr puts the auto track, and therefore the
-   credit block inside it, at the exact horizontal centre of the bar. */
+
 .b2-credit {
   margin-top: 32px;
   border-top: 1px solid rgb(14 13 12 / 0.08);
@@ -161,17 +142,17 @@
   outline-offset: 2px;
 }
 
-/* ------------------------------------------------------------------ */
-/* Tablet step                                                         */
-/* ------------------------------------------------------------------ */
+
+
+
 @media (max-width: 991px) {
   .b2-cta  { padding: 64px 40px 56px; }
   .b2-card { padding: 40px 40px 0; }
 }
 
-/* ------------------------------------------------------------------ */
-/* Phone step: same left alignment, credit centred exactly             */
-/* ------------------------------------------------------------------ */
+
+
+
 @media (max-width: 767px) {
   .b2-cta  { padding: 64px 24px 48px; }
   .b2-card { padding: 40px 24px 0; border-radius: 24px; }

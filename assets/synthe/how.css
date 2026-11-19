@@ -1,469 +1,282 @@
-/* ==========================================================================
-   How it works page (how.html) — page-specific styles.
-   Lane: HOW. Requires, loaded before this file, in order:
-   base.css, nav.css, clone-fixes.css (fonts), type-system.css,
-   fixes.css, nav2.css, bottom2.css, flow3.css.
-   Everything here is scoped to .how-* classes. Type levels come only
-   from TYPE-SYSTEM.md (the .ts-* classes plus the sanctioned hero row,
-   set explicitly on .how-h1). Grounds are flat Stark palette colors.
-   All spacing values are multiples of 4.
-   ========================================================================== */
 
-:root {
-  --how-ease: cubic-bezier(0.22, 1, 0.36, 1); /* the site's crossfade curve (flow2/shift2) */
-  --how-line: rgba(14, 13, 12, 0.08); /* the landing's hairline alpha (was 0.12, a third alpha found nowhere in the system) */
-  --how-cream-78: rgba(254, 253, 251, 0.78); /* secondary text on the hero red */
-  --how-cream-80: rgba(254, 253, 251, 0.8);  /* body text on charcoal */
-}
 
-html {
-  scroll-behavior: smooth;
-}
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-}
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
-body {
-  background: #f4f3f0; /* the page ground the footer was designed on */
-}
 
-/* The container the footer uses (95%, max 80rem), shared by every
-   section on this page so all left edges agree. */
-.how-wrap {
-  width: 95%;
-  max-width: 80rem;
+.how-row { scroll-margin-top: 96px; }
+
+#loop { scroll-margin-top: -32px; }
+@media (max-width: 767px) { #loop { scroll-margin-top: 16px; } }
+
+
+.how-loop.section_home-flow {
+  padding-bottom: 0;
+  background: transparent;
+}
+.how-loop .padding-global { padding: 0; }
+.how-loop .container-regular {
+  width: min(1280px, 100% - 160px);
+  max-width: none;
   margin-inline: auto;
+  padding: 0;
 }
+.how-loop .fl3-head { max-width: none; margin-bottom: 48px; }
+.how-loop .fl3-head .pg-copy { margin: 0; }
 
-/* ------------------------------------------------------------------ */
-/* Hero — deep brand red, sanctioned hero type row                     */
-/* ------------------------------------------------------------------ */
-.how-hero {
-  padding: 168px 0 64px; /* bottom = --ts-section-pad-y, so the hero->frame divide matches every other divide (was 72) */
-}
-/* Sanctioned hero row (TYPE-SYSTEM.md, founder amendment 2026-11-17):
-   48px / 500 / LH 56px / -0.06em desktop; 30px / 500 / LH 37px phone.
-   This is the level the landing hero (.hfx-h1) runs at; .ts-hero is
-   The base build's 88px row and does NOT govern this page. */
-.how-h1 {
-  font-family: var(--ts-font);
-  font-size: 48px;
-  font-weight: 500;
-  line-height: 56px;
-  letter-spacing: -0.06em;
-  margin: 24px 0 0; /* eyebrow -> headline gap (--ts-gap-eyebrow) */
-  max-width: 720px;
-}
-.how-hero_lede {
-  margin-top: 16px; /* --ts-gap-hero-lede */
-  max-width: 640px;
-}
-.how-hero_sub {
-  margin-top: 20px;
-  max-width: 600px;
-  color: var(--how-cream-78);
-}
 
-/* Step index: the stepper's node language, static. A rail of seven
-   Mark nodes linking to the step sections below. */
-.how-index {
-  position: relative;
-  display: flex;
-  margin-top: 48px;
-}
-.how-index_rail {
-  position: absolute;
-  top: 16px;
-  left: calc(100% / 14);
-  right: calc(100% / 14);
-  height: 2px;
-  border-radius: 2px;
-  background: rgba(254, 253, 251, 0.35);
-}
-.how-index_item {
-  position: relative;
-  z-index: 1;
-  flex: 1 1 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 0 4px;
-  color: var(--ts-ink-on-dark);
-  text-decoration: none;
-  -webkit-tap-highlight-color: transparent;
-}
-.how-index_node {
+.how-loop .fl3-stepper { margin-bottom: 24px; }
+.how-loop .fl3-step_node {
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-  background: var(--ts-paper);
-  border: 1px solid rgba(254, 253, 251, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: border-color 0.3s var(--how-ease);
-}
-.how-index_node svg {
-  display: block;
-  width: 14px;
-  height: 15px;
-}
-.how-index_num {
+  border: 1px solid var(--line-3);
+  background: var(--raised);
+  box-shadow: none;
   font-size: 12px;
   font-weight: 500;
-  line-height: 1.5;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--how-cream-78);
+  line-height: 1;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
 }
-.how-index_name {
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.3;
-  text-align: center;
+.how-loop .fl3-step.is-done .fl3-step_node { color: var(--ink); border-color: var(--ink-3); }
+.how-loop .fl3-step.is-active .fl3-step_node {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--canvas);
+  box-shadow: none;
 }
-.how-index_item:hover .how-index_node {
-  border-color: var(--ts-signal);
+@media (hover: hover) {
+  .how-loop .fl3-step:hover .fl3-step_node { transform: none; box-shadow: none; border-color: var(--ink-3); }
 }
-.how-index_item:hover .how-index_name {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.how-index_item:focus-visible {
-  outline: 2px solid var(--ts-ink-on-dark);
-  outline-offset: 4px;
-  border-radius: 8px;
-}
-
-/* ------------------------------------------------------------------ */
-/* Framing section — "Any agent. Any goal."                            */
-/* ------------------------------------------------------------------ */
-.how-frame {
-  background: var(--ts-paper);
-  color: var(--ts-charcoal);
-  padding: 64px 0;
-}
-.how-h2 {
-  margin-top: 24px; /* eyebrow -> headline gap */
-}
-.how-cols {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-  margin-top: 32px; /* header block -> content gap */
-}
-.how-col_body {
-  margin-top: 12px;
-}
-.how-setup {
-  margin-top: 48px;
-  padding-top: 32px;
-  border-top: 1px solid var(--how-line);
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px 20px;
-}
-.how-cmd {
-  display: inline-block;
-  font-family: var(--ts-mono);
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.4;
-  background: var(--ts-paper-warm);
-  border: 1px solid rgba(14, 13, 12, 0.08);
-  border-radius: 8px;
-  padding: 8px 12px;
-}
-.how-setup_text {
-  max-width: 540px;
-}
-
-/* ------------------------------------------------------------------ */
-/* Step sections — text column + the landing page's designed surface   */
-/* ------------------------------------------------------------------ */
-.how-step {
-  padding: 64px 0;
-  scroll-margin-top: 88px;
-}
-.how-step--paper {
-  background: var(--ts-paper);
-}
-/* .fl3 (flow3.css) supplies the cream ground for the alternate steps
-   and the design tokens the surfaces run on. */
-.how-step_grid {
-  display: grid;
-  grid-template-columns: 5fr 7fr;
-  gap: 48px;
-  align-items: start;
-}
-/* Flipped steps swap sides but keep the surface in the wide track. */
-.how-step--flip .how-step_grid {
-  grid-template-columns: 7fr 5fr;
-}
-.how-step--flip .how-step_text {
-  grid-column: 2;
-}
-.how-step--flip .how-surface {
-  grid-column: 1;
-}
-.how-step .how-h2 {
-  margin-top: 24px;
-}
-/* Scoped under .how-step (0,2,0): every step section carries the
-   .fl3 class, and flow3.css's `.fl3 p` reset (0,1,1) otherwise
-   zeroes these margins (it beat the bare classes at 0,1,0, and the
-   step text rendered with no headline or paragraph gaps). The same
-   pattern as .how-step .how-h2 above, whose 24px survived. */
-.how-step .how-step_lead {
-  margin-top: 20px; /* headline -> body gap */
-}
-.how-step .how-step_body {
-  margin-top: 16px; /* paragraph gap */
-}
-.how-surface {
-  min-width: 0;
-}
-/* The landing stepper stacks its panels in one grid cell and shows
-   one at a time; here each surface stands on its own, fully visible,
-   no transition state. */
-.how-surface .fl3-panel {
-  grid-area: auto;
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  filter: none;
-  pointer-events: auto;
-}
-
-/* ------------------------------------------------------------------ */
-/* Merge gate band — charcoal                                        */
-/* ------------------------------------------------------------------ */
-.how-gate {
-  padding: 64px 0;
-  scroll-margin-top: 88px;
-}
-.how-gate_lead {
-  margin-top: 20px;
-  color: var(--how-cream-80);
-}
-.how-gate_rows {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-  margin-top: 32px;
-}
-.how-gate_row {
-  border-top: 2px solid var(--ts-signal);
-  padding-top: 16px;
-}
-.how-gate_text {
-  margin-top: 12px;
-  color: var(--how-cream-80);
-}
-
-/* ------------------------------------------------------------------ */
-/* Scroll reveal: the shared system (identical spec on the Docs and   */
-/* Partner pages): content groups rise 24px and fade in over .6s on   */
-/* the site's ease, staggered 60ms within a group, triggered by       */
-/* IntersectionObserver at ~15% visibility, playing once. The hero    */
-/* group settles on load; each section's blocks follow as they scroll */
-/* into view. The step surfaces (.how-surface) are never reveal       */
-/* items: they are flow3 scenes that play on their own clock, and     */
-/* nothing in this system may hide or delay them.                     */
-/*                                                                    */
-/* The pre-reveal state exists only under html.how-reveal, a class    */
-/* the inline script adds in the same task that tags the items: with  */
-/* no JS, with reduced motion, or if the script fails, nothing is     */
-/* ever hidden and every group renders in its final state.            */
-/* ------------------------------------------------------------------ */
-html.how-reveal .how-rv {
-  opacity: 0;
-  transform: translateY(24px);
-}
-html.how-reveal .how-rv.is-in {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.6s var(--how-ease), transform 0.6s var(--how-ease);
-  transition-delay: var(--how-rv-delay, 0ms);
-}
-@media (prefers-reduced-motion: reduce) {
-  html.how-reveal .how-rv { opacity: 1; transform: none; transition: none; }
-}
-@media print {
-  html.how-reveal .how-rv { opacity: 1; transform: none; }
-}
-
-/* ------------------------------------------------------------------ */
-/* Tablet step                                                         */
-/* ------------------------------------------------------------------ */
-@media (max-width: 991px) {
-  .how-step_grid,
-  .how-step--flip .how-step_grid {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-  .how-step--flip .how-step_text,
-  .how-step--flip .how-surface {
-    grid-column: auto; /* single column: text first, surface below */
-  }
-  .how-cols,
-  .how-gate_rows {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-}
-
-/* ------------------------------------------------------------------ */
-/* Phone step                                                          */
-/* ------------------------------------------------------------------ */
+.how-loop .fl3-rail { top: 15px; background: var(--line-2); }
+.how-loop .fl3-rail_fill { background: var(--ink); }
+.how-loop .fl3-step_num { display: none; }
+.how-loop .fl3-step_name { font-size: 14px; color: var(--ink-3); }
+.how-loop .fl3-step.is-done .fl3-step_name { color: var(--ink-2); }
+.how-loop .fl3-step.is-active .fl3-step_name { color: var(--ink); }
+.how-loop .fl3-step:focus-visible { outline-color: var(--red); outline-offset: 2px; border-radius: var(--r-control); }
 @media (max-width: 767px) {
-  .how-hero {
-    padding: 128px 0 40px; /* bottom = phone section pad, matching every other divide (was 48) */
-  }
-  .how-h1 {
-    font-size: 30px;
-    line-height: 37px;
-  }
-  .how-frame,
-  .how-step,
-  .how-gate {
-    padding: 40px 0;
-  }
-  .how-index {
-    flex-wrap: wrap;
-    row-gap: 20px;
-    margin-top: 40px;
-  }
-  .how-index_rail {
-    display: none;
-  }
-  .how-index_item {
-    flex: 1 1 30%;
-  }
-  .how-index_node {
-    width: 28px;
-    height: 28px;
-  }
-  /* The flip selector is repeated at its own specificity (0,2,0):
-     the <=991 flip rule otherwise outranks this block and flipped
-     steps kept the 40px stack gap while plain steps took 32px. */
-  .how-step_grid,
-  .how-step--flip .how-step_grid {
-    gap: 32px;
-  }
+  .how-loop .fl3-step_node { width: 32px; height: 32px; }
+  .how-loop .fl3-rail { top: 15px; }
 }
 
-/* ------------------------------------------------------------------ */
-/* Trio — Notion pattern, REF-HOW-REPORT.md (HOW3)                     */
-/* Three verb-led cards under the hero, each carrying a static         */
-/* settled render of the real flow3 window that proves the verb.       */
-/* The embeds are bare .fl3-window blocks with no .fl3-panel           */
-/* ancestor, so flow3.js never attaches a player and the scenes        */
-/* render at their settled end state. Ground: verified by computed     */
-/* style against #step-2 — the non-paper steps render on               */
-/* var(--fl3-cream) (rgb 253 246 236), which this section takes.        */
-/* Margins are scoped under .how-trio (0,2,0): the section carries     */
-/* .fl3, whose reset (.fl3 h2 / .fl3 p, 0,1,1) otherwise zeroes        */
-/* them — the HOW2 defect-1 pattern.                                   */
-/* ------------------------------------------------------------------ */
-.how-trio {
-  padding: 64px 0;
-  background: var(--fl3-cream);
-}
-.how-trio .how-h2 {
-  margin-top: 24px; /* eyebrow -> headline gap */
-}
-.how-trio_grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px; /* .how-cols / .how-gate_rows gap on this page */
-  margin-top: 32px; /* --ts-gap-head-content */
-}
-.how-tcard {
-  background: var(--fl3-card); /* #ffffff */
-  border: 1px solid rgba(14, 13, 12, 0.08); /* the page's hairline alpha */
-  border-radius: 20px; /* .fl3-panel radius */
-  box-shadow: var(--fl3-shadow-card);
-  padding: 24px;
-  min-width: 0;
-}
-.how-trio .how-tcard_body {
-  margin-top: 12px; /* .how-col_body value on this page */
-}
-.how-tcard_stage {
-  position: relative;
-  margin-top: 20px; /* card title -> content gap, TYPE-SYSTEM mapping */
-  height: 272px;
-  overflow: hidden;
-}
-.how-tcard_tag {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 2;
-}
-.how-tcard_link {
+
+.how-loop .fl3-on_t {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 20px;
-  font-size: 14px; /* .ts-small, weight 500 */
+  height: 24px;
+  padding: 0 8px;
+  border-radius: var(--r-tag);
+  background: var(--sage);
+  color: var(--moss);
+  font-size: 12px;
   font-weight: 500;
-  line-height: 1.3;
-  color: var(--ts-charcoal);
-  text-decoration: none;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  opacity: 1;
+  transition: background-color 240ms linear, color 240ms linear, box-shadow 240ms linear;
 }
-.how-tcard_link svg {
-  width: 16px;
-  height: 16px;
+.how-loop .fl3-on_off { display: none; }
+.how-loop .fl3-live .fl3-checks .sc-row,
+.how-loop .fl3-live .fl3-guard { opacity: 1; transform: none; }
+.how-loop .fl3-live .sc-row:not(.s-on) .fl3-on_t,
+.how-loop .fl3-live .fl3-guard:not(.s-on) .fl3-on_t {
+  background: transparent;
+  color: var(--ink-3);
+  box-shadow: inset 0 0 0 1px var(--line-2);
+}
+.how-loop .fl3-live .sc-row:not(.s-on) .fl3-on_on,
+.how-loop .fl3-live .fl3-guard:not(.s-on) .fl3-on_on { display: none; }
+.how-loop .fl3-live .sc-row:not(.s-on) .fl3-on_off,
+.how-loop .fl3-live .fl3-guard:not(.s-on) .fl3-on_off { display: inline; }
+@media (prefers-reduced-motion: reduce) { .how-loop .fl3-on_t { transition: none; } }
+
+
+.how-loop .how-x { margin-top: 24px; border-top: 1px solid var(--line-2); }
+.how-loop .how-x_h {
+  margin: 0;
+  padding: 16px 0 8px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+.how-loop .how-x_row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line-1);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.how-loop .how-x_row:last-child { border-bottom: 0; padding-bottom: 0; }
+.how-loop .how-x_tag {
   flex: none;
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: var(--r-tag);
+  box-shadow: inset 0 0 0 1px var(--line-2);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--ink-3);
+  white-space: nowrap;
 }
-.how-tcard_link:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-@media (max-width: 991px) {
-  .how-trio_grid {
-    grid-template-columns: 1fr;
-    gap: 32px; /* .how-cols responsive values */
-  }
+.how-loop .how-x_tag.is-fail { box-shadow: none; background: var(--blush); color: var(--red); }
+
+.how-loop .fl3-stamp { display: none; }
+
+.how-loop .fl3-panel:not(.fl3-live) .fl3-ring { border-color: var(--moss); background: var(--sage); }
+.how-loop .fl3-panel:not(.fl3-live) .fl3-ring svg { opacity: 1; }
+
+@media (min-width: 768px) {
+  .how-loop .how-x_row--phone { display: none; }
+  .how-loop .fl3-msgs li { padding: 16px 0; }
+  .how-loop .fl3-checks li { padding: 16px 0; }
+  .how-loop .fl3-scene--pr .how-x { margin-top: 16px; }
 }
 @media (max-width: 767px) {
-  .how-trio {
-    padding: 40px 0;
-  }
-  .how-tcard_stage {
-    height: 248px;
-  }
+  .how-loop .how-x--wide,
+  .how-loop .how-x_row--wide { display: none; }
+  .how-loop .fl3-checks li { padding: 22px 0; }
+  .how-loop .how-x_row { padding: 16px 0; }
+  .how-loop .fl3-test .fl3-out { padding-top: 8px; padding-bottom: 8px; }
+  .how-loop .fl3-msgs li { padding: 8px 0; }
+  .how-loop .fl3-rounds li { padding: 16px 0; }
 }
 
-/* Panel 7's document header (REF-HOW-REPORT.md §5.1): the report
-   sheet labels itself, Granola's pattern. The rule is specced for
-   flow3.css beside the report block; it lives here for this page
-   because flow3.css is outside this lane's edit scope — the
-   integrator carries the same rule into flow3.css and FLOW3.md
-   for the landing seat (hand-off recorded in HOW3.md). */
-.fl3-report_h {
+
+.how-loop .fl3-stage { display: grid; }
+.how-loop .fl3-stage .fl3-panel,
+.how-loop .fl3-stage .fl3-panel.is-active,
+.how-loop .fl3-stage .fl3-panel.is-leaving {
+  grid-area: 1 / 1;
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  padding-bottom: 12px;
-  margin-bottom: 2px;
-  border-bottom: 1px solid var(--fl3-line);
+  flex-direction: column;
+}
+.how-loop .fl3-panel > .fl3-panel_foot { margin-top: auto; }
+.how-loop .fl3-panel > :nth-last-child(2) { margin-bottom: 20px; }
+
+
+.how-loop_frame { padding: 6px; }
+.how-loop .fl3-panel {
+  border: 0;
+  border-radius: var(--r-surface);
+  background: var(--raised);
+  box-shadow: inset 0 0 0 1px var(--line-1);
+  padding: 32px;
+}
+.how-loop .fl3-panel_title { font-size: 20px; line-height: 1.3; letter-spacing: -0.01em; }
+.how-loop .fl3-panel_lead { font-size: 16px; color: var(--ink-3); }
+.how-loop .fl3-panel_foot { font-size: 14px; color: var(--ink-3); border-top-color: var(--line-2); }
+
+
+.how-loop .fl3-window {
+  border: 0;
+  border-top: 1px solid var(--line-2);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.how-loop .fl3-win_bar { padding: 12px 0; border-bottom-color: var(--line-1); }
+.how-loop .fl3-scene { padding: 16px 0 8px; }
+.how-loop .fl3-window--bare .fl3-scene { padding: 0; }
+.how-loop .fl3-window--paper .fl3-scene { padding: 16px 0 8px; }
+
+
+.how-loop .fl3-morecard,
+.how-loop .fl3-statcard,
+.how-loop .fl3-nowcard,
+.how-loop .fl3-report {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--line-2);
+  border-radius: 0;
+  box-shadow: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+.how-loop .fl3-report { padding-top: 16px; padding-bottom: 0; }
+
+.how-loop .fl3-window--paper .fl3-report { border-top: 0; padding-top: 0; }
+.how-loop .fl3-diff_stat { flex: none; white-space: nowrap; }
+.how-loop .fl3-report_back { display: none; }
+.how-loop .fl3-diff {
+  border-radius: var(--r-control);
 }
 
-/* Nav tightness fix (independent audit F1, 2026-11-18): the
-   landing carries this rule in nav3.css, which the sub-pages do
-   not load. The shared chrome markup needs the same 32px list
-   shift at >=992px so the brand -> Product gap matches the base build's
-   +26.1px here too. Append-only; nothing above is modified. */
-@media (min-width: 992px) {
-  .nav__list--main {
-    margin-left: 32px;
-  }
+
+.how-loop_caps { margin-top: 24px; }
+
+
+.how-rows { border-top: 1px solid var(--line-2); }
+.how-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 16px 64px;
+  padding: 48px 0;
+  border-bottom: 1px solid var(--line-2);
+}
+.how-row_side { align-self: start; position: sticky; top: 96px; }
+.how-row_n {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+.how-row_title {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.how-row_main { max-width: 29em; } 
+.how-row_lead {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.how-row_body {
+  margin: 16px 0 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+
+.how-gate { margin-top: 32px; scroll-margin-top: 96px; }
+.how-gate_lead {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.how-gate .pg-caps { margin-top: 16px; }
+.how-gate .pg-cap { border-top-color: var(--moss); }
+
+
+@media (max-width: 991px) {
+  .how-loop .container-regular { width: calc(100% - 64px); }
+}
+@media (max-width: 767px) {
+  .how-loop .container-regular { width: calc(100% - 32px); }
+  .how-loop .fl3-head { margin-bottom: 32px; }
+  .how-loop .fl3-panel { padding: 20px; }
+  .how-row { grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 32px 0; }
+  .how-row_side { position: static; }
 }

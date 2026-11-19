@@ -1,32 +1,12 @@
-/* Synthe flow section, third design (flow3 lane).
-   1) The stepper/stage controller: the flow2 behavior contract
-      ported unchanged (APG tablist with roving tabindex and
-      arrow/Home/End keys, polite 8s auto-advance honoring
-      behavior.js's published pause state, phone scroll-coupling
-      with the same formula), plus an animated stage height so the
-      stage fits the active panel instead of sharing one height.
-   2) The scene engine: each panel is a small product scene whose
-      content plays on a timed loop while the panel is active
-      (checks settle, messages arrive, a diff composes, bars
-      animate, gates check and the Mark locks, a timeline walks
-      back, a report prints). Scenes are driven by state classes
-      over the settled end state: with reduced motion, or without
-      JS, every scene renders finished and static.
-   Standalone panels (how.html) play when scrolled into view. */
+
 (function () {
   "use strict";
 
   var reduceMQ = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-  /* ---------------- scene engine ---------------- */
+  
 
-  /* Generalised counter (REF-RAMP section 4.4.1): one eased rAF
-     count for percents and plain integers, up or down. suffix is
-     "%" for the three percent counts and "" for plain figures.
-     stale() reports that the owning player's run token has moved
-     on (a reset landed mid-count); a stale frame stops without
-     writing, so a reset can never be overwritten by a count that
-     started before it. */
+  
   function countTo(el, from, to, dur, suffix, stale) {
     var start = null;
     function frame(ts) {
@@ -40,14 +20,7 @@
     window.requestAnimationFrame(frame);
   }
 
-  /* Timed beats per scene. add/remove name state classes on the
-     element matched by q (index i into the match list; no q means
-     the panel itself). flow4 step kinds: countTo counts a figure
-     (addressed by q/i, or by data-count-to value for the three
-     percent counts), bump ticks a small tally by a step, text
-     swaps a label. liveStart rewinds a scene's ticking figures
-     when the panel goes live; the markup itself always carries
-     the settled values. */
+  
   var SCENES = {
     checks: {
       cycle: 5900,
@@ -302,10 +275,7 @@
     panel.querySelectorAll("[data-count-to]").forEach(function (el) {
       counts.push({ el: el, orig: el.textContent });
     });
-    /* flow4: the ticking figures (and panel 2's tally label) join
-       the same restore registry, so resetStates() returns them to
-       their settled markup values exactly as it does the percent
-       counts. */
+    
     panel
       .querySelectorAll("[data-fl4-num],[data-fl4-label]")
       .forEach(function (el) {
@@ -325,9 +295,7 @@
         var cTo = 0;
         var cSuffix = "";
         if (typeof st.countTo.value === "string") {
-          /* The three percent counts: addressed by their
-             data-count-to value, from read from data-count-from,
-             exactly as flow3's count steps behaved. */
+          
           cTarget = panel.querySelector(
             '[data-count-to="' + st.countTo.value + '"]'
           );
@@ -366,13 +334,13 @@
       }
       if (!target) return;
       if (typeof st.by === "number") {
-        /* bump: a small tally ticks by a step at its beat. */
+        
         var cur = parseInt(target.textContent, 10);
         target.textContent = String((isNaN(cur) ? 0 : cur) + st.by);
         return;
       }
       if (typeof st.value === "string") {
-        /* text: a label swap at its beat. */
+        
         target.textContent = st.value;
         return;
       }
@@ -388,9 +356,7 @@
       }
     }
     function resetStates() {
-      /* Invalidate any count still in flight (section 4.4.1's run
-         token): reset() reaches the token through here, so a count
-         started before a reset can never write after it. */
+      
       runToken += 1;
       panel
         .querySelectorAll(
@@ -428,10 +394,7 @@
         running = true;
         scene.classList.remove("fl3-dip");
         panel.classList.add("fl3-live");
-        /* flow4: live-start values (section 4.4.2). The markup
-           carries settled values; going live rewinds each ticking
-           figure to where its count starts, and the scene's steps
-           replay how the settled value was reached. */
+        
         if (def.liveStart) {
           def.liveStart.forEach(function (ls) {
             var list = panel.querySelectorAll(ls.q);
@@ -445,8 +408,7 @@
         if (!running) return;
         running = false;
         clearTimers();
-        /* Never leave the scene dipped: suspending mid-dip clears
-           the timers that would have lifted it. */
+        
         scene.classList.remove("fl3-dip");
       },
       reset: function () {
@@ -459,7 +421,7 @@
     };
   }
 
-  /* ---------------- standalone panels (how.html) ---------------- */
+  
 
   var stagePanels = document.querySelectorAll(".fl3-stage .fl3-panel");
   var inStage = {};
@@ -490,7 +452,7 @@
     });
   }
 
-  /* ---------------- stepper + stage (index) ---------------- */
+  
 
   var section = document.querySelector(".section_home-flow.fl3");
   if (!section) return;
@@ -512,7 +474,8 @@
   var ownFocus = false;
   var touching = false;
   var sectionVisible = false;
-  var heightTimer = null;
+  var leaveTimers = [];
+  var hovering = false;
   var DWELL = 8000;
   var timer = null;
 
@@ -527,6 +490,7 @@
       behaviorPaused() ||
       !sectionVisible ||
       ownFocus ||
+      hovering ||
       document.hidden ||
       reduceMQ.matches
     );
@@ -541,7 +505,7 @@
       tab.classList.toggle("is-done", i < current);
     });
     if (fill && tabs.length > 1) {
-      fill.style.width = (current / (tabs.length - 1)) * 100 + "%";
+      fill.style.transform = "scaleX(" + current / (tabs.length - 1) + ")";
     }
     if (status) {
       status.textContent =
@@ -570,7 +534,9 @@
     }
     var outgoing = panels[prev];
     var incoming = panels[next];
-    var fromH = stage ? stage.offsetHeight : 0;
+    
+    window.clearTimeout(leaveTimers[next]);
+    leaveTimers[next] = null;
     outgoing.classList.remove("is-active");
     outgoing.classList.add("is-leaving");
     incoming.classList.remove("is-leaving");
@@ -578,26 +544,13 @@
     incoming.removeAttribute("aria-hidden");
     if (players[prev]) players[prev].reset();
     playCurrent();
-    window.setTimeout(function () {
+    window.clearTimeout(leaveTimers[prev]);
+    leaveTimers[prev] = window.setTimeout(function () {
+      leaveTimers[prev] = null;
+      if (outgoing.classList.contains("is-active")) return;
       outgoing.classList.remove("is-leaving");
       outgoing.setAttribute("aria-hidden", "true");
-    }, 500);
-    /* Animate the stage height to the incoming panel so no panel
-       leaves dead space under its scene. */
-    if (stage && !reduceMQ.matches) {
-      stage.style.height = fromH + "px";
-      void stage.offsetHeight;
-      /* Integrator correction (flow3 wiring): the target must be the
-         incoming panel's own height. stage.scrollHeight also counts
-         the absolutely-positioned outgoing panel, so on a step down
-         to a shorter panel it returned the old height and the stage
-         snapped instead of transitioning. */
-      stage.style.height = incoming.offsetHeight + "px";
-      window.clearTimeout(heightTimer);
-      heightTimer = window.setTimeout(function () {
-        stage.style.height = "";
-      }, 500);
-    }
+    }, 200);
     applyState();
     if (opts.focus) tabs[current].focus();
     restart();
@@ -632,6 +585,16 @@
         go(target, { focus: true });
       }
     });
+  });
+  
+  function onPointerIn(e) {
+    if (e.pointerType === "mouse") hovering = true;
+  }
+  
+  section.addEventListener("pointerenter", onPointerIn);
+  section.addEventListener("pointermove", onPointerIn, { passive: true });
+  section.addEventListener("pointerleave", function (e) {
+    if (e.pointerType === "mouse") { hovering = false; restart(); }
   });
   section.addEventListener("focusin", function () {
     ownFocus = true;
@@ -669,9 +632,7 @@
     if (stage) stage.style.height = "";
   });
 
-  /* Phone scroll-coupling: while the section travels through the
-     viewport on a phone, the scroll position picks the step
-     (formula unchanged from the shipped scrollfix/flow2). */
+  
   var phoneMQ = window.matchMedia("(max-width: 767px)");
   var couplingBusy = false;
   function targetStepFromScroll() {
@@ -738,113 +699,97 @@
   applyState();
   restart();
 
-  /* ---------------- live strip (flow4, index only) ----------------
-     Ramp's ticker as the section's shared ledger: three counters
-     whose bases are arithmetic over the scenes' own fiction
-     (36 messages x 5 checks = 180 checks run; 4 changes tested).
-     A message tick schedules its own consequence: five single
-     check ticks, 130ms apart, starting 700ms later (one message,
-     run against five checks). Changes tick on their own slower
-     chain. The strip is ambient furniture: it runs only while the
-     section is in view, never while the tab is hidden, never
-     under reduced motion, and it does not join the stepper's
-     pause conditions. Timers are cleared on stop, so a suspended
-     strip simply holds its last written values. On how.html this
-     block is never reached (no stepper section, no strip). */
-  var livebar = section.querySelector(".fl4-livebar");
-  if (livebar) {
-    var stripState = { messages: 36, checks: 180, changes: 4 };
-    var stripEls = {
-      messages: livebar.querySelector('[data-strip="messages"]'),
-      checks: livebar.querySelector('[data-strip="checks"]'),
-      changes: livebar.querySelector('[data-strip="changes"]')
+  
+  (function () {
+    var night = document.querySelector("[data-how-night]");
+    if (!night || reduceMQ.matches || !("IntersectionObserver" in window)) return;
+    var PATHS = {
+      settle: "M0,0 C0.08,0.38 0.18,0.80 0.38,0.92 C0.55,0.985 0.78,1 1,1",
+      draw: "M0.0000,0.0000 C0.0222,0.1660 0.0889,0.1762 0.1333,0.1941 C0.1778,0.2121 0.2222,0.2201 0.2667,0.2680 C0.3111,0.3158 0.3500,0.3857 0.4000,0.4810 C0.4500,0.5763 0.5167,0.7651 0.5667,0.8397 C0.6167,0.9143 0.6556,0.9051 0.7000,0.9283 C0.7444,0.9515 0.7833,0.9670 0.8333,0.9789 C0.8833,0.9909 0.9722,0.9965 1.0000,1.0000",
+      verdict: "M0,0 C0.14,0.6 0.3,1.035 0.52,1.03 C0.74,1.025 0.88,1 1,1"
     };
-    var stripTimers = [];
-    var stripRunning = false;
-    var stripVisible = false;
-    function stripLater(ms, fn) {
-      stripTimers.push(window.setTimeout(fn, ms));
-    }
-    function stripWrite(key) {
-      if (stripEls[key]) {
-        stripEls[key].textContent =
-          stripState[key].toLocaleString("en-US");
+    function curve(d) {
+      var n = d.replace(/[MC]/g, " ").trim().split(/[\s,]+/).map(Number);
+      var segs = [], x0 = n[0], y0 = n[1];
+      for (var i = 2; i + 5 < n.length; i += 6) {
+        segs.push([x0, y0, n[i], n[i + 1], n[i + 2], n[i + 3], n[i + 4], n[i + 5]]);
+        x0 = n[i + 4]; y0 = n[i + 5];
       }
-    }
-    function scheduleMessages() {
-      if (!stripRunning) return;
-      stripLater(6000 + Math.random() * 5000, function () {
-        if (!stripRunning) return;
-        stripState.messages += 1;
-        stripWrite("messages");
-        for (var k = 0; k < 5; k++) {
-          (function (delay) {
-            stripLater(delay, function () {
-              if (!stripRunning) return;
-              stripState.checks += 1;
-              stripWrite("checks");
-            });
-          })(700 + k * 130);
+      function bz(p0, p1, p2, p3, t) { var u = 1 - t; return u * u * u * p0 + 3 * u * u * t * p1 + 3 * u * t * t * p2 + t * t * t * p3; }
+      return function (x) {
+        if (x <= 0) return 0;
+        if (x >= 1) return 1;
+        for (var k = 0; k < segs.length; k++) {
+          var g = segs[k];
+          if (x <= g[6] || k === segs.length - 1) {
+            var lo = 0, hi = 1, t = 0.5;
+            for (var j = 0; j < 30; j++) { t = (lo + hi) / 2; if (bz(g[0], g[2], g[4], g[6], t) < x) lo = t; else hi = t; }
+            return bz(g[1], g[3], g[5], g[7], t);
+          }
         }
-        scheduleMessages();
-      });
+        return 1;
+      };
     }
-    function scheduleChanges() {
-      if (!stripRunning) return;
-      stripLater(50000 + Math.random() * 20000, function () {
-        if (!stripRunning) return;
-        stripState.changes += 1;
-        stripWrite("changes");
-        scheduleChanges();
-      });
+    function easing(fn) {
+      var st = [];
+      for (var i = 0; i <= 40; i++) { var x = i / 40; st.push(fn(x).toFixed(4) + " " + (x * 100).toFixed(1) + "%"); }
+      return "linear(" + st.join(", ") + ")";
     }
-    function stripStart() {
-      /* v5: the strip shows the sample run's totals and no longer ticks;
-         ticking counters read as fake live activity. */
-      return;
-      if (
-        stripRunning ||
-        reduceMQ.matches ||
-        document.hidden ||
-        !stripVisible
-      ) {
-        return;
+    try {
+      var settle = curve(PATHS.settle);
+      var canLinear = window.CSS && CSS.supports && CSS.supports("animation-timing-function", "linear(0, 1)");
+      var drawEase = canLinear ? easing(curve(PATHS.draw)) : "cubic-bezier(0.4, 0, 0.2, 1)";
+      var verdictEase = canLinear ? easing(curve(PATHS.verdict)) : "cubic-bezier(0.2, 0.8, 0.2, 1)";
+      var figs = Array.prototype.slice.call(night.querySelectorAll(".how-night_n"));
+      var mark = night.querySelector(".how-night_mark");
+      var kept = night.querySelector(".how-night_cell.is-kept .how-night_n");
+      var tag = night.querySelector(".how-night_tag");
+      function fmt(el, v) {
+        var places = +(el.getAttribute("data-places") || 0);
+        return (el.getAttribute("data-prefix") || "") + v.toFixed(places);
       }
-      stripRunning = true;
-      scheduleMessages();
-      scheduleChanges();
-    }
-    function stripStop() {
-      stripRunning = false;
-      stripTimers.forEach(function (id) {
-        window.clearTimeout(id);
+      
+      figs.forEach(function (el) { el.textContent = fmt(el, 0); });
+      night.classList.add("is-armed");
+      var played = false;
+      function play() {
+        if (played) return;
+        played = true;
+        var STAGGER = [0, 60, 105, 139];
+        var t0 = performance.now();
+        figs.forEach(function (el, i) {
+          var to = +el.getAttribute("data-to"), delay = STAGGER[Math.min(i, 3)];
+          (function frame(now) {
+            var p = Math.max(0, Math.min(1, (now - t0 - delay) / 520));
+            el.textContent = fmt(el, to * settle(p));
+            if (p < 1) window.requestAnimationFrame(frame);
+            else el.textContent = fmt(el, to);
+          })(t0);
+        });
+        window.setTimeout(function () {
+          night.classList.remove("is-armed");
+          if (mark && mark.animate) {
+            mark.animate([{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], { duration: 280, easing: drawEase, fill: "backwards" });
+          }
+          if (kept && kept.animate) {
+            kept.animate([{ transform: "none", color: (getComputedStyle(night).getPropertyValue("--ink") || "").trim() || "#141312" }, { transform: "translateY(-2px)", color: getComputedStyle(kept).color }],
+              { duration: 420, delay: 200, easing: verdictEase, fill: "backwards" });
+          }
+          if (tag && tag.animate) {
+            tag.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 208, delay: 280, easing: "linear", fill: "backwards" });
+          }
+        }, 520 + 139);
+      }
+      new IntersectionObserver(function (entries, io) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { io.disconnect(); play(); }
+        });
+      }, { threshold: 0.6 }).observe(night);
+    } catch (e) {
+      night.classList.remove("is-armed");
+      Array.prototype.forEach.call(night.querySelectorAll(".how-night_n"), function (el) {
+        el.textContent = (el.getAttribute("data-prefix") || "") + (+el.getAttribute("data-to")).toFixed(+(el.getAttribute("data-places") || 0));
       });
-      stripTimers = [];
     }
-    if ("IntersectionObserver" in window) {
-      new IntersectionObserver(
-        function (entries) {
-          entries.forEach(function (entry) {
-            stripVisible = entry.isIntersecting;
-            if (stripVisible) stripStart();
-            else stripStop();
-          });
-        },
-        { threshold: 0.15 }
-      ).observe(section);
-    } else {
-      stripVisible = true;
-      stripStart();
-    }
-    document.addEventListener("visibilitychange", function () {
-      if (document.hidden) stripStop();
-      else stripStart();
-    });
-    if (reduceMQ.addEventListener) {
-      reduceMQ.addEventListener("change", function () {
-        if (reduceMQ.matches) stripStop();
-        else stripStart();
-      });
-    }
-  }
+  })();
 })();

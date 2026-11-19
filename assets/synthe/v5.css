@@ -1,19 +1,14 @@
-/* v5.css — one motion system, hero type scale, and the feature-card
-   scenes (.sv-*). Loads last, after reps2.css, so it wins ties.
-   Palette is the flow section's own (flow4.css --fl3-*), so the
-   scenes read as the same product UI as the stepper panels.
-   Every scene is complete at rest: without JS, or under
-   prefers-reduced-motion, it shows its final settled frame. */
+
 
 :root {
-  /* motion system: one curve family, four durations */
-  --sy-ease: cubic-bezier(0.22, 1, 0.36, 1);      /* settle (ease-out quint) */
-  --sy-ease-io: cubic-bezier(0.65, 0, 0.35, 1);   /* move between states */
-  --sy-spring: cubic-bezier(0.34, 1.4, 0.64, 1);  /* small pops only */
-  --sy-d1: 160ms;   /* colour, opacity on hover */
-  --sy-d2: 280ms;   /* button, icon, underline */
-  --sy-d3: 560ms;   /* panel and row reveals */
-  --sy-d4: 900ms;   /* bars, line draws */
+  
+  --sy-ease: cubic-bezier(0.22, 1, 0.36, 1);      
+  --sy-ease-io: cubic-bezier(0.65, 0, 0.35, 1);   
+  --sy-spring: cubic-bezier(0.34, 1.4, 0.64, 1);  
+  --sy-d1: 160ms;   
+  --sy-d2: 280ms;   
+  --sy-d3: 560ms;   
+  --sy-d4: 900ms;   
 
   --sv-ink: #0e0d0c;
   --sv-ink-70: rgba(14, 13, 12, 0.7);
@@ -36,46 +31,11 @@
   --sv-shadow-float: 0 1px 2px rgba(14, 13, 12, 0.06), 0 12px 32px -10px rgba(14, 13, 12, 0.22);
 }
 
-/* =========================================================
-   1. Type scale: the hero headline is the largest type on
-   the page (it was 48px under a 72px section heading).
-   ========================================================= */
-.section_home-hero .hfx-h1 {
-  font-size: clamp(48px, 4.45vw, 64px); /* D1: 64px hero headline (founder, 2026-11-18) */
-  line-height: 1.02;
-  letter-spacing: -0.045em;
-  --hfx-hover: #f4ead8;          /* hovered word stays in the cream family */
-  --hfx-underline: rgba(244, 234, 216, 0.35);
-}
-.section_home-hero .home-hero_title { max-width: 60rem; }
-.section_home-hero .home-hero_intro .u-stack-md { max-width: 34rem; }
-.section_home-hero .home-hero_text { max-width: 30rem; }
-@media (max-width: 991px) {
-  .section_home-hero .hfx-h1 { font-size: 48px; }
-}
-@media (max-width: 767px) {
-  /* hero2.css's measured phone setting: line 1 breaks cleanly after the pick word */
-  .section_home-hero .hfx-h1 { font-size: 30px; line-height: 37px; letter-spacing: -0.06em; }
-}
-/* section headings sit one step under the hero */
+
+
 .fl3 .fl3-head h2.heading-style-h2 { font-size: clamp(36px, 4.2vw, 60px); line-height: 1.02; }
 
-/* The atmosphere fog (hero4.js) was drawn over the whorl at full
-   strength and buried the Synthe Mark in both engines tested.
-   Keep it as weather, not a curtain. */
-.section_home-hero .hero-atmo-canvas { opacity: 0.38; }
 
-/* Hero exit: the Mark drifts back as the hero scrolls away
-   (progress set by v5.js as --sv-hero-p, 0..1). */
-.section_home-hero .hero-whorl-canvas {
-  transform: translate3d(0, calc(var(--sv-hero-p, 0) * 70px), 0) scale(calc(1 - var(--sv-hero-p, 0) * 0.06));
-  transform-origin: 70% 50%;
-  will-change: transform;
-}
-
-/* =========================================================
-   2. Motion system applied to the controls that drifted
-   ========================================================= */
 .nav__list--link, .nav__link--p { transition: color var(--sy-d1) var(--sy-ease), opacity var(--sy-d1) var(--sy-ease); }
 
 .btn, .b2-btn, .synthe-promptbox_copy, .synthe-promptbox_submit {
@@ -85,15 +45,14 @@
 }
 .btn:active, .b2-btn:active, .synthe-promptbox_copy:active { transform: scale(0.97); }
 
-/* The base build's two-arrow icon track rolled on some buttons and not others;
-   drive it from CSS so every arrow button behaves the same. */
+
 .btn .btn-icon { transition: transform 420ms var(--sy-ease); }
 .btn:hover .btn-icon, .btn:focus-visible .btn-icon { transform: translateY(0); }
 
 .b2-btn svg { transition: transform var(--sy-d2) var(--sy-ease); }
 .b2-btn:hover svg { transform: translateX(3px); }
 
-/* Secondary card links ("See the checks") had no hover state at all */
+
 .section_home-features .btn.cc-card-light > div:first-child {
   background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
   padding-bottom: 2px;
@@ -109,19 +68,7 @@
 }
 .section_home-features .btn.cc-card-light:hover::after { transform: translateX(3px); }
 
-/* Logo wall: say what it is, so it never reads as a customer list */
-.sv-wall-label {
-  font: 500 12px/1.5 var(--sv-sans);
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--sv-ink-55);
-  text-align: center;
-  margin: 0 0 18px;
-}
 
-/* =========================================================
-   3. Feature cards: text left, scene right
-   ========================================================= */
 @media (min-width: 992px) {
   .section_home-features .home-feature_theme .home-feature_item { grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); }
   .section_home-features .home-feature_theme .home-feature_left { padding-right: 1rem; }
@@ -154,7 +101,7 @@
   font-family: var(--sv-sans);
   color: var(--sv-ink);
 }
-/* faint dot grid: the canvas of a tool, not a decoration */
+
 .sv-stage::before {
   content: "";
   position: absolute;
@@ -172,7 +119,7 @@
   .sv-stage { min-height: 380px; border-radius: 18px; }
 }
 
-/* the tilt rig: v5.js writes --rx/--ry/--mx/--my on pointer move */
+
 .sv-rig {
   position: relative;
   width: min(88%, 470px);
@@ -190,7 +137,7 @@
   box-shadow: var(--sv-shadow-win);
   overflow: hidden;
 }
-/* sheen follows the pointer */
+
 .sv-win::after {
   content: "";
   position: absolute;
@@ -239,8 +186,7 @@
   transform: translateZ(40px);
 }
 
-/* shared reveal: pieces start settled; .sv-armed (set by JS only when
-   motion is allowed) hides them, .is-in plays them in by --i */
+
 .sv-stage .sv-in {
   transition: opacity var(--sy-d3) var(--sy-ease), transform var(--sy-d3) var(--sy-ease);
   transition-delay: calc(var(--i, 0) * 90ms + 120ms);
@@ -248,7 +194,7 @@
 .sv-stage.sv-armed:not(.is-in) .sv-in { opacity: 0; transform: translate3d(0, 12px, 0); }
 .sv-stage.sv-armed:not(.is-in) .sv-float.sv-in { transform: translate3d(0, 16px, 40px) scale(0.98); }
 
-/* ---------- scene 1: checks score a stream of messages ---------- */
+
 .sv-msg {
   left: -6%;
   bottom: -62px;
@@ -303,7 +249,7 @@
 }
 .sv-score b { display: block; font: 500 22px/1.1 var(--sv-sans); letter-spacing: -0.02em; color: var(--sv-ink); font-variant-numeric: tabular-nums; }
 
-/* ---------- scene 2: only the prompt changes ---------- */
+
 .sv-tree { position: relative; display: flex; flex-direction: column; gap: 2px; }
 .sv-file {
   display: grid;
@@ -359,7 +305,7 @@
 .sv-dl.add::before { content: "+"; }
 .sv-stage .sv-diff.sv-in { transition-delay: 1400ms; }
 
-/* ---------- scene 3: clear wins merge ---------- */
+
 .sv-pr_t { font: 500 16px/1.3 var(--sv-sans); letter-spacing: -0.01em; }
 .sv-pr_b { font: 500 11.5px/1.3 var(--sv-mono); color: var(--sv-ink-55); display: flex; align-items: center; gap: 6px; margin-top: 4px; }
 .sv-pr_b code { font: inherit; padding: 2px 6px; border-radius: 5px; background: var(--sv-warm); color: var(--sv-ink-70); }
@@ -396,7 +342,7 @@
 .sv-stage .sv-stamp.sv-in { transition: opacity 300ms var(--sy-ease), transform 520ms var(--sy-spring); transition-delay: 1650ms; }
 .sv-stage.sv-armed:not(.is-in) .sv-stamp.sv-in { transform: translate3d(0, 0, 40px) scale(0.6) rotate(-6deg); }
 
-/* ---------- scene 4: the morning report ---------- */
+
 .sv-rep_h { font: 500 17px/1.3 var(--sv-sans); letter-spacing: -0.01em; }
 .sv-rep_h b { color: var(--sv-moss-deep); }
 .sv-chart { position: relative; padding: 6px 0 0; }
@@ -437,7 +383,7 @@
 .sv-posted .sv-ico svg { width: 15px; height: 15px; }
 .sv-stage .sv-posted.sv-in { transition-delay: 1600ms; }
 
-/* ---------- closing CTA: setup runs in a terminal ---------- */
+
 @media (min-width: 992px) {
   .b2-cta.sv-cta { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 56px; align-items: center; }
   .b2-cta.sv-cta > .sv-cta_copy { grid-column: 1; }
@@ -467,7 +413,7 @@
 .sv-caret { display: inline-block; width: 8px; height: 1.15em; vertical-align: -3px; background: #efe7da; animation: sv-blink 1.05s steps(1) infinite; }
 @keyframes sv-blink { 50% { opacity: 0; } }
 
-/* ---------- phones: floats join the flow under the window ---------- */
+
 @media (max-width: 600px) {
   .sv-stage { min-height: 0; padding-block: 26px 22px; }
   .sv-rig { width: calc(100% - 28px); display: flex; flex-direction: column; gap: 10px; }
@@ -484,18 +430,17 @@
   .sv-term { font-size: 12px; }
 }
 
-/* ---------- reduced motion: final frames, no travel ---------- */
+
 @media (prefers-reduced-motion: reduce) {
-  .sv-rig, .sv-in, .sv-track .new, .sv-chart .ln, .sv-chart .pt, .sv-sw, .sv-sw::after,
-  .section_home-hero .hero-whorl-canvas { transition: none !important; animation: none !important; transform: none !important; }
+  .sv-rig, .sv-in, .sv-track .new, .sv-chart .ln, .sv-chart .pt, .sv-sw, .sv-sw::after { transition: none !important; animation: none !important; transform: none !important; }
   .sv-caret { animation: none; }
 }
 
-/* ---------- P1: stepper sub-line, base point in the report chart ---------- */
+
 .fl3 .sv-fl-sub { margin-top: 14px; max-width: 40rem; font-size: 17px; line-height: 1.5; color: rgba(14, 13, 12, 0.66); text-wrap: pretty; }
 .sv-chart .pt.base { fill: #fff; stroke: rgba(14, 13, 12, 0.55); stroke-width: 1.75; }
 
-/* ---------- P1: plain-word tips on first use of a term ---------- */
+
 .sv-tip {
   position: relative;
   text-decoration: underline dotted rgba(14, 13, 12, 0.45);
@@ -534,7 +479,7 @@
 .sv-tip:focus-visible { border-radius: 3px; box-shadow: 0 0 0 2px #fdf6ec, 0 0 0 4px #ec5358; }
 @media (max-width: 600px) { .sv-tip::after { left: 0; transform: translate(0, 6px); max-width: 240px; } .sv-tip:hover::after, .sv-tip:focus-visible::after { transform: translate(0, 0); } }
 
-/* ---------- P1: "Before you install" answers (replaces the repeated report section) ---------- */
+
 .sv-faq { padding: 0 0 3rem; }
 .sv-faq_card {
   background: #f3f1ec;
@@ -570,10 +515,7 @@
 .sv-qa_a { margin: 0; font: 400 14.5px/1.55 var(--sv-sans); color: var(--sv-ink-70); }
 .sv-qa_a code, .sv-faq code { font: 500 12.5px var(--sv-mono); background: var(--sv-warm); border-radius: 5px; padding: 1px 5px; color: var(--sv-ink); }
 
-/* ---------- P1: role avatars fit three letters ---------- */
-.hfx-av { font-size: 9.5px; letter-spacing: 0.02em; }
 
-/* ---------- P1: copy button on the closing command ---------- */
 .sv-cmd { display: inline-flex; align-items: center; gap: 6px; }
 .sv-copy {
   font: 500 12px/1 var(--sv-mono);
@@ -591,5 +533,5 @@
 .sv-copy.is-done { background: rgba(127, 176, 105, 0.16); border-color: rgba(63, 109, 51, 0.3); color: #3f6d33; }
 @media (prefers-reduced-motion: reduce) { .sv-tip::after, .sv-qa { transition: none; } .sv-qa:hover { transform: none; } }
 
-/* ---------- P1: the dark "One loop" window was 640px tall for ~300px of content ---------- */
+
 .sh2-stage { height: clamp(380px, 33vw, 480px); }

@@ -1,18 +1,15 @@
-/* Synthe homepage modules: logo-menu popover, install tooltip, copy
-   buttons, the drifting tool wall, the goal box typewriter and chips,
-   the goal box pulse, and the cycling text-selection colour.
-   Needs motion.js. Each module mounts on its data-module element. */
+
 (function () {
   "use strict";
   var M = window.SyntheMotion;
   if (!M) return;
   var E = M.ease;
-  var RM = M.reduced.matches; // snapshot at load, like the rest of the page
+  var RM = M.reduced.matches; 
   var q = function (s, r) { return (r || document).querySelector(s); };
   var qa = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var mods = function (name) { return qa('[data-module="' + name + '"]'); };
 
-  /* ---------- logo menu: right-click (or long-press) the logo ---------- */
+  
   mods("brand-menu").forEach(function (root) {
     var bm = function (n) { return '[data-brand-menu="' + n + '"], [brand-menu="' + n + '"]'; };
     var trigger = q(bm("trigger"), root) || q("a", root);
@@ -124,7 +121,7 @@
     });
   });
 
-  /* ---------- copy: click a trigger, copy its target's text ---------- */
+  
   var successShown = new Map();
   mods("copy").forEach(function (root) {
     var triggers = [root].concat(qa("[data-copy-trigger]", root)).filter(function (t) { return t.hasAttribute("data-copy-trigger"); });
@@ -148,7 +145,7 @@
         t.removeAttribute("data-copied"); t.classList.remove("cc-copied");
         if (s) M.to(s, { autoAlpha: 0, scale: 0.9 }, { duration: RM ? 0 : 0.15, ease: E.p2in, onComplete: function () { s.style.display = "none"; } });
         timers.delete(t);
-      }, 1500));
+      }, 1600));
     };
     var run = function (t) {
       var k = t.getAttribute("data-copy-trigger");
@@ -166,7 +163,7 @@
     });
   });
 
-  /* ---------- tooltip: hover or focus a trigger to show its target ---------- */
+  
   mods("tooltip-hover").forEach(function (root) {
     var triggers = qa('[data-tooltip-hover="trigger"]', root);
     var tip = q('[data-tooltip-hover="target"]', root);
@@ -251,9 +248,10 @@
     };
     triggers.forEach(function (t) { bind(t, true); });
     if (interactive) bind(tip, false);
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && floating) exit(); });
   });
 
-  /* ---------- tool wall: an endless drift, paused on hover, draggable ---------- */
+  
   mods("logos").forEach(function (row) {
     if (RM) return;
     var host = row.parentElement;
@@ -314,7 +312,7 @@
       span = unit * copies.length; offset = 0; paint();
       track.addEventListener("mouseenter", function () { setFactor(0); });
       track.addEventListener("mouseleave", function () { setFactor(1); });
-      /* drag with a little throw */
+      
       var px0 = 0, lastX = 0, lastT = 0, vel = 0, id = null, coast = 0;
       track.style.cursor = "grab";
       track.addEventListener("pointerdown", function (e) {
@@ -362,67 +360,26 @@
     window.addEventListener("resize", function () { if (innerWidth === w) return; w = innerWidth; start(); });
   });
 
-  /* ---------- goal box: typed example goals, chips, Enter to generate ---------- */
+  
+  
   mods("sculptor").forEach(function (form) {
     var field = q('[data-role="prompt"]', form);
     var chips = qa("[data-chip]", form);
-    var examples = qa("[data-placeholder]", form).map(function (el) { return (el.getAttribute("data-placeholder") || el.textContent || "").trim(); }).filter(Boolean);
-    var T = { type: 45, erase: 22, hold: 1900, gap: 400, start: 400, blink: 500 };
-    var tick = null, blinkT = null, caret = true, running = false, idx = 0, len = 0, erasing = false, shown = "";
-    var draw = function (s) { if (field) field.placeholder = caret ? s + "|" : s; };
-    function stop(clear) {
-      clearTimeout(tick); tick = null; clearInterval(blinkT); blinkT = null;
-      len = 0; erasing = false; shown = ""; running = false; caret = true;
-      if (clear !== false && field) field.placeholder = "";
-    }
-    function blink() { if (blinkT) return; blinkT = setInterval(function () { if (!running || !field) return; caret = !caret; draw(shown); }, T.blink); }
-    function step() {
-      if (!running || !field) return;
-      var s = examples[idx];
-      len = erasing ? Math.max(len - 1, 0) : Math.min(len + 1, s.length);
-      shown = s.slice(0, len); draw(shown);
-      var wait = erasing ? T.erase : T.type;
-      if (!erasing && len === s.length) { wait = T.hold; erasing = true; }
-      else if (erasing && len === 0) { erasing = false; idx = (idx + 1) % examples.length; wait = T.gap; }
-      tick = setTimeout(step, wait);
-    }
-    var empty = function () { return !field.value || !field.value.trim(); };
-    function begin() { if (!field || running || !empty() || !examples.length) return; running = true; shown = ""; caret = true; draw(""); blink(); tick = setTimeout(step, T.start); }
-    function pause() { clearTimeout(tick); tick = null; clearInterval(blinkT); blinkT = null; running = false; caret = false; draw(shown); }
-    function resume() { if (!field || running || !empty() || !examples.length) return; running = true; caret = true; draw(shown); blink(); tick = setTimeout(step, T.type); }
-    var picked = null, pickedText = "";
-    function generate() {
-      if (!field || !field.value.trim()) { if (field) field.focus(); return; }
+    if (!field) return;
+    var picked = null;
+    function unpick() { chips.forEach(function (o) { o.removeAttribute("data-active"); o.classList.remove("cc-active"); }); picked = null; }
+    field.addEventListener("input", function () { if (picked && field.value !== picked.getAttribute("data-prompt")) unpick(); });
+    field.addEventListener("keydown", function (e) {
+      if (e.key !== "Enter" || e.shiftKey) return;
+      e.preventDefault();
+      if (!field.value.trim()) return;
       if (form.requestSubmit) form.requestSubmit(); else form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
-    }
-    if (field) {
-      field.value = "";
-      begin();
-      field.addEventListener("input", function () {
-        if (!empty()) stop(); else { stop(); begin(); }
-        if (picked && field.value !== pickedText) { picked.removeAttribute("data-active"); picked.classList.remove("cc-active"); picked = null; pickedText = ""; }
-      });
-      field.addEventListener("keydown", function (e) { if (e.key !== "Enter" || e.shiftKey) return; e.preventDefault(); generate(); });
-      field.addEventListener("focus", pause);
-      field.addEventListener("pointerdown", pause);
-      field.addEventListener("blur", function () { if (empty()) resume(); });
-    }
-    chips.forEach(function (c) {
-      c.addEventListener("click", function () {
-        var text = c.getAttribute("data-prompt");
-        chips.forEach(function (o) { o.removeAttribute("data-active"); o.classList.remove("cc-active"); });
-        if (text === null) { picked = null; pickedText = ""; return; }
-        c.setAttribute("data-active", "true"); c.classList.add("cc-active");
-        picked = c; pickedText = text;
-        if (!field) return;
-        stop(); field.focus(); field.value = text;
-        if (field.setSelectionRange) field.setSelectionRange(text.length, text.length);
-      });
-      c.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); c.click(); } });
     });
+    chips.forEach(function (c) {
+      c.addEventListener("click", function () { unpick(); c.setAttribute("data-active", "true"); c.classList.add("cc-active"); picked = c; });
+    });
+    form.addEventListener("synthe:examples", unpick);
   });
-
-  /* ---------- goal box pulse until the visitor engages ---------- */
   mods("action-pulse").forEach(function (box) {
     if (RM) return;
     var field = box.parentElement && q("input, textarea", box.parentElement);
@@ -443,7 +400,7 @@
     if (field) { field.addEventListener("focus", settle); field.addEventListener("input", settle); }
   });
 
-  /* ---------- the selection highlight cycles through the palette ---------- */
+  
   (function () {
     var palette = ["ube", "dragonfruit", "pomegranate", "blueberry", "lemon", "lime", "slushie"].map(function (n) { return "var(--swatch-" + n + "-400)"; });
     var i = 0;

@@ -1,16 +1,4 @@
-/* Synthe prompt box (lane 3).
-   Local only: no backend, no form post, no network.
 
-   Wiring vs the build's form neutralizer: build.py injects a
-   document-level CAPTURE submit listener that calls preventDefault()
-   and stopPropagation() (NOT stopImmediatePropagation()). A submit
-   listener on the form itself would never fire, because the capture
-   phase hits document first and stopPropagation keeps the event from
-   travelling on to the form. So this handler is ALSO registered on
-   document with capture=true: listeners on the SAME node still all run
-   despite stopPropagation, so ours fires, checks the target is the
-   prompt form, and generates the panel. Chip clicks are plain click
-   handlers (chips are type="button", so they never submit anyway). */
 (function () {
   var form = document.querySelector(
     ".section_input-action form.home-action_form"
@@ -25,21 +13,33 @@
   var SETUP_PREFIX =
     "Set up Synthe in this repo. Run npx synthe@latest guide and follow " +
     "it. My agent should get better at: ";
+  form.setAttribute("data-setup-prefix", SETUP_PREFIX); 
   var currentPrompt = "";
   var copyTimer = null;
 
-  function generate(rawGoal) {
+  
+  function generate(rawGoal, quiet) {
     var goal = (rawGoal || "").replace(/\s+/g, " ").trim();
     if (!goal) {
-      textarea.focus();
+      if (!quiet) textarea.focus();
       return;
     }
     currentPrompt = SETUP_PREFIX + goal;
     promptOut.textContent = currentPrompt;
     panel.hidden = false;
     if (copyBtn) copyBtn.textContent = "Copy";
+    if (quiet) return;
+    
+    panel.classList.remove("is-fresh");
+    void panel.offsetWidth;
+    panel.classList.add("is-fresh");
     panel.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
+
+  form.addEventListener("synthe:goal", function () {
+    generate(textarea.value, true);
+  });
+  generate(textarea.value, true);
 
   document.addEventListener(
     "submit",
@@ -65,7 +65,7 @@
     if (copyTimer) window.clearTimeout(copyTimer);
     copyTimer = window.setTimeout(function () {
       copyBtn.textContent = "Copy";
-    }, 2000);
+    }, 1600);
   }
 
   function fallbackCopy(text) {

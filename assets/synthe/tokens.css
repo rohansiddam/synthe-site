@@ -1,8 +1,4 @@
-/* tokens.css — Synthe warm system v0.2, phase 1 foundation.
-   Source of truth: synthe-lab/SYSTEM.md (gallery). Loads right after
-   type-system.css on every page, so the type tokens below retune every
-   .ts-* role in one place. Figtree replaces Archivo site-wide.
-   Founder decisions applied: Figtree (2026-11-18), hero headline 64px (D1). */
+
 
 @font-face {
   font-family: "Figtree";
@@ -13,10 +9,10 @@
 }
 
 :root {
-  /* family */
+  
   --sans: "Figtree", "Helvetica Neue", Arial, sans-serif;
 
-  /* warm system colour (SYSTEM.md §3) */
+  
   --canvas: #fcfaf6;
   --stone: #f3f0e9;
   --blush: #f8ebe8;
@@ -34,20 +30,20 @@
   --moss: #3b6a2f;
   --float: 0 1px 1px rgba(20, 19, 18, 0.04), 0 12px 32px -12px rgba(20, 19, 18, 0.22);
 
-  /* radius (concentric) */
+  
   --r-frame: 20px;
   --r-surface: 14px;
   --r-control: 10px;
   --r-tag: 6px;
 
-  /* the old type system's palette, pointed at the warm system */
+  
   --ts-charcoal: var(--ink);
   --ts-paper: var(--canvas);
   --ts-paper-warm: var(--stone);
   --ts-muted-on-paper: var(--ink-3);
   --ts-font: var(--sans);
 
-  /* type scale (SYSTEM.md §2): 64 / 40 / 20 / 18 / 16 / 14 / 12, weights 400 and 500 */
+  
   --ts-hero-size: 64px;    --ts-hero-weight: 500;    --ts-hero-lh: 1.0;  --ts-hero-ls: -0.03em;
   --ts-display-size: 40px; --ts-display-weight: 500; --ts-display-lh: 1.08; --ts-display-ls: -0.025em;
   --ts-h2-size: 40px;      --ts-h2-weight: 500;      --ts-h2-lh: 1.08; --ts-h2-ls: -0.025em;
@@ -74,20 +70,19 @@
   :root { --ts-hero-size: 40px; --ts-display-size: 32px; --ts-h2-size: 32px; --ts-h2sm-size: 32px; --ts-h2sm-lh: 1.12; --ts-h3-size: 20px; --ts-card-size: 18px; --ts-lede-size: 18px; --ts-button-size: 15px; }
 }
 @media (max-width: 479px) {
-  :root { --ts-lede-size: 17px; --ts-bodylg-size: 17px; }
+  :root { --ts-lede-size: 18px; --ts-bodylg-size: 18px; }
 }
 
-/* Sentence case everywhere: the old eyebrow, label and footer-head roles
-   were tracked uppercase (and the label was monospace). */
+
 .ts-eyebrow, .ts-label, .ts-foothead {
   text-transform: none;
   letter-spacing: 0;
   font-family: var(--sans);
 }
 
-/* One family, one canvas. */
+
 html, body { font-family: var(--sans); }
 body { background-color: var(--canvas); color: var(--ink-2); -webkit-font-smoothing: antialiased; }
 
-/* Two weights only (SYSTEM.md §2): bold text renders at 500, not 700. */
+
 b, strong { font-weight: 500; }

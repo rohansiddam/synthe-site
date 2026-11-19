@@ -1,11 +1,6 @@
-/* site.css — Synthe warm system v0.2, shared components (phase 1:
-   canvas, buttons, nav, footer). Loads LAST on every page. Visual only:
-   nav geometry, the notch, dropdowns and the phone menu are untouched
-   (their behaviour lives in site.js and nav-fx.js). */
 
-/* ---------- one canvas ----------
-   Full-width bands that only tinted a section become the canvas. The
-   deep red hero bands and how.html's dark gate stay until their phases. */
+
+
 .page-wrapper { background-color: var(--canvas); }
 .section_home-flow,
 .section_home-features,
@@ -14,7 +9,7 @@
 .sh2,
 .how-trio, .how-frame, .how-step { background-color: transparent; }
 
-/* ---------- buttons (SYSTEM.md §6) ---------- */
+
 .btn,
 .b2-btn {
   min-height: 40px;
@@ -30,13 +25,13 @@
   line-height: 1.2;
   align-items: center;
 }
-/* primary: ink on canvas */
+
 .btn.w-inline-block:not(.u-bg-oat-200):not(.cc-lime):not(.cc-card-light):not(.cc-white):not(.cc-oat),
 .b2-btn-primary {
   background-color: var(--ink);
   color: var(--canvas);
 }
-/* secondary: raised with a hairline ring */
+
 .btn.u-bg-oat-200,
 .b2-btn-secondary {
   background-color: var(--raised);
@@ -48,22 +43,7 @@
 .b2-btn-secondary:hover { box-shadow: inset 0 0 0 1px rgba(20, 19, 18, 0.32); }
 .b2-btn-primary:hover { background-color: #2b2926; }
 
-/* ---------- nav ---------- */
-.nav__link--p,
-.nav__list--link,
-.nav_2_menu-item {
-  font-family: var(--sans);
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: 0;
-  color: var(--ink-2);
-}
-.nav__list--link:hover .nav__link--p,
-.nav_2_menu-item:hover { color: var(--ink); }
-.nav__brand--link { color: var(--ink); }
-.nav2_wrap .btn { min-height: 40px; }
 
-/* ---------- footer ---------- */
 .b2-card {
   background-color: var(--stone);
   border-radius: var(--r-frame);
@@ -82,22 +62,64 @@
 .b2-credit { color: var(--ink-3); border-top-color: var(--line-2); }
 .b2-credit .ts-small { font-size: 14px; }
 
-/* nav dropdown group titles: sentence case, quiet */
-.nav__content--header-label,
-.nav__ad--content-m .eyebrow-text {
-  text-transform: none;
-  letter-spacing: 0;
-  font-family: var(--sans);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--ink-3);
+
+
+
+.skip-link { position: absolute; left: 16px; top: -64px; z-index: 1000; padding: 10px 14px; border-radius: var(--r-control); background: var(--ink); color: var(--canvas); font: 500 15px/1.2 var(--sans); text-decoration: none; transition: top 160ms cubic-bezier(0.22, 1, 0.36, 1); }
+.skip-link:focus { top: 16px; }
+
+.b2-cta-title, .b2-cta-lede { text-wrap: balance; }
+
+.b2-list .b2-link { display: inline-flex; align-items: center; min-height: 24px; }
+
+:root { --focus: var(--ink); }
+.section_home-hero, .pg-hero, .st-night-view { --focus: var(--canvas); }
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--focus) !important;
+  outline-offset: 2px !important;
 }
-/* phone menu: GitHub is the secondary action, Get started the primary */
-.btn.cc-oat {
-  background-color: var(--raised);
-  color: var(--ink);
-  box-shadow: inset 0 0 0 1px var(--line-3);
+textarea:focus-visible, input:focus-visible { outline-offset: 0 !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-icon, .btn, .b2-btn, .btn.cc-copy, .sv-copy, [class*="popover"], [class*="pop"] { transition-property: opacity, color, background-color, box-shadow !important; transition-duration: 120ms !important; }
 }
 
-.skip-link { position: absolute; left: 16px; top: -64px; z-index: 1000; padding: 10px 14px; border-radius: 10px; background: var(--ink); color: var(--canvas); font: 500 15px/1.2 var(--sans); text-decoration: none; }
-.skip-link:focus { top: 16px; }
+.b2-cta-cmd { display: flex; align-items: center; gap: 8px; }
+.b2-cta-cmd .sv-copy { min-width: 80px; min-height: 36px; padding: 0 14px; border-radius: var(--r-control); font: 500 14px/1 var(--sans); letter-spacing: 0; text-transform: none; background: var(--raised); color: var(--ink); border: 0; box-shadow: inset 0 0 0 1px var(--line-3); }
+.b2-cta-cmd .sv-copy:hover { box-shadow: inset 0 0 0 1px rgba(20, 19, 18, 0.32); }
+.b2-cta-cmd .sv-copy.is-done { background: var(--sage); color: var(--moss); box-shadow: none; }
+
+
+.btn .btn_icon-track,
+.synav-arrow {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  overflow: visible;
+}
+.btn .btn_icon-track > .btn-icon.u-position-absolute { display: none; }
+
+.btn .btn_icon-track > .btn-icon:not(.u-position-absolute),
+.synav-arrow svg {
+  transform: none;
+  transition: transform 180ms var(--ease-exit, cubic-bezier(0.45, 0, 0.8, 0.35));
+}
+.synav-arrow svg { display: block; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+@media (hover: hover) {
+  .btn:hover .btn_icon-track > .btn-icon:not(.u-position-absolute),
+  .synav-btn:hover .synav-arrow svg { transform: translateX(4px); transition: transform 520ms var(--ease-settle, cubic-bezier(0.12, 0.8, 0.3, 1)); }
+}
+.btn:focus-visible .btn_icon-track > .btn-icon:not(.u-position-absolute),
+.synav-btn:focus-visible .synav-arrow svg { transform: translateX(4px); transition: transform 520ms var(--ease-settle, cubic-bezier(0.12, 0.8, 0.3, 1)); }
+@media (prefers-reduced-motion: reduce) {
+  .btn .btn_icon-track > .btn-icon:not(.u-position-absolute),
+  .synav-arrow svg,
+  .btn:hover .btn_icon-track > .btn-icon:not(.u-position-absolute),
+  .synav-btn:hover .synav-arrow svg,
+  .btn:focus-visible .btn_icon-track > .btn-icon:not(.u-position-absolute),
+  .synav-btn:focus-visible .synav-arrow svg { transform: none !important; }
+}

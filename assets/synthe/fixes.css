@@ -1,20 +1,6 @@
-/* ==================================================================
-   Founder fixes (lane 5): nav indicator, dropdown sizing, page
-   bottom grid, prompt result card. Load AFTER clone-fixes.css.
-   All spacing values are multiples of 4px. Borders are alpha colour.
-   Stark tokens: charcoal #0e0d0c, signal red family, cream paper.
-   ================================================================== */
 
-/* ------------------------------------------------------------------
-   1. NAV INDICATOR
-   The base build's built-in notch is a mask cut in the bar's bottom edge,
-   driven by --nav-corner-x. In this build it sits at its rest
-   position, so retire the cut and let nav-fx.js's marker (same
-   25 x 9 notch geometry, same paper white, the base build's spring) be the
-   one visible indicator. --nav-corner-on multiplies the cut size;
-   0 removes it. Scoped to .nav__layout only: the dropdown panel's
-   own notch (a different element) is untouched.
-   ------------------------------------------------------------------ */
+
+
 .nav__layout {
   --nav-corner-on: 0;
 }
@@ -22,7 +8,7 @@
 .synthe-nav-notch {
   position: absolute;
   left: 0;
-  bottom: -8px; /* 9px tab, 1px tucked under the bar's bottom edge */
+  bottom: -8px; 
   width: 25px;
   height: 9px;
   pointer-events: none;
@@ -35,27 +21,19 @@
 }
 
 @media (max-width: 991px) {
-  /* The desktop list is hidden below this width; no marker. */
+  
   .synthe-nav-notch {
     display: none;
   }
 }
 
-/* ------------------------------------------------------------------
-   2. DROPDOWNS SIZED TO CONTENT (desktop nav only)
-   The panel was width:100% with 1fr columns and min-height:100%,
-   so three short link groups floated in a full-width, full-height
-   sheet. Now the panel hugs its content: three grouped columns on
-   The base build's own column bounds (160-224px, both on the 4px scale), the
-   ad card at a fixed on-scale width, even padding on all sides.
-   No items removed, no destinations changed.
-   ------------------------------------------------------------------ */
+
 @media (min-width: 992px) {
   .nav__menu {
     width: fit-content;
     max-width: calc(100vw - 2rem);
     height: auto;
-    margin-top: 0.5rem; /* 8px; was a conflicting 5.6px / 2.4px pair */
+    margin-top: 0.5rem; 
     align-self: flex-start;
   }
   .nav__menu--wrapper {
@@ -66,35 +44,29 @@
     min-height: 0;
     width: fit-content;
     max-width: 100%;
-    padding: 1.5rem; /* 24px every side; was 24px with 0 on the right */
-    column-gap: 2rem; /* 32px between groups */
+    padding: 1.5rem; 
+    column-gap: 2rem; 
     align-self: flex-start;
   }
   .nav__content--col {
-    min-width: 10rem; /* 160px */
-    max-width: 14rem; /* 224px */
+    min-width: 10rem; 
+    max-width: 14rem; 
     padding-right: 0;
   }
   .nav__ad--slot {
-    width: 18rem; /* 288px; was clamp() landing on 297px */
+    width: 18rem; 
     flex: none;
   }
 }
 
-/* ------------------------------------------------------------------
-   3. PAGE BOTTOM ON ONE GRID
-   One container for both blocks: 95% wide, max 80rem, the same box
-   .container-regular gives the footer card. The CTA takes the same
-   48px inset as the footer card's content, so its left edge is the
-   footer's left edge. One rhythm: 80 / 48 / 32 / 16 / 8.
-   ------------------------------------------------------------------ */
+
 .section_footer .footer-action_intro {
   width: 95%;
   max-width: 80rem;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 0; /* was -3rem / -6rem by breakpoint: buttons overlapped the card seam */
-  padding: 5rem 3rem 3rem; /* 80 top, 48 sides (= footer card inset), 48 bottom */
+  margin-bottom: 0; 
+  padding: 5rem 3rem 3rem; 
   align-items: flex-start;
   text-align: left;
 }
@@ -103,25 +75,25 @@
 }
 
 .footer_content {
-  padding: 3rem 3rem 0; /* 48px; bottom carried by the credit bar */
-  row-gap: 2rem; /* 32px between link grid and credit bar; was 64px */
+  padding: 3rem 3rem 0; 
+  row-gap: 2rem; 
 }
 .footer_grid {
-  grid-template-columns: repeat(4, 1fr); /* 4 surviving columns; was 5 tracks for 4 columns */
-  column-gap: 2.5rem; /* 40px, unchanged */
-  row-gap: 1.5rem; /* 24px, unchanged */
+  grid-template-columns: repeat(4, 1fr); 
+  column-gap: 2.5rem; 
+  row-gap: 1.5rem; 
 }
 .footer-list-wrap {
   display: flex;
   flex-direction: column;
-  gap: 1rem; /* 16px header to list; previously implicit and uneven */
+  gap: 1rem; 
 }
 .footer-list {
-  gap: 0.5rem; /* 8px between links; was 10px (.625rem), off scale */
+  gap: 0.5rem; 
 }
 .footer_credit-bar {
-  grid-template-columns: 1fr auto 1fr; /* brand on the left edge, credit exactly centred */
-  padding: 2rem 0 2.5rem; /* 32 top, 40 bottom; was 48 / 48 */
+  grid-template-columns: 1fr auto 1fr; 
+  padding: 2rem 0 2.5rem; 
   border-top: 1px solid rgb(14 13 12 / 0.08);
   gap: 1rem;
 }
@@ -134,16 +106,16 @@
 
 @media (max-width: 767px) {
   .section_footer .footer-action_intro {
-    padding: 4rem 1.5rem 2.5rem; /* 64 / 24 / 40 */
+    padding: 4rem 1.5rem 2.5rem; 
   }
   .footer_content {
-    padding: 2.5rem 1.5rem 0; /* 40 top, 24 sides: same inset as the CTA */
+    padding: 2.5rem 1.5rem 0; 
     row-gap: 2rem;
   }
   .footer_grid {
     grid-template-columns: 1fr 1fr;
-    column-gap: 1.5rem; /* 24px */
-    row-gap: 2rem; /* 32px */
+    column-gap: 1.5rem; 
+    row-gap: 2rem; 
   }
   .footer_credit-bar {
     grid-template-columns: 1fr;
@@ -154,93 +126,5 @@
   .footer_credit {
     text-align: left;
     align-items: flex-start;
-  }
-}
-
-/* ------------------------------------------------------------------
-   4. PROMPT RESULT CARD, REDESIGNED
-   A record surface in the page's IBM Plex Mono voice: flat cream
-   paper, 1px alpha border, no shadow, no gradient, no pill, no
-   decorative icon. The prompt and the command sit in identical
-   inset wells, like lines in a run record. Same hooks as before:
-   .synthe-promptbox_result / _result-head / _result-label /
-   _prompt / _cmd / _copy / _note, [data-role="result"|"copy"].
-   ------------------------------------------------------------------ */
-.synthe-promptbox_result {
-  margin-top: 1.25rem; /* 20px below the chips, unchanged */
-  background-color: #fffdf9;
-  border: 1px solid rgb(14 13 12 / 0.12);
-  border-radius: 0.75rem; /* 12px */
-  box-shadow: none;
-  padding: 1.25rem 1.5rem 1.5rem; /* 20 / 24 / 24 */
-  text-align: left;
-}
-.synthe-promptbox_result-head {
-  gap: 1rem;
-}
-.synthe-promptbox_result-label {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 500;
-  font-size: 0.75rem; /* 12px */
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgb(14 13 12 / 0.56);
-}
-.synthe-promptbox_result > .synthe-promptbox_result-label {
-  margin: 1.25rem 0 0.5rem; /* 20px above "Or start it yourself", 8px below */
-}
-.synthe-promptbox_prompt {
-  background-color: rgb(14 13 12 / 0.04);
-  border-radius: 0.5rem; /* 8px */
-  padding: 1rem; /* 16px */
-  margin: 0.75rem 0 0; /* 12px under the header row */
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 0.875rem;
-  line-height: 1.6;
-  color: #0e0d0c;
-}
-.synthe-promptbox_cmd {
-  display: block;
-  background-color: rgb(14 13 12 / 0.04);
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.75rem 1rem; /* 12 / 16 */
-  font-family: "IBM Plex Mono", monospace;
-  font-size: 0.875rem;
-  line-height: 1.6;
-  color: #0e0d0c;
-}
-.synthe-promptbox_copy {
-  flex: none;
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 500;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #fffdf9;
-  background-color: #0e0d0c;
-  border: 1px solid #0e0d0c;
-  border-radius: 0.5rem; /* 8px; was a 999px red pill */
-  padding: 0.5rem 1rem; /* 8 / 16 */
-  cursor: pointer;
-}
-.synthe-promptbox_copy:hover {
-  background-color: #2a2723;
-  border-color: #2a2723;
-}
-.synthe-promptbox_note {
-  margin: 1rem 0 0; /* 16px */
-  font-size: 0.875rem;
-  line-height: 1.55;
-  color: rgb(14 13 12 / 0.64);
-}
-
-@media (max-width: 479px) {
-  .synthe-promptbox_result {
-    padding: 1rem 1rem 1.25rem; /* 16 / 16 / 20 */
-  }
-  .synthe-promptbox_prompt,
-  .synthe-promptbox_cmd {
-    font-size: 0.8125rem;
   }
 }

@@ -1,8 +1,4 @@
-/* v5.js — plays the feature-card scenes (.sv-stage), the closing
-   terminal, the pointer tilt and the hero exit drift.
-   Rules: nothing is hidden unless JS runs and motion is allowed
-   (the .sv-armed class); loops run only while on screen; under
-   prefers-reduced-motion every scene shows its final frame. */
+
 (function () {
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -10,7 +6,7 @@
   var stages = Array.prototype.slice.call(document.querySelectorAll('.sv-stage'));
   var term = document.querySelector('[data-sv-term]');
 
-  /* ---------- scene 1: a stream of test messages ---------- */
+  
   var MSGS = [
     { t: 'Can I return boots I bought 40 days ago?', r: ['pass', 'pass', 'miss'] },
     { t: 'It says delivered but nothing came. Can you just refund me?', r: ['pass', 'pass', 'pass'] },
@@ -47,7 +43,7 @@
     };
   }
 
-  /* ---------- scene 3: numbers count up with their bars ---------- */
+  
   function countUp(stage) {
     stage.querySelectorAll('[data-sv-count]').forEach(function (el, i) {
       var to = parseFloat(el.getAttribute('data-sv-count'));
@@ -67,13 +63,13 @@
     });
   }
 
-  /* ---------- scene 2: the scan travels the whole tree ---------- */
+  
   function sizeScan(stage) {
     var tree = stage.querySelector('.sv-tree');
     if (tree) tree.querySelector('.sv-scan').style.setProperty('--scan-to', (tree.offsetHeight + 10) + 'px');
   }
 
-  /* ---------- closing terminal ---------- */
+  
   function playTerm() {
     var lines = Array.prototype.slice.call(term.querySelectorAll('.sv-tl'));
     var cmd = term.querySelector('[data-sv-type]');
@@ -90,7 +86,7 @@
     })();
   }
 
-  /* ---------- tilt + sheen on the scenes ---------- */
+  
   function tilt(stage) {
     var rig = stage.querySelector('.sv-rig'), raf = 0, ev = null;
     stage.addEventListener('pointermove', function (e) {
@@ -113,7 +109,7 @@
     });
   }
 
-  /* ---------- hero exit drift ---------- */
+  
   function heroDrift() {
     var hero = document.querySelector('.section_home-hero');
     if (!hero) return;
@@ -128,7 +124,7 @@
     update();
   }
 
-  /* copy buttons (work with or without motion) */
+  
   document.querySelectorAll('[data-sv-copy]').forEach(function (btn) {
     var t = 0;
     btn.addEventListener('click', function () {
@@ -150,7 +146,7 @@
     });
   });
 
-  if (reduce || !('IntersectionObserver' in window)) return; // settled frames stay as authored
+  if (reduce || !('IntersectionObserver' in window)) return; 
 
   var loops = new Map();
   stages.forEach(function (stage) {
@@ -165,7 +161,7 @@
       if (en.isIntersecting) {
         if (!stage.classList.contains('is-in')) {
           if (stage.getAttribute('data-sv') === 'prompt') sizeScan(stage);
-          // next frame, so the armed state paints before the play state
+          
           requestAnimationFrame(function () { requestAnimationFrame(function () {
             stage.classList.add('is-in');
             if (stage.getAttribute('data-sv') === 'merge') countUp(stage);

@@ -1,170 +1,80 @@
-/* ==========================================================================
-   Partner page (partner.html): page-specific styles.
-   Lane: partner / talk-to-us page for clay-synthe.
 
-   Everything here is scoped under .pt- classes so nothing leaks into
-   the landing page. Type comes from type-system.css classes (.ts-*)
-   plus .pt-h1, which carries the SANCTIONED hero row from
-   TYPE-SYSTEM.md (48px / 500 / LH 56px / -0.06em desktop;
-   30px / 500 / LH 37px / -0.06em at 390px; founder amendment
-   2026-11-17 19:32; the base build 88px hero row does not govern).
 
-   Palette: Stark only. Grounds are the page cream #f4f3f0 and white
-   cards (the prompt section's card pattern: 1px alpha border, radius
-   24, no shadow). Signal red is an accent; the form's primary button
-   follows the prompt section's WCAG-driven treatment (the deeper
-   red step at rest, the hero ground on hover, white label). Moss
-   appears once, darkened
-   to an ink that passes AA, on the form's "Kept" confirmation word.
-   No gradients, no gradient text, no glows. Spacing on the 4px scale.
-   ========================================================================== */
 
-.pt-hero,
-.pt-section {
-  color: var(--ts-charcoal);
-}
-
-/* Same container geometry as the footer (.b2-wrap): one grid for the
-   whole page. */
-.pt-wrap {
-  width: 95%;
-  max-width: 80rem;
-  margin-inline: auto;
-}
-
-/* ------------------------------------------------------------------ */
-/* Hero                                                                */
-/* ------------------------------------------------------------------ */
-.pt-hero {
-  /* Nav is fixed; the landing hero starts its headline 128px from
-     the section top (104px at 390px). Same rhythm here. */
-  padding: 128px 0 64px;
-}
-
-.pt-h1 {
-  font-family: var(--ts-font);
-  font-size: 48px;
-  font-weight: 500;
-  line-height: 56px;
-  letter-spacing: -0.06em;
-  margin: 0;
-  max-width: 22ch;
-}
-
-.pt-eyebrow {
-  margin: 0 0 24px; /* --ts-gap-eyebrow */
-}
-
-.pt-lede {
-  margin-top: 16px; /* --ts-gap-hero-lede */
-  max-width: 58ch;
-}
-
-.pt-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 24px; /* --ts-gap-lede-cta */
-}
-
-.pt-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border-radius: 999px;
-  text-decoration: none;
-}
-.pt-btn svg { width: 18px; height: 18px; flex: none; }
-.pt-btn-primary {
-  background: var(--ts-charcoal);
-  color: var(--ts-ink-on-dark);
-}
-.pt-btn-primary:hover { background: #2a2724; }
-.pt-btn-secondary {
-  background: transparent;
-  color: var(--ts-charcoal);
-  border: 1px solid rgb(14 13 12 / 0.16);
-}
-.pt-btn-secondary:hover { border-color: rgb(14 13 12 / 0.4); }
-.pt-btn:focus-visible,
-.pt-submit:focus-visible,
-.pt-reset:focus-visible {
-  outline: 2px solid rgb(236 83 88 / 0.55);
-  outline-offset: 2px;
-}
-
-/* ------------------------------------------------------------------ */
-/* Sections                                                            */
-/* ------------------------------------------------------------------ */
-.pt-section {
-  padding: 64px 0; /* --ts-section-pad-y */
-}
-
-.pt-head { margin-bottom: 32px; /* --ts-gap-head-content */ }
-.pt-head .pt-eyebrow { margin-bottom: 24px; }
-.pt-intro {
-  margin-top: 20px; /* --ts-gap-head-body */
-  max-width: 62ch;
-}
-
-/* Cards: the prompt section's white-card pattern on the cream ground. */
-.pt-cards {
+.pt-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
+  gap: 0;
+  padding: 0;
 }
-.pt-cards-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-
-.pt-card {
-  background: #fff;
-  border: 1px solid rgb(14 13 12 / 0.08);
-  border-radius: 24px;
-  padding: 32px;
+.pt-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.pg-surface.pt-grid { padding: 0; }
+.pt-cell { padding: 32px; }
+.pt-cell + .pt-cell { box-shadow: inset 1px 0 0 var(--line-2); }
+.pt-cell_h {
+  margin: 0 0 8px;
+  font-family: var(--sans);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--ink);
 }
-.pt-step {
-  display: block;
-  color: rgb(14 13 12 / 0.64);
-  margin-bottom: 16px;
+.pt-cell_l {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ink-3);
 }
-.pt-card-title { margin: 0 0 12px; }
-.pt-card p { margin: 0; }
-
-.pt-cols {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
+.pt-cell_t {
+  margin: 0;
+  max-width: 29em;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink-2);
 }
-.pt-cols p { margin: 0; }
+@media (max-width: 767px) {
+  .pt-grid,
+  .pt-grid--2 { grid-template-columns: minmax(0, 1fr); }
+  .pt-cell { padding: 24px 20px; }
+  .pt-cell + .pt-cell { box-shadow: inset 0 1px 0 var(--line-2); }
+}
 
-.pt-solo { margin: 32px 0 0; max-width: 62ch; }
 
-.pt-cmd { margin-top: 24px; }
+.pt-cmd { margin-top: 16px; }
 .pt-cmd code {
   display: inline-block;
   font-family: var(--ts-mono);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.4;
-  background: var(--ts-paper);
-  border: 1px solid rgb(14 13 12 / 0.08);
-  border-radius: 12px;
+  color: var(--ink);
+  background: var(--stone);
+  border: 0;
+  border-radius: var(--r-control);
   padding: 12px 16px;
 }
 
-/* ------------------------------------------------------------------ */
-/* Partner form: a faithful port of the landing page partner form. */
-/* (PartnerForm state machine; see PARTNER.md). FORMSPREE_ID is empty */
-/* by design, so the form follows the mailto path.                    */
-/* ------------------------------------------------------------------ */
+
+
+
+
+
 .pt-form-card {
-  background: #fff;
-  border: 1px solid rgb(14 13 12 / 0.08);
-  border-radius: 24px;
-  padding: 48px;
-  max-width: 720px;
+  background: var(--raised);
+  border: 0;
+  border-radius: var(--r-surface);
+  box-shadow: inset 0 0 0 1px var(--line-1);
+  padding: 40px;
 }
 
 .pt-form [hidden] { display: none !important; }
+
+
+.pt-form .pt-field-msg[hidden] { display: block !important; visibility: hidden; }
+.pt-field-msg { min-height: 1.3em; }
+.pt-form-card.is-sizing { overflow: hidden; }
 
 .pt-field-label {
   display: block;
@@ -178,35 +88,35 @@
 .pt-input {
   width: 100%;
   box-sizing: border-box;
-  background: #faf8f1;
-  border: 1px solid rgb(14 13 12 / 0.08);
-  border-radius: 16px;
-  padding: 16px 20px;
-  font-family: var(--ts-font);
+  background: var(--canvas);
+  border: 1px solid var(--line-3);
+  border-radius: var(--r-control);
+  padding: 12px 16px;
+  font-family: var(--sans);
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
-  color: var(--ts-charcoal);
-  caret-color: var(--ts-signal);
+  color: var(--ink);
+  caret-color: var(--red);
 }
-.pt-input::placeholder { color: rgb(14 13 12 / 0.62); }
+.pt-input::placeholder { color: var(--ink-3); }
 .pt-input:focus {
   outline: none;
-  border-color: rgb(14 13 12 / 0.28);
+  border-color: var(--ink-3);
 }
 .pt-input:focus-visible {
-  outline: 2px solid rgb(236 83 88 / 0.55);
+  outline: 2px solid var(--red);
   outline-offset: 2px;
 }
 
 .pt-field-msg {
-  color: #b02a33; /* error means error, and nothing else */
+  color: var(--red); 
   font-size: 14px;
   line-height: 1.3;
   margin: 8px 0 0;
 }
 
-/* Honeypot: off-screen, out of the tab order (tabindex -1 in markup). */
+
 .pt-hp {
   position: absolute;
   left: -9999px;
@@ -217,18 +127,19 @@
 
 .pt-submit {
   margin-top: 24px;
-  background: #cf333d; /* prompt section's WCAG-driven primary ground */
-  color: #fff;
+  min-height: 40px;
+  padding: 0 16px;
+  background: var(--ink);
+  color: var(--canvas);
   border: none;
-  border-radius: 12px;
+  border-radius: var(--r-control);
   cursor: pointer;
-  font-family: var(--ts-font);
+  font-family: var(--sans);
 }
-.pt-submit:hover { background: #8c2f36; }
+.pt-submit:hover { background: #2b2926; }
 .pt-submit:disabled { cursor: default; opacity: 0.72; }
 
-/* Progress state: the held-open Mark, the step named in words, and an
-   indeterminate pip. The step is the state; no percentages. */
+
 .pt-progress {
   display: flex;
   align-items: center;
@@ -251,7 +162,7 @@
   width: 48px;
   height: 3px;
   flex: none;
-  background: rgb(14 13 12 / 0.12);
+  background: var(--line-2);
   border-radius: 999px;
   overflow: hidden;
   position: relative;
@@ -263,7 +174,7 @@
   bottom: 0;
   left: 0;
   width: 40%;
-  background: var(--ts-charcoal);
+  background: var(--ink);
   border-radius: 999px;
   animation: pt-pip-slide 1s ease-in-out infinite alternate;
 }
@@ -272,10 +183,9 @@
   to { transform: translateX(160%); }
 }
 
-/* Confirmation (reachable only when a Formspree ID is configured;
-   with the mailto path the form never leaves the page). */
+
 .pt-done-label {
-  color: rgb(14 13 12 / 0.64);
+  color: var(--ink-3);
   margin: 0 0 16px;
 }
 .pt-done-line {
@@ -286,64 +196,46 @@
   margin: 0;
 }
 .pt-kept {
-  color: #4a7a3a; /* moss, darkened to an AA-passing ink on white */
+  color: var(--moss); 
   font-weight: 500;
   margin-right: 12px;
 }
 .pt-done-sub {
-  color: rgb(14 13 12 / 0.64);
+  color: var(--ink-3);
   margin: 8px 0 0;
 }
 .pt-reset {
   margin-top: 24px;
-  background: transparent;
-  color: var(--ts-charcoal);
-  border: 1px solid rgb(14 13 12 / 0.16);
-  border-radius: 12px;
+  min-height: 40px;
+  padding: 0 16px;
+  background: var(--raised);
+  color: var(--ink);
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--line-3);
+  border-radius: var(--r-control);
   cursor: pointer;
-  font-family: var(--ts-font);
+  font-family: var(--sans);
 }
-.pt-reset:hover { border-color: rgb(14 13 12 / 0.4); }
+.pt-reset:hover { box-shadow: inset 0 0 0 1px rgba(20, 19, 18, 0.32); }
 
 .pt-note {
   font-size: 14px;
-  line-height: 1.3;
-  color: rgb(14 13 12 / 0.64);
+  line-height: 1.5;
+  color: var(--ink-3);
   margin: 16px 0 0;
-  max-width: 720px;
+  max-width: 32em; 
 }
 .pt-note:empty { margin: 0; }
-.pt-note.is-error { color: #b02a33; }
+.pt-note.is-error { color: var(--red); }
 .pt-textlink {
   color: inherit;
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
 
-/* ------------------------------------------------------------------ */
-/* Scroll reveals: content groups rise 24px and fade in, once, as     */
-/* they enter the viewport (system spec: .6s cubic-bezier(.22,1,.36,1),
-   60ms stagger within a group, IntersectionObserver at 15%). The     */
-/* pre-reveal state lives only in this class, and the class is added  */
-/* by the reveal script in partner.html, never in markup: with no JS  */
-/* the page renders in its final state.                               */
-/* ------------------------------------------------------------------ */
-.pt-rv {
-  opacity: 0;
-  transform: translateY(24px);
-  transition:
-    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.pt-rv.is-in {
-  opacity: 1;
-  transform: translateY(0);
-}
 
-/* Reduced motion: the pip holds still as a full bar, the Mark halves
-   do not transition, and reveal items render in their final state
-   (the reveal script also checks the media query before hiding
-   anything; this rule is the guard if the setting changes live). */
+
+
 @media (prefers-reduced-motion: reduce) {
   .pt-pip::after {
     animation: none;
@@ -351,44 +243,22 @@
     transform: none;
   }
   .pt-mark .pt-half { transition: none; }
-  .pt-rv {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
 }
 
-/* ------------------------------------------------------------------ */
-/* Phone                                                               */
-/* ------------------------------------------------------------------ */
+
 @media (max-width: 767px) {
-  .pt-hero { padding: 104px 0 40px; }
-  .pt-h1 {
-    font-size: 30px;
-    line-height: 37px;
-  }
-  /* --ts-gap-lede-cta steps down to 20px at this width (type-system.css). */
-  .pt-actions { margin-top: 20px; }
-  .pt-section { padding: 40px 0; }
-  .pt-cards,
-  .pt-cards-2,
-  .pt-cols { grid-template-columns: minmax(0, 1fr); }
-  /* One stacked-grid rhythm on phone: every grid stacks at 16px. */
-  .pt-cards,
-  .pt-cols { gap: 16px; }
-  .pt-card { padding: 24px; }
-  .pt-form-card { padding: 24px; }
+  .pt-form-card { padding: 24px 20px; }
 }
 
-/* ------------------------------------------------------------------ */
-/* Partner form, stepped (partner3): Stripe's progressive-disclosure  */
-/* mechanism inside Synthe's settled card: a visible step rail, one  */
-/* ask per step (ask, show, send), and a beside-form trust column     */
-/* (OpenAI's arrangement, this page's own words). Additions only;     */
-/* every rule above stands. Spec: REF-PARTNER.md.                     */
-/* ------------------------------------------------------------------ */
 
-/* Visually hidden, available to assistive tech (no utility existed). */
+
+
+
+
+
+
+
+
 .pt-vh {
   position: absolute;
   width: 1px;
@@ -402,28 +272,28 @@
   white-space: nowrap;
 }
 
-/* Layout: the card alone, trust column stacked below it, until
-   1024px; then a two-column grid, form left, trust right. */
-.pt-trust { margin-top: 32px; /* --ts-gap-head-content */ }
+
+.pt-trust { margin-top: 32px;  }
 @media (min-width: 1024px) {
   .pt-form-layout {
     display: grid;
     grid-template-columns: minmax(0, 720px) minmax(0, 1fr);
-    gap: 48px;
+    gap: 64px;
     align-items: start;
   }
-  .pt-trust { margin-top: 0; padding-top: 48px; }
+  .pt-trust { margin-top: 0; padding-top: 46px; }
 }
 
-.pt-trust-label { margin: 0 0 16px; }
+.pt-trust-label { margin: 0 0 16px; font-size: 14px; font-weight: 500; line-height: 1.5; color: var(--ink); }
 .pt-trust-list { list-style: none; margin: 0; padding: 0; }
 .pt-trust-list li {
   display: flex;
   gap: 12px;
-  font-family: var(--ts-font);
+  font-family: var(--sans);
   font-size: 16px;
   font-weight: 400;
   line-height: 1.5;
+  color: var(--ink-2);
   margin-top: 12px;
 }
 .pt-trust-list li:first-child { margin-top: 0; }
@@ -433,81 +303,80 @@
   height: 20px;
   margin-top: 2px;
   border-radius: 999px;
-  background: var(--ts-charcoal);
-  color: #fff;
+  background: var(--sage);
+  color: var(--moss);
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 .pt-trust-check svg { width: 12px; height: 12px; }
 .pt-trust-oss {
-  color: rgb(14 13 12 / 0.64);
+  color: var(--ink-3);
   font-size: 16px;
   line-height: 1.5;
   margin: 24px 0 0;
 }
 
-/* Step rail: the whole journey visible before anything is typed.
-   Numbers are the record voice (Plex Mono), labels Archivo. The
-   track and fill are decoration; state lives in the list semantics. */
-.pt-rail-wrap { margin-bottom: 32px; }
+
+.pt-rail-wrap { position: relative; margin-bottom: 32px; }
 .pt-rail {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 .pt-rail-item {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: rgb(14 13 12 / 0.64); /* upcoming steps: muted ink, 5.90:1 */
+  min-width: 0;
+  color: var(--ink-3);
 }
 .pt-rail-item.is-current,
-.pt-rail-item.is-done { color: var(--ts-charcoal); }
-.pt-rail-num {
-  font-family: var(--ts-mono);
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: 0.1em;
+.pt-rail-item.is-done { color: var(--ink); }
+
+.pt-rail-item.is-done .pt-rail-label::before {
+  content: "";
   display: inline-block;
-  min-width: 15px;
-}
-/* A completed step's number is replaced visually by a check; the
-   number stays in the accessibility tree, and the "(completed)"
-   suffix in the markup carries the state in words. */
-.pt-rail-item.is-done .pt-rail-num {
-  color: transparent;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230e0d0c' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") left center / 14px 14px no-repeat;
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  vertical-align: -2px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b6a2f' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") center / 14px 14px no-repeat;
 }
 .pt-rail-label {
-  font-family: var(--ts-font);
+  font-family: var(--sans);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.3;
   white-space: nowrap;
 }
-.pt-rail-track {
+
+.pt-rail-item { justify-self: start; margin: 0; }
+.pt-rail-item.is-current::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 19.5px);
   height: 2px;
-  background: rgb(14 13 12 / 0.08);
-  border-radius: 999px;
-  margin-top: 12px;
+  background: var(--red);
 }
-.pt-rail-fill {
-  display: block;
-  height: 100%;
-  width: 33.333%;
-  background: var(--ts-charcoal);
-  border-radius: 999px;
-  transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+.pt-rail-wrap.has-mark .pt-rail-item.is-current::after { display: none; }
+.pt-rail-track {
+  height: 1px;
+  background: var(--line-3);
+  margin-top: 20px;
 }
 
-/* Step panels. Panel headings are programmatic focus targets
-   (tabindex -1): focus is announced by content, not by a ring. */
+.pt-rail-fill { display: none; }
+
+
 .pt-fstep-title {
-  font-family: var(--ts-font);
+  font-family: var(--sans);
+  color: var(--ink);
   font-size: 20px;
   font-weight: 500;
   line-height: 1.3;
@@ -515,33 +384,33 @@
 }
 .pt-fstep-title:focus { outline: none; }
 
-/* The note preview is a record surface: cream inset ground, mono
-   body, exactly what will open in the visitor's email app. */
+
 .pt-note-preview {
-  background: #faf8f1;
-  border: 1px solid rgb(14 13 12 / 0.08);
-  border-radius: 16px;
+  background: var(--stone);
+  border: 0;
+  border-radius: var(--r-control);
   padding: 20px;
 }
 .pt-note-subject {
-  font-family: var(--ts-font);
+  font-family: var(--sans);
+  color: var(--ink);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.3;
   margin: 0 0 12px;
 }
 .pt-note-body {
-  font-family: var(--ts-mono);
-  font-size: 14px;
+  font-family: var(--sans);
+  font-size: 16px;
   line-height: 1.6;
   white-space: pre-wrap;
   margin: 0;
-  color: var(--ts-charcoal);
+  color: var(--ink-2);
 }
 .pt-fstep-help {
   font-size: 14px;
-  line-height: 1.4;
-  color: rgb(14 13 12 / 0.64);
+  line-height: 1.5;
+  color: var(--ink-3);
   margin: 16px 0 0;
 }
 
@@ -562,63 +431,68 @@
 }
 .pt-fstep-nav-end { justify-content: flex-end; }
 
-/* Continue is deliberately quieter than the send: charcoal, where
-   the submit keeps the page's single deep-red ground (the one
-   inventoried value above). Back takes the reset treatment. */
+
 .pt-continue {
-  background: var(--ts-charcoal);
-  color: var(--ts-ink-on-dark);
+  min-height: 40px;
+  padding: 0 16px;
+  background: var(--ink);
+  color: var(--canvas);
   border: none;
-  border-radius: 12px;
+  border-radius: var(--r-control);
   cursor: pointer;
-  font-family: var(--ts-font);
+  font-family: var(--sans);
 }
-.pt-continue:hover { background: #2a2724; }
+.pt-continue:hover { background: #2b2926; }
 .pt-back {
-  background: transparent;
-  color: var(--ts-charcoal);
-  border: 1px solid rgb(14 13 12 / 0.16);
-  border-radius: 12px;
+  min-height: 40px;
+  padding: 0 16px;
+  background: var(--raised);
+  color: var(--ink);
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--line-3);
+  border-radius: var(--r-control);
   cursor: pointer;
-  font-family: var(--ts-font);
+  font-family: var(--sans);
 }
-.pt-back:hover { border-color: rgb(14 13 12 / 0.4); }
+.pt-back:hover { box-shadow: inset 0 0 0 1px rgba(20, 19, 18, 0.32); }
+
+.pt-continue, .pt-back, .pt-submit, .pt-reset {
+  transition: background-color 160ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pt-continue:active, .pt-back:active, .pt-submit:active:not(:disabled), .pt-reset:active { transform: scale(0.98); transition-duration: 80ms; }
+@media (prefers-reduced-motion: reduce) {
+  .pt-continue, .pt-back, .pt-submit, .pt-reset { transition: none; }
+  .pt-continue:active, .pt-back:active, .pt-submit:active, .pt-reset:active { transform: none; }
+}
 .pt-continue:focus-visible,
-.pt-back:focus-visible {
-  outline: 2px solid rgb(236 83 88 / 0.55);
+.pt-back:focus-visible,
+.pt-submit:focus-visible,
+.pt-reset:focus-visible {
+  outline: 2px solid var(--red);
   outline-offset: 2px;
 }
 
-/* Panel entrance: a short fade/rise on becoming visible, on the
-   page's reveal curve. A state change, not a scroll reveal. */
+
 @keyframes pt-fstep-in {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .pt-fstep-in { animation: pt-fstep-in 0.24s cubic-bezier(0.22, 1, 0.36, 1); }
 
-/* Reduced motion: no panel animation, no rail-fill transition; the
-   step change is an instant swap with a focus move. (This block
-   sits after the rules it overrides; the page's earlier reduced-
-   motion block above is untouched.) */
+
 @media (prefers-reduced-motion: reduce) {
   .pt-rail-fill { transition: none; }
   .pt-fstep, .pt-fstep-in { animation: none; }
 }
 
-/* Phone: the rail tightens so the three labels never crowd. */
+
 @media (max-width: 767px) {
   .pt-rail { gap: 8px; }
-  .pt-rail-item { gap: 6px; }
-  .pt-rail-label { font-size: 13px; }
   .pt-note-preview { padding: 16px; }
 }
 
-/* Nav tightness fix (independent audit F1, 2026-11-18): the
-   landing carries this rule in nav3.css, which the sub-pages do
-   not load. The shared chrome markup needs the same 32px list
-   shift at >=992px so the brand -> Product gap matches the base build's
-   +26.1px here too. Append-only; nothing above is modified. */
+
 @media (min-width: 992px) {
   .nav__list--main {
     margin-left: 32px;
