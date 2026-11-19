@@ -1,0 +1,6 @@
+.section_home-hero { position: relative; }
+.section_home-hero .hero-mark { position: absolute; z-index: 1; top: 50%; right: max(48px, (100% - 1280px) / 2); width: clamp(240px, 26vw, 400px); transform: translate3d(0, -50%, 0); pointer-events: none; }
+.section_home-hero .hero-mark_img { display: block; width: 100%; height: auto; animation: hero-mark-in 900ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes hero-mark-in { from { opacity: 0; transform: translateY(16px); } }
+@media (max-width: 991px) { .section_home-hero .hero-mark { display: none; } }
+@media (prefers-reduced-motion: reduce) { .section_home-hero .hero-mark_img { animation: none; } }
