@@ -33,7 +33,7 @@ import stamp  # noqa: E402
 PAGES = sorted(SITE.glob("*.html"))
 # Two page families since the 2026-11-18 warm launch: the warm-system pages (nav2 header, b2 footer,
 # assets/synthe/*) and the legacy pages of the earlier product (site-head header, site.css, site.js).
-WARM = {"index.html", "how.html", "docs.html", "partner.html"}
+WARM = {"index.html", "how.html", "docs.html", "partner.html", "privacy.html", "terms.html"}
 COPY_FILES = PAGES + [SITE / "llms.txt", SITE / "llms-full.txt", SITE / ".well-known" / "security.txt"]
 IN_CI = os.environ.get("GITHUB_ACTIONS") == "true"
 
