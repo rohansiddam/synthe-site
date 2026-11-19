@@ -110,10 +110,14 @@
     var wr = word.getBoundingClientRect();
     var left = wr.left + card.offsetLeft;
     card.style.setProperty("--dx", clampX(left, card.offsetWidth, markLeft()).toFixed(1) + "px");
+    
+    var bar = h1.querySelector(".hfx-bar"), dy = 0;
+    if (bar && !bar.contains(word)) dy = Math.max(0, bar.getBoundingClientRect().bottom - wr.bottom);
+    card.style.setProperty("--dy", dy.toFixed(1) + "px");
     if (!stack || FLOAT.matches) { setPush(0); return; }
     
     var dx = parseFloat(card.style.getPropertyValue("--dx")) || 0;
-    var cTop = wr.top + card.offsetTop, cBottom = cTop + card.offsetHeight;
+    var cTop = wr.top + card.offsetTop + dy, cBottom = cTop + card.offsetHeight;
     var cLeft = left + dx, cRight = cLeft + card.offsetWidth;
     var sr = stack.getBoundingClientRect(), sTop = sr.top - translateY(stack);
     var overlapsX = cLeft < sr.right && cRight > sr.left;
