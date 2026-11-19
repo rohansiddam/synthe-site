@@ -38,7 +38,8 @@
   });
 
   
-  var T = { draw: 480, at: 200, out: 120, verdict: 420, exit: 180, hold: 1600, gap: 4, rm: 120 };
+  var T = { draw: 480, at: 200, out: 100, verdict: 420, exit: 180, hold: 1600, gap: 4, rm: 120, minW: 96 };
+  var IN = T.at + 40, OUT = IN - T.out, FADE_IN = Math.round(T.verdict * 0.4); 
   var reduceMQ = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
   var registry = []; 
 
@@ -46,7 +47,7 @@
     var dur = o.dur, delay = o.delay || 0;
     if (reduceMQ.matches) {
       var fadeOnly = frames.every(function (f) { return Object.keys(f).every(function (k) { return k === 'opacity' || k === 'offset'; }); });
-      dur = fadeOnly ? T.rm : 0; delay = fadeOnly ? Math.min(delay, 60) : 0;
+      dur = fadeOnly ? (o.rm ? o.rm[0] : T.rm) : 0; delay = fadeOnly ? (o.rm ? o.rm[1] : Math.min(delay, 60)) : 0;
     }
     var a = el.animate(frames, { duration: dur, delay: delay, easing: EASE[o.curve], fill: 'both' });
     if (o.spec && dur) registry.push({ el: el, anim: a, prop: o.spec[0], from: o.spec[1], to: o.spec[2], curve: o.curve, dur: dur, delay: delay, label: o.label || '' });
@@ -115,13 +116,13 @@
     }
     emit(kp, 'start', ok);
     if (!(same && show && op(show) > 0.99)) {
-      [P.L.rest, P.L.wait, P.L.done, P.L.fail].forEach(function (l) { if (l && l !== show && op(l) > 0) to(l, { opacity: 0 }, { dur: T.out, delay: T.at - 40, curve: 'fade' }); });
+      [P.L.rest, P.L.wait, P.L.done, P.L.fail].forEach(function (l) { if (l && l !== show && op(l) > 0) to(l, { opacity: 0 }, { dur: T.out, delay: OUT, curve: 'fade', rm: [60, 0] }); });
       if (show) {
         freeze(show, ['transform', 'opacity']);
-        if (ok) play(show, [{ transform: 'scale(0.94)' }, { transform: 'scale(1)' }], { dur: T.verdict, delay: T.at - 40 + T.out, curve: 'verdict', spec: ['scale', 0.94, 1], label: 'kp label' });
-        play(show, [{ opacity: op(show) }, { opacity: 1 }], { dur: Math.round(T.verdict * 0.4), delay: T.at - 40 + T.out, curve: 'fade' });
+        if (ok) play(show, [{ transform: 'scale(0.94)' }, { transform: 'scale(1)' }], { dur: T.verdict, delay: IN, curve: 'verdict', spec: ['scale', 0.94, 1], label: 'kp label' });
+        play(show, [{ opacity: op(show) }, { opacity: 1 }], { dur: FADE_IN, delay: IN, curve: 'fade', rm: [60, 60] });
       }
-      if (P.tint) { if (ok) to(P.tint, { opacity: 1 }, { dur: T.verdict, delay: T.at, curve: 'fade' }); else if (op(P.tint) > 0) to(P.tint, { opacity: 0 }, { dur: T.exit, curve: 'exit' }); }
+      if (P.tint) { if (ok) to(P.tint, { opacity: 1 }, { dur: T.verdict, delay: T.at, curve: 'fade', rm: [60, 60] }); else if (op(P.tint) > 0) to(P.tint, { opacity: 0 }, { dur: T.exit, curve: 'exit' }); }
     }
     
     st.cls = later(function () { kp.classList.toggle('is-fail', !ok); kp.classList.toggle('is-done', ok); }, T.at);
@@ -131,10 +132,10 @@
   function resetKp(kp) {
     var st = kp.__kept, P = st.P;
     st.ok = null;
-    ['done', 'fail', 'wait'].forEach(function (n) { var l = P.L[n]; if (l && op(l) > 0) to(l, { opacity: 0 }, { dur: T.out, curve: 'fade' }); });
-    if (P.tint && op(P.tint) > 0) to(P.tint, { opacity: 0 }, { dur: T.exit, curve: 'exit' });
+    ['done', 'fail', 'wait'].forEach(function (n) { var l = P.L[n]; if (l && op(l) > 0) to(l, { opacity: 0 }, { dur: T.out, curve: 'fade', rm: [60, 0] }); });
+    if (P.tint && op(P.tint) > 0) to(P.tint, { opacity: 0 }, { dur: T.exit, delay: T.out, curve: 'exit', rm: [60, 60] });
     if (P.fill) to(P.fill, { opacity: 0 }, { dur: T.exit, curve: 'exit' });
-    if (P.L.rest) { freeze(P.L.rest, ['opacity']); play(P.L.rest, [{ opacity: op(P.L.rest) }, { opacity: 1 }], { dur: 208, delay: 80, curve: 'fade' }); }
+    if (P.L.rest) { freeze(P.L.rest, ['opacity']); play(P.L.rest, [{ opacity: op(P.L.rest) }, { opacity: 1 }], { dur: 208, delay: T.out, curve: 'fade', rm: [60, 60] }); }
     clearTimeout(st.cls);
     later(function () { if (st.ok === null) { kp.classList.remove('is-done', 'is-fail'); emit(kp, 'end', null); } }, 260);
   }
@@ -188,22 +189,20 @@
     if (from < 0.999) play(L.fill, [{ transform: 'scaleX(' + from + ')' }, { transform: 'scaleX(1)' }], { dur: T.draw, curve: 'draw', spec: from === 0 ? ['scaleX', 0, 1] : null, label: 'line ' + (c.className || c.tagName) });
     emit(c, 'start', ok);
     if (ok) {
-      if (op(L.was) > 0) {
-        
-        var wt = L.was.firstChild;
-        if (wt && op(wt) > 0) to(wt, { opacity: 0 }, { dur: T.out, delay: T.at - 40, curve: 'fade' });
-        to(L.was, { opacity: 0 }, { dur: T.out, delay: T.at - 40 + T.out + Math.round(T.verdict * 0.4), curve: 'fade' });
-      }
       if (!(same && op(L.face) > 0.99)) {
+        if (op(L.was) < 0.01) coverNow(c, L); 
+        var wt = L.was.firstChild;
+        if (wt && op(wt) > 0) to(wt, { opacity: 0 }, { dur: T.out, delay: OUT, curve: 'fade', rm: [60, 0] });
         var label = doneLabel(c);
         if (label !== '' && !c.textContent.trim()) label = ''; 
-        L.face.innerHTML = label === '' ? CHECK : '';
-        if (label !== '') L.face.textContent = label;
+        L.face.innerHTML = '<span class="kept-face-t"></span>';
+        if (label === '') L.face.firstChild.innerHTML = CHECK; else L.face.firstChild.textContent = label;
         freeze(L.face, ['transform', 'opacity']);
-        play(L.face, [{ transform: 'scale(0.94)' }, { transform: 'scale(1)' }], { dur: T.verdict, delay: T.at - 40 + T.out, curve: 'verdict', spec: ['scale', 0.94, 1], label: 'face ' + (c.className || c.tagName) });
-        play(L.face, [{ opacity: op(L.face) }, { opacity: 1 }], { dur: Math.round(T.verdict * 0.4), delay: T.at - 40 + T.out, curve: 'fade' });
+        play(L.face, [{ transform: 'scale(0.94)' }, { transform: 'scale(1)' }], { dur: T.verdict, delay: IN, curve: 'verdict', spec: ['scale', 0.94, 1], label: 'face ' + (c.className || c.tagName) });
+        play(L.face, [{ opacity: op(L.face) }, { opacity: 1 }], { dur: FADE_IN, delay: IN, curve: 'fade', rm: [60, 60] });
+        to(L.was, { opacity: 0 }, { dur: T.out, delay: IN + FADE_IN, curve: 'fade', rm: [1, 120] }); 
       }
-    } else if (op(L.face) > 0) to(L.face, { opacity: 0 }, { dur: T.out, curve: 'fade' });
+    } else if (op(L.face) > 0) to(L.face, { opacity: 0 }, { dur: T.out, curve: 'fade', rm: [60, 0] });
     var k = kindOf(c);
     say(c, ok ? (c.getAttribute('data-kept-ok') || (k && k.ok) || 'Done') : (c.getAttribute('data-kept-fail') || (k && k.fail) || 'That did not work. Try again.'));
     st.back = later(function () { resetPlain(c); }, T.hold);
@@ -212,8 +211,10 @@
     var L = c.__keptLayer, st = c.__kept;
     if (!L) return;
     st.ok = null;
-    if (op(L.was) > 0) to(L.was, { opacity: 0 }, { dur: T.out, curve: 'fade' });
-    if (op(L.face) > 0) to(L.face, { opacity: 0 }, { dur: T.out, curve: 'fade' });
+    if (op(L.was) > 0) to(L.was, { opacity: 0 }, { dur: T.out, curve: 'fade', rm: [60, 0] });
+    var ft = L.face.firstChild;
+    if (ft && ft.nodeType === 1 && op(L.face) > 0) to(ft, { opacity: 0 }, { dur: T.out, curve: 'fade', rm: [60, 0] });
+    if (op(L.face) > 0) to(L.face, { opacity: 0 }, { dur: T.out, delay: T.out, curve: 'fade', rm: [60, 60] }); 
     to(L.fill, { opacity: 0 }, { dur: T.exit, curve: 'exit' });
     st.drop = later(function () {
       if (st.ok !== null) return;
@@ -221,7 +222,7 @@
       if (!c.matches(':hover') && document.activeElement !== c) { L.root.remove(); c.__keptLayer = null; }
       active = active.filter(function (x) { return x !== L; });
       emit(c, 'end', null);
-    }, T.exit + 40);
+    }, Math.max(T.exit, 2 * T.out) + 40);
   }
   addEventListener('resize', function () { active.forEach(place); });
 
@@ -251,7 +252,7 @@
     c.parentNode.insertBefore(probe, c.nextSibling);
     ['Copied', c.textContent.trim()].concat(c.matches('.sv-copy') ? ['Press \u2318C'] : []).forEach(function (t) { probe.textContent = t; w = Math.max(w, probe.getBoundingClientRect().width); });
     probe.remove();
-    c.style.minWidth = Math.ceil(w) + 'px';
+    c.style.minWidth = Math.ceil(Math.max(T.minW, w)) + 'px';
     c.__keptLocked = true;
   }
   function lockAll() { document.querySelectorAll(HOOKS[0].sel).forEach(lockWidth); }
@@ -274,9 +275,18 @@
   }
   
   function cover(a) {
-    var c = a.ctrl, L = layerOf(c), w = L.was, sn = a.snap;
+    var L = layerOf(a.ctrl);
     if (!L.root.style.width) place(L);
-    w.innerHTML = '<span></span>'; w.firstChild.textContent = a.label;
+    paintCover(L, a.label, a.snap);
+  }
+  function coverNow(c, L) {
+    var cs = getComputedStyle(c), t = c.textContent.trim();
+    paintCover(L, t || null, { bg: solidBg(c), color: cs.color, shadow: cs.boxShadow === 'none' ? '' : cs.boxShadow }, t ? null : c.innerHTML);
+  }
+  function paintCover(L, label, sn, html) {
+    var w = L.was;
+    w.innerHTML = '<span></span>';
+    if (html) w.firstChild.innerHTML = html; else w.firstChild.textContent = label;
     w.style.background = sn.bg; w.style.color = sn.color; w.style.boxShadow = sn.shadow;
     freeze(w, ['opacity']); w.style.opacity = '1';
   }

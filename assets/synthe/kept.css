@@ -19,6 +19,7 @@
   opacity: 0;
   will-change: opacity;
 }
+.kept-face-t { display: block; will-change: opacity; }
 .kept-face svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .kept-line { position: absolute; left: 0; right: 0; height: 1px; overflow: hidden; }
 .kept-fill { position: absolute; inset: 0; background: var(--moss, #3b6a2f); transform-origin: 0 50%; transform: scaleX(0); opacity: 0; will-change: transform, opacity; }
@@ -36,3 +37,7 @@
 :where(.kp-line) { position: relative; height: 1px; overflow: hidden; }
 :where(.kp-fill) { position: absolute; inset: 0; background: var(--moss, #3b6a2f); transform-origin: 0 50%; transform: scaleX(0); }
 :where(.kp.is-fail .kp-fill) { background: var(--ink-3, #6b675f); }
+
+
+.b2-cta-cmd .sv-copy.sv-copy { min-height: 40px; height: 40px; padding: 0 16px; font: 500 15px/1 var(--sans, "Figtree", sans-serif); }
+.b2-cta-cmd code.b2-cmd { padding-top: 9px; padding-bottom: 9px; }
