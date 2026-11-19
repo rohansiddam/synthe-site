@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><link rel="preload" href="assets/synthe/fonts/figtree-var.woff2" as="font" type="font/woff2" crossorigin>
 <meta charset="utf-8"/>
 <title>How it works · Synthe</title>
 <meta content="https://synthe.live/assets/synthe/og-image.png" property="og:image"/>
@@ -18,192 +18,108 @@
 <link href="assets/synthe/base.css" rel="stylesheet"/>
 <link rel="stylesheet" href="assets/synthe/nav-base.css">
 
-<link rel="stylesheet" href="assets/unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" />
-<link rel="stylesheet" href="assets/unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css" />
-<link rel="stylesheet" href="assets/unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css" />
 <link rel="stylesheet" href="assets/synthe/page-base.css">
 <link rel="stylesheet" href="assets/synthe/type-system.css">
 <link rel="stylesheet" href="assets/synthe/tokens.css">
 <link rel="stylesheet" href="assets/synthe/fixes.css">
 <link rel="stylesheet" href="assets/synthe/nav2.css">
 <link rel="stylesheet" href="assets/synthe/bottom2.css">
-<link rel="stylesheet" href="assets/synthe/flow4.css">
-<script src="assets/synthe/flow4.js" defer></script>
+<link rel="stylesheet" href="assets/synthe/how-flow.css">
+<script src="assets/synthe/how-flow.js" defer></script>
 <link rel="stylesheet" href="assets/synthe/how.css">
 <link rel="stylesheet" href="assets/synthe/site.css">
+<link rel="stylesheet" href="assets/synthe/pages.css">
+<link rel="stylesheet" href="assets/synthe/kept.css">
 </head>
 <body><a class="skip-link" href="#main">Skip to content</a>
 <div class="page-wrapper">
 <main id="main" class="page-content">
-<div data-nav-height="" class="nav2_wrap cl-nav-fixed"><div class="nav-wrap"><nav class="nav-c"><div class="nav__container"><div data-nav-menu-notch="" nav="layout" class="nav__layout"><div class="nav__layout--start"><div data-c="nav-brand" class="nav__brand--wrap"><div data-module="brand-menu" class="nav__brand--menu"><a nav-brand="link" href="index.html" class="nav__brand--link w-inline-block"><span class="synthe-brandmark u-img-cover"><svg class="synthe-mark" viewBox="0 0 275 290" aria-hidden="true"><path fill="#171410" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path fill="#b5412f" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg><span class="synthe-brandtext">Synthe</span></span></a><div brand-menu="menu" class="brand-popover_menu"><button brand-menu="copy" data-src="assets/synthe/logo.svg" class="brand-popover_btn btn"><div class="brand-popover_btn-text-wrap"><span brand-menu="label" class="brand_btn-text cc-1">Copy logo to clipboard (png)</span><span brand-menu="done" class="brand_btn-text cc-2">Copied!</span></div></button><button brand-menu="copy" data-src="assets/synthe/apple-touch-icon.png" class="brand-popover_btn btn"><div class="brand-popover_btn-text-wrap"><span brand-menu="label" class="brand_btn-text cc-1">Copy logo to clipboard (png)</span><span brand-menu="done" class="brand_btn-text cc-2">Copied!</span></div></button><button brand-menu="download" data-src="assets/synthe/logo.svg" class="brand-popover_btn btn"><div class="brand-popover_btn-text-wrap"><span brand-menu="label" class="brand_btn-text cc-1">Download brand assets</span><span brand-menu="done" class="brand_btn-text cc-2">Downloaded!</span></div></button></div></div><div nav-menu="back-btn" class="nav__back--btn"><a class="btn u-bg-white u-text-black w-inline-block cc-small" href="#" data-button=""><div class="nav__back--icon"><svg xmlns="http://www.w3.org/2000/svg" width="9" height="8" viewBox="0 0 9 8" fill="none"><g clip-path="url(#clip0_455_3256)"><path d="M5.01709 0.863282L1.98289 3.89725L5.01709 6.93146" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path></g><defs><clipPath id="clip0_455_3256"><rect width="8" height="9" fill="currentColor" transform="translate(9) rotate(90)"></rect></clipPath></defs></svg></div><div>Back</div></a></div></div><div nav-link="main" class="nav__list--main"><ul role="list" class="nav__list--ul w-list-unstyled"><li class="nav__list--li"><a data-nav-menu-link="product" data-c="nav-link" href="index.html#loop" class="nav__list--link w-inline-block"><div nav-link="pw" class="nav__link--pw"><div nav-link="p-rel" class="nav__link--prel"><p class="nav__link--p">Product</p></div><div nav-link="p-abs" class="nav__link--pabs"><p class="nav__link--p">Product</p></div></div><div nav-link="bg" class="nav__link--bg"></div><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" color="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-rg u-lg-hide"><path d="M9.00005 6L15 12L9 18" stroke-miterlimit="16"></path></svg></a></li><li class="nav__list--li"><a data-nav-menu-link="" data-c="nav-link" href="how.html" class="nav__list--link w-inline-block"><div nav-link="pw" class="nav__link--pw"><div nav-link="p-rel" class="nav__link--prel"><p class="nav__link--p">How it works</p></div><div nav-link="p-abs" class="nav__link--pabs"><p class="nav__link--p">How it works</p></div></div><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" color="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-rg u-lg-hide"><path d="M9.00005 6L15 12L9 18" stroke-miterlimit="16"></path></svg></a></li><li class="nav__list--li"><a data-c="nav-link" class="nav__list--link w-inline-block" href="docs.html" data-nav-menu-link=""><div nav-link="pw" class="nav__link--pw"><div nav-link="p-rel" class="nav__link--prel"><p class="nav__link--p">Docs</p></div><div nav-link="p-abs" class="nav__link--pabs"><p class="nav__link--p">Docs</p></div></div><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" color="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-rg u-lg-hide"><path d="M9.00005 6L15 12L9 18" stroke-miterlimit="16"></path></svg></a></li></ul></div></div><div class="nav__layout--end"><div class="nav_cta"><a href="https://github.com/synthelabs/synthe" class="nav_2_menu-item is--n-menu w-inline-block" target="_blank" rel="noopener"><div class="nav_item-text">GitHub</div></a><a class="btn u-bg-oat-200 u-text-black u-mr-0-5 w-inline-block cc-small" href="partner.html" data-button=""><div>Talk to us</div></a><div class="is--n-menu"><a class="btn w-inline-block cc-small" variant="" href="https://github.com/synthelabs/synthe" data-button="" target="_blank" rel="noopener"><div>Get started</div></a></div><div data-nav-menu="mobile" data-c="nav-menu-toggle" class="nav__menu--toggle"><div class="nav__menu--toggle-icon-w"><div nav-menu-toggle="icon-open" class="nav__menu--toggle-icon-o"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" color="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-nav-menu="icon-open" class="icon-rg"><path d="M7 5L17 5"></path><path d="M4 12L20 12"></path><path d="M7 19L17 19"></path></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" color="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-nav-menu="icon-close" class="icon-rg cc-hide-2"><path d="M18 6L6.00081 17.9992M17.9992 18L6 6.00085"></path></svg></div></div></div></div></div></div><div data-nav-menu="base" class="nav__dropdown--main"><div data-nav-menu="show" class="nav__dropdown--inner"><div data-nav-menu="wrapper" class="nav__menu"><div data-nav-menu="mobile-menu" class="nav__menu--mobile"><div class="nav__menu--layers"><ul role="list" class="nav__list--ul w-list-unstyled"><li class="nav__list--li"><a data-nav-menu-link="product" data-c="nav-link" href="index.html#loop" class="nav__list--link w-inline-block"><div nav-link="pw" class="nav__link--pw"><div nav-link="p-rel" class="nav__link--prel"><p class="nav__link--p">Product</p></div><div nav-link="p-abs" class="nav__link--pabs"><p class="nav__link--p">Product</p></div></div><div nav-link="bg" class="nav__link--bg"></div><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" color="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-rg u-lg-hide"><path d="M9.00005 6L15 12L9 18" stroke-miterlimit="16"></path></svg></a></li><li class="nav__list--li"><a data-nav-menu-link="" data-c="nav-link" href="how.html" class="nav__list--link w-inline-block"><div nav-link="pw" class="nav__link--pw"><div nav-link="p-rel" class="nav__link--prel"><p class="nav__link--p">How it works</p></div><div nav-link="p-abs" class="nav__link--pabs"><p class="nav__link--p">How it works</p></div></div><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" color="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-rg u-lg-hide"><path d="M9.00005 6L15 12L9 18" stroke-miterlimit="16"></path></svg></a></li><li class="nav__list--li"><a data-c="nav-link" class="nav__list--link w-inline-block" href="docs.html" data-nav-menu-link=""><div nav-link="pw" class="nav__link--pw"><div nav-link="p-rel" class="nav__link--prel"><p class="nav__link--p">Docs</p></div><div nav-link="p-abs" class="nav__link--pabs"><p class="nav__link--p">Docs</p></div></div><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" color="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-rg u-lg-hide"><path d="M9.00005 6L15 12L9 18" stroke-miterlimit="16"></path></svg></a></li></ul></div><div class="nav__mobile--btm"><a class="btn w-inline-block u-width-full cc-oat" variant="" href="https://github.com/synthelabs/synthe" data-button="" data-nav-menu-link="" target="_blank" rel="noopener"><div>GitHub</div></a><a class="btn w-inline-block u-width-full" variant="" href="https://github.com/synthelabs/synthe" data-button="" data-nav-menu-link="" target="_blank" rel="noopener"><div>Get started</div><div class="btn_icon-track u-position-relative overflow-hidden"><div class="btn-icon u-position-absolute"><div id="" STYLE="" class="icon_ph ph ph-arrow-right"></div></div><div class="btn-icon"><div id="" STYLE="" class="icon_ph ph ph-arrow-right"></div></div></div></a></div></div><div class="nav__menu--wrapper"><div data-nav-menu="back-wrapper" class="nav__menu--nav"><div data-nav-menu="back" class="nav__menu-back"><div class="nav__back-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100%" color="currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-rg"><path d="M15 6L9 12.0001L15 18" stroke-miterlimit="16"></path></svg></div><div class="text-size-small text-weight-medium">Go back</div></div></div><section data-nav-menu="product" class="nav__section--main"><div data-nav-menu="inside" data-variant="4n" class="nav__content--group"><div class="nav__menu--block"><div class="nav__content--col"><div class="nav__content--wrap"><div class="nav__content--header"><p class="nav__content--header-label">The loop</p></div><div class="nav__content--list"><ul nav-c-link="group" role="list" class="nav__content--ul w-list-unstyled"><li class="nav__content--li"><a data-c="nav-c-link" class="nav__content--link w-variant-cfb07da9-76ab-0734-e63d-60cc5f816268 w-inline-block" href="how.html" data-nav-menu="menu-link"><div class="nav__content--link-header"><div class="nav__content--link-title-w"><p class="nav__content--link-title-p paragraph_0-87">The loop</p></div><div class="nav__content--link-desc-w w-variant-cfb07da9-76ab-0734-e63d-60cc5f816268"><p class="nav__content--link-desc-p paragraph_0-8">The nightly loop, step by step.</p></div></div></a></li></ul></div></div><div class="nav__menu--line"></div></div><div class="nav__content--col"><div class="nav__content--wrap"><div class="nav__content--header"><p class="nav__content--header-label">Start</p></div><div class="nav__content--list"><ul nav-c-link="group" role="list" class="nav__content--ul w-list-unstyled"><li class="nav__content--li"><a data-c="nav-c-link" class="nav__content--link w-variant-cfb07da9-76ab-0734-e63d-60cc5f816268 w-inline-block" href="docs.html" data-nav-menu="menu-link"><div class="nav__content--link-header"><div class="nav__content--link-title-w"><p class="nav__content--link-title-p paragraph_0-87">Docs</p></div><div class="nav__content--link-desc-w w-variant-cfb07da9-76ab-0734-e63d-60cc5f816268"><p class="nav__content--link-desc-p paragraph_0-8">The nightly loop, step by step.</p></div></div></a></li><li class="nav__content--li"><a data-c="nav-c-link" class="nav__content--link w-variant-cfb07da9-76ab-0734-e63d-60cc5f816268 w-inline-block" href="https://github.com/synthelabs/synthe" data-nav-menu="menu-link" target="_blank" rel="noopener"><div class="nav__content--link-header"><div class="nav__content--link-title-w"><p class="nav__content--link-title-p paragraph_0-87">GitHub</p></div><div class="nav__content--link-desc-w w-variant-cfb07da9-76ab-0734-e63d-60cc5f816268"><p class="nav__content--link-desc-p paragraph_0-8">A full run, recorded in public.</p></div></div></a></li></ul></div></div><div class="nav__menu--line"></div></div></div></div><div data-nav-menu-reveal="" class="nav__ad--slot"><a href="https://github.com/synthelabs/synthe" class="nav__ad--card w-inline-block" target="_blank" rel="noopener"><div class="nav__ad--block"><div class="nav__ad--card-bg"><div class="nav__ad--img-o"></div></div><div class="nav__ad--content-m"><div class="nav__ad--content-label"><p class="nav__content--header-label u-mb-0">The loop</p></div><div class="nav__ad--content-title"><p class="h5 u-mb-0">See how Synthe improves an agent in your repo.<br/></p></div></div></div></a></div></section></div></div></div></div></div></nav></div></div>
+<header class="synav" data-synav><nav class="synav-bar" aria-label="Main"><div class="synav-brand"><a class="synav-logo" href="index.html" aria-label="Synthe home" data-synav-logo><svg class="synav-mark" viewBox="0 0 275 290" aria-hidden="true"><path class="synav-mark-a" fill="#171410" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path class="synav-mark-b" fill="#b5412f" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg><span class="synav-word" aria-hidden="true">Synthe</span></a><div class="synav-brandmenu" id="synav-brandmenu" role="menu" aria-label="Synthe brand" hidden><button type="button" role="menuitem" class="synav-bm" data-copy="mark"><span class="synav-bm-label">Copy mark as SVG</span><span class="synav-bm-done" aria-hidden="true">Copied</span></button><button type="button" role="menuitem" class="synav-bm" data-copy="wordmark"><span class="synav-bm-label">Copy wordmark as SVG</span><span class="synav-bm-done" aria-hidden="true">Copied</span></button><button type="button" role="menuitem" class="synav-bm" data-copy="colours"><span class="synav-bm-label">Brand colours</span><span class="synav-bm-done" aria-hidden="true">Copied</span><span class="synav-swatches" aria-hidden="true"><i style="background:#9e2f36"></i><i style="background:#141312"></i><i style="background:#3b6a2f"></i><i style="background:#f3f0e9"></i></span></button><a role="menuitem" class="synav-bm" href="https://github.com/synthelabs/synthe" target="_blank" rel="noopener"><span class="synav-bm-label">Synthe on GitHub</span><svg class="synav-ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3.5 2.5h4v4M7.5 2.5l-5 5"/></svg></a><p class="synav-bm-status" role="status" aria-live="polite"></p></div></div><ul class="synav-items"><li><button type="button" class="synav-item" data-synav-item aria-expanded="false" aria-controls="synav-product"><span class="synav-label">Product</span><svg class="synav-chev" viewBox="0 0 10 10" aria-hidden="true"><path d="M2.5 4 5 6.5 7.5 4"/></svg></button></li><li><a class="synav-item" data-synav-item href="how.html" aria-current="page"><span class="synav-label">How it works</span></a></li><li><a class="synav-item" data-synav-item href="docs.html"><span class="synav-label">Docs</span></a></li></ul><span class="synav-marker" aria-hidden="true"><span class="synav-marker-in"></span></span><div class="synav-end"><a class="synav-text" href="https://github.com/synthelabs/synthe" target="_blank" rel="noopener">GitHub</a><a class="synav-btn synav-btn-2" href="partner.html">Talk to us</a><a class="synav-btn synav-btn-1" href="https://github.com/synthelabs/synthe" target="_blank" rel="noopener">Get started</a><button type="button" class="synav-toggle" aria-expanded="false" aria-controls="synav-sheet" aria-label="Menu"><span class="synav-toggle-l"></span><span class="synav-toggle-l"></span></button></div></nav>
+<div class="synav-drop" id="synav-product" data-synav-drop hidden><div class="synav-panel"><div class="synav-groups"><div class="synav-group"><p class="synav-gt">The loop</p><ul><li><a class="synav-link" href="how.html"><span class="synav-lt">How it works</span><span class="synav-ld">The nightly loop, step by step.</span></a></li></ul></div><div class="synav-group"><p class="synav-gt">Start</p><ul><li><a class="synav-link" href="docs.html"><span class="synav-lt">Docs</span><span class="synav-ld">Install, set the bar, read the report.</span></a></li><li><a class="synav-link" href="https://github.com/synthelabs/synthe" target="_blank" rel="noopener"><span class="synav-lt">GitHub<svg class="synav-ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3.5 2.5h4v4M7.5 2.5l-5 5"/></svg></span><span class="synav-ld">Source and releases, in public.</span></a></li></ul></div></div><a class="synav-night " href="index.html#loop"><span class="synav-night-k">Last night</span><span class="synav-chart" role="img" aria-label="Five changes scored 71, 75, 86, 68 and 70 against a bar of 80. Only 86 cleared it."><span class="synav-cols"><span class="synav-col" style="--v:71"></span><span class="synav-col" style="--v:75"></span><span class="synav-col is-kept" style="--v:86"><i></i></span><span class="synav-col" style="--v:68"></span><span class="synav-col" style="--v:70"></span></span><span class="synav-barline" style="--v:80"></span></span><span class="synav-night-cap">1 of 5 changes cleared the bar. It merged as a pull request.</span></a></div></div>
+<div class="synav-sheet" id="synav-sheet" data-synav-sheet hidden><div class="synav-sheet-in"><div class="synav-layer" data-synav-layer="main"><ul class="synav-rows"><li><button type="button" class="synav-row" data-synav-to="product"><span class="synav-label">Product</span><svg class="synav-chev" viewBox="0 0 10 10" aria-hidden="true"><path d="M4 2.5 6.5 5 4 7.5"/></svg></button></li><li><a class="synav-row" href="how.html" aria-current="page"><span class="synav-label">How it works</span></a></li><li><a class="synav-row" href="docs.html"><span class="synav-label">Docs</span></a></li></ul><div class="synav-sheet-cta"><a class="synav-btn synav-btn-2" href="https://github.com/synthelabs/synthe" target="_blank" rel="noopener">GitHub</a><a class="synav-btn synav-btn-1" href="https://github.com/synthelabs/synthe" target="_blank" rel="noopener">Get started<span class="synav-arrow" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8h9.5M8.5 4l4 4-4 4"/></svg></span></a></div></div><div class="synav-layer" data-synav-layer="product" inert><button type="button" class="synav-back" data-synav-to="main"><svg class="synav-chev" viewBox="0 0 10 10" aria-hidden="true"><path d="M6 2.5 3.5 5 6 7.5"/></svg><span>Product</span></button><ul class="synav-rows"><li><a class="synav-row synav-row-sub" href="how.html"><span class="synav-lt">How it works</span><span class="synav-ld">The nightly loop, step by step.</span></a></li><li><a class="synav-row synav-row-sub" href="docs.html"><span class="synav-lt">Docs</span><span class="synav-ld">Install, set the bar, read the report.</span></a></li><li><a class="synav-row synav-row-sub" href="https://github.com/synthelabs/synthe" target="_blank" rel="noopener"><span class="synav-lt">GitHub<svg class="synav-ext" viewBox="0 0 10 10" aria-hidden="true"><path d="M3.5 2.5h4v4M7.5 2.5l-5 5"/></svg></span><span class="synav-ld">Source and releases, in public.</span></a></li></ul><a class="synav-night synav-night-sheet" href="index.html#loop"><span class="synav-night-k">Last night</span><span class="synav-chart" role="img" aria-label="Five changes scored 71, 75, 86, 68 and 70 against a bar of 80. Only 86 cleared it."><span class="synav-cols"><span class="synav-col" style="--v:71"></span><span class="synav-col" style="--v:75"></span><span class="synav-col is-kept" style="--v:86"><i></i></span><span class="synav-col" style="--v:68"></span><span class="synav-col" style="--v:70"></span></span><span class="synav-barline" style="--v:80"></span></span><span class="synav-night-cap">1 of 5 changes cleared the bar. It merged as a pull request.</span></a></div></div></div></header>
 
-<section class="how-hero ts-ground-hero">
-  <div class="how-wrap">
-    <p class="ts-eyebrow">How it works</p>
-    <h1 class="how-h1">How Synthe works</h1>
-    <p class="ts-lede how-hero_lede">You set the bar. Synthe makes your agents reach it on their own.</p>
-    <p class="ts-body-lg how-hero_sub">This page walks the loop end to end: how the bar is set, how changes are proposed and tested, what has to be true before anything merges, and what lands in your repo every morning. The loop runs on any agent, toward any goal your team can state.</p>
-    <nav class="how-index" aria-label="The seven steps">
-      <span class="how-index_rail" aria-hidden="true"></span>
-      <a class="how-index_item" href="#step-1"><span class="how-index_node"><svg viewBox="0 0 275 290" aria-hidden="true"><path fill="#171410" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path fill="#b5412f" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg></span><span class="how-index_num">Step 1</span><span class="how-index_name">Your checks</span></a>
-      <a class="how-index_item" href="#step-2"><span class="how-index_node"><svg viewBox="0 0 275 290" aria-hidden="true"><path fill="#171410" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path fill="#b5412f" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg></span><span class="how-index_num">Step 2</span><span class="how-index_name">Simulated messages</span></a>
-      <a class="how-index_item" href="#step-3"><span class="how-index_node"><svg viewBox="0 0 275 290" aria-hidden="true"><path fill="#171410" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path fill="#b5412f" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg></span><span class="how-index_num">Step 3</span><span class="how-index_name">Propose a change</span></a>
-      <a class="how-index_item" href="#step-4"><span class="how-index_node"><svg viewBox="0 0 275 290" aria-hidden="true"><path fill="#171410" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path fill="#b5412f" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg></span><span class="how-index_num">Step 4</span><span class="how-index_name">Test the change</span></a>
-      <a class="how-index_item" href="#step-5"><span class="how-index_node"><svg viewBox="0 0 275 290" aria-hidden="true"><path fill="#171410" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path fill="#b5412f" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg></span><span class="how-index_num">Step 5</span><span class="how-index_name">Merge clear wins</span></a>
-      <a class="how-index_item" href="#step-6"><span class="how-index_node"><svg viewBox="0 0 275 290" aria-hidden="true"><path fill="#171410" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path fill="#b5412f" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg></span><span class="how-index_num">Step 6</span><span class="how-index_name">Revert losers</span></a>
-      <a class="how-index_item" href="#step-7"><span class="how-index_node"><svg viewBox="0 0 275 290" aria-hidden="true"><path fill="#171410" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path fill="#b5412f" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg></span><span class="how-index_num">Step 7</span><span class="how-index_name">The morning report</span></a>
-    </nav>
-  </div>
-</section>
-
-<section class="how-trio fl3">
-  <div class="how-wrap">
-    <p class="ts-eyebrow">The loop</p>
-    <h2 class="ts-h2 how-h2">The same loop improves every kind of agent</h2>
-    <div class="how-trio_grid">
-      <article class="how-tcard">
-        <h3 class="ts-card-title">Set the bar</h3>
-        <p class="ts-body how-tcard_body">You say what good looks like, in plain language.</p>
-        <div class="how-tcard_stage" aria-hidden="true">
-<div class="fl3-window">
-            <div class="fl3-win_bar"><span class="fl3-win_label"><svg class="fl3-mark fl3-mark--bar" viewBox="0 0 275 290" aria-hidden="true" focusable="false"><path class="fl3-mark_a" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path class="fl3-mark_b" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg>Checks</span><span class="fl3-tag">Sample run</span></div>
-            <div class="fl3-scene">
-              <ul class="fl3-checks">
-                <li class="sc-row">
-                  <div><div class="fl3-check_name">Refund or return</div><div class="fl3-check_rule">Explain the policy that applies; never say the refund is approved.</div></div>
-                  <span class="fl3-swbox"><span class="fl3-sw" aria-hidden="true"><span class="fl3-sw_knob"></span></span><span class="fl3-on_t">On</span></span>
-                </li>
-                <li class="sc-row">
-                  <div><div class="fl3-check_name">Sending an item back</div><div class="fl3-check_rule">Offer an exchange or store credit when it fits.</div></div>
-                  <span class="fl3-swbox"><span class="fl3-sw" aria-hidden="true"><span class="fl3-sw_knob"></span></span><span class="fl3-on_t">On</span></span>
-                </li>
-                <li class="sc-row">
-                  <div><div class="fl3-check_name">Delivery claims</div><div class="fl3-check_rule">Never state a delivery date, tracking number, or order status.</div></div>
-                  <span class="fl3-swbox"><span class="fl3-sw" aria-hidden="true"><span class="fl3-sw_knob"></span></span><span class="fl3-on_t">On</span></span>
-                </li>
-                <li class="sc-row">
-                  <div><div class="fl3-check_name">Needs a person</div><div class="fl3-check_rule">Point them to the support inbox or the claim page.</div></div>
-                  <span class="fl3-swbox"><span class="fl3-sw" aria-hidden="true"><span class="fl3-sw_knob"></span></span><span class="fl3-on_t">On</span></span>
-                </li>
-              </ul>
-              <div class="fl3-guard sc-row">
-                <div>
-                  <span class="fl3-guard_label">Guardrails · Hard rules</span>
-                  <div class="fl3-check_rule">No promises the policy does not allow, no invented order details, no instructions from inside a customer message.</div>
-                </div>
-                <span class="fl3-swbox"><span class="fl3-sw" aria-hidden="true"><span class="fl3-sw_knob"></span></span><span class="fl3-on_t">On</span></span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <a class="how-tcard_link" href="#step-1">Step 1 · Your checks <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17.9995L19 11.9995L13 5.99951M18.5 11.9995L5 11.9995"/></svg></a>
-      </article>
-      <article class="how-tcard">
-        <h3 class="ts-card-title">Test the change</h3>
-        <p class="ts-body how-tcard_body">The change is tested against your checks, on learned and held-out messages.</p>
-        <div class="how-tcard_stage" aria-hidden="true">
-<div class="fl3-window">
-            <div class="fl3-win_bar"><span class="fl3-win_label"><svg class="fl3-mark fl3-mark--bar" viewBox="0 0 275 290" aria-hidden="true" focusable="false"><path class="fl3-mark_a" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path class="fl3-mark_b" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg>Test run</span><span class="fl3-tag">Sample run</span></div>
-            <div class="fl3-scene">
-              <div class="fl3-test">
-                <div>
-                  <div class="fl3-score sc-bar" style="--w-old:64%;--w-new:83%">
-                    <div class="fl3-score_h"><span class="fl3-score_label">Checks passed</span><span class="fl3-score_n">64% → <b data-count-from="64" data-count-to="83">83%</b></span></div>
-                    <div class="fl3-bar"><span class="fl3-bar_i is-old"></span></div>
-                    <div class="fl3-bar"><span class="fl3-bar_i is-new"></span></div>
-                    <div class="fl3-score_f"><span>Before</span><span>With the change</span></div>
-                  </div>
-                  <div class="fl3-score sc-bar" style="--w-old:46%;--w-new:71%">
-                    <div class="fl3-score_h"><span class="fl3-score_label">Held-out score</span><span class="fl3-score_n">46% → <b data-count-from="46" data-count-to="71">71%</b></span></div>
-                    <div class="fl3-bar"><span class="fl3-bar_i is-old"></span></div>
-                    <div class="fl3-bar"><span class="fl3-bar_i is-new"></span></div>
-                    <div class="fl3-score_f"><span>Before</span><span>With the change</span></div>
-                  </div>
-                </div>
-                <div>
-                  <div class="fl3-out_h">Per-check results</div>
-                  <div class="fl3-out sc-row"><span>Quotes only the fares it was given</span><span class="fl3-pass sc-pop"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Pass</span></div>
-                  <div class="fl3-out sc-row"><span>Never invents a room rate</span><span class="fl3-pass sc-pop"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Pass</span></div>
-                  <div class="fl3-out sc-row"><span>Says when a quoted fare has expired</span><span class="fl3-pass sc-pop"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Pass</span></div>
-                  <div class="fl3-out sc-row is-failrow"><span>Quotes baggage rules from the fare</span><span class="fl3-fail sc-pop">Still failing</span></div>
-                </div>
-              </div>
-              <div class="fl3-stats">
-                <div class="fl3-statcard sc-row"><span class="fl3-stat_label">Head to head</span><span class="fl3-stat_value">19 better · 4 worse</span></div>
-                <div class="fl3-statcard sc-row"><span class="fl3-stat_label">Hidden cases</span><span class="fl3-stat_value">8 better · 2 worse</span></div>
-                <div class="fl3-statcard sc-row"><span class="fl3-stat_label">Rule breaks</span><span class="fl3-stat_value">3 → 0</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <a class="how-tcard_link" href="#step-4">Step 4 · Test the change <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17.9995L19 11.9995L13 5.99951M18.5 11.9995L5 11.9995"/></svg></a>
-      </article>
-      <article class="how-tcard">
-        <h3 class="ts-card-title">Keep only what wins</h3>
-        <p class="ts-body how-tcard_body">Only a clear win merges, as a pull request in your own repo.</p>
-        <div class="how-tcard_stage" aria-hidden="true">
-<span class="fl3-tag how-tcard_tag">Sample run</span>
-<div class="fl3-window">
-            <div class="fl3-scene fl3-scene--pr">
-              <div class="fl3-pr_h">
-                <span class="fl3-pr_markbox"><svg class="fl3-mark fl3-mark--lock" viewBox="0 0 275 290" aria-hidden="true" focusable="false"><path class="fl3-mark_a" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path class="fl3-mark_b" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg></span>
-                <span class="fl3-merged sc-sweep">Merged</span>
-                <span class="fl3-pr_no">Pull request #482</span>
-              </div>
-              <div class="fl3-pr_t">Never promise a credit or a plan change before it is applied</div>
-              <div class="fl3-pr_m">synthe/round-2-win → main · prompt.md · 1 file changed</div>
-              <div class="fl3-gates">
-                <div class="fl3-gate sc-gate"><span class="fl3-gate_n">Checks</span><span class="fl3-gate_v">74% → 88%</span><span class="fl3-gate_st"><span class="fl3-ring"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path class="fl3-checkpath" d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="fl3-pass_t">Passed</span></span></div>
-                <div class="fl3-gate sc-gate"><span class="fl3-gate_n">Held-out cases</span><span class="fl3-gate_v">52% → 76%</span><span class="fl3-gate_st"><span class="fl3-ring"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path class="fl3-checkpath" d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="fl3-pass_t">Passed</span></span></div>
-                <div class="fl3-gate sc-gate"><span class="fl3-gate_n">Head to head</span><span class="fl3-gate_v">21 better · 2 worse</span><span class="fl3-gate_st"><span class="fl3-ring"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path class="fl3-checkpath" d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="fl3-pass_t">Passed</span></span></div>
-                <div class="fl3-gate sc-gate"><span class="fl3-gate_n">Rule breaks</span><span class="fl3-gate_v">None new</span><span class="fl3-gate_st"><span class="fl3-ring"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path class="fl3-checkpath" d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="fl3-pass_t">Passed</span></span></div>
-              </div>
-              <div class="fl3-stamp sc-stamp"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Kept</div>
-            </div>
-          </div>
-        </div>
-        <a class="how-tcard_link" href="#step-5">Step 5 · Merge clear wins <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17.9995L19 11.9995L13 5.99951M18.5 11.9995L5 11.9995"/></svg></a>
-      </article>
+<section class="pg-hero" aria-labelledby="how-title">
+  <div class="pg-wrap pg-hero_in pg-hero_grid">
+    <div class="pg-hero_l">
+      <h1 class="pg-hero_title" id="how-title">How Synthe works</h1>
+    </div>
+    <div class="pg-hero_r">
+      <p class="pg-hero_lede">You set the bar. Synthe makes your agents reach it on their own.</p>
+      <p class="pg-hero_sub">This page walks the loop end to end: how the bar is set, how changes are proposed and tested, what has to be true before anything merges, and what lands in your repo every morning. The loop runs on any agent, toward any goal your team can state.</p>
+      <div class="pg-hero_actions">
+        <a class="pg-btn pg-btn--on-red" href="#loop">See the seven steps</a>
+        <a class="pg-btn pg-btn--ghost-red" href="docs.html">Read the docs</a>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="how-frame">
-  <div class="how-wrap">
-    <p class="ts-eyebrow">Before the steps</p>
-    <h2 class="ts-h2 how-h2">Any agent. Any goal.</h2>
-    <div class="how-cols">
-      <div class="how-col">
-        <h3 class="ts-card-title">Works on the agent you have</h3>
-        <p class="ts-body how-col_body">Synthe runs in your repo, against the agent your team already operates: a returns agent, a scheduling agent, a claims agent, an outreach agent. It does not replace the agent or the stack under it. It improves the prompt the agent runs on, one tested change at a time.</p>
+<section class="section_home-flow fl3 how-loop pg-sec" id="loop" aria-labelledby="loop-title">
+  <div class="padding-global">
+    <div class="container-regular">
+      <div class="fl3-head pg-head">
+        <h2 class="pg-title" id="loop-title">The same loop improves every kind of agent</h2>
+        <p class="pg-copy">Follow one example returns agent through a night of rounds. Pick a step, or let it play. The same seven steps run for scheduling, claims, booking and bank support agents.</p>
       </div>
-      <div class="how-col">
-        <h3 class="ts-card-title">Any goal you can state</h3>
-        <p class="ts-body how-col_body">The bar is whatever your team says good looks like. Some goals are numbers, like a pass rate against your checks. Some are judgment: a tone held, a policy followed, a promise never made. If your team can confirm it in plain language, Synthe can test against it.</p>
-      </div>
-      <div class="how-col">
-        <h3 class="ts-card-title">The tests improve too</h3>
-        <p class="ts-body how-col_body">A loop is only as honest as its checks. When a check turns out ambiguous, or the simulated messages drift away from the ones your agent really gets, Synthe revises the checks and the scenarios inside the same loop. The system gets better, and so does the way you judge it.</p>
-      </div>
-    </div>
-    <div class="how-setup">
-      <span class="ts-label">Set up</span>
-      <code class="how-cmd">npx synthe@latest init</code>
-      <p class="ts-body how-setup_text">One command sets Synthe up in your repo. Your checks and your scenarios live there too, versioned with the code they judge.</p>
-    </div>
-  </div>
-</section>
 
-<section class="how-step how-step--paper fl3" id="step-1">
-  <div class="how-wrap how-step_grid">
-    <div class="how-step_text">
-      <p class="ts-eyebrow">Step 1 · E-commerce</p>
-      <h2 class="ts-h2 how-h2">Your checks</h2>
-      <p class="ts-body-lg how-step_lead">Everything Synthe does is judged against checks you write and your team confirms.</p>
-      <p class="ts-body how-step_body">A check is a plain-language rule about what a good reply does: explain the policy that applies, never approve a refund yourself, never state a delivery date you cannot know. Guardrails are the hard version of the same thing, the rules a reply may never break whatever else it gets right.</p>
-      <p class="ts-body how-step_body">There is no grading on vibes. Every simulated reply is marked against these checks one by one, so any score traces back to a rule your team agreed to. And when a check turns out vague, or real messages expose a case it never covered, the loop sharpens the checks as well. The bar is yours. Synthe keeps it honest.</p>
-    </div>
-    <div class="how-surface"><article class="fl3-panel" data-scene="checks">
+      <div class="fl3-stepper" role="tablist" aria-label="Loop steps">
+        <div class="fl3-rail" aria-hidden="true"><span class="fl3-rail_fill"></span></div>
+        <button type="button" class="fl3-step is-active" role="tab" id="fl3-tab-1" aria-label="Step 1: Your checks" aria-controls="fl3-panel-1" aria-selected="true" tabindex="0" data-name="Your checks">
+          <span class="fl3-step_node" aria-hidden="true">1</span>
+          <span class="fl3-step_text"><span class="fl3-step_num">Step 1</span><span class="fl3-step_name">Your checks</span></span>
+        </button>
+        <button type="button" class="fl3-step" role="tab" id="fl3-tab-2" aria-label="Step 2: Simulated messages" aria-controls="fl3-panel-2" aria-selected="false" tabindex="-1" data-name="Simulated messages">
+          <span class="fl3-step_node" aria-hidden="true">2</span>
+          <span class="fl3-step_text"><span class="fl3-step_num">Step 2</span><span class="fl3-step_name">Simulated messages</span></span>
+        </button>
+        <button type="button" class="fl3-step" role="tab" id="fl3-tab-3" aria-label="Step 3: Propose a change" aria-controls="fl3-panel-3" aria-selected="false" tabindex="-1" data-name="Propose a change">
+          <span class="fl3-step_node" aria-hidden="true">3</span>
+          <span class="fl3-step_text"><span class="fl3-step_num">Step 3</span><span class="fl3-step_name">Propose a change</span></span>
+        </button>
+        <button type="button" class="fl3-step" role="tab" id="fl3-tab-4" aria-label="Step 4: Test the change" aria-controls="fl3-panel-4" aria-selected="false" tabindex="-1" data-name="Test the change">
+          <span class="fl3-step_node" aria-hidden="true">4</span>
+          <span class="fl3-step_text"><span class="fl3-step_num">Step 4</span><span class="fl3-step_name">Test the change</span></span>
+        </button>
+        <button type="button" class="fl3-step" role="tab" id="fl3-tab-5" aria-label="Step 5: Merge clear wins" aria-controls="fl3-panel-5" aria-selected="false" tabindex="-1" data-name="Merge clear wins">
+          <span class="fl3-step_node" aria-hidden="true">5</span>
+          <span class="fl3-step_text"><span class="fl3-step_num">Step 5</span><span class="fl3-step_name">Merge clear wins</span></span>
+        </button>
+        <button type="button" class="fl3-step" role="tab" id="fl3-tab-6" aria-label="Step 6: Revert losers" aria-controls="fl3-panel-6" aria-selected="false" tabindex="-1" data-name="Revert losers">
+          <span class="fl3-step_node" aria-hidden="true">6</span>
+          <span class="fl3-step_text"><span class="fl3-step_num">Step 6</span><span class="fl3-step_name">Revert losers</span></span>
+        </button>
+        <button type="button" class="fl3-step" role="tab" id="fl3-tab-7" aria-label="Step 7: The morning report" aria-controls="fl3-panel-7" aria-selected="false" tabindex="-1" data-name="The morning report">
+          <span class="fl3-step_node" aria-hidden="true">7</span>
+          <span class="fl3-step_text"><span class="fl3-step_num">Step 7</span><span class="fl3-step_name">The morning report</span></span>
+        </button>
+      </div>
+      <p class="fl3-status" aria-live="polite">Step 1 of 7 · Your checks</p>
+      <div class="how-night" data-how-night role="group" aria-labelledby="how-night-h">
+        <p class="how-night_h" id="how-night-h">Last night</p>
+        <div class="how-night_row">
+          <div class="how-night_cell">
+            <p class="how-night_v"><b class="how-night_n" data-to="5">5</b></p>
+            <p class="how-night_l">Changes tried</p>
+          </div>
+          <div class="how-night_cell is-kept">
+            <p class="how-night_v"><span class="how-night_k"><b class="how-night_n" data-to="1">1</b><span class="how-night_tag">PR #214</span><span class="how-night_mark" aria-hidden="true"></span></span></p>
+            <p class="how-night_l">Kept</p>
+          </div>
+          <div class="how-night_cell">
+            <p class="how-night_v"><b class="how-night_n" data-to="1">1</b><span class="how-night_note">checks 88% to 70%</span></p>
+            <p class="how-night_l">Reverted</p>
+          </div>
+          <div class="how-night_cell">
+            <p class="how-night_v"><b class="how-night_n" data-to="0.83" data-prefix="$" data-places="2">$0.83</b></p>
+            <p class="how-night_l">Run cost</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pg-frame how-loop_frame">
+      <div class="fl3-stage" data-dir="fwd">
+
+        <article class="fl3-panel is-active" role="tabpanel" id="fl3-panel-1" aria-labelledby="fl3-tab-1" tabindex="0" data-scene="checks">
           <div class="fl3-panel_head">
             <div>
               <h3 class="fl3-panel_title">Your checks</h3>
@@ -211,28 +127,27 @@
             </div>
             <div class="fl3-panel_meta">
               <span class="fl3-chip">E-commerce · Returns agent</span>
-              <span class="fl3-tag">Sample checks</span>
             </div>
           </div>
           <div class="fl3-window">
-            <div class="fl3-win_bar"><span class="fl3-win_label"><svg class="fl3-mark fl3-mark--bar" viewBox="0 0 275 290" aria-hidden="true" focusable="false"><path class="fl3-mark_a" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path class="fl3-mark_b" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg>Checks</span><span class="fl4-tally" aria-hidden="true"><b data-fl4-num aria-hidden="true">5</b> of 5 on</span><span class="fl4-sr">5 of 5 checks on</span></div>
+            <div class="fl3-win_bar"><span class="fl3-win_label">Checks</span><span class="fl4-tally" aria-hidden="true"><b data-fl4-num aria-hidden="true">5</b> of 5 on</span><span class="fl4-sr">5 of 5 checks on</span></div>
             <div class="fl3-scene">
               <ul class="fl3-checks">
                 <li class="sc-row">
                   <div><div class="fl3-check_name">Refund or return</div><div class="fl3-check_rule">Explain the policy that applies; never say the refund is approved.</div></div>
-                  <span class="fl3-swbox"><span class="fl3-sw" aria-hidden="true"><span class="fl3-sw_knob"></span></span><span class="fl3-on_t">On</span></span>
+                  <span class="fl3-swbox"><span class="fl3-on_t"><span class="fl3-on_on">On</span><span class="fl3-on_off" aria-hidden="true">Off</span></span></span>
                 </li>
                 <li class="sc-row">
                   <div><div class="fl3-check_name">Sending an item back</div><div class="fl3-check_rule">Offer an exchange or store credit when it fits.</div></div>
-                  <span class="fl3-swbox"><span class="fl3-sw" aria-hidden="true"><span class="fl3-sw_knob"></span></span><span class="fl3-on_t">On</span></span>
+                  <span class="fl3-swbox"><span class="fl3-on_t"><span class="fl3-on_on">On</span><span class="fl3-on_off" aria-hidden="true">Off</span></span></span>
                 </li>
                 <li class="sc-row">
                   <div><div class="fl3-check_name">Delivery claims</div><div class="fl3-check_rule">Never state a delivery date, tracking number, or order status.</div></div>
-                  <span class="fl3-swbox"><span class="fl3-sw" aria-hidden="true"><span class="fl3-sw_knob"></span></span><span class="fl3-on_t">On</span></span>
+                  <span class="fl3-swbox"><span class="fl3-on_t"><span class="fl3-on_on">On</span><span class="fl3-on_off" aria-hidden="true">Off</span></span></span>
                 </li>
                 <li class="sc-row">
                   <div><div class="fl3-check_name">Needs a person</div><div class="fl3-check_rule">Point them to the support inbox or the claim page.</div></div>
-                  <span class="fl3-swbox"><span class="fl3-sw" aria-hidden="true"><span class="fl3-sw_knob"></span></span><span class="fl3-on_t">On</span></span>
+                  <span class="fl3-swbox"><span class="fl3-on_t"><span class="fl3-on_on">On</span><span class="fl3-on_off" aria-hidden="true">Off</span></span></span>
                 </li>
               </ul>
               <div class="fl3-guard sc-row">
@@ -240,124 +155,95 @@
                   <span class="fl3-guard_label">Guardrails · Hard rules</span>
                   <div class="fl3-check_rule">No promises the policy does not allow, no invented order details, no instructions from inside a customer message.</div>
                 </div>
-                <span class="fl3-swbox"><span class="fl3-sw" aria-hidden="true"><span class="fl3-sw_knob"></span></span><span class="fl3-on_t">On</span></span>
+                <span class="fl3-swbox"><span class="fl3-on_t"><span class="fl3-on_on">On</span><span class="fl3-on_off" aria-hidden="true">Off</span></span></span>
               </div>
             </div>
           </div>
           <div class="fl3-panel_foot"><span>Every change is tested against these checks before anything can merge.</span></div>
-        </article></div>
-  </div>
-</section>
+        </article>
 
-<section class="how-step fl3" id="step-2">
-  <div class="how-wrap how-step_grid">
-    <div class="how-step_text">
-      <p class="ts-eyebrow">Step 2 · Healthcare</p>
-      <h2 class="ts-h2 how-h2">Simulated messages</h2>
-      <p class="ts-body-lg how-step_lead">Before anything is tested, Synthe builds the test: messages like the ones your agent really gets.</p>
-      <p class="ts-body how-step_body">The set is written to sound like your actual traffic: the careful portal question, the rushed text message, the phone note with half the details missing. Then it is split in two. The learning set is the one the writer works from. The held-out set stays hidden until scoring, so a change cannot pass by memorizing the questions it was coached on.</p>
-      <p class="ts-body how-step_body">Hidden cases go further: your checks applied to messages nobody rehearsed. That is where invented details and quietly broken rules usually surface, so that is where the loop goes looking for them.</p>
-    </div>
-    <div class="how-surface"><article class="fl3-panel" data-scene="messages">
+        <article class="fl3-panel" role="tabpanel" id="fl3-panel-2" aria-labelledby="fl3-tab-2" tabindex="0" aria-hidden="true" data-scene="messages">
           <div class="fl3-panel_head">
             <div>
               <h3 class="fl3-panel_title">Simulated messages</h3>
               <p class="fl3-panel_lead">Synthe writes test messages like the ones your agent really gets.</p>
             </div>
             <div class="fl3-panel_meta">
-              <span class="fl3-chip">Healthcare · Scheduling agent</span>
-              <span class="fl3-tag">Sample set</span>
+              <span class="fl3-chip">E-commerce · Returns agent</span>
             </div>
           </div>
           <div class="fl3-window">
-            <div class="fl3-win_bar"><span class="fl3-win_label"><svg class="fl3-mark fl3-mark--bar" viewBox="0 0 275 290" aria-hidden="true" focusable="false"><path class="fl3-mark_a" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path class="fl3-mark_b" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg>Messages</span><span class="fl4-tally" aria-hidden="true"><b data-fl4-num aria-hidden="true">36</b><span data-fl4-label> in the set</span></span><span class="fl4-sr">36 messages in the set</span></div>
+            <div class="fl3-win_bar"><span class="fl3-win_label">Messages</span><span class="fl4-tally" aria-hidden="true"><b data-fl4-num aria-hidden="true">36</b><span data-fl4-label> in the set</span></span><span class="fl4-sr">36 messages in the set</span></div>
             <div class="fl3-scene">
               <ul class="fl3-msgs">
-                <li class="sc-row"><span class="fl3-chan">Portal</span><span class="fl3-msg_t">Can I move Thursday’s cleaning to the morning? I work nights that week.</span><span class="fl3-learn sc-pop">Learning</span></li>
-                <li class="sc-row"><span class="fl3-chan">SMS</span><span class="fl3-msg_t">need to book my kid in for a checkup sometime next week, afternoons are best</span><span class="fl3-learn sc-pop">Learning</span></li>
-                <li class="sc-row"><span class="fl3-chan">Phone</span><span class="fl3-msg_t">My prescription runs out Friday, can the doctor renew it before then?</span><span class="fl3-held sc-pop">Held out</span></li>
-                <li class="sc-row"><span class="fl3-chan">Portal</span><span class="fl3-msg_t">The form asks for an insurance card but I changed plans last month, what do I send?</span><span class="fl3-learn sc-pop">Learning</span></li>
-                <li class="sc-row"><span class="fl3-chan">SMS</span><span class="fl3-msg_t">running 10 mins late for the 2:30, is that ok</span><span class="fl3-held sc-pop">Held out</span></li>
+                <li class="sc-row"><span class="fl3-chan">Chat</span><span class="fl3-msg_t">Can I return boots I bought 40 days ago? Never worn.</span><span class="fl3-learn sc-pop">Learning</span></li>
+                <li class="sc-row"><span class="fl3-chan">Email</span><span class="fl3-msg_t">the jacket came in the wrong size, can i swap it for a medium</span><span class="fl3-learn sc-pop">Learning</span></li>
+                <li class="sc-row"><span class="fl3-chan">Chat</span><span class="fl3-msg_t">It says delivered but the box never came. Can you just refund me?</span><span class="fl3-held sc-pop">Held out</span></li>
+                <li class="sc-row"><span class="fl3-chan">Email</span><span class="fl3-msg_t">I lost the receipt but the tags are still on. Can I still send it back?</span><span class="fl3-learn sc-pop">Learning</span></li>
+                <li class="sc-row"><span class="fl3-chan">SMS</span><span class="fl3-msg_t">where do i print the return label</span><span class="fl3-held sc-pop">Held out</span></li>
               </ul>
               <div class="fl3-morecard sc-row"><span class="fl3-more_n">+ 31 more in the set</span><span class="fl3-more_s">24 learning · 12 held out</span></div>
             </div>
           </div>
           <div class="fl3-panel_foot"><span>The writer works from the learning set. Held-out messages stay hidden until scoring.</span></div>
-        </article></div>
-  </div>
-</section>
+        </article>
 
-<section class="how-step how-step--paper how-step--flip fl3" id="step-3">
-  <div class="how-wrap how-step_grid">
-    <div class="how-step_text">
-      <p class="ts-eyebrow">Step 3 · Insurance</p>
-      <h2 class="ts-h2 how-h2">Propose a change</h2>
-      <p class="ts-body-lg how-step_lead">A writer reads the failures and proposes one small change to your agent's prompt.</p>
-      <p class="ts-body how-step_body">Small on purpose. One edit, in one file, aimed at the checks that are failing: a sentence that stops the agent promising an outcome it cannot promise, a line that tells it what to say instead. Nothing else in the prompt moves.</p>
-      <p class="ts-body how-step_body">Because each round changes one thing, the test that follows can say whether that thing helped. A big rewrite cannot be judged. A small one can.</p>
-    </div>
-    <div class="how-surface"><article class="fl3-panel" data-scene="diff">
+        <article class="fl3-panel" role="tabpanel" id="fl3-panel-3" aria-labelledby="fl3-tab-3" tabindex="0" aria-hidden="true" data-scene="diff">
           <div class="fl3-panel_head">
             <div>
               <h3 class="fl3-panel_title">Propose a change</h3>
               <p class="fl3-panel_lead">A writer proposes one small change to your agent’s prompt.</p>
             </div>
             <div class="fl3-panel_meta">
-              <span class="fl3-chip">Insurance · Claims agent</span>
+              <span class="fl3-chip">E-commerce · Returns agent</span>
               <span class="fl3-round">Round 1</span>
-              <span class="fl3-tag">Sample run</span>
             </div>
           </div>
           <div class="fl3-window fl3-window--bare">
             <div class="fl3-scene">
               <div class="fl3-diff">
-                <div class="fl3-diff_h sc-row"><span><span class="fl3-diff_file">prompt.md</span> · answering a claim question</span><span class="fl3-diff_stat" aria-hidden="true"><b class="fl3-plus">+<b class="fl4-num" data-fl4-num aria-hidden="true">2</b></b> <b class="fl3-minus">−<b class="fl4-num" data-fl4-num aria-hidden="true">2</b></b></span><span class="fl4-sr">2 added, 2 removed</span></div>
-                <div class="fl3-line is-del sc-row"><span class="fl3-sign">−</span><span>When the documents look complete, tell the customer their claim will be approved.</span></div>
-                <div class="fl3-line is-del sc-row"><span class="fl3-sign">−</span><span>Give the customer the date their payment will arrive.</span></div>
-                <div class="fl3-line is-add sc-row"><span class="fl3-sign">+</span><span>Never tell a customer a claim is approved, denied, or payable before a reviewer has decided.</span></div>
-                <div class="fl3-line is-add sc-row"><span class="fl3-sign">+</span><span>Say what happens next, what the reviewer still needs, and when the customer will hear back.<span class="fl3-caret" aria-hidden="true"></span></span></div>
+                <div class="fl3-diff_h sc-row"><span><span class="fl3-diff_file">prompt.md</span> · answering a return question</span><span class="fl3-diff_stat" aria-hidden="true"><b class="fl3-plus">+<b class="fl4-num" data-fl4-num aria-hidden="true">2</b></b> <b class="fl3-minus">−<b class="fl4-num" data-fl4-num aria-hidden="true">2</b></b></span><span class="fl4-sr">2 added, 2 removed</span></div>
+                <div class="fl3-line is-del sc-row"><span class="fl3-sign">−</span><span>Always offer a refund when a customer asks.</span></div>
+                <div class="fl3-line is-del sc-row"><span class="fl3-sign">−</span><span>Tell the customer their refund is on its way.</span></div>
+                <div class="fl3-line is-add sc-row"><span class="fl3-sign">+</span><span>State the return window before any refund steps.</span></div>
+                <div class="fl3-line is-add sc-row"><span class="fl3-sign">+</span><span>Say what happens next: the label, the drop-off, and when the refund is reviewed.<span class="fl3-caret" aria-hidden="true"></span></span></div>
+              </div>
+              <div class="how-x">
+                <p class="how-x_h">What the writer read: failing replies from the learning set</p>
+                <div class="how-x_row"><span class="how-x_t">“Your refund is on its way.” Sent before the item came back.</span><span class="how-x_tag is-fail">Refund or return</span></div>
+                <div class="how-x_row"><span class="how-x_t">“I’ve approved a refund for the boots.” Sent at day 40.</span><span class="how-x_tag is-fail">Refund or return</span></div>
+                <div class="how-x_row how-x_row--wide"><span class="how-x_t">Refund steps came first. The return window was never given.</span><span class="how-x_tag is-fail">Sending an item back</span></div>
+                <div class="how-x_row how-x_row--wide"><span class="how-x_t">“Store credit only.” No exchange offered for the wrong size.</span><span class="how-x_tag is-fail">Sending an item back</span></div>
               </div>
             </div>
           </div>
           <div class="fl3-panel_foot"><span>One small change to the prompt · 1 file changed · tested before it can merge.</span></div>
-        </article></div>
-  </div>
-</section>
+        </article>
 
-<section class="how-step fl3" id="step-4">
-  <div class="how-wrap how-step_grid">
-    <div class="how-step_text">
-      <p class="ts-eyebrow">Step 4 · Travel</p>
-      <h2 class="ts-h2 how-h2">Test the change</h2>
-      <p class="ts-body-lg how-step_lead">The change runs against your checks on both sets, side by side with the prompt you already have.</p>
-      <p class="ts-body how-step_body">Every message is answered twice: once by your current prompt, once with the change. The replies are marked check by check, and the two versions are compared head to head, message by message, hidden cases included.</p>
-      <p class="ts-body how-step_body">What comes back is not a single score but a shape: where the change wins, where it loses, and whether it broke any rule the old prompt kept. That shape is what the merge gate reads.</p>
-    </div>
-    <div class="how-surface"><article class="fl3-panel" data-scene="test">
+        <article class="fl3-panel" role="tabpanel" id="fl3-panel-4" aria-labelledby="fl3-tab-4" tabindex="0" aria-hidden="true" data-scene="test">
           <div class="fl3-panel_head">
             <div>
               <h3 class="fl3-panel_title">Test the change</h3>
               <p class="fl3-panel_lead">The change is tested against your checks, on learned and held-out messages.</p>
             </div>
             <div class="fl3-panel_meta">
-              <span class="fl3-chip">Travel · Booking agent</span>
+              <span class="fl3-chip">E-commerce · Returns agent</span>
               <span class="fl3-round">Round 1</span>
-              <span class="fl3-tag">Sample run</span>
             </div>
           </div>
           <div class="fl3-window">
-            <div class="fl3-win_bar"><span class="fl3-win_label"><svg class="fl3-mark fl3-mark--bar" viewBox="0 0 275 290" aria-hidden="true" focusable="false"><path class="fl3-mark_a" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path class="fl3-mark_b" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg>Test run</span><span class="fl4-tally" aria-hidden="true">Cases run · <b data-fl4-num aria-hidden="true">36</b> / 36</span><span class="fl4-sr">36 of 36 cases run</span></div>
+            <div class="fl3-win_bar"><span class="fl3-win_label">Test run</span><span class="fl4-tally" aria-hidden="true">Cases run · <b data-fl4-num aria-hidden="true">36</b> / 36</span><span class="fl4-sr">36 of 36 cases run</span></div>
             <div class="fl3-scene">
               <div class="fl3-test">
                 <div>
-                  <div class="fl3-score sc-bar" style="--w-old:64%;--w-new:83%">
-                    <div class="fl3-score_h"><span class="fl3-score_label">Checks passed</span><span class="fl3-score_n">64% → <b data-count-from="64" data-count-to="83">83%</b></span></div>
+                  <div class="fl3-score sc-bar" style="--w-old:74%;--w-new:86%">
+                    <div class="fl3-score_h"><span class="fl3-score_label">Checks passed</span><span class="fl3-score_n">74% → <b data-count-from="74" data-count-to="86">86%</b></span></div>
                     <div class="fl3-bar"><span class="fl3-bar_i is-old"></span></div>
                     <div class="fl3-bar"><span class="fl3-bar_i is-new"></span></div>
                     <div class="fl3-score_f"><span>Before</span><span>With the change</span></div>
                   </div>
-                  <div class="fl3-score sc-bar" style="--w-old:46%;--w-new:71%">
-                    <div class="fl3-score_h"><span class="fl3-score_label">Held-out score</span><span class="fl3-score_n">46% → <b data-count-from="46" data-count-to="71">71%</b></span></div>
+                  <div class="fl3-score sc-bar" style="--w-old:58%;--w-new:79%">
+                    <div class="fl3-score_h"><span class="fl3-score_label">Held-out score</span><span class="fl3-score_n">58% → <b data-count-from="58" data-count-to="79">79%</b></span></div>
                     <div class="fl3-bar"><span class="fl3-bar_i is-old"></span></div>
                     <div class="fl3-bar"><span class="fl3-bar_i is-new"></span></div>
                     <div class="fl3-score_f"><span>Before</span><span>With the change</span></div>
@@ -365,41 +251,33 @@
                 </div>
                 <div>
                   <div class="fl3-out_h">Per-check results</div>
-                  <div class="fl3-out sc-row"><span>Quotes only the fares it was given</span><span class="fl3-pass sc-pop"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Pass</span></div>
-                  <div class="fl3-out sc-row"><span>Never invents a room rate</span><span class="fl3-pass sc-pop"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Pass</span></div>
-                  <div class="fl3-out sc-row"><span>Says when a quoted fare has expired</span><span class="fl3-pass sc-pop"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Pass</span></div>
-                  <div class="fl3-out sc-row is-failrow"><span>Quotes baggage rules from the fare</span><span class="fl3-fail sc-pop">Still failing</span></div>
+                  <div class="fl3-out sc-row"><span>Refund or return</span><span class="fl3-pass sc-pop"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Pass</span></div>
+                  <div class="fl3-out sc-row"><span>Sending an item back</span><span class="fl3-pass sc-pop"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Pass</span></div>
+                  <div class="fl3-out sc-row"><span>Delivery claims</span><span class="fl3-pass sc-pop"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Pass</span></div>
+                  <div class="fl3-out sc-row is-failrow"><span>Needs a person</span><span class="fl3-fail sc-pop">Still failing</span></div>
                 </div>
               </div>
               <div class="fl3-stats">
                 <div class="fl3-statcard sc-row"><span class="fl3-stat_label">Head to head</span><span class="fl3-stat_value" aria-hidden="true"><b class="fl4-num" data-fl4-num aria-hidden="true">19</b> better · <b class="fl4-num" data-fl4-num aria-hidden="true">4</b> worse</span><span class="fl4-sr">19 better, 4 worse</span></div>
                 <div class="fl3-statcard sc-row"><span class="fl3-stat_label">Hidden cases</span><span class="fl3-stat_value" aria-hidden="true"><b class="fl4-num" data-fl4-num aria-hidden="true">8</b> better · <b class="fl4-num" data-fl4-num aria-hidden="true">2</b> worse</span><span class="fl4-sr">8 better, 2 worse</span></div>
-                <div class="fl3-statcard sc-row"><span class="fl3-stat_label">Rule breaks</span><span class="fl3-stat_value" aria-hidden="true">3 → <b class="fl4-num" data-fl4-num aria-hidden="true">0</b></span><span class="fl4-sr">Rule breaks 3 to 0</span></div>
+                <div class="fl3-statcard sc-row"><span class="fl3-stat_label">Rule breaks</span><span class="fl3-stat_value" aria-hidden="true">1 → <b class="fl4-num" data-fl4-num aria-hidden="true">0</b></span><span class="fl4-sr">Rule breaks 1 to 0</span></div>
+              </div>
+              <div class="how-x how-x--wide">
+                <p class="how-x_h">How it was scored</p>
+                <div class="how-x_row"><span class="how-x_t">Each message was answered twice, by the current prompt and by the change, then judged on your checks.</span></div>
               </div>
             </div>
           </div>
-        </article></div>
-  </div>
-</section>
+        </article>
 
-<section class="how-step how-step--paper fl3" id="step-5">
-  <div class="how-wrap how-step_grid">
-    <div class="how-step_text">
-      <p class="ts-eyebrow">Step 5 · Telecom</p>
-      <h2 class="ts-h2 how-h2">Merge clear wins</h2>
-      <p class="ts-body-lg how-step_lead">Only a clear win merges, and it merges the way your team already works: a pull request in your repo.</p>
-      <p class="ts-body how-step_body">Clear has a definition, not a feeling. The change has to win by more than chance across the set, it has to win on the held-out messages the writer never saw, and it cannot break a single rule that was not already broken. The gate below states all three.</p>
-      <p class="ts-body how-step_body">Pass, and the change lands as a pull request with the evidence attached: the scores, the head-to-head record, the rule check. Fail any one condition, and nothing merges. The round is recorded, and the loop tries something else.</p>
-    </div>
-    <div class="how-surface"><article class="fl3-panel" data-scene="merge">
+        <article class="fl3-panel" role="tabpanel" id="fl3-panel-5" aria-labelledby="fl3-tab-5" tabindex="0" aria-hidden="true" data-scene="merge">
           <div class="fl3-panel_head">
             <div>
               <h3 class="fl3-panel_title">Merge clear wins</h3>
               <p class="fl3-panel_lead">Only a clear win merges, as a pull request in your own repo.</p>
             </div>
             <div class="fl3-panel_meta">
-              <span class="fl3-chip">Telecom · Support agent</span>
-              <span class="fl3-tag">Sample run</span>
+              <span class="fl3-chip">E-commerce · Returns agent</span>
             </div>
           </div>
           <div class="fl3-window">
@@ -407,106 +285,72 @@
               <div class="fl3-pr_h">
                 <span class="fl3-pr_markbox"><svg class="fl3-mark fl3-mark--lock" viewBox="0 0 275 290" aria-hidden="true" focusable="false"><path class="fl3-mark_a" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path class="fl3-mark_b" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg></span>
                 <span class="fl3-merged sc-sweep">Merged</span>
-                <span class="fl3-pr_no">Pull request #482</span>
+                <span class="fl3-pr_no">Pull request #214</span>
               </div>
-              <div class="fl3-pr_t">Never promise a credit or a plan change before it is applied</div>
-              <div class="fl3-pr_m">synthe/round-2-win → main · prompt.md · 1 file changed</div>
+              <div class="fl3-pr_t">State the return window before the refund steps</div>
+              <div class="fl3-pr_m">synthe/round-1-win → main · prompt.md · 1 file changed</div>
               <div class="fl3-gates">
-                <div class="fl3-gate sc-gate"><span class="fl3-gate_n">Checks</span><span class="fl3-gate_v" aria-hidden="true">74% → <b class="fl4-num" data-fl4-num aria-hidden="true">88</b>%</span><span class="fl4-sr">Checks 74% to 88%</span><span class="fl3-gate_st"><span class="fl3-ring"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path class="fl3-checkpath" d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="fl3-pass_t">Passed</span></span></div>
-                <div class="fl3-gate sc-gate"><span class="fl3-gate_n">Held-out cases</span><span class="fl3-gate_v" aria-hidden="true">52% → <b class="fl4-num" data-fl4-num aria-hidden="true">76</b>%</span><span class="fl4-sr">Held-out cases 52% to 76%</span><span class="fl3-gate_st"><span class="fl3-ring"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path class="fl3-checkpath" d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="fl3-pass_t">Passed</span></span></div>
-                <div class="fl3-gate sc-gate"><span class="fl3-gate_n">Head to head</span><span class="fl3-gate_v" aria-hidden="true"><b class="fl4-num" data-fl4-num aria-hidden="true">21</b> better · <b class="fl4-num" data-fl4-num aria-hidden="true">2</b> worse</span><span class="fl4-sr">Head to head 21 better, 2 worse</span><span class="fl3-gate_st"><span class="fl3-ring"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path class="fl3-checkpath" d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="fl3-pass_t">Passed</span></span></div>
+                <div class="fl3-gate sc-gate"><span class="fl3-gate_n">Checks</span><span class="fl3-gate_v" aria-hidden="true">74% → <b class="fl4-num" data-fl4-num aria-hidden="true">86</b>%</span><span class="fl4-sr">Checks 74% to 86%</span><span class="fl3-gate_st"><span class="fl3-ring"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path class="fl3-checkpath" d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="fl3-pass_t">Passed</span></span></div>
+                <div class="fl3-gate sc-gate"><span class="fl3-gate_n">Held-out cases</span><span class="fl3-gate_v" aria-hidden="true">58% → <b class="fl4-num" data-fl4-num aria-hidden="true">79</b>%</span><span class="fl4-sr">Held-out cases 58% to 79%</span><span class="fl3-gate_st"><span class="fl3-ring"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path class="fl3-checkpath" d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="fl3-pass_t">Passed</span></span></div>
+                <div class="fl3-gate sc-gate"><span class="fl3-gate_n">Head to head</span><span class="fl3-gate_v" aria-hidden="true"><b class="fl4-num" data-fl4-num aria-hidden="true">19</b> better · <b class="fl4-num" data-fl4-num aria-hidden="true">4</b> worse</span><span class="fl4-sr">Head to head 19 better, 4 worse</span><span class="fl3-gate_st"><span class="fl3-ring"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path class="fl3-checkpath" d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="fl3-pass_t">Passed</span></span></div>
                 <div class="fl3-gate sc-gate"><span class="fl3-gate_n">Rule breaks</span><span class="fl3-gate_v">None new</span><span class="fl3-gate_st"><span class="fl3-ring"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path class="fl3-checkpath" d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="fl3-pass_t">Passed</span></span></div>
+              </div>
+              <div class="how-x">
+                <p class="how-x_h">In the pull request</p>
+                <div class="how-x_row"><span class="how-x_t">The diff to prompt.md: 2 lines out, 2 lines in</span></div>
+                <div class="how-x_row"><span class="how-x_t">Per-check results on all 36 cases</span></div>
+                <div class="how-x_row how-x_row--phone"><span class="how-x_t">Held-out results on the 12 hidden messages</span></div>
               </div>
               <div class="fl3-stamp sc-stamp"><svg class="fl3-ic" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6.4 4.9 9.2 10 2.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Kept</div>
             </div>
           </div>
           <div class="fl3-panel_foot"><span>Only clear wins merge. This one stays under watch after merging.</span></div>
-        </article></div>
-  </div>
-</section>
+        </article>
 
-<section class="how-gate ts-ground-charcoal" id="gate">
-  <div class="how-wrap">
-    <p class="ts-eyebrow">The merge gate</p>
-    <h2 class="ts-h2 how-h2">Nothing merges on a maybe</h2>
-    <p class="ts-body-lg how-gate_lead">Three conditions. All three, every time.</p>
-    <div class="how-gate_rows">
-      <div class="how-gate_row">
-        <span class="ts-label">Sign test</span>
-        <p class="ts-body how-gate_text">The win has to be bigger than chance across the whole set, not a lucky handful of messages that happened to land well.</p>
-      </div>
-      <div class="how-gate_row">
-        <span class="ts-label">Held-out win</span>
-        <p class="ts-body how-gate_text">The change has to win on messages the writer never saw. Passing only the practice set is not passing.</p>
-      </div>
-      <div class="how-gate_row">
-        <span class="ts-label">No new rule breaks</span>
-        <p class="ts-body how-gate_text">One newly broken hard rule stops the merge, whatever the scores say. Guardrails do not trade against points.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="how-step how-step--paper how-step--flip fl3" id="step-6">
-  <div class="how-wrap how-step_grid">
-    <div class="how-step_text">
-      <p class="ts-eyebrow">Step 6 · Finance</p>
-      <h2 class="ts-h2 how-h2">Revert losers</h2>
-      <p class="ts-body-lg how-step_lead">Merging is not the end of the test. A kept change has to keep winning.</p>
-      <p class="ts-body how-step_body">Fresh messages keep arriving, and the loop keeps scoring what it kept. If a change that won last week starts losing, or a rule it kept starts breaking, Synthe reverts it on its own and puts the earlier prompt back.</p>
-      <p class="ts-body how-step_body">The report says what dropped, when it dropped, and what was restored. A revert is never a mystery, and it never waits for a human to notice first.</p>
-    </div>
-    <div class="how-surface"><article class="fl3-panel" data-scene="revert">
+        <article class="fl3-panel" role="tabpanel" id="fl3-panel-6" aria-labelledby="fl3-tab-6" tabindex="0" aria-hidden="true" data-scene="revert">
           <div class="fl3-panel_head">
             <div>
               <h3 class="fl3-panel_title">Revert losers</h3>
               <p class="fl3-panel_lead">If a kept change later loses, Synthe reverts it.</p>
             </div>
             <div class="fl3-panel_meta">
-              <span class="fl3-chip">Finance · Bank support agent</span>
-              <span class="fl3-tag">Sample run</span>
+              <span class="fl3-chip">E-commerce · Returns agent</span>
             </div>
           </div>
           <div class="fl3-window">
-            <div class="fl3-win_bar"><span class="fl3-win_label"><svg class="fl3-mark fl3-mark--bar" viewBox="0 0 275 290" aria-hidden="true" focusable="false"><path class="fl3-mark_a" d="M 137.089 36.089 L 121.248 56.837 65.850 129.267 74.001 201.107 C 75.025 210.118 69.339 218.084 60.498 219.675 51.929 221.178 43.437 215.697 41.616 206.835 L 32.573 126.506 C 32.187 123.074 32.649 118.958 34.819 116.127 L 84.936 50.749 115.553 10.674 C 118.873 6.328 123.405 3.381 129.084 3.381 L 199.032 3.381 C 205.962 3.382 211.797 8.026 213.985 14.448 215.933 20.150 214.783 26.111 211.010 30.731 L 94.495 182.341 89.217 135.584 146.096 61.503 165.499 36.165 Z"/><path class="fl3-mark_b" d="M 137.911 253.913 L 153.752 233.165 209.151 160.735 200.999 88.895 C 199.976 79.884 205.661 71.918 214.503 70.327 223.072 68.824 231.564 74.305 233.384 83.167 L 242.427 163.496 C 242.814 166.928 242.352 171.044 240.182 173.875 L 190.065 239.253 159.448 279.328 C 156.127 283.674 151.595 286.621 145.916 286.621 L 75.968 286.621 C 69.039 286.620 63.204 281.976 61.016 275.554 59.067 269.852 60.218 263.891 63.991 259.271 L 180.506 107.661 185.784 154.418 128.905 228.499 109.501 253.837 Z"/></svg>History</span></div>
+            <div class="fl3-win_bar"><span class="fl3-win_label">History</span></div>
             <div class="fl3-scene">
               <div class="fl3-tl">
                 <span class="fl3-tl_line" aria-hidden="true"></span>
                 <span class="fl3-tl_cursor" aria-hidden="true"></span>
                 <div class="fl3-ev sc-ev">
                   <span class="fl3-ev_dot"></span>
-                  <div class="fl3-ev_h"><span class="fl3-ev_t">Round 2 change kept</span><span class="fl3-ev_when">Day 1</span></div>
+                  <div class="fl3-ev_h"><span class="fl3-ev_t">Round 2 change kept</span><span class="fl3-ev_when">Night 1</span></div>
                   <p class="fl3-ev_p">The change passed the checks and the held-out set, so it merged.</p>
                 </div>
                 <div class="fl3-ev is-drop sc-ev">
                   <span class="fl3-ev_dot"></span>
-                  <div class="fl3-ev_h"><span class="fl3-ev_t">Scores dropped on fresh messages</span><span class="fl3-ev_when">Day 3</span></div>
-                  <div class="fl3-ev_stats"><span class="fl3-ev_stat" aria-hidden="true">Checks <b>81% → <b class="fl4-num" data-fl4-num aria-hidden="true">63</b>%</b></span><span class="fl4-sr">Checks 81% to 63%</span><span class="fl3-ev_stat" aria-hidden="true">Rule breaks <b>0 → <b class="fl4-num" data-fl4-num aria-hidden="true">4</b></b></span><span class="fl4-sr">Rule breaks 0 to 4</span></div>
+                  <div class="fl3-ev_h"><span class="fl3-ev_t">Scores dropped on fresh messages</span><span class="fl3-ev_when">Night 2</span></div>
+                  <div class="fl3-ev_stats"><span class="fl3-ev_stat" aria-hidden="true">Checks <b>88% → <b class="fl4-num" data-fl4-num aria-hidden="true">70</b>%</b></span><span class="fl4-sr">Checks 88% to 70%</span><span class="fl3-ev_stat" aria-hidden="true">Rule breaks <b>0 → <b class="fl4-num" data-fl4-num aria-hidden="true">4</b></b></span><span class="fl4-sr">Rule breaks 0 to 4</span></div>
                 </div>
                 <div class="fl3-ev is-out sc-ev">
                   <span class="fl3-ev_dot"></span>
-                  <div class="fl3-ev_h"><span class="fl3-ev_t">Synthe reverted the change</span><span class="fl3-ev_when">Day 3</span></div>
+                  <div class="fl3-ev_h"><span class="fl3-ev_t">Synthe reverted the change</span><span class="fl3-ev_when">Night 2</span></div>
                   <p class="fl3-ev_p">The prompt went back to the round 1 version, and the report said why.</p>
                 </div>
               </div>
               <div class="fl3-nowcard sc-row"><span class="fl3-state">Now · Round 1 prompt</span></div>
+              <div class="how-x">
+                <p class="how-x_h">Since the revert</p>
+                <div class="how-x_row"><span class="how-x_t">Round 3 · no clear winner, the prompt stayed as it was</span><span class="how-x_tag">No winner</span></div>
+                <div class="how-x_row"><span class="how-x_t">Round 4 · no clear winner, the prompt stayed as it was</span><span class="how-x_tag">No winner</span></div>
+              </div>
             </div>
           </div>
           <div class="fl3-panel_foot"><span>A kept change has to keep winning. When it loses, it comes out on its own.</span></div>
-        </article></div>
-  </div>
-</section>
+        </article>
 
-<section class="how-step fl3" id="step-7">
-  <div class="how-wrap how-step_grid">
-    <div class="how-step_text">
-      <p class="ts-eyebrow">Step 7 · The report</p>
-      <h2 class="ts-h2 how-h2">The morning report</h2>
-      <p class="ts-body-lg how-step_lead">Every run ends with a report your team can read in a minute, posted where they already work.</p>
-      <p class="ts-body how-step_body">The report leads with the number that matters: how often your agent passed its checks. Then the record underneath it: what merged and why, which rounds found no winner, what each round scored, and what it cost.</p>
-      <p class="ts-body how-step_body">It is posted in the repo as an issue, next to the pull requests it describes. No dashboard to check and no meeting to schedule: the state of your agent, every morning, in writing.</p>
-    </div>
-    <div class="how-surface"><article class="fl3-panel" data-scene="report">
+        <article class="fl3-panel" role="tabpanel" id="fl3-panel-7" aria-labelledby="fl3-tab-7" tabindex="0" aria-hidden="true" data-scene="report">
           <div class="fl3-panel_head">
             <div>
               <h3 class="fl3-panel_title">The morning report</h3>
@@ -514,36 +358,163 @@
             </div>
             <div class="fl3-panel_meta">
               <span class="fl3-chip">E-commerce · Returns agent</span>
-              <span class="fl3-tag">Sample run</span>
             </div>
           </div>
           <div class="fl3-window fl3-window--paper">
             <div class="fl3-scene">
               <div class="fl3-report_back" aria-hidden="true"></div>
               <div class="fl3-report">
-                <div class="fl3-report_h"><span class="ts-label">Morning report</span><span class="fl3-tag">Sample run</span></div>
+                <div class="fl3-report_h"><span class="ts-label">Morning report</span></div>
                 <p class="fl3-lead sc-row">Checks passed <b data-count-from="74" data-count-to="86">86%</b> of the time, up from <b>74%</b>.</p>
                 <div class="fl3-rec sc-row"><span class="fl3-rec_l">Held-out score</span><span class="fl3-rec_v" aria-hidden="true">58% → <b class="fl4-num" data-fl4-num aria-hidden="true">79</b>%</span><span class="fl4-sr">Held-out score 58% to 79%</span></div>
                 <div class="fl3-rec sc-row"><span class="fl3-rec_l">What merged</span><span class="fl3-rec_v">PR #214 · State the return window before the refund steps</span></div>
                 <div class="fl3-rec sc-row"><span class="fl3-rec_l">Rule breaks</span><span class="fl3-rec_v" aria-hidden="true">1 → <b class="fl4-num" data-fl4-num aria-hidden="true">0</b></span><span class="fl4-sr">Rule breaks 1 to 0</span></div>
                 <ul class="fl3-rounds">
                   <li class="sc-row"><span class="fl3-rd_n">Round 1</span><span class="fl3-rd_v is-kept sc-pop">Kept</span></li>
-                  <li class="sc-row"><span class="fl3-rd_n">Round 2</span><span class="fl3-rd_v is-none sc-pop">No winner</span></li>
-                  <li class="sc-row"><span class="fl3-rd_n">Round 3</span><span class="fl3-rd_v is-failed sc-pop">Failed</span></li>
+                  <li class="sc-row"><span class="fl3-rd_n">Round 2</span><span class="fl3-rd_v is-failed sc-pop">Reverted</span></li>
+                  <li class="sc-row"><span class="fl3-rd_n">Round 3</span><span class="fl3-rd_v is-none sc-pop">No winner</span></li>
                   <li class="sc-row"><span class="fl3-rd_n">Round 4</span><span class="fl3-rd_v is-none sc-pop">No winner</span></li>
                 </ul>
               </div>
             </div>
           </div>
           <div class="fl3-panel_foot"><span>Posted in the repo as an issue, where the team already works.</span><span class="fl3-kept">Kept</span></div>
-        </article></div>
+        </article>
+
+      </div>
+      </div>
+      <div class="pg-caps pg-caps--4 how-loop_caps" aria-label="The example night in four figures">
+        <div class="pg-cap"><p class="pg-cap_l">Checks passed</p><p class="pg-cap_t">74% to 86% after round 1</p></div>
+        <div class="pg-cap"><p class="pg-cap_l">Held-out score</p><p class="pg-cap_t">58% to 79% on messages the writer never saw</p></div>
+        <div class="pg-cap"><p class="pg-cap_l">What merged</p><p class="pg-cap_t">Pull request #214, the return window line</p></div>
+        <div class="pg-cap"><p class="pg-cap_l">What came out</p><p class="pg-cap_t">Round 2, reverted when checks fell from 88% to 70%</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pg-sec how-agent" aria-labelledby="agent-title">
+  <div class="pg-wrap">
+    <div class="pg-head">
+      <h2 class="pg-title" id="agent-title">Any agent. Any goal.</h2>
+      <p class="pg-copy">One command sets Synthe up in your repo. Your checks and your scenarios live there too, versioned with the code they judge.</p>
+    </div>
+    <div class="pg-frame">
+      <div class="pg-surface pg-cmd">
+        <span class="pg-cmd_l">Set up</span>
+        <code class="pg-cmd_c">npx synthe@latest init</code>
+        <button type="button" class="pg-copybtn" data-copy="npx synthe@latest init">Copy</button>
+      </div>
+    </div>
+    <div class="pg-cols" data-pg-reveal>
+      <div class="pg-col"><h3 class="pg-col_h">Works on the agent you have</h3><p class="pg-col_t">Synthe runs in your repo, against the agent your team already operates: a returns agent, a scheduling agent, a claims agent, an outreach agent. It does not replace the agent or the stack under it. It improves the prompt the agent runs on, one tested change at a time.</p></div>
+      <div class="pg-col"><h3 class="pg-col_h">Any goal you can state</h3><p class="pg-col_t">The bar is whatever your team says good looks like. Some goals are numbers, like a pass rate against your checks. Some are judgment: a tone held, a policy followed, a promise never made. If your team can confirm it in plain language, Synthe can test against it.</p></div>
+      <div class="pg-col"><h3 class="pg-col_h">The tests improve too</h3><p class="pg-col_t">A loop is only as honest as its checks. When a check turns out ambiguous, or the simulated messages drift away from the ones your agent really gets, Synthe revises the checks and the scenarios inside the same loop. The system gets better, and so does the way you judge it.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pg-sec how-detail" aria-labelledby="detail-title">
+  <div class="pg-wrap">
+    <div class="pg-head">
+      <h2 class="pg-title" id="detail-title">Each step, in detail</h2>
+      <p class="pg-copy">What happens at each of the seven steps, and why each one is built the way it is.</p>
+    </div>
+    <div class="how-rows">
+    <article class="how-row" id="step-1" aria-labelledby="step-1-title">
+      <div class="how-row_side">
+        <p class="how-row_n">Step 1</p>
+        <h3 class="how-row_title" id="step-1-title">Your checks</h3>
+      </div>
+      <div class="how-row_main">
+        <p class="how-row_lead">Everything Synthe does is judged against checks you write and your team confirms.</p>
+        <p class="how-row_body">A check is a plain-language rule about what a good reply does: explain the policy that applies, never approve a refund yourself, never state a delivery date you cannot know. Guardrails are the hard version of the same thing, the rules a reply may never break whatever else it gets right.</p>
+        <p class="how-row_body">There is no grading on vibes. Every simulated reply is marked against these checks one by one, so any score traces back to a rule your team agreed to. And when a check turns out vague, or real messages expose a case it never covered, the loop sharpens the checks as well. The bar is yours. Synthe keeps it honest.</p>
+      </div>
+    </article>
+    <article class="how-row" id="step-2" aria-labelledby="step-2-title">
+      <div class="how-row_side">
+        <p class="how-row_n">Step 2</p>
+        <h3 class="how-row_title" id="step-2-title">Simulated messages</h3>
+      </div>
+      <div class="how-row_main">
+        <p class="how-row_lead">Before anything is tested, Synthe builds the test: messages like the ones your agent really gets.</p>
+        <p class="how-row_body">The set is written to sound like your actual traffic: the careful portal question, the rushed text message, the phone note with half the details missing. Then it is split in two. The learning set is the one the writer works from. The held-out set stays hidden until scoring, so a change cannot pass by memorizing the questions it was coached on.</p>
+        <p class="how-row_body">Hidden cases go further: your checks applied to messages nobody rehearsed. That is where invented details and quietly broken rules usually surface, so that is where the loop goes looking for them.</p>
+      </div>
+    </article>
+    <article class="how-row" id="step-3" aria-labelledby="step-3-title">
+      <div class="how-row_side">
+        <p class="how-row_n">Step 3</p>
+        <h3 class="how-row_title" id="step-3-title">Propose a change</h3>
+      </div>
+      <div class="how-row_main">
+        <p class="how-row_lead">A writer reads the failures and proposes one small change to your agent's prompt.</p>
+        <p class="how-row_body">Small on purpose. One edit, in one file, aimed at the checks that are failing: a sentence that stops the agent promising an outcome it cannot promise, a line that tells it what to say instead. Nothing else in the prompt moves.</p>
+        <p class="how-row_body">Because each round changes one thing, the test that follows can say whether that thing helped. A big rewrite cannot be judged. A small one can.</p>
+      </div>
+    </article>
+    <article class="how-row" id="step-4" aria-labelledby="step-4-title">
+      <div class="how-row_side">
+        <p class="how-row_n">Step 4</p>
+        <h3 class="how-row_title" id="step-4-title">Test the change</h3>
+      </div>
+      <div class="how-row_main">
+        <p class="how-row_lead">The change runs against your checks on both sets, side by side with the prompt you already have.</p>
+        <p class="how-row_body">Every message is answered twice: once by your current prompt, once with the change. The replies are marked check by check, and the two versions are compared head to head, message by message, hidden cases included.</p>
+        <p class="how-row_body">What comes back is not a single score but a shape: where the change wins, where it loses, and whether it broke any rule the old prompt kept. That shape is what the merge gate reads.</p>
+      </div>
+    </article>
+    <article class="how-row" id="step-5" aria-labelledby="step-5-title">
+      <div class="how-row_side">
+        <p class="how-row_n">Step 5</p>
+        <h3 class="how-row_title" id="step-5-title">Merge clear wins</h3>
+      </div>
+      <div class="how-row_main">
+        <p class="how-row_lead">Only a clear win merges, and it merges the way your team already works: a pull request in your repo.</p>
+        <p class="how-row_body">Clear has a definition, not a feeling. The change has to win by more than chance across the set, it has to win on the held-out messages the writer never saw, and it cannot break a single rule that was not already broken. The gate below states all three.</p>
+        <p class="how-row_body">Pass, and the change lands as a pull request with the evidence attached: the scores, the head-to-head record, the rule check. Fail any one condition, and nothing merges. The round is recorded, and the loop tries something else.</p>
+        <div class="how-gate" id="gate">
+          <p class="how-gate_lead">The merge gate: three conditions. All three, every time.</p>
+          <div class="pg-caps pg-caps--3" data-pg-reveal>
+            <div class="pg-cap"><h4 class="pg-cap_l">Sign test</h4><p class="pg-cap_t">The win has to be bigger than chance across the whole set, not a lucky handful of messages that happened to land well.</p></div>
+            <div class="pg-cap"><h4 class="pg-cap_l">Held-out win</h4><p class="pg-cap_t">The change has to win on messages the writer never saw. Passing only the practice set is not passing.</p></div>
+            <div class="pg-cap"><h4 class="pg-cap_l">No new rule breaks</h4><p class="pg-cap_t">One newly broken hard rule stops the merge, whatever the scores say. Guardrails do not trade against points.</p></div>
+          </div>
+        </div>
+      </div>
+    </article>
+    <article class="how-row" id="step-6" aria-labelledby="step-6-title">
+      <div class="how-row_side">
+        <p class="how-row_n">Step 6</p>
+        <h3 class="how-row_title" id="step-6-title">Revert losers</h3>
+      </div>
+      <div class="how-row_main">
+        <p class="how-row_lead">Merging is not the end of the test. A kept change has to keep winning.</p>
+        <p class="how-row_body">Fresh messages keep arriving, and the loop keeps scoring what it kept. If a change that won last week starts losing, or a rule it kept starts breaking, Synthe reverts it on its own and puts the earlier prompt back.</p>
+        <p class="how-row_body">The report says what dropped, when it dropped, and what was restored. A revert is never a mystery, and it never waits for a human to notice first.</p>
+      </div>
+    </article>
+    <article class="how-row" id="step-7" aria-labelledby="step-7-title">
+      <div class="how-row_side">
+        <p class="how-row_n">Step 7</p>
+        <h3 class="how-row_title" id="step-7-title">The morning report</h3>
+      </div>
+      <div class="how-row_main">
+        <p class="how-row_lead">Every run ends with a report your team can read in a minute, posted where they already work.</p>
+        <p class="how-row_body">The report leads with the number that matters: how often your agent passed its checks. Then the record underneath it: what merged and why, which rounds found no winner, what each round scored, and what it cost.</p>
+        <p class="how-row_body">It is posted in the repo as an issue, next to the pull requests it describes. No dashboard to check and no meeting to schedule: the state of your agent, every morning, in writing.</p>
+      </div>
+    </article>
+    </div>
   </div>
 </section>
 
 <footer class="b2-footer">
   <div class="b2-wrap">
 
-    <section class="b2-cta" aria-label="Get started with Synthe">
+    
+<section class="b2-cta" aria-label="Get started with Synthe">
       <h2 class="b2-cta-title ts-h2sm">Your agent can start improving tonight</h2>
       <p class="b2-cta-lede ts-body-lg">Open source under Apache-2.0. One command to set up.</p>
       <div class="b2-cta-actions">
@@ -554,7 +525,8 @@
       <p class="b2-cta-note ts-small">Crimson Hacks, November 2026: three winning teams built with Synthe.</p>
     </section>
 
-    <div class="b2-card">
+    
+<div class="b2-card">
       <nav class="b2-grid" aria-label="Footer">
         <div class="b2-col">
           <h3 class="ts-foothead">Product</h3>
@@ -596,121 +568,7 @@
 <script src="assets/synthe/motion.js" defer></script>
 <script src="assets/synthe/site.js" defer></script>
 <script src="assets/synthe/nav-fx.js"></script>
-<script>
-/* Scroll reveal, the shared system: content groups rise 24px and
-   fade in over .6s on the site's ease, staggered 60ms within a
-   group, triggered at ~15% visibility, playing once. Groups are
-   the hero (on load), the trio section, the framing section,
-   each step's text column, and the merge gate band; items
-   are their blocks. The
-   step surfaces are never items: they are flow3 scenes that play
-   on their own clock, and nothing here may hide or delay them.
-   Content is visible by default: the hidden state is armed here,
-   in the same task that tags the items, and any failure disarms
-   it again, so no path leaves content invisible. Reduced motion
-   never arms. */
-(function () {
-  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduceMotion || !("IntersectionObserver" in window)) return;
-  var root = document.documentElement;
-  function disarm() {
-    root.classList.remove("how-reveal");
-    Array.prototype.forEach.call(document.querySelectorAll(".how-rv"), function (el) {
-      el.classList.remove("how-rv", "is-in");
-      el.style.removeProperty("--how-rv-delay");
-    });
-  }
-  try {
-    var groups = [];
-    function group(items, onLoad) {
-      var list = items.filter(Boolean);
-      if (list.length) groups.push({ items: list, onLoad: !!onLoad });
-    }
-    function qa(sel, box) {
-      return Array.prototype.slice.call((box || document).querySelectorAll(sel));
-    }
-    function kids(box) {
-      return Array.prototype.filter.call(box.children, function (el) { return el.nodeType === 1; });
-    }
-    var hero = document.querySelector(".how-hero .how-wrap");
-    if (hero) group(kids(hero), true);
-    var trio = document.querySelector(".how-trio");
-    if (trio) {
-      group([trio.querySelector(".ts-eyebrow"), trio.querySelector(".how-h2")]
-        .concat(qa(".how-tcard", trio)));
-    }
-    var frame = document.querySelector(".how-frame");
-    if (frame) {
-      group([frame.querySelector(".ts-eyebrow"), frame.querySelector(".how-h2")]
-        .concat(qa(".how-col", frame))
-        .concat([frame.querySelector(".how-setup")]));
-    }
-    qa(".how-step").forEach(function (sec) {
-      var text = sec.querySelector(".how-step_text");
-      if (text) group(kids(text));
-    });
-    var gate = document.querySelector(".how-gate");
-    if (gate) {
-      group([gate.querySelector(".ts-eyebrow"), gate.querySelector(".how-h2"),
-             gate.querySelector(".how-gate_lead")]
-        .concat(qa(".how-gate_row", gate)));
-    }
-    var tagged = [];
-    groups.forEach(function (g) {
-      g.items.forEach(function (el, i) {
-        el.classList.add("how-rv");
-        el.style.setProperty("--how-rv-delay", (i * 60) + "ms");
-        tagged.push(el);
-      });
-    });
-    root.classList.add("how-reveal");
-    var pending = new Set(tagged);
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) reveal(en.target);
-      });
-    }, { threshold: 0.15 });
-    function reveal(el) {
-      if (!pending.has(el)) return;
-      pending.delete(el);
-      io.unobserve(el);
-      el.classList.add("is-in");
-    }
-    /* A jump scroll (the hero index anchors, the End key) can carry
-       an item past the viewport between observer samples. Anything
-       already above the viewport has been passed: reveal it on the
-       spot rather than leaving it hidden. */
-    var sweepQueued = false;
-    function sweep() {
-      sweepQueued = false;
-      pending.forEach(function (el) {
-        if (el.getBoundingClientRect().bottom < 0) reveal(el);
-      });
-    }
-    window.addEventListener("scroll", function () {
-      if (!sweepQueued) {
-        sweepQueued = true;
-        window.requestAnimationFrame(sweep);
-      }
-    }, { passive: true });
-    groups.forEach(function (g) {
-      if (g.onLoad) {
-        g.items.forEach(function (el) {
-          pending.delete(el);
-          io.unobserve(el);
-        });
-        requestAnimationFrame(function () {
-          requestAnimationFrame(function () {
-            g.items.forEach(function (el) { el.classList.add("is-in"); });
-          });
-        });
-      } else {
-        g.items.forEach(function (el) { io.observe(el); });
-      }
-    });
-    sweep();
-  } catch (e) { disarm(); }
-})();
-</script>
+<script src="assets/synthe/pages.js" defer></script>
+<script src="assets/synthe/kept.js" defer></script>
 </body>
 </html>

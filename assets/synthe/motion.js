@@ -1,21 +1,9 @@
-/* Synthe motion kit: a small tween engine for the site shell and the
-   homepage modules. No dependencies.
 
-   tween(el, {to}, {duration, delay, ease, from, onUpdate, onComplete})
-   animates numeric "virtual" properties of an element and writes them
-   to inline style:
-     x, y            px (or a "%" string)        -> transform translate()
-     xPercent, yPercent                          -> transform translate(%)
-     scale, scaleX, scaleY                       -> transform scale()
-     opacity, autoAlpha (opacity + visibility)
-     width, height   px
-   Any other key is treated as a CSS custom property or numeric style.
-   Durations are in seconds. Reduced motion is the caller's choice. */
 (function () {
   "use strict";
   var S = (window.SyntheMotion = {});
 
-  /* ---------- easing ---------- */
+  
   function bezier(x1, y1, x2, y2) {
     function a(p1, p2) { return 1 - 3 * p2 + 3 * p1; }
     function b(p1, p2) { return 3 * p2 - 6 * p1; }
@@ -54,7 +42,7 @@
     back16: backOut(1.6),
     back17: backOut(1.7),
     back2: backOut(2),
-    /* named curves used across the site */
+    
     quint: bezier(0.22, 1, 0.36, 1),
     snap: bezier(0.16, 1, 0.3, 1),
     glide: bezier(0.38, 0.005, 0.215, 1),
@@ -63,13 +51,13 @@
     bezier: bezier,
   });
 
-  /* ---------- per-element state ---------- */
+  
   var states = new WeakMap();
   function st(el) {
     var s = states.get(el);
     if (!s) {
       s = { x: 0, y: 0, xu: "px", yu: "px", xPercent: 0, yPercent: 0, scaleX: 1, scaleY: 1, tf: false };
-      /* start from whatever transform the stylesheet already applies */
+      
       var m = (getComputedStyle(el).transform || "").match(/^matrix(3d)?\((.+)\)$/);
       if (m) {
         var v = m[2].split(",").map(parseFloat);
@@ -134,7 +122,7 @@
     return Array.prototype.slice.call(els).filter(Boolean);
   }
 
-  /* ---------- tweens ---------- */
+  
   var active = [];
   var raf = 0;
   function loop(now) {
@@ -181,7 +169,7 @@
   S.isActive = function (el, key) {
     return active.some(function (tw) { return !tw.dead && tw.el === el && (!key || key in tw.to); });
   };
-  /* finish every live tween on these elements at once */
+  
   S.finish = function (els) {
     var arr = list(els);
     active.forEach(function (tw) {

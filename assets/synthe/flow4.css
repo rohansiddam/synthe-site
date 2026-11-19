@@ -1,21 +1,6 @@
-/* Synthe flow + feature sections, third design (flow3 lane).
-   The flow section rebuilt as living product scenes: a weighted
-   stepper rail over per-panel-height stages, each panel a product
-   window whose content plays (checks settle, messages arrive, a
-   diff composes, bars animate, gates check and the Mark locks, a
-   timeline walks back, a report prints). Scene motion is driven by
-   flow3.js state classes; the base state of every element is its
-   settled end state, so no-JS and reduced-motion render the
-   finished scene, static.
-   Feature cards: the flow2 restyle carried over verbatim (this
-   file replaces flow2.css wholesale; see the feature block below).
-   Load LAST in <head>, after clone-fixes.css and fixes.css.
-   Palette is flat Stark only: charcoal, cream paper, signal red,
-   moss. No washes, no coloured fields, no tinted headline text. */
 
-/* ================================================================
-   FLOW SECTION
-   ================================================================ */
+
+
 .fl3 {
   --fl3-ink: #0e0d0c;
   --fl3-ink-70: rgba(14, 13, 12, 0.7);
@@ -64,7 +49,7 @@
   margin-bottom: 8px;
 }
 
-/* --- stepper rail: weighted nodes on a real track --- */
+
 .fl3-stepper {
   position: relative;
   display: flex;
@@ -195,7 +180,7 @@
   display: none;
 }
 
-/* --- stage: per-panel height, animated by flow3.js --- */
+
 .fl3-stage {
   position: relative;
   transition: height 0.45s var(--fl3-ease);
@@ -293,7 +278,7 @@
   color: var(--fl3-ink-60);
 }
 
-/* --- chips (flow2 language, carried over) --- */
+
 .fl3-chip,
 .fl3-tag,
 .fl3-round,
@@ -366,7 +351,7 @@
   flex: none;
 }
 
-/* --- the product window + scene --- */
+
 .fl3-window {
   position: relative;
   border: 1px solid rgba(14, 13, 12, 0.1);
@@ -418,8 +403,7 @@
   opacity: 0;
 }
 
-/* Scene pre-states: only once flow3.js marks the panel live.
-   Without .fl3-live every element sits at its settled end state. */
+
 .fl3-live .sc-row {
   opacity: 0;
   transform: translateY(8px);
@@ -441,7 +425,7 @@
   transform: scale(1);
 }
 
-/* --- panel 1: checks settle, switches flip on --- */
+
 .fl3-checks li {
   display: flex;
   justify-content: space-between;
@@ -546,7 +530,7 @@
   margin-bottom: 4px;
 }
 
-/* --- panel 2: messages arrive --- */
+
 .fl3-msgs li {
   display: flex;
   align-items: baseline;
@@ -596,7 +580,7 @@
   color: var(--fl3-ink-60);
 }
 
-/* --- panel 3: the diff composes --- */
+
 .fl3-diff_h {
   display: flex;
   justify-content: space-between;
@@ -677,7 +661,7 @@
   }
 }
 
-/* --- panel 4: bars animate, verdicts stamp --- */
+
 .fl3-test {
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
@@ -807,7 +791,7 @@
   font-weight: 500;
 }
 
-/* --- panel 5: gates check, the Mark locks, Kept stamps --- */
+
 .fl3-scene--pr {
   padding: 20px 22px 24px;
 }
@@ -998,7 +982,7 @@
   margin-top: 28px;
 }
 
-/* --- panel 6: the timeline walks back --- */
+
 .fl3-tl {
   position: relative;
   padding-left: 30px;
@@ -1151,7 +1135,7 @@
   font-weight: 500;
 }
 
-/* --- panel 7: the report prints --- */
+
 .fl3-window--paper .fl3-scene {
   padding: 22px 24px 26px;
 }
@@ -1171,11 +1155,7 @@
   box-shadow: var(--fl3-shadow-sm);
   padding: 20px 22px;
 }
-/* Panel 7's document header (REF-HOW-REPORT.md §5.1): the report
-   sheet labels itself, Granola's pattern. The identical rule to
-   the one HOW3 seats in how.css for the How page; it lives here
-   for the landing seat, beside the report block it heads.
-   Integrator addition, 2026-11-18 (HOW3.md's named hand-off). */
+
 .fl3-report_h {
   display: flex;
   justify-content: space-between;
@@ -1245,7 +1225,7 @@
   color: var(--fl3-red-deep);
 }
 
-/* --- responsive --- */
+
 @media (max-width: 1023px) {
   .fl3-step_name {
     font-size: 0.8125rem;
@@ -1321,7 +1301,7 @@
   }
 }
 
-/* --- reduced motion: settled scenes, static --- */
+
 @media (prefers-reduced-motion: reduce) {
   .fl3 *,
   .fl3 *::before,
@@ -1331,11 +1311,7 @@
   }
 }
 
-/* ================================================================
-   FEATURE CARDS (flow2 restyle carried over verbatim; this block
-   replaces the flow2.css feature block so flow3.css can stand
-   alone on index.html)
-   ================================================================ */
+
 .section_home-features {
   --fl2-ink: #0e0d0c;
   --fl2-ink-70: rgba(14, 13, 12, 0.7);
@@ -1412,36 +1388,12 @@
   color: var(--fl2-ink);
 }
 
-/* ================================================================
-   INTEGRATOR EXTENSION (flow3 wiring, see INTEGRATION.md):
-   FLOW3.md states this file carries flow2.css's feature-panels
-   block verbatim. As authored, the block above styles a
-   .feature-card markup that does not exist on index.html; the
-   built features section runs on the base build's .home-feature_* markup,
-   whose audited restyle (Lane E, incl. the audit fix round:
-   charcoal ink pin, white cards, plain-text eyebrows) lives only
-   in flow2.css. That block is therefore appended below, byte
-   verbatim from flow2.css, so flow3.css stands alone exactly as
-   the wiring spec intends and the features section renders
-   unchanged. The .feature-card block above matches nothing on
-   the page and is inert.
-   ================================================================ */
-/* ================================================================
-   FEATURE PANELS (existing stacked-card markup, restyled)
-   flow2.css loads last; these rules retire the pastel theme fields
-   and the coloured headline spans, and put the cards on the same
-   cream field / white card system as the flow section.
-   ================================================================ */
+
+
 .section_home-features {
   background: var(--fl2-cream, #fdf6ec);
 }
-/* The base build sets the per-theme ink (var(--_theme--terra-card---
-   text-primary): navy / rust / olive / plum) as the colour of the
-   item itself, so every child without its own colour inherits a
-   theme tint. Start the inheritance from charcoal instead, so no
-   per-theme colour survives anywhere in the subtree. Children
-   with their own declared colours (description, call-outs,
-   eyebrows, links) are unaffected. */
+
 .section_home-features .home-feature_item {
   color: #0e0d0c;
 }
@@ -1452,26 +1404,19 @@
   background: #ffffff;
   border: 1px solid rgba(14, 13, 12, 0.09);
 }
-/* The pastel field actually paints on the inner item, keyed off the
-   theme class; retire it there too. */
+
 .section_home-features .home-feature_theme.cc-top .home-feature_item,
 .section_home-features .home-feature_theme.cc-tangerine .home-feature_item,
 .section_home-features .home-feature_theme.cc-lime .home-feature_item,
 .section_home-features .home-feature_theme.cc-dragonfruit .home-feature_item {
   background: #ffffff;
 }
-/* The primary card button takes a theme colour per card in the base build's
-   system (blue / rust / olive / magenta); bring it to charcoal. */
+
 .section_home-features .home-feature_theme .btn.cc-card-dark {
   background: #0e0d0c;
   color: #fdf6ec;
 }
-/* The secondary card link takes the theme ink in the base build's system
-   (navy / rust / olive / plum, via --_theme--terra-card---
-   text-primary); bring it to charcoal. Its background already
-   computes white in every theme, and its hover treatment never
-   recoloured the ink (measured), so only the ink is pinned, at
-   rest and on hover alike. */
+
 .section_home-features .home-feature_theme .btn.cc-card-light {
   color: #0e0d0c;
 }
@@ -1490,12 +1435,7 @@
 .section_home-features .home-feature_description p {
   color: rgba(14, 13, 12, 0.72);
 }
-/* Card eyebrows are plain text in the type system's eyebrow form
-   (Lane A table: 12px / 600 / 1.5 / +0.25em uppercase, charcoal on
-   the white card, ~19:1). The badge chrome is retired: no
-   background, no border, no radius, no pill padding or overlap
-   margin, and the empty motif pills (the stacked discs that sat
-   beside the label) are hidden, leaving the label text alone. */
+
 .section_home-features .home-feature_pill {
   background: transparent;
   border: 0;
@@ -1525,25 +1465,12 @@
   color: #0e0d0c;
 }
 
-/* Integrator extension (continued): the lane block at the top of
-   this file's feature section also sets `color: var(--fl2-ink)`
-   on .section_home-features itself. The pre-flow3 build computed
-   the section's color as rgb(0, 0, 0) (inherited); restore that
-   so the features section's computed styles are identical to the
-   audited build, not merely near-identical. Every descendant that
-   carries text declares its own color in the blocks above. */
+
 .section_home-features {
   color: inherit;
 }
 
-/* ================================================================
-   FLOW4 ADDITIONS (REF-RAMP): the live strip, the window-bar
-   tallies, and the ticking in-scene figures. Everything above is
-   flow3.css byte-identical; this block is the only delta. Tokens
-   are flow3's own. The only accent spent is the strip's live dot
-   (signal red, red's existing "live" job); ticking figures stay
-   ink and no tick flashes colour.
-   ================================================================ */
+
 .fl4-livebar {
   display: flex; align-items: center; flex-wrap: wrap;
   gap: 10px 28px;
@@ -1592,19 +1519,12 @@
   font-weight: 500; color: var(--fl3-ink);
   font-variant-numeric: tabular-nums;
 }
-/* REF-RAMP section 3.2: the diffstat keeps its audited colours
-   (moss-deep plus, red-deep minus); the .fl4-num ink above must
-   not recolour the numerals inside it. */
+
 .fl3-plus .fl4-num { color: var(--fl3-moss-deep); }
 .fl3-minus .fl4-num { color: var(--fl3-red-deep); }
-/* Fixed slots so ticking never shifts a line: sized to the
-   settled value's digit count (every in-scene figure is at most
-   2 digits). The strip's figures carry data-strip, not
-   data-fl4-num, and take no slot; their growth is the ticker's
-   nature, as on Ramp. */
+
 [data-fl4-num] { display: inline-block; min-width: 2ch; text-align: right; }
-/* The page's visually-hidden pattern (hero-fx.css .hfx-sr),
-   reused for the settled screen-reader readings. */
+
 .fl4-sr {
   position: absolute; width: 1px; height: 1px;
   margin: -1px; padding: 0; border: 0;
@@ -1613,7 +1533,7 @@
 }
 @media (max-width: 767px) {
   .fl4-livebar { gap: 6px 16px; }
-  .fl4-live_tag { display: none; } /* panels carry the Sample tags */
+  .fl4-live_tag { display: none; } 
 }
 @media (prefers-reduced-motion: reduce) {
   .fl4-live_dot { animation: none; }

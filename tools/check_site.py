@@ -75,7 +75,7 @@ headers, footers = {}, {}
 for p in PAGES:
     h = text(p)
     if p.name in WARM:
-        head = block(h, r'<div data-nav-height="" class="nav2_wrap.*?</nav>')
+        head = block(h, r'<header class="synav".*?</header>')
         foot = block(h, r'<div class="b2-card">.*?</nav>')
     else:
         head = block(h, r'<header class="site-head">.*?</header>')

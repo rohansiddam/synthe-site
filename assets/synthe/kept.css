@@ -1,0 +1,38 @@
+
+
+
+.kept-layer { position: absolute; left: 0; top: 0; z-index: 30; pointer-events: none; }
+.kept-face {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--sage, #ecf1e4);
+  color: var(--moss, #3b6a2f);
+  box-shadow: inset 0 0 0 1px rgba(59, 106, 47, 0.18);
+  white-space: nowrap;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.kept-was {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  white-space: nowrap;
+  opacity: 0;
+  will-change: opacity;
+}
+.kept-face svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.kept-line { position: absolute; left: 0; right: 0; height: 1px; overflow: hidden; }
+.kept-fill { position: absolute; inset: 0; background: var(--moss, #3b6a2f); transform-origin: 0 50%; transform: scaleX(0); opacity: 0; will-change: transform, opacity; }
+.kept-layer.is-fail .kept-fill { background: var(--ink-3, #6b675f); }
+.kept-live { position: fixed; left: 0; top: 0; width: 1px; height: 1px; margin: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+
+:where(.kp) { position: relative; display: inline-flex; flex-direction: column; gap: 4px; }
+:where(.kp-btn) { position: relative; isolation: isolate; overflow: hidden; }
+:where(.kp-tint) { position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--sage, #ecf1e4); opacity: 0; }
+:where(.kp-labels) { display: grid; justify-items: center; }
+:where(.kp-l) { grid-area: 1 / 1; white-space: nowrap; }
+:where(.kp-wait, .kp-done, .kp-fail) { opacity: 0; }
+:where(.kp-done) { color: var(--moss, #3b6a2f); }
+:where(.kp-line) { position: relative; height: 1px; overflow: hidden; }
+:where(.kp-fill) { position: absolute; inset: 0; background: var(--moss, #3b6a2f); transform-origin: 0 50%; transform: scaleX(0); }
+:where(.kp.is-fail .kp-fill) { background: var(--ink-3, #6b675f); }
