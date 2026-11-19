@@ -27,7 +27,7 @@
     {
       "@type": "SoftwareSourceCode",
       "name": "Synthe",
-      "description": "Makes an AI agent better on its own: tries small changes to its prompt, tests them, and keeps only clear wins.",
+      "description": "Makes an AI agent better on its own: finds where it falls short, tests each fix against the current version, and keeps only clear wins.",
       "codeRepository": "https://github.com/synthelabs/synthe",
       "programmingLanguage": "TypeScript",
       "license": "https://github.com/synthelabs/synthe/blob/main/LICENSE",
@@ -103,7 +103,7 @@
     {
       "@type": "SoftwareSourceCode",
       "name": "Synthe",
-      "description": "Makes an AI agent better on its own: tries small changes to its prompt, tests them, and keeps only clear wins.",
+      "description": "Makes an AI agent better on its own: finds where it falls short, tests each fix against the current version, and keeps only clear wins.",
       "codeRepository": "https://github.com/synthelabs/synthe",
       "programmingLanguage": "TypeScript",
       "license": "https://github.com/synthelabs/synthe/blob/main/LICENSE",
@@ -248,7 +248,7 @@ h3,
 <div class="try-caps">
   <div><p class="try-cap-h">Your goal, word for word</p><p class="try-cap-p">The sentence you write becomes the objective in synthe.json.</p></div>
   <div><p class="try-cap-h">Rules and test cases</p><p class="try-cap-p">Synthe drafts them from your goal and your prompt. You review them at setup.</p></div>
-  <div><p class="try-cap-h">Only your prompt changes</p><p class="try-cap-p">After setup, the only file Synthe ever changes is your prompt.</p></div>
+  <div><p class="try-cap-h">Nothing untested lands</p><p class="try-cap-p">After setup, every change Synthe makes is tested first, and each one can be undone.</p></div>
 </div>
 </div></section>
 <section class="st-sec" id="loop" aria-labelledby="st-night-h">
@@ -256,7 +256,7 @@ h3,
       <div class="st-head">
         <h2 class="st-title" id="st-night-h">A night of rounds</h2>
         <div class="st-copy">
-          <p class="st-lead">You set the checks in the evening. Synthe tries small changes to your agent's prompt overnight, and the report is waiting in the morning. Scroll through one example night.</p>
+          <p class="st-lead">You set the checks in the evening. Synthe works on your agent overnight, and the report is waiting in the morning. Scroll through one example night.</p>
           <div class="st-actions"><div class="seg" role="radiogroup" aria-label="Industry" data-seg><button type="button" role="radio" class="seg_opt" data-industry="ecommerce" aria-checked="true" tabindex="0">E-commerce</button><button type="button" role="radio" class="seg_opt" data-industry="finance" aria-checked="false" tabindex="-1">Finance</button><button type="button" role="radio" class="seg_opt" data-industry="travel" aria-checked="false" tabindex="-1">Travel</button><button type="button" role="radio" class="seg_opt" data-industry="insurance" aria-checked="false" tabindex="-1">Insurance</button><button type="button" role="radio" class="seg_opt" data-industry="software" aria-checked="false" tabindex="-1">Software</button></div></div>
         </div>
       </div>
@@ -264,7 +264,7 @@ h3,
         <div class="st-night-view">
           <div class="st-nc" aria-hidden="true"><div class="st-nc-plot"><div class="st-nc-cols"></div><div class="st-nc-line"><span class="st-nc-hair"></span><span class="st-nc-lbl">Your bar</span></div></div><div class="st-nc-rounds"><span>Round 1</span><span>Round 2</span></div></div>
           <article class="st-ch" data-a="0" data-b="0.2"><p class="st-ch-t">6:40 PM · Setup</p><h3>You write the checks.</h3><p>Five checks for your <span data-ind="agent">returns agent</span>, in plain language, like “<span data-ind="rule">Never invent dates</span>”. Your team confirms them before anyone goes home.</p></article>
-          <article class="st-ch" data-a="0.2" data-b="0.4"><p class="st-ch-t">11:02 PM · Round 1</p><h3>Small changes to the prompt.</h3><p>Each one is tested on 36 simulated messages like the ones your <span data-ind="agent">returns agent</span> gets. Twelve stay hidden until scoring.</p></article>
+          <article class="st-ch" data-a="0.2" data-b="0.4"><p class="st-ch-t">11:02 PM · Round 1</p><h3>Fixes for what fails.</h3><p>Synthe reads where the agent falls short and writes fixes. Each one is tested on 36 simulated messages like the ones your <span data-ind="agent">returns agent</span> gets. Twelve stay hidden until scoring.</p></article>
           <article class="st-ch" data-a="0.4" data-b="0.6"><p class="st-ch-t">2:17 AM · Round 1 result</p><h3>One change clears the bar.</h3><p>Checks 74% to 86%. Held-out cases 58% to 79%. No new rule breaks. It merges as PR #214.</p></article>
           <article class="st-ch" data-a="0.6" data-b="0.8"><p class="st-ch-t">5:48 AM · Round 2</p><h3>A kept change slips, so it comes back out.</h3><p>On fresh messages its checks fell from 88% to 70%. The round 1 prompt returned on its own.</p></article>
           <article class="st-ch" data-a="0.8" data-b="1.01"><p class="st-ch-t">7:58 AM · Report</p><h3>Your morning report.</h3><p>Checks passed 86% of the time, up from 74%. It says what merged, what came back out, and what the run cost: $0.83.</p></article>
@@ -273,7 +273,7 @@ h3,
       </div>
       <div class="st-caps">
         <div><h3>Evening</h3><p>You write the checks once. One command sets Synthe up in your repo.</p></div>
-        <div><h3>Overnight</h3><p>Each round tests small prompt changes against your checks and hidden cases.</p></div>
+        <div><h3>Overnight</h3><p>Each round tests fixes against your checks and hidden cases.</p></div>
         <div><h3>Morning</h3><p>The report lands in your repo as an issue, where the team already works.</p></div>
         <div><h3>Every step</h3><p>The seven steps of the loop, one by one, are on <a href="how.html">How it works</a>.</p></div>
       </div>
@@ -303,7 +303,7 @@ h3,
       </div>
       <div class="st-caps">
         <div><h3>Your checks</h3><p>You say what good looks like, in plain language.</p></div>
-        <div><h3>Clear wins only</h3><p>A change must beat the current prompt on your checks and on held-out cases.</p></div>
+        <div><h3>Clear wins only</h3><p>A change must beat the current version on your checks and on held-out cases.</p></div>
         <div><h3>Hard rules hold</h3><p>A change that adds a rule break does not merge.</p></div>
         <div><h3>Still watched</h3><p>A kept change has to keep winning. When it loses, it comes back out.</p></div>
       </div>
@@ -314,7 +314,7 @@ h3,
       <div class="st-head">
         <h2 class="st-title" id="op-out-h">What lands in your repo</h2>
         <div class="st-copy">
-          <p class="st-lead">Only the prompt changes. A clear win merges as a pull request with its evidence attached, and the morning report is posted where your team already works. Your code, your tools and your data stay untouched.</p>
+          <p class="st-lead">A clear win merges as a pull request with its evidence attached, and the morning report is posted where your team already works. Nothing lands that was not tested, and every change can be undone.</p>
           <div class="st-actions"><a class="btn u-bg-oat-200" href="https://github.com/synthelabs/synthe#what-happens-each-round" target="_blank" rel="noopener">See the merge rule</a><a class="btn u-bg-oat-200" href="docs.html#report-h">Read the morning report</a></div>
         </div>
       </div>
@@ -343,7 +343,7 @@ h3,
       <div class="st-caps op-caps">
         <div><h3>The pull request</h3><p>The change that cleared the bar, committed to the file your agent runs from, with the checks before and after.</p></div>
         <div><h3>The morning report</h3><p>Every run closes as an issue: what changed, what it scored, what was kept and what it cost.</p></div>
-        <div><h3>Nothing else</h3><p>Your code, tools and data stay untouched. Anything unclear leaves your prompt exactly as it was.</p></div>
+        <div><h3>Nothing unclear</h3><p>A change that does not clearly win is never kept. Anything unclear leaves your agent exactly as it was.</p></div>
       </div>
   </div>
 </section>
@@ -360,7 +360,7 @@ h3,
         <div class="op-qa"><h3>What does a run cost?</h3><p>You set a budget in <code>synthe.json</code>, and a run stops when it reaches it. On your own Anthropic key the default is $3 a run. Every report says what the run cost.</p></div>
         <div class="op-qa"><h3>Which models does it use?</h3><p>Claude, through your Anthropic key. By default Sonnet writes changes and marks checks, and Haiku runs your prompt and judges close calls. You can change both in <code>synthe.json</code>.</p></div>
         <div class="op-qa"><h3>Where does it run?</h3><p>In your repo, as a GitHub Actions workflow that setup adds. A run is at most 12 rounds, about half an hour. Changes arrive as pull requests, and review mode waits for your team.</p></div>
-        <div class="op-qa"><h3>What leaves your repo?</h3><p>Synthe sends Anthropic what the tests need: your prompt, the file it lives in, part of your README and the test messages. It never runs your agent&rsquo;s code. With the default setting the Synthe team sees run numbers, your checks, its prompt edits and one example message, never your code. Set <code>"share": "none"</code> to turn that off.</p></div>
+        <div class="op-qa"><h3>What leaves your repo?</h3><p>Synthe sends Anthropic what the tests need: your prompt, the file it lives in, part of your README and the test messages, and, when it works on code, that code. With the default setting the Synthe team sees run numbers, your checks, its prompt edits and one example message, never your code. Set <code>"share": "none"</code> to turn that off.</p></div>
       </div>
   </div>
 </section>

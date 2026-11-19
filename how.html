@@ -192,7 +192,7 @@
           <div class="fl3-panel_head">
             <div>
               <h3 class="fl3-panel_title">Propose a change</h3>
-              <p class="fl3-panel_lead">A writer proposes one small change to your agent’s prompt.</p>
+              <p class="fl3-panel_lead">A writer reads the failures and proposes one focused fix.</p>
             </div>
             <div class="fl3-panel_meta">
               <span class="fl3-chip">E-commerce · Returns agent</span>
@@ -407,7 +407,7 @@
       </div>
     </div>
     <div class="pg-cols" data-pg-reveal>
-      <div class="pg-col"><h3 class="pg-col_h">Works on the agent you have</h3><p class="pg-col_t">Synthe runs in your repo, against the agent your team already operates: a returns agent, a scheduling agent, a claims agent, an outreach agent. It does not replace the agent or the stack under it. It improves the prompt the agent runs on, one tested change at a time.</p></div>
+      <div class="pg-col"><h3 class="pg-col_h">Works on the agent you have</h3><p class="pg-col_t">Synthe runs in your repo, against the agent your team already operates: a returns agent, a scheduling agent, a claims agent, an outreach agent. It does not replace the agent or the stack under it. It improves the agent you already have, its instructions or the code around them, one tested change at a time.</p></div>
       <div class="pg-col"><h3 class="pg-col_h">Any goal you can state</h3><p class="pg-col_t">The bar is whatever your team says good looks like. Some goals are numbers, like a pass rate against your checks. Some are judgment: a tone held, a policy followed, a promise never made. If your team can confirm it in plain language, Synthe can test against it.</p></div>
       <div class="pg-col"><h3 class="pg-col_h">The tests improve too</h3><p class="pg-col_t">A loop is only as honest as its checks. When a check turns out ambiguous, or the simulated messages drift away from the ones your agent really gets, Synthe revises the checks and the scenarios inside the same loop. The system gets better, and so does the way you judge it.</p></div>
     </div>
@@ -449,9 +449,9 @@
         <h3 class="how-row_title" id="step-3-title">Propose a change</h3>
       </div>
       <div class="how-row_main">
-        <p class="how-row_lead">A writer reads the failures and proposes one small change to your agent's prompt.</p>
-        <p class="how-row_body">Small on purpose. One edit, in one file, aimed at the checks that are failing: a sentence that stops the agent promising an outcome it cannot promise, a line that tells it what to say instead. Nothing else in the prompt moves.</p>
-        <p class="how-row_body">Because each round changes one thing, the test that follows can say whether that thing helped. A big rewrite cannot be judged. A small one can.</p>
+        <p class="how-row_lead">A writer reads the failures and proposes one focused fix: in the agent&rsquo;s instructions, or in its code when the goal is a number you choose.</p>
+        <p class="how-row_body">Focused on purpose. One change, aimed at what is failing: a sentence that stops the agent promising an outcome it cannot promise, a line that tells it what to say instead. Nothing else moves.</p>
+        <p class="how-row_body">Because each round changes one thing, the test that follows can say whether that thing helped. A big rewrite cannot be judged. A focused one can.</p>
       </div>
     </article>
     <article class="how-row" id="step-4" aria-labelledby="step-4-title">
@@ -460,9 +460,9 @@
         <h3 class="how-row_title" id="step-4-title">Test the change</h3>
       </div>
       <div class="how-row_main">
-        <p class="how-row_lead">The change runs against your checks on both sets, side by side with the prompt you already have.</p>
-        <p class="how-row_body">Every message is answered twice: once by your current prompt, once with the change. The replies are marked check by check, and the two versions are compared head to head, message by message, hidden cases included.</p>
-        <p class="how-row_body">What comes back is not a single score but a shape: where the change wins, where it loses, and whether it broke any rule the old prompt kept. That shape is what the merge gate reads.</p>
+        <p class="how-row_lead">The change runs against your checks on both sets, side by side with the version you already have.</p>
+        <p class="how-row_body">Every message is answered twice: once by your current version, once with the change. The replies are marked check by check, and the two versions are compared head to head, message by message, hidden cases included.</p>
+        <p class="how-row_body">What comes back is not a single score but a shape: where the change wins, where it loses, and whether it broke any rule the old version kept. That shape is what the merge gate reads.</p>
       </div>
     </article>
     <article class="how-row" id="step-5" aria-labelledby="step-5-title">
@@ -491,7 +491,7 @@
       </div>
       <div class="how-row_main">
         <p class="how-row_lead">Merging is not the end of the test. A kept change has to keep winning.</p>
-        <p class="how-row_body">Fresh messages keep arriving, and the loop keeps scoring what it kept. If a change that won last week starts losing, or a rule it kept starts breaking, Synthe reverts it on its own and puts the earlier prompt back.</p>
+        <p class="how-row_body">Fresh messages keep arriving, and the loop keeps scoring what it kept. If a change that won last week starts losing, or a rule it kept starts breaking, Synthe reverts it on its own and puts the earlier version back.</p>
         <p class="how-row_body">The report says what dropped, when it dropped, and what was restored. A revert is never a mystery, and it never waits for a human to notice first.</p>
       </div>
     </article>
