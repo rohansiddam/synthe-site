@@ -1,0 +1,448 @@
+---
+/* index.html, built by Astro (proof). Generated once by tools/astro_proof/convert.py from the
+   hand-written page; the layout owns the shared head, header and footer. */
+import Warm from '../layouts/Warm.astro';
+import PageScripts from '../components/PageScripts.astro';
+import { asset } from '../lib/assets.mjs';
+/* SITE_PROOF_MODE=parity keeps every tag as today; the default (processed) loads one hashed bundle. */
+const parity = process.env.SITE_PROOF_MODE === 'parity';
+---
+<Warm current="index" title={"Synthe: your AI agent gets better on its own"} description={"Synthe makes your AI agent better on its own. You set the bar; Synthe tries small changes to your agent's prompt, tests them against your checks, and keeps only clear wins. Open source, one command to set up."} canonical="https://synthe.live/" htmlAttrs={{"data-nav-roll": "", "data-anchor-glide": ""}}>
+<Fragment slot="head"><script is:inline>if("ontouchstart"in window)document.documentElement.classList.add("is-touch")</script><meta content="Synthe: your AI agent gets better on its own" property="og:title"/><meta content="Synthe makes your AI agent better on its own. You set the bar; Synthe tries small changes to your agent's prompt, tests them against your checks, and keeps only clear wins. Open source, one command to set up." property="og:description"/><meta content="Synthe: your AI agent gets better on its own" name="twitter:title"/><meta content="Synthe makes your AI agent better on its own. You set the bar; Synthe tries small changes to your agent's prompt, tests them against your checks, and keeps only clear wins. Open source, one command to set up." name="twitter:description"/><meta property="og:type" content="website"/><meta content="summary_large_image" name="twitter:card"/><link href={asset('assets/synthe/base.css')} rel="stylesheet"/><script is:inline type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://synthe.live/#org",
+      "name": "Synthe",
+      "url": "https://synthe.live/",
+      "logo": "https://synthe.live/apple-touch-icon.png",
+      "email": "rohansiddam@synthe.live",
+      "description": "Self-improving AI agents. You set the bar. Synthe tests changes and keeps only what wins.",
+      "founder": [
+        { "@type": "Person", "name": "Rohan Siddamsettiwar" },
+        { "@type": "Person", "name": "Rishab Ramalingam" }
+      ],
+      "sameAs": [ "https://github.com/synthelabs/synthe" ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://synthe.live/#site",
+      "url": "https://synthe.live/",
+      "name": "Synthe",
+      "publisher": { "@id": "https://synthe.live/#org" }
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "name": "Synthe",
+      "description": "Makes an AI agent better on its own: finds where it falls short, tests each fix against the current version, and keeps only clear wins.",
+      "codeRepository": "https://github.com/synthelabs/synthe",
+      "programmingLanguage": "TypeScript",
+      "license": "https://github.com/synthelabs/synthe/blob/main/LICENSE",
+      "author": { "@id": "https://synthe.live/#org" }
+    }
+  ]
+}</script><style is:inline>
+::-moz-selection {
+    background-color: #1D2026;
+    color: #fff;
+  }
+  ::selection {
+    background-color: #1D2026;
+    color: #fff;
+
+  }
+</style>
+
+<link rel="stylesheet" href={asset('assets/synthe/nav-base.css')}>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script is:inline type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://synthe.live/#org",
+      "name": "Synthe",
+      "url": "https://synthe.live/",
+      "logo": "https://synthe.live/apple-touch-icon.png",
+      "email": "rohansiddam@synthe.live",
+      "description": "Self-improving AI agents. You set the bar. Synthe tests changes and keeps only what wins.",
+      "founder": [
+        { "@type": "Person", "name": "Rohan Siddamsettiwar" },
+        { "@type": "Person", "name": "Rishab Ramalingam" }
+      ],
+      "sameAs": [ "https://github.com/synthelabs/synthe" ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://synthe.live/#site",
+      "url": "https://synthe.live/",
+      "name": "Synthe",
+      "publisher": { "@id": "https://synthe.live/#org" }
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "name": "Synthe",
+      "description": "Makes an AI agent better on its own: finds where it falls short, tests each fix against the current version, and keeps only clear wins.",
+      "codeRepository": "https://github.com/synthelabs/synthe",
+      "programmingLanguage": "TypeScript",
+      "license": "https://github.com/synthelabs/synthe/blob/main/LICENSE",
+      "author": { "@id": "https://synthe.live/#org" }
+    }
+  ]
+}</script>
+
+
+
+
+
+
+
+
+ 
+
+<link rel="stylesheet" href={asset('assets/synthe/app-base.css')}>
+
+
+<link rel="stylesheet" href={asset('assets/synthe/page-base.css')}>
+<link rel="stylesheet" href={asset('assets/synthe/type-system.css')}>
+<link rel="stylesheet" href={asset('assets/synthe/tokens.css')}>
+<link rel="stylesheet" href={asset('assets/synthe/hero-fx.css')}>
+<link rel="stylesheet" href={asset('assets/synthe/fixes.css')}>
+<link rel="stylesheet" href={asset('assets/synthe/nav2.css')}>
+<link rel="stylesheet" href={asset('assets/synthe/bottom2.css')}>
+<link rel="stylesheet" href={asset('assets/synthe/flow4.css')}>
+<link rel="stylesheet" href={asset('assets/synthe/story.css')}>
+<link rel="stylesheet" href={asset('assets/synthe/outputs.css')}>
+<link rel="stylesheet" href={asset('assets/synthe/v5.css')}>
+<style is:inline id="removals-reflow">
+/* lane 5 removals reflow: feature text column takes the freed width */
+.section_home-features .home-feature_item { grid-template-columns: 1fr; }
+@media (min-width: 992px) {
+  .section_home-features .home-feature_left {
+    padding-right: var(--_layout---card--large);
+  }
+}
+/* lane 5 removals reflow: .footer-action_intro carries margin-bottom:-3rem,
+   which the removed .footer_spacer used to absorb; with the spacer gone
+   the link panel would slide up under the CTA buttons and cover the
+   middle column header. Cancel the negative margin. */
+.section_footer .footer-action_intro { margin-bottom: 0; }
+</style>
+<link rel="stylesheet" href={asset('assets/synthe/kept.css')}>
+</Fragment>
+<Fragment slot="frame"><div class="page-frame"><div class="frame_line-vertical cc-right"></div><div class="frame_line-vertical"></div></div></Fragment>
+<Fragment slot="top"><div class="u-d-none w-embed">
+</div><div><div><div class="w-embed"><link rel="stylesheet" href="assets/unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+<link rel="stylesheet" href="assets/unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css" />
+<link rel="stylesheet" href="assets/unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css" />
+<link rel="stylesheet" href={asset('assets/synthe/site.css')}>
+<link rel="stylesheet" href={asset('assets/synthe/home.css')}>
+
+<style is:inline>
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-font-smoothing: antialiased;
+    -o-font-smoothing: antialiased;
+    box-sizing: border-box;
+  }
+  a:not([class]) {
+    text-decoration: underline;
+  }
+  body {
+    font-feature-settings:
+      'ss03' 1,
+      /* y */ 'ss10' 1,
+      /* question mark */ 'ss11' 1,
+      /* t */ 'ss12' 1;
+  }
+  h1,
+h2,
+h3,
+.h5 {
+    font-feature-settings:
+      'ss01' 1,
+      /* a */ 'ss03' 1,
+      /* y */ 'ss10' 1,
+      /* question mark */ 'ss11' 1,
+      /* t */ 'ss12' 1;
+  }
+  .btn:has(.btn_icon-track):hover .btn-icon {
+    transform: translateY(0%);
+  }
+  a {
+    color: inherit;
+  }
+  :root {
+    --i: 0;
+  }
+</style></div></div></div>
+</Fragment>
+
+<section class="section_home-hero">
+<div class="hero-mark" aria-hidden="true" data-hero-mark><span class="hero-mark_pair"><img class="hero-mark_img hero-mark_a" src="assets/synthe/mark-3d-paper.webp" alt="" width="782" height="1000" decoding="async" fetchpriority="high"><img class="hero-mark_img hero-mark_b" src="assets/synthe/mark-3d-paper.webp" alt="" width="782" height="1000" decoding="async" fetchpriority="high"></span></div><noscript><style is:inline>.section_home-hero .hero-mark_img{animation:none!important;opacity:1!important}</style></noscript><div class="container-regular"><div class="home-hero_intro"><div class="home-hero_title"><h1 class="hfx-h1">
+  <span class="hfx-sr">Self-improving agents, held to your team&rsquo;s bar.</span>
+  <span class="hfx-line hfx-line--top"><span class="hfx-plain hfx-nb" aria-hidden="true">Self-improving</span><span class="hfx-plain" aria-hidden="true"> </span><span class="hfx-who" tabindex="0" data-word="agents" aria-label="Your agents: returns, bank support, booking, claims and product support agents, with the checks they passed in one example night">agents<span class="hfx-card hfx-card--agents" aria-hidden="true"><span class="hfx-card_k">One example night: checks passed</span><span class="hfx-card_rows"><span class="hfx-kind" data-industry="ecommerce"><span class="hfx-kind_name"><i class="ph ph-shopping-bag"></i>Returns</span><span class="hfx-kind_gain"><span data-before>74</span>% &rarr; <span data-after>86</span>%</span></span><span class="hfx-kind" data-industry="finance"><span class="hfx-kind_name"><i class="ph ph-bank"></i>Bank support</span><span class="hfx-kind_gain"><span data-before>74</span>% &rarr; <span data-after>86</span>%</span></span><span class="hfx-kind" data-industry="travel"><span class="hfx-kind_name"><i class="ph ph-airplane-tilt"></i>Booking</span><span class="hfx-kind_gain"><span data-before>74</span>% &rarr; <span data-after>86</span>%</span></span><span class="hfx-kind" data-industry="insurance"><span class="hfx-kind_name"><i class="ph ph-shield-check"></i>Claims</span><span class="hfx-kind_gain"><span data-before>74</span>% &rarr; <span data-after>86</span>%</span></span><span class="hfx-kind" data-industry="software"><span class="hfx-kind_name"><i class="ph ph-headset"></i>Product support</span><span class="hfx-kind_gain"><span data-before>74</span>% &rarr; <span data-after>86</span>%</span></span></span></span></span><span class="hfx-plain" aria-hidden="true">,</span></span>
+  <span class="hfx-line"><span class="hfx-bar"><span class="hfx-plain" aria-hidden="true">held to your </span><span class="hfx-who" tabindex="0" data-word="team" aria-label="Your team: product writes the goal, engineering reviews each pull request, support writes the checks, ops sets the run budget">team<span class="hfx-card hfx-card--team" aria-hidden="true"><span class="hfx-card_k">Who sets the bar</span><span class="hfx-card_rows"><span class="hfx-row"><span class="hfx-row_name">Product</span><span class="hfx-row_note">writes the goal</span></span><span class="hfx-row"><span class="hfx-row_name">Engineering</span><span class="hfx-row_note">reviews each pull request</span></span><span class="hfx-row"><span class="hfx-row_name">Support</span><span class="hfx-row_note">writes the checks</span></span><span class="hfx-row"><span class="hfx-row_name">Ops</span><span class="hfx-row_note">sets the run budget</span></span></span></span></span><span class="hfx-plain" aria-hidden="true">&rsquo;s bar.</span></span></span>
+  <span class="hfx-marker" aria-hidden="true"></span>
+</h1></div><div class="u-stack-md"><div class="home-hero_text"><p class="text-size-large u-text-balance">Synthe finds where your agent falls short and tests every fix against the version you run today. Only clear wins ship, with the evidence attached.</p></div><div class="home-hero_actions"><div class="button-group cc-fill"><a class="btn w-variant-f2a1c677-93a7-7cd9-1959-320596510dfd w-inline-block cc-light" variant="" href="https://github.com/synthelabs/synthe" data-button="" target="_blank" rel="noopener"><div>Get started</div><div class="btn_icon-track u-position-relative overflow-hidden"><div class="btn-icon u-position-absolute"><div id="" STYLE="" class="icon_ph ph ph-arrow-right"></div></div><div class="btn-icon"><div id="" STYLE="" class="icon_ph ph ph-arrow-right"></div></div></div></a><div class="test-button_hero-hide"><a class="btn w-variant-f2a1c677-93a7-7cd9-1959-320596510dfd w-inline-block cc-lime" variant="" href="partner.html" data-button=""><div>Talk to us</div><div class="btn_icon-track u-position-relative overflow-hidden"><div class="btn-icon u-position-absolute"><div id="" STYLE="" class="icon_ph ph ph-arrow-right"></div></div><div class="btn-icon"><div id="" STYLE="" class="icon_ph ph ph-arrow-right"></div></div></div></a></div></div><div class="hero-install" data-hero-install><p class="hero-install_label" id="hero-install-label">or install directly with</p><div class="hero-install_bar" role="toolbar" aria-labelledby="hero-install-label"><button type="button" class="hero-install_chip" data-tool="Claude Code" aria-expanded="false" aria-controls="hero-receipt" tabindex="0"><svg class="hero-install_icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 10.5h3v3h-3v3h-1.5v3H18v-3h-1.5v3H15v-3H9v3H7.5v-3H6v3H4.5v-3H3v-3H0v-3h3v-6h18Zm-15 0h1.5v-3H6Zm10.5 0H18v-3h-1.5z"/></svg><span class="hero-install_name">Claude Code</span></button><button type="button" class="hero-install_chip" data-tool="Codex" aria-expanded="false" aria-controls="hero-receipt" tabindex="-1"><svg class="hero-install_icon" viewBox="0 0 181 182" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M100.0 152.0 L95.0 152.0 L88.0 150.5 L83.0 148.4 L76.0 144.1 L68.0 144.3 L61.0 143.3 L54.0 140.6 L47.0 135.6 L42.0 129.7 L38.6 123.0 L36.7 114.0 L37.0 105.0 L32.5 98.0 L29.5 89.0 L29.4 77.0 L32.0 69.1 L36.0 62.6 L42.0 56.7 L51.0 51.6 L56.6 42.0 L63.0 35.7 L70.0 31.7 L78.0 29.4 L85.0 29.2 L91.0 30.4 L96.0 32.4 L104.0 37.1 L116.0 37.2 L121.0 38.4 L127.0 40.8 L133.0 45.0 L139.1 52.0 L142.5 59.0 L144.1 67.0 L143.9 76.0 L149.1 85.0 L151.3 92.0 L151.8 100.0 L150.5 108.0 L147.3 115.0 L143.7 120.0 L138.0 125.1 L129.4 130.0 L125.0 138.0 L121.0 142.8 L117.0 146.1 L109.0 150.2 Z M103.1 142.0 L110.0 139.3 L115.2 135.0 L118.2 131.0 L122.0 121.8 L131.0 118.3 L137.1 113.0 L140.2 108.0 L141.9 103.0 L142.0 94.0 L139.0 86.2 L133.4 79.0 L134.8 70.0 L133.1 61.0 L130.2 56.0 L126.0 51.6 L121.0 48.6 L115.0 46.8 L109.0 46.5 L100.0 47.5 L93.0 41.6 L87.0 39.2 L82.0 38.7 L76.0 39.7 L70.0 42.4 L64.9 47.0 L61.6 52.0 L59.0 59.1 L50.0 62.8 L43.1 69.0 L40.7 73.0 L38.8 79.0 L39.0 87.9 L41.8 95.0 L47.4 102.0 L46.2 111.0 L46.8 117.0 L49.8 124.0 L54.0 129.0 L60.0 132.8 L66.0 134.6 L71.0 134.9 L79.0 133.5 L85.0 138.5 L92.0 141.8 L98.0 142.6 Z M71.0 110.1 L69.0 110.6 L66.6 110.0 L64.7 108.0 L64.2 106.0 L65.0 103.3 L72.0 91.0 L71.6 89.0 L64.3 76.0 L64.4 74.0 L65.6 72.0 L69.0 70.6 L71.0 71.1 L73.1 73.0 L81.0 86.1 L82.2 90.0 L81.1 95.0 L73.3 108.0 Z M117.0 110.2 L95.0 110.4 L92.4 108.0 L92.0 105.0 L93.0 102.9 L96.0 101.3 L116.0 101.4 L118.6 103.0 L119.5 105.0 L119.2 108.0 Z"/></svg><span class="hero-install_name">Codex</span></button><button type="button" class="hero-install_chip" data-tool="Cursor" aria-expanded="false" aria-controls="hero-receipt" tabindex="-1"><img class="hero-install_icon" src="assets/synthe/logos/cursor-mono.svg" alt="" loading="lazy"><span class="hero-install_name">Cursor</span></button><button type="button" class="hero-install_chip" data-tool="Windsurf" aria-expanded="false" aria-controls="hero-receipt" tabindex="-1"><img class="hero-install_icon" src="assets/synthe/logos/windsurf-mono.svg" alt="" loading="lazy"><span class="hero-install_name">Windsurf</span></button><span class="hero-install_marker" aria-hidden="true"></span></div><div class="hero-receipt" id="hero-receipt" role="group" aria-label="Setup receipt"><div class="hero-receipt_head"><p class="hero-receipt_title"><span class="hero-receipt_k">Paste into</span> <span class="hero-receipt_tool" data-receipt-tool>Claude Code</span></p><span class="kp" data-kp="copy"><button type="button" class="kp-btn hero-receipt_copy" data-kept data-kept-ok="Copied the setup line" data-receipt-copy><span class="kp-tint" aria-hidden="true"></span><span class="kp-labels"><span class="kp-l kp-rest">Copy</span><span class="kp-l kp-wait" aria-hidden="true">Copying</span><span class="kp-l kp-done" aria-hidden="true">Copied</span><span class="kp-l kp-fail" aria-hidden="true">Try again</span></span></button><span class="kp-line" aria-hidden="true"><span class="kp-fill"></span></span></span></div><p class="hero-receipt_line" data-receipt-line>Set up Synthe in this repo. Run npx synthe@latest guide and follow it.</p><p class="kp-live" aria-live="polite" data-kp-live></p></div></div></div></div></div></div></section>
+<section class="section_home-logo wall2">
+  <div class="wall2__inner">
+    <p class="sv-wall-label">Works with the tools your team already uses</p>
+    <div class="home-logo_wrap wall2__wrap">
+      <div class="home-logo_base wall2__base">
+        <div class="wall2__tile"><img class="wall2__img" src="assets/synthe/logos/github.svg" alt="" loading="eager" /><span class="wall2__name">GitHub</span></div>
+        <div class="wall2__tile"><img class="wall2__img" src="assets/synthe/logos/github-actions.svg" alt="" loading="eager" /><span class="wall2__name">GitHub Actions</span></div>
+        <div class="wall2__tile"><img class="wall2__img" src="assets/synthe/logos/claude-code-mark.svg" alt="" loading="eager" /><span class="wall2__name">Claude Code</span></div>
+        <div class="wall2__tile"><img class="wall2__img" src="assets/synthe/logos/codex-mark.svg" alt="" loading="eager" /><span class="wall2__name">Codex</span></div>
+        <div class="wall2__tile"><img class="wall2__img" src="assets/synthe/logos/cursor.svg" alt="" loading="eager" /><span class="wall2__name">Cursor</span></div>
+        <div class="wall2__tile"><img class="wall2__img" src="assets/synthe/logos/windsurf.svg" alt="" loading="eager" /><span class="wall2__name">Windsurf</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section_input-action" aria-labelledby="prompt-label"><div class="container-regular">
+<div class="try-head">
+  <h2 class="try-title" id="prompt-label">What should your agent get better at?</h2>
+  <div class="try-side">
+    <p class="try-lead">Write one goal in plain words. Get a setup prompt to paste into your coding agent.</p>
+    <div class="try-actions"><a class="btn u-bg-oat-200" href="how.html">How it works</a><a class="btn u-bg-oat-200" href="docs.html">Read the docs</a></div>
+  </div>
+</div>
+<div class="seg try-seg" role="radiogroup" aria-label="Industry" data-seg data-try-switch><button type="button" role="radio" class="seg_opt" data-industry="ecommerce" aria-checked="true" tabindex="0">E-commerce</button><button type="button" role="radio" class="seg_opt" data-industry="finance" aria-checked="false" tabindex="-1">Finance</button><button type="button" role="radio" class="seg_opt" data-industry="travel" aria-checked="false" tabindex="-1">Travel</button><button type="button" role="radio" class="seg_opt" data-industry="insurance" aria-checked="false" tabindex="-1">Insurance</button><button type="button" role="radio" class="seg_opt" data-industry="software" aria-checked="false" tabindex="-1">Software</button></div>
+<form id="" aria-labelledby="prompt-label" data-sculptor="card" data-module="sculptor" class="home-action_form try-frame">
+<div class="try-surface try-compose">
+<div class="home-action_scale"></div>
+<p class="try-pane-label" aria-hidden="true">Goal for your <span data-try-agent>returns agent</span></p>
+<div class="home-action_wrap"><textarea id="sculptor-prompt" aria-labelledby="prompt-label" name="prompt" placeholder="Name a check your agent should pass. For example: never say a refund is already approved." rows="2" data-role="prompt" class="home-action_input">When a case needs a person, send the customer to the right place.</textarea></div>
+<div role="group" data-role="chips" aria-label="Check examples" class="home-action_button-list"><div class="home-action_button-group"><button data-chip="" data-prompt="When a customer asks for a refund, explain the return policy that applies." id="" type="button" class="tab-btn cc-light"><div class="text-size-small">Return policy</div></button><button data-chip="" data-prompt="When a customer wants to send an item back, offer an exchange or store credit when it fits." id="" type="button" class="tab-btn cc-light"><div class="text-size-small">Offer an exchange</div></button><button data-chip="" data-prompt="Never state a delivery date, tracking number or order status for a customer's order." id="" type="button" class="tab-btn cc-light"><div class="text-size-small">Never invent dates</div></button></div><button type="submit" data-role="submit" class="home-action_button u-md-hide"><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 24 24" fill="none" class="icon-rg"><path d="M5 12H19M12 19L19 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="synthe-action_label">Generate</span></button></div>
+</div>
+<div class="try-surface try-preview" role="group" aria-label="Files setup adds to your repo">
+<div class="try-pane-head"><p class="try-pane-label">Files setup adds to your repo</p></div>
+<div class="try-file is-open"><p class="try-file-name">synthe.json</p><p class="try-file-note">The goal and your rules</p></div>
+<pre class="try-code" aria-live="off"><span class="ln"><span class="p">{'{'}</span></span><span class="ln in"><span class="k">"version"</span><span class="p">:</span> 1<span class="p">,</span></span><span class="ln in hang"><span class="k">"prompt"</span><span class="p">:</span> <span class="p">{'{'}</span> <span class="k">"path"</span><span class="p">:</span> <span class="s">"<span data-try-path>prompts/returns.md</span>"</span> <span class="p">{'}'},</span></span><span class="ln in hang"><span class="k">"objective"</span><span class="p">:</span> <span class="s">"<span class="try-obj" data-try-objective>When a case needs a person, send the customer to the right place.</span>"</span><span class="p">,</span></span><span class="ln in"><span class="k">"guardrails"</span><span class="p">:</span> <span class="p">[</span> <span class="try-drafted">drafted at setup</span> <span class="p">],</span></span><span class="ln in hang"><span class="k">"scenarios"</span><span class="p">:</span> <span class="s">".synthe/scenarios.jsonl"</span></span><span class="ln"><span class="p">{'}'}</span></span></pre>
+<div class="try-file"><p class="try-file-name">.synthe/scenarios.jsonl</p><p class="try-file-note">The test cases, drafted from your goal</p></div>
+<div class="try-file"><p class="try-file-name">.github/workflows/synthe.yml</p><p class="try-file-note">Runs the rounds in GitHub Actions</p></div>
+</div>
+<div class="synthe-promptbox_result" data-role="result"><div class="synthe-promptbox_result-head"><p class="synthe-promptbox_result-label">Setup prompt</p><button type="button" class="synthe-promptbox_copy" data-role="copy">Copy</button></div><pre class="synthe-promptbox_prompt" data-role="result-prompt">Set up Synthe in this repo. Run npx synthe@latest guide and follow it. My agent should get better at: When a case needs a person, send the customer to the right place.</pre><div class="synthe-promptbox_divider" aria-hidden="true"></div><code class="synthe-promptbox_cmd">npx synthe@latest init</code><p class="synthe-promptbox_note">Paste the prompt into Claude Code, Codex or Cursor inside your repo, or run the command yourself. Synthe reads your agent, writes the checks from your goal, and runs its first test tonight.</p></div>
+</form>
+<div class="try-caps">
+  <div><p class="try-cap-h">Your goal, word for word</p><p class="try-cap-p">The sentence you write becomes the objective in synthe.json.</p></div>
+  <div><p class="try-cap-h">Rules and test cases</p><p class="try-cap-p">Synthe drafts them from your goal and your prompt. You review them at setup.</p></div>
+  <div><p class="try-cap-h">Nothing untested lands</p><p class="try-cap-p">After setup, every change Synthe makes is tested first, and each one can be undone.</p></div>
+</div>
+</div></section>
+<section class="st-sec" id="loop" aria-labelledby="st-night-h">
+  <div class="st-wrap">
+      <div class="st-head">
+        <h2 class="st-title" id="st-night-h">A night of rounds</h2>
+        <div class="st-copy">
+          <p class="st-lead">You set the checks in the evening. Synthe works on your agent overnight, and the report is waiting in the morning. Scroll through one example night.</p>
+          <div class="st-actions"><div class="seg" role="radiogroup" aria-label="Industry" data-seg><button type="button" role="radio" class="seg_opt" data-industry="ecommerce" aria-checked="true" tabindex="0">E-commerce</button><button type="button" role="radio" class="seg_opt" data-industry="finance" aria-checked="false" tabindex="-1">Finance</button><button type="button" role="radio" class="seg_opt" data-industry="travel" aria-checked="false" tabindex="-1">Travel</button><button type="button" role="radio" class="seg_opt" data-industry="insurance" aria-checked="false" tabindex="-1">Insurance</button><button type="button" role="radio" class="seg_opt" data-industry="software" aria-checked="false" tabindex="-1">Software</button></div></div>
+        </div>
+      </div>
+      <div class="st-night" data-night>
+        <div class="st-night-view">
+          <div class="st-nc" aria-hidden="true"><div class="st-nc-plot"><div class="st-nc-cols"></div><div class="st-nc-line"><span class="st-nc-hair"></span><span class="st-nc-lbl">Your bar</span></div></div><div class="st-nc-rounds"><span>Round 1</span><span>Round 2</span></div></div>
+          <article class="st-ch" data-a="0" data-b="0.2"><p class="st-ch-t">6:40 PM · Setup</p><h3>You write the checks.</h3><p>Five checks for your <span data-ind="agent">returns agent</span>, in plain language, like “<span data-ind="rule">Never invent dates</span>”. Your team confirms them before anyone goes home.</p></article>
+          <article class="st-ch" data-a="0.2" data-b="0.4"><p class="st-ch-t">11:02 PM · Round 1</p><h3>Fixes for what fails.</h3><p>Synthe reads where the agent falls short and writes fixes. Each one is tested on 36 simulated messages like the ones your <span data-ind="agent">returns agent</span> gets. Twelve stay hidden until scoring.</p></article>
+          <article class="st-ch" data-a="0.4" data-b="0.6"><p class="st-ch-t">2:17 AM · Round 1 result</p><h3>One change clears the bar.</h3><p>Checks 74% to 86%. Held-out cases 58% to 79%. No new rule breaks. It merges as PR #214.</p></article>
+          <article class="st-ch" data-a="0.6" data-b="0.8"><p class="st-ch-t">5:48 AM · Round 2</p><h3>A kept change slips, so it comes back out.</h3><p>On fresh messages its checks fell from 88% to 70%. The round 1 prompt returned on its own.</p></article>
+          <article class="st-ch" data-a="0.8" data-b="1.01"><p class="st-ch-t">7:58 AM · Report</p><h3>Your morning report.</h3><p>Checks passed 86% of the time, up from 74%. It says what merged, what came back out, and what the run cost: $0.83.</p></article>
+          <div class="st-night-foot"><div class="st-night-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><span class="st-night-agent" data-ind="Agent">Returns agent</span></div>
+        </div>
+      </div>
+      <div class="st-caps">
+        <div><h3>Evening</h3><p>You write the checks once. One command sets Synthe up in your repo.</p></div>
+        <div><h3>Overnight</h3><p>Each round tests fixes against your checks and hidden cases.</p></div>
+        <div><h3>Morning</h3><p>The report lands in your repo as an issue, where the team already works.</p></div>
+        <div><h3>Every step</h3><p>The seven steps of the loop, one by one, are on <a href="how.html">How it works</a>.</p></div>
+      </div>
+  </div>
+</section>
+<section class="st-sec st-last" id="bar" aria-labelledby="st-bar-h">
+  <div class="st-wrap">
+      <div class="st-head">
+        <h2 class="st-title" id="st-bar-h">You set the bar</h2>
+        <div class="st-copy">
+          <p class="st-lead">Point at the chart and the bar follows. Drag the handle, tap on a phone, or use the arrow keys. A change turns green when it clears your bar, and only a change that clears it can merge.</p>
+        </div>
+      </div>
+      <div class="st-frame">
+        <div class="st-bar-wrap">
+          <div class="st-bar-chart" data-bar>
+            <div class="st-bar-cols"></div>
+            <div class="st-bar-line"><span class="st-hair glow"></span><span class="st-hair"></span><span class="st-bar-hit" aria-hidden="true"></span>
+              <span class="st-bar-handle" role="slider" tabindex="0" aria-label="Your bar" aria-valuemin="60" aria-valuemax="95" aria-valuenow="80" aria-valuetext="80 percent of checks"><span class="st-grip" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="st-tnum" data-bar-val>Bar 80%</span></span>
+            </div>
+          </div>
+          <div class="st-bar-side" aria-live="polite">
+            <div class="st-bar-count" data-bar-count>1 of 5</div>
+            <p>changes <span data-bar-verb>clears</span> your bar. Only a change that clears it can merge.</p>
+          </div>
+        </div>
+      </div>
+      <div class="st-caps">
+        <div><h3>Your checks</h3><p>You say what good looks like, in plain language.</p></div>
+        <div><h3>Clear wins only</h3><p>A change must beat the current version on your checks and on held-out cases.</p></div>
+        <div><h3>Hard rules hold</h3><p>A change that adds a rule break does not merge.</p></div>
+        <div><h3>Still watched</h3><p>A kept change has to keep winning. When it loses, it comes back out.</p></div>
+      </div>
+  </div>
+</section>
+<section class="st-sec op-sec op-first" id="outputs" aria-labelledby="op-out-h">
+  <div class="st-wrap">
+      <div class="st-head">
+        <h2 class="st-title" id="op-out-h">What lands in your repo</h2>
+        <div class="st-copy">
+          <p class="st-lead">A clear win merges as a pull request with its evidence attached, and the morning report is posted where your team already works. Nothing lands that was not tested, and every change can be undone.</p>
+          <div class="st-actions"><a class="btn u-bg-oat-200" href="https://github.com/synthelabs/synthe#what-happens-each-round" target="_blank" rel="noopener">See the merge rule</a><a class="btn u-bg-oat-200" href="docs.html#report-h">Read the morning report</a></div>
+        </div>
+      </div>
+      <div class="op-frame" data-op-frame>
+        <article class="op-surface op-pr" aria-labelledby="op-pr-h">
+          <div class="op-surface-head"><p class="op-label">Pull request #214</p><span class="op-state" data-op-verdict><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="4.5" cy="3.5" r="1.75"/><circle cx="4.5" cy="12.5" r="1.75"/><circle cx="11.5" cy="8" r="1.75"/><path d="M4.5 5.25v5.5M4.5 5.6c0 2.2 2.2 2.4 5.25 2.4"/></svg>Merged</span></div>
+          <div class="op-pr-body">
+          <div class="op-pr-main">
+          <h3 class="op-pr-title" id="op-pr-h" data-op="title">Explain the return window first</h3>
+          <p class="op-branch"><code>synthe/round-1</code> into <code>main</code>, one file changed</p>
+          <div class="op-diff">
+            <div class="op-file"><code data-op="path">prompts/returns.md</code><span class="op-file-n" aria-label="one line added, one line removed">+1 &minus;1</span></div>
+            <p class="op-dl is-del"><span class="op-mark" aria-hidden="true">&minus;</span><span class="op-sr">Removed: </span><span data-op="del">Always offer a refund when a customer asks.</span></p>
+            <p class="op-dl is-add"><span class="op-mark" aria-hidden="true">+</span><span class="op-sr">Added: </span><span data-op="add">Explain the return window before offering a refund.</span></p>
+          </div>
+          </div>
+          <dl class="op-metrics">
+            <div class="op-metrics-h">Evidence on the pull request</div>
+            <div class="op-metric"><dt>Checks passed</dt><dd><span class="op-was">74%</span><span class="op-to" aria-hidden="true">to</span><span class="op-sr"> to </span><b>86%</b></dd><span class="op-track" style="--old:0.74;--new:0.86" aria-hidden="true"><i class="op-old"></i><i class="op-new"></i></span></div>
+            <div class="op-metric"><dt>Held-out cases</dt><dd><span class="op-was">58%</span><span class="op-to" aria-hidden="true">to</span><span class="op-sr"> to </span><b>79%</b></dd><span class="op-track" style="--old:0.58;--new:0.79" aria-hidden="true"><i class="op-old"></i><i class="op-new"></i></span></div>
+            <div class="op-metric"><dt>Rule breaks</dt><dd><span class="op-was">1</span><span class="op-to" aria-hidden="true">to</span><span class="op-sr"> to </span><b>0</b></dd></div>
+          </dl>
+          </div>
+        </article>
+      </div>
+      <div class="st-caps op-caps">
+        <div><h3>The pull request</h3><p>The change that cleared the bar, committed to the file your agent runs from, with the checks before and after.</p></div>
+        <div><h3>The morning report</h3><p>Every run closes as an issue: what changed, what it scored, what was kept and what it cost.</p></div>
+        <div><h3>Nothing unclear</h3><p>A change that does not clearly win is never kept. Anything unclear leaves your agent exactly as it was.</p></div>
+      </div>
+  </div>
+</section>
+<section class="st-sec op-sec op-faq-sec" id="before-you-install" aria-labelledby="op-faq-h">
+  <div class="st-wrap">
+      <div class="st-head">
+        <h2 class="st-title" id="op-faq-h">Before you install</h2>
+        <div class="st-copy">
+          <p class="st-lead">What it costs, where it runs, and what leaves your repo.</p>
+          <div class="st-actions"><a class="btn u-bg-oat-200" href="https://github.com/synthelabs/synthe#data" target="_blank" rel="noopener">Read the full data section</a></div>
+        </div>
+      </div>
+      <div class="op-faq">
+        <div class="op-qa"><h3>What does a run cost?</h3><p>You set a budget in <code>synthe.json</code>, and a run stops when it reaches it. On your own Anthropic key the default is $3 a run. Every report says what the run cost.</p></div>
+        <div class="op-qa"><h3>Which models does it use?</h3><p>Claude, through your Anthropic key. By default Sonnet writes changes and marks checks, and Haiku runs your prompt and judges close calls. You can change both in <code>synthe.json</code>.</p></div>
+        <div class="op-qa"><h3>Where does it run?</h3><p>In your repo, as a GitHub Actions workflow that setup adds. A run is at most 12 rounds, about half an hour. Changes arrive as pull requests, and review mode waits for your team.</p></div>
+        <div class="op-qa"><h3>What leaves your repo?</h3><p>Synthe sends Anthropic what the tests need: your prompt, the file it lives in, part of your README and the test messages, and, when it works on code, that code. With the default setting the Synthe team sees run numbers, your checks, its prompt edits and one example message, never your code. Set <code>"share": "none"</code> to turn that off.</p></div>
+      </div>
+  </div>
+</section>
+
+
+<Fragment slot="cta"><section class="b2-cta sv-cta" aria-label="Get started with Synthe"><div class="sv-cta_copy">
+      <h2 class="b2-cta-title ts-h2sm">Your agent can start improving tonight</h2>
+      <p class="b2-cta-lede ts-body-lg">Open source under Apache-2.0. One command to set up.</p>
+      <div class="b2-cta-actions">
+        <a class="b2-btn b2-btn-primary ts-button" href="https://github.com/synthelabs/synthe" target="_blank" rel="noopener">Get started <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17.9995L19 11.9995L13 5.99951M18.5 11.9995L5 11.9995"/></svg></a>
+        <a class="b2-btn b2-btn-secondary ts-button" href="partner.html">Talk to us <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 17.9995L19 11.9995L13 5.99951M18.5 11.9995L5 11.9995"/></svg></a>
+      </div>
+      <div class="b2-cta-cmd sv-cmd"><code class="b2-cmd">npx synthe@latest init</code><button type="button" class="sv-copy" data-sv-copy="npx synthe@latest init" aria-label="Copy the setup command">Copy</button></div>
+      <p class="b2-cta-note ts-small">Crimson Hacks, November 2026: three winning teams built with Synthe.</p>
+    </div><div class="sv-term-wrap op-setup">
+<div class="op-setup-surface">
+<p class="op-label">What <code>npx synthe@latest init</code> does</p>
+<ol class="op-steps">
+<li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span>Finds your agent&rsquo;s prompt</span></li>
+<li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span>Writes five checks from your goal</span></li>
+<li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span>Writes test messages, some held out</span></li>
+<li><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg><span>Adds <code>.github/workflows/synthe.yml</code></span></li>
+<li class="is-next"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg><span>First round runs tonight</span></li>
+</ol>
+</div>
+</div>
+</section></Fragment>
+<Fragment slot="end">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style is:inline>
+:root {
+    --selection-bg: var(--swatch-ube-400);
+  }
+  ::selection {
+    background: var(--selection-bg);
+    color: #fff;
+  }
+  ::-moz-selection {
+    background: var(--selection-bg);
+    color: #fff;
+  }
+</style>
+
+<script is:inline>/* Forms post nowhere: stop the submit, and show the .w-form-done note if the form has one. */
+document.addEventListener("submit",function(e){e.preventDefault();e.stopPropagation();var f=e.target;var wrap=f.closest?f.closest(".w-form"):null;var scope=wrap||f.parentElement;var done=scope&&scope.querySelector?scope.querySelector(".w-form-done"):null;if(done){f.style.display="none";done.style.display="block";}var fail=scope&&scope.querySelector?scope.querySelector(".w-form-fail"):null;if(fail){fail.style.display="none";}},true);
+</script>
+{parity && <script is:inline src="assets/synthe/motion.js" defer></script>}
+{parity && <script is:inline src="assets/synthe/site.js" defer></script>}
+{parity && <script is:inline src="assets/synthe/home.js" defer></script>}
+{parity && <script is:inline src="assets/synthe/hero-fx.js" defer></script>}
+{parity && <script is:inline src="assets/synthe/v5.js" defer></script>}
+{parity && <script is:inline src="assets/synthe/promptbox.js"></script>}
+{parity && <script is:inline src="assets/synthe/industries.js" defer></script>}
+{parity && <script is:inline src="assets/synthe/try.js" defer></script>}
+{parity && <script is:inline src="assets/synthe/behavior.js" defer></script>}
+{parity && <script is:inline src="assets/synthe/nav-fx.js"></script>}
+{parity && <script is:inline src="assets/synthe/story.js" defer></script>}
+{parity && <script is:inline src="assets/synthe/outputs.js" defer></script>}
+{parity && <script is:inline src="assets/synthe/kept.js" defer></script>}
+{!parity && <PageScripts page="index"/>}</Fragment>
+</Warm>
