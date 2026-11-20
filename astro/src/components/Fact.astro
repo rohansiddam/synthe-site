@@ -1,0 +1,8 @@
+---
+/* <Fact k="tests_passed"/> renders <span data-fact="tests_passed">1408</span> from facts.json at build
+   time. The data-fact attribute stays so `tools/facts.py check` and check_site.py still verify dist/. */
+import { factText } from '../lib/facts.mjs';
+interface Props { k: string; as?: string; class?: string }
+const { k, as: Tag = 'span', class: cls } = Astro.props;
+---
+<Tag class={cls} data-fact={k}>{factText(k)}</Tag>

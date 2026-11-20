@@ -1,0 +1,15 @@
+---
+/* Test fixture, not a site page: renders every scalar fact through <Fact>. tools/astro_proof/check_facts.py
+   reads it with facts.py's own regex and fmt(). The assemble step leaves it out of the staged site. */
+import Fact from '../components/Fact.astro';
+import { FACTS } from '../lib/facts.mjs';
+const keys = Object.keys(FACTS).filter((k) => !k.startsWith('_') && typeof FACTS[k] !== 'object');
+---
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"/><meta name="robots" content="noindex"/><title>Fact fixture</title></head>
+<body><main id="main"><h1>Fact fixture</h1>
+<ul>{keys.map((k) => <li><Fact k={k}/></li>)}</ul>
+<p><Fact k="tests_passed" as="strong" class="num"/> and <Fact k="facts_checked_on"/></p>
+</main></body>
+</html>

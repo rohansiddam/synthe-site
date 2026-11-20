@@ -1,0 +1,52 @@
+---
+/* The warm-page layout (Astro proof). It owns the shared head lines, the skip link, the page wrapper,
+   the header and the footer; each page fills the slots in the same places as its hand-written HTML. */
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { SITE_ROOT } from '../lib/assets.mjs';
+interface Props {
+  current: string;
+  title: string;
+  description: string;
+  canonical: string;
+  htmlAttrs?: Record<string, string>;
+}
+const { current, title, description, canonical, htmlAttrs = {} } = Astro.props;
+const OG_IMAGE = 'https://synthe.live/assets/synthe/og-image.png';
+const hasCta = Astro.slots.has('cta');
+/* SITE_PROOF_CSP=1: the CSP <meta> comes from _headers at build time, minus frame-ancestors (a meta tag
+   can't carry it), so the two can't drift. The warm pages carry no CSP meta today. */
+const cspMeta = process.env.SITE_PROOF_CSP === '1'
+  ? `<meta http-equiv="Content-Security-Policy" content="${readFileSync(resolve(SITE_ROOT, '_headers'), 'utf8')
+      .match(/Content-Security-Policy: (.+)/)[1].replace(" frame-ancestors 'none';", '').trim()}">\n`
+  : '';
+---
+<!DOCTYPE html>
+<html lang="en" {...htmlAttrs}>
+<head><link rel="preload" href="assets/synthe/fonts/figtree-var.woff2" as="font" type="font/woff2" crossorigin>
+<meta charset="utf-8"/>
+<Fragment set:html={cspMeta}/><title>{title}</title>
+<meta content={OG_IMAGE} property="og:image"/>
+<meta content={canonical} property="og:url"/>
+<link href={canonical} rel="canonical"/>
+<meta content={description} name="description"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<link href="assets/synthe/favicon-32x32.png" rel="icon" type="image/png" sizes="32x32" media="(prefers-color-scheme: light)"/>
+<link href="assets/synthe/favicon-32x32.png" rel="icon" type="image/png" sizes="32x32" media="(prefers-color-scheme: dark)"/>
+<link href="assets/synthe/favicon.svg" rel="icon" type="image/png" sizes="48x48"/>
+<link href="assets/synthe/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="assets/synthe/favicon.svg" rel="icon" type="image/png" sizes="192x192"/>
+<link href="assets/synthe/favicon.svg" rel="icon" type="image/png" sizes="512x512"/>
+<slot name="head"/>
+</head>
+<body><a class="skip-link" href="#main">Skip to content</a>
+<div class="page-wrapper"><slot name="frame"/>
+<main id="main" class="page-content">
+<slot name="top"/><SiteHeader current={current}/><slot/>{hasCta ? <SiteFooter><Fragment slot="cta"><slot name="cta"/></Fragment></SiteFooter> : <SiteFooter/>}
+</main>
+</div>
+<slot name="end"/>
+</body>
+</html>

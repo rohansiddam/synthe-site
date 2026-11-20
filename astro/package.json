@@ -1,0 +1,17 @@
+{
+  "name": "synthe-site-astro-proof",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "7.4.13"
+  },
+  "devDependencies": {
+    "pixelmatch": "8.0.0",
+    "playwright-core": "1.65.1",
+    "pngjs": "7.0.0"
+  }
+}
