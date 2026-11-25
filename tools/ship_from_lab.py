@@ -42,7 +42,10 @@ FILES = ["dive.css", "page.css", "blackhole.css", "dive.js", "home.js", "modes.j
 
 def head_tags(dst: str, html: str) -> str:
     """The security policy for every page; canonical URL and Open Graph tags for indexable pages."""
-    tags = [f'<meta http-equiv="Content-Security-Policy" content="{CSP}">']
+    tags = [f'<meta http-equiv="Content-Security-Policy" content="{CSP}">',
+            '<link rel="icon" href="/favicon.svg" type="image/svg+xml">',
+            '<link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png">',
+            '<link rel="apple-touch-icon" href="/apple-touch-icon.png">']
     if dst != "404.html":
         url = f"{ORIGIN}/" if dst == "index.html" else f"{ORIGIN}/{dst}"
         title = re.search(r"<title>([^<]+)</title>", html).group(1)
@@ -51,8 +54,9 @@ def head_tags(dst: str, html: str) -> str:
                  f'<meta property="og:url" content="{url}">', f'<meta property="og:title" content="{title}">',
                  f'<meta property="og:description" content="{desc}">',
                  f'<meta property="og:image" content="{ORIGIN}/og-image.png">',
-                 '<meta name="twitter:card" content="summary_large_image">',
-                 '<link rel="icon" href="/favicon.svg" type="image/svg+xml">']
+                 '<meta property="og:image:width" content="1200">', '<meta property="og:image:height" content="630">',
+                 '<meta property="og:image:alt" content="The Synthe lockup and &ldquo;Self-improving agents, held to your team&rsquo;s bar.&rdquo; next to a violet black hole">',
+                 '<meta name="twitter:card" content="summary_large_image">']
     return "\n".join(tags) + "\n"
 
 
