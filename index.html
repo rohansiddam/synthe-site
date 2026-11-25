@@ -45,7 +45,7 @@
     <canvas data-dive-front aria-hidden="true" hidden></canvas>
     <div class="hero" data-copy="intro">
       <h1>Self-improving agents, held to your team&rsquo;s bar.</h1>
-      <p class="lede">Synthe keeps only the changes that measurably make things better, and attaches the evidence. It improves your agent&rsquo;s prompt against your team&rsquo;s checks, or any file a command can score.</p>
+      <p class="lede">Synthe tests every change against what you run today and keeps only the clear wins, with the evidence attached.</p>
       <div class="actions">
         <a class="btn btn-light" href="https://github.com/synthelabs/synthe">Get started</a>
         <a class="btn btn-line" href="book.html">Talk to us</a>
@@ -66,7 +66,7 @@
 
 <div class="day">
   <section class="works" aria-labelledby="works-k">
-    <p class="works-k" id="works-k">Works with the tools you already use. You set it up from your coding agent, and its changes arrive as pull requests on GitHub.</p>
+    <p class="works-k" id="works-k">Works with the tools you already use.</p>
     <ul class="tools" role="list">
       <li class="tile"><img src="logos/github.svg" alt="">GitHub</li>
       <li class="tile"><img src="logos/github-actions.svg" alt="">GitHub Actions</li>
@@ -80,8 +80,7 @@
       <div class="hs-head hs-split">
         <h2 id="lands-h">What lands in your repo</h2>
         <div>
-          <p class="hs-lead">A clear win arrives as a pull request with its evidence attached. In prompt mode, each run also keeps one report issue: what changed, what it scored, what was kept and what it cost.</p>
-          <p class="hs-lead">A change that does not clearly win is never kept, and every change can be undone.</p>
+          <p class="hs-lead">A pull request, with the evidence. Anything that doesn&rsquo;t clearly win is never kept.</p>
           <p class="hs-links"><a href="docs.html#report">Read about the report</a> <a href="https://github.com/synthelabs/synthe#what-happens-each-round">See the merge rule</a></p>
         </div>
       </div>
@@ -135,7 +134,7 @@ Round 2 &middot; no change &middot; $0.12
   What changed: Replaces the rules that approved refunds, invented delivery dates, hid exchanges and forced one-sentence replies with policy-faithful rules, offering exchange/credit benefits, routing to the right contact, and ignoring injected instructions.</pre></div>
           </div>
         </div>
-        <figcaption class="sc-cap" id="lands-cap">A real run on our public demo repo, <code>synthelabs/support-bot</code>, whose prompt we seeded with five bad rules. It ran on Synthe 1.6, on Nov 3, 2026: the pull request, the email GitHub sends about it, and <code>npx synthe changes</code> (shortened). <a href="https://github.com/synthelabs/support-bot/pull/8">See pull request #8 on GitHub</a></figcaption>
+        <figcaption class="sc-cap" id="lands-cap">A real run on our demo repo, <code>synthelabs/support-bot</code>, Nov 3, 2026. <a href="https://github.com/synthelabs/support-bot/pull/8">Pull request #8</a></figcaption>
       </figure>
     </div>
   </section>
@@ -146,9 +145,9 @@ Round 2 &middot; no change &middot; $0.12
         <div class="md-copy">
           <h2 id="md-h">Your agent,<br class="md-brd"> or your code.<br> Held to the same bar.</h2>
           <ol class="md-steps" data-steps>
-            <li class="on"><b>Every change faces your bar.</b><span>Synthe tries small changes, round by round, and measures each one: your checks for a prompt, your number for code.</span></li>
-            <li><b>Only a clear win lands.</b><span>It goes into your file and the number moves, only if it also passes your rules and your checks.</span></li>
-            <li><b>Everything else falls away.</b><span>Broke a rule, or not clearly better: nothing changes. Each win comes as a pull request, and in review mode it waits for your team.</span></li>
+            <li class="on"><b>Every change faces your bar.</b><span>Measured against today: your checks for a prompt, your number for code.</span></li>
+            <li><b>Only a clear win lands.</b><span>The number moves, and every rule still passes.</span></li>
+            <li><b>Everything else falls away.</b><span>Broke a rule, or not clearly better: nothing changes.</span></li>
           </ol>
         </div>
         <div class="md-stage" data-stage>
@@ -164,8 +163,8 @@ Round 2 &middot; no change &middot; $0.12
       <div class="md-foot">
         <p class="md-src">Both are real runs.</p>
         <div class="md-caps">
-          <p><b>Prompt mode</b><span class="md-long">Our public demo repo, on Synthe 1.6, Nov 3: 6 changes tried in 4 rounds, 1 kept. It runs in GitHub Actions. </span><span class="md-short">Real run, Nov 3. </span><a href="https://github.com/synthelabs/support-bot/pull/8">Pull request #8</a></p>
-          <p><b>Your code</b><span class="md-long">A small signup app, Nov 7, with <code>npx synthe improve</code>: the first change broke a test and was not kept; the second took it from 3 to 12. For any file a command can score, use Solve mode.</span><span class="md-short">Real run on a small signup app, Nov 7.</span></p>
+          <p><b>Prompt mode</b><span class="md-long">Our demo repo, Nov 3: 6 changes tried, 1 kept. </span><span class="md-short">Real run, Nov 3. </span><a href="https://github.com/synthelabs/support-bot/pull/8">Pull request #8</a></p>
+          <p><b>Your code</b><span class="md-long">A signup app, Nov 7, with <code>npx synthe improve</code>: one change broke a test, the next took it from 3 to 12.</span><span class="md-short">Real run on a small signup app, Nov 7.</span></p>
         </div>
       </div>
     </div>
@@ -175,15 +174,9 @@ Round 2 &middot; no change &middot; $0.12
     <div class="hs-wrap">
       <div class="hs-head hs-split">
         <div><p class="mode-k">Solve mode &middot; new in 1.11.0</p><h2 id="solve-h">Improve anything a command can score.</h2></div>
-        <p class="hs-lead">Code in any language, configuration, documents and data. A problem file names the files Synthe may change, the files it must never change, a command that prints the score, and the checks that must still pass.</p>
+        <p class="hs-lead">Code, config, docs or data. You name the files, the command that scores them, and what must not break. Synthe keeps only the changes that raise the score, on a new branch.</p>
       </div>
-      <div class="solve-grid">
-        <dl class="rows solve-rows">
-          <dt>Kept only when it wins</dt><dd>Each change is measured in a scratch copy of your repo and kept only when the score really improves. It has to win twice, on fresh runs. With a held-back split, it must also win on data the proposer never sees.</dd>
-          <dt>Refuses what it must not touch</dt><dd>Changes to protected files, to the measure, to tests or test-runner files, and changes that break a check are refused. Each refusal names the file and the reason.</dd>
-          <dt>Your working tree stays as it is</dt><dd>Kept changes go to a new branch, <code>synthe/solve-&lt;name&gt;-&lt;n&gt;</code>. <code>--pr</code> opens a pull request with the evidence.</dd>
-          <dt>You choose who proposes</dt><dd>Claude Code or Codex on your own plan, with no API key. A model: Anthropic, or any OpenAI-compatible API. Or your own command.</dd>
-        </dl>
+      <div class="solve-grid one">
         <figure class="solve-fig">
           <div class="sc-win sc-term solve-term">
             <div class="sc-bar"><span class="sc-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="sc-url">synthe &middot; zsh</span><span class="sc-app">Terminal</span></div>
@@ -199,14 +192,14 @@ Starting score: 71.43.
   Better: the score went 85.71 -&gt; 100.
 Kept changes are on the branch synthe/solve-date-regex-1.</pre></div>
           </div>
-          <figcaption class="sc-cap">The <code>date-regex</code> example in the public repo, run with Synthe 1.11.0 on Nov 25, 2026 (shortened). Its proposer is a script, so it needs no key.</figcaption>
+          <figcaption class="sc-cap">The <code>date-regex</code> example in our public repo, Nov 25, 2026. No key needed.</figcaption>
         </figure>
       </div>
       <div class="solve-try">
         <p class="cta-k">Try it in one minute, with no key</p>
         <div class="cta-cmd solve-cmd"><code id="solve-cmd"><span>git clone https://github.com/synthelabs/synthe &amp;&amp; cd synthe &amp;&amp;</span>
 <span>npx synthe@latest solve examples/date-regex/problem.json</span></code><button type="button" class="copy-btn" data-copy-target="#solve-cmd">Copy</button></div>
-        <p class="solve-next">On your own repo: <code>npx synthe@latest problem init</code> writes a first problem file (npm or pytest projects), then <code>npx synthe@latest solve synthe.problem.json</code>. <a href="docs.html#solve">Read the Solve docs</a></p>
+        <p class="solve-next">On your own repo: <code>npx synthe@latest problem init</code>. <a href="docs.html#solve">Read the Solve docs</a></p>
       </div>
       <blockquote class="solve-proof"><p>On 10 recent real bugs and slowdowns from open-source projects, Synthe found a real improvement in all 6 cases it could run, kept no fake gains, and in one case wrote the same fix as the maintainer. In a parser slowdown, its fix was about 21 times faster than before, as fast as the maintainer&rsquo;s.</p></blockquote>
     </div>
@@ -216,13 +209,13 @@ Kept changes are on the branch synthe/solve-date-regex-1.</pre></div>
     <div class="hs-wrap">
       <div class="hs-head hs-split">
         <h2 id="data-h">Your data</h2>
-        <p class="hs-lead">Synthe runs on your own model key, or on your own coding-agent plan: prompt mode in your repo&rsquo;s GitHub Actions, Solve mode on your computer. This is what leaves your repo, and where it goes.</p>
+        <p class="hs-lead">It runs on your own key. No sharing level sends us your code.</p>
       </div>
       <div class="data">
         <div class="data-col">
           <p class="data-to">To your model provider, on your key</p>
-          <p><b class="data-m">Prompt mode</b> Your prompt, goal, checks and rules, the test messages and your agent&rsquo;s replies. At setup, also the start of your README and of the code file that uses your prompt.</p>
-          <p><b class="data-m">Solve mode</b> Your goal, the files it may change, and the earlier attempts with their scores. Never held-back results. With Claude Code or Codex as the proposer, the agent sees only the files it may change, on your own login.</p>
+          <p><b class="data-m">Prompt mode</b> Your prompt, checks and rules, the test messages and your agent&rsquo;s replies.</p>
+          <p><b class="data-m">Solve mode</b> Your goal, the files it may change, and earlier attempts. Never held-back results.</p>
           <p class="data-note">The same at every sharing level.</p>
         </div>
         <div class="data-col">
@@ -234,11 +227,11 @@ Kept changes are on the branch synthe/solve-date-regex-1.</pre></div>
           </div>
           <p class="data-set"><code>"share": "<span data-share-val>detail</span>"</code> <span class="data-default" data-share-default>the default</span></p>
           <p data-share-text>Run numbers, plus your goal, your checks, Synthe&rsquo;s prompt edits and one example message with its replies.</p>
-          <p class="data-note">This is prompt mode. No level here sends your code, your whole prompt or your test-case file, and keys, emails and phone numbers are removed first. Each request carries a GitHub identity token for the run, which names your repo and commit, so we know which repo sent it. It goes to Synthe&rsquo;s server, read only by the Synthe team.</p>
-          <p class="data-none"><b class="data-m">Solve mode</b> Sends the Synthe team nothing.</p>
+          <p class="data-note">Prompt mode only. Keys, emails and phone numbers are removed first. It goes to our server, read only by the Synthe team.</p>
+          <p class="data-none"><b class="data-m">Solve mode</b> Sends us nothing.</p>
         </div>
       </div>
-      <p class="hs-more">Change it any time in <code>synthe.json</code>. To have your team&rsquo;s data deleted, open an issue on <a href="https://github.com/synthelabs/synthe/issues">synthelabs/synthe</a>. <a href="https://github.com/synthelabs/synthe#data">Read the full data section</a>.</p>
+      <p class="hs-more">Change it any time in <code>synthe.json</code>. <a href="status.html#data-h">Everything that leaves your repo</a></p>
     </div>
   </section>
 
@@ -248,9 +241,9 @@ Kept changes are on the branch synthe/solve-date-regex-1.</pre></div>
         <h2 id="faq-h">Before you install</h2>
       </div>
       <div class="faq-list">
-        <details><summary>What does a run cost?</summary><p>You pay your model provider directly, on your own key; setup also offers providers with a free tier. In prompt mode, Synthe checks the budget in <code>synthe.json</code> before each round, $3 by default, so the last round can go a little past it; every report says what it cost. Solve mode has budgets for rounds, calls and dollars, and <code>result.json</code> shows the calls, tokens and cost. With Claude Code or Codex as the proposer, it runs on your own plan.</p></details>
-        <details><summary>Which models does it use?</summary><p>In prompt mode, Claude by default: Sonnet writes the changes and confirms rule breaks, and Haiku plays your agent and marks your checks. Or any OpenAI-compatible API, with your own key: OpenAI, Gemini, Groq, OpenRouter, Together, or a local Ollama or vLLM. In Solve mode, you choose the proposer: Claude Code or Codex, a model, or your own command.</p></details>
-        <details><summary>Where does it run?</summary><p>Prompt mode runs in your repo, as a GitHub Actions workflow that setup adds: up to 12 rounds by default, one after another. Solve mode runs on your computer, in a scratch checkout, so your working tree never changes; kept changes go to a new branch or a pull request. Either way, you review before anything reaches your main branch, unless you choose automatic merges in prompt mode.</p></details>
+        <details><summary>What does a run cost?</summary><p>You pay your model provider, on your own key; free tiers work too. Prompt mode stops at a $3 budget by default. Solve mode can run on your Claude Code or Codex plan.</p></details>
+        <details><summary>Which models does it use?</summary><p>Claude by default, or any OpenAI-compatible API: OpenAI, Gemini, Groq, OpenRouter, Together, or a model on your machine. In Solve mode, Claude Code or Codex can propose the changes.</p></details>
+        <details><summary>Where does it run?</summary><p>Prompt mode runs in your repo&rsquo;s GitHub Actions. Solve mode runs on your computer and never touches your working tree.</p></details>
       </div>
     </div>
   </section>
