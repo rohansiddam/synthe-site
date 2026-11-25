@@ -1,0 +1,130 @@
+/* The subpages (How it works, Docs, Limits and your data), on top of dive.css: same tokens, nav, footer and edge.
+   One section grammar: a mono label, a heading, words; artifacts sit in quiet cards, never in decoration. */
+.pg { padding-top: 64px; }
+.pg [hidden] { display: none !important; }
+.pg-head { padding: 112px var(--edge) 72px; }
+.pg-k { margin: 0 0 16px; font: 500 13px var(--mono); color: var(--muted); }
+.pg-head h1 { margin: 0 0 22px; max-width: 15em; font-size: 56px; line-height: 1.02; letter-spacing: -0.03em; font-weight: 500; text-wrap: balance; }
+.pg-lead { margin: 0; max-width: 38em; font-size: 19px; line-height: 1.55; color: rgba(244, 239, 230, 0.76); text-wrap: pretty; }
+.pg-lead + .pg-lead { margin-top: 14px; }
+.pg-jump { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.pg-sec { padding: 96px var(--edge); border-top: 1px solid var(--faint); }
+.pg-sec > .hs-head { margin-bottom: 40px; }
+.pg-sec h2 { font-size: 40px; line-height: 1.08; letter-spacing: -0.025em; font-weight: 500; margin: 0 0 14px; text-wrap: balance; }
+.pg-sec a, .doc a, .rows a { color: var(--light); text-decoration-color: rgba(244, 239, 230, 0.4); text-underline-offset: 3px; }
+.mode-k { display: inline-block; margin: 0 0 14px; font: 500 12px var(--mono); color: var(--muted); }
+
+/* round by round: words on the left, the real artifact on the right */
+.steps { list-style: none; margin: 0; padding: 0; }
+.step-row { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 56px; padding: 40px 0; border-top: 1px solid var(--faint); }
+.step-row:last-child { border-bottom: 1px solid var(--faint); }
+.step-n { display: block; margin-bottom: 10px; font: 500 12px var(--mono); color: var(--muted); }
+.step-row h3 { margin: 0 0 10px; font-size: 24px; line-height: 1.2; font-weight: 500; letter-spacing: -0.01em; }
+.step-row p { margin: 0 0 12px; max-width: 34em; font-size: 16px; line-height: 1.6; color: var(--muted); }
+.step-row p:last-child { margin-bottom: 0; }
+.art { align-self: start; padding: 18px 20px; border-radius: var(--r-l); background: var(--surface); box-shadow: 0 0 0 1px rgba(244, 239, 230, 0.08); font-size: 14px; line-height: 1.55; }
+.art-k { display: flex; justify-content: space-between; gap: 12px; margin: 0 0 12px; font: 500 12px var(--mono); color: var(--muted); }
+.art-k span:last-child { color: rgba(244, 239, 230, 0.45); }
+.art p { margin: 0 0 10px; } .art p:last-child { margin-bottom: 0; }
+.art ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.art li { padding-left: 14px; position: relative; }
+.art li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 5px; height: 5px; border-radius: 50%; background: rgba(244, 239, 230, 0.35); }
+.art-msg { display: grid; gap: 8px; }
+.art-msg div { padding: 10px 12px; border-radius: var(--r-s); background: var(--night); }
+.art-msg b { display: block; margin-bottom: 4px; font: 500 11px var(--mono); color: var(--muted); }
+.art-msg .ho b { color: var(--sky); }
+.art-diff { margin: 0; border-radius: var(--r-s); overflow: hidden; background: #181613; font: 500 12.5px/1.6 var(--mono); }
+.art-diff p { display: grid; grid-template-columns: 16px minmax(0, 1fr); margin: 0; padding: 4px 10px; }
+.art-diff .d { color: rgba(244, 239, 230, 0.5); } .art-diff .d del { text-decoration-color: rgba(244, 239, 230, 0.35); }
+.art-diff .a { background: var(--win-soft); color: var(--light); } .art-diff ins { text-decoration: none; }
+.art-nums { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.art-nums div { padding: 12px; border-radius: var(--r-s); background: var(--night); }
+.art-nums b { display: block; font-size: 26px; font-weight: 600; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.art-nums span { font-size: 12.5px; color: var(--muted); }
+.art .ok { color: var(--win-text); } .art .no { color: var(--rose); }
+.art table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.art td, .art th { padding: 8px 8px 8px 0; border-top: 1px solid var(--faint); text-align: left; vertical-align: top; }
+.art th { font: 500 11.5px var(--mono); color: var(--muted); border-top: 0; }
+.art td:first-child { width: 1%; padding-right: 16px; white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--muted); }   /* as wide as its words, never broken */
+.art-note { margin-top: 12px !important; font-size: 12.5px; color: rgba(244, 239, 230, 0.5); }
+
+/* the rule, in rows: a mono key on the left, the plain words on the right */
+.rows { margin: 0; display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); border-top: 1px solid var(--faint); }
+.rows dt, .rows dd { margin: 0; padding: 18px 0; border-bottom: 1px solid var(--faint); }
+.rows dt { padding-right: 24px; font: 500 13px/1.6 var(--mono); color: var(--muted); }
+.rows dd { font-size: 16px; line-height: 1.6; color: rgba(244, 239, 230, 0.86); }
+.rows dd p { margin: 0 0 8px; } .rows dd p:last-child { margin: 0; }
+.rows code, .doc code, .step-row code, .art code { padding: 1px 6px; border-radius: 6px; background: var(--surface-2); font: 500 0.88em var(--mono); color: var(--light); }
+.art code { background: var(--night); }
+.pg-max { max-width: 880px; }
+
+/* docs: a sticky "On this page" beside one readable column */
+.doc { display: grid; grid-template-columns: 200px minmax(0, 720px); gap: 80px; padding: 0 var(--edge) 120px; }
+.doc-nav { position: sticky; top: 96px; align-self: start; max-height: calc(100vh - 120px); overflow: auto; font-size: 14px; }
+.doc-nav summary { list-style: none; display: none; }
+.doc-nav summary::-webkit-details-marker { display: none; }
+.doc-nav p { margin: 22px 0 8px; font: 500 12px var(--mono); color: rgba(244, 239, 230, 0.62); }
+.doc-nav p:first-of-type { margin-top: 0; }
+.doc-nav a { display: block; padding: 5px 0 5px 14px; border-left: 1px solid var(--faint); color: var(--muted); text-decoration: none; }
+.doc-nav a:hover { color: var(--light); }
+.doc-nav a[aria-current="true"] { color: var(--light); border-left-color: var(--light); }
+.doc-body > :first-child { margin-top: 0; }
+.doc h2 { margin: 72px 0 14px; font-size: 30px; line-height: 1.12; letter-spacing: -0.02em; font-weight: 500; scroll-margin-top: 96px; }
+.doc h3 { margin: 32px 0 8px; font-size: 18px; font-weight: 600; scroll-margin-top: 96px; }
+.doc p, .doc li { font-size: 16px; line-height: 1.65; color: rgba(244, 239, 230, 0.8); }
+.doc p { margin: 0 0 14px; }
+.doc ul, .doc ol { margin: 0 0 16px; padding-left: 20px; } .doc li { margin-bottom: 6px; }
+.doc strong { color: var(--light); font-weight: 600; }
+.code { position: relative; margin: 0 0 18px; padding: 14px 92px 14px 16px; border-radius: var(--r-l); background: var(--surface); font: 500 13.5px/1.65 var(--mono); color: var(--light); white-space: pre-wrap; overflow-wrap: anywhere; }
+.code .copy-btn { top: 12px; bottom: auto; transform: none; }   /* audit m8: the phone rule's bottom stretched it */
+.code-k { margin: 0 0 6px !important; font-size: 13px !important; color: var(--muted) !important; }
+.tbl-wrap { margin: 0 0 18px; overflow-x: auto; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 15px; }
+.tbl th { padding: 0 16px 10px 0; text-align: left; font: 500 12px var(--mono); color: var(--muted); border-bottom: 1px solid var(--faint); }
+.tbl td { padding: 12px 16px 12px 0; vertical-align: top; border-bottom: 1px solid var(--faint); color: rgba(244, 239, 230, 0.8); line-height: 1.55; }
+.tbl td:first-child { white-space: nowrap; }
+.tbl td:first-child code { white-space: nowrap; }
+.callout { margin: 0 0 18px; padding: 14px 16px; border-radius: var(--r-l); background: var(--surface); font-size: 15px; line-height: 1.6; color: rgba(244, 239, 230, 0.86); }
+.callout b { display: block; margin-bottom: 2px; font: 500 12px var(--mono); color: var(--muted); }
+.quick { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 0 0 8px; }
+.quick .art { padding: 20px; }
+.quick h3 { margin: 0 0 6px !important; }
+.quick p { font-size: 15px !important; }
+
+@media (max-width: 900px) {
+  .pg-head { padding: 72px var(--edge) 48px; }
+  .pg-head h1 { font-size: 38px; }
+  .pg-lead { font-size: 17px; }
+  .pg-sec { padding: 64px var(--edge); }
+  .pg-sec h2 { font-size: 30px; }
+  .step-row { grid-template-columns: 1fr; gap: 20px; padding: 32px 0; }
+  .doc { grid-template-columns: minmax(0, 1fr); gap: 24px; }   /* minmax: a wide table scrolls in its own box instead of widening the page */
+  .doc-nav { position: static; max-height: none; padding: 14px 16px; border-radius: var(--r-l); background: var(--surface); }
+  .doc-nav summary { display: flex; justify-content: space-between; cursor: pointer; font-weight: 500; color: var(--light); padding: 8px 0; }
+  .doc-nav summary::after { content: "+"; color: var(--muted); } .doc-nav[open] summary::after { content: "\2212"; }
+  .doc-nav[open] summary { margin-bottom: 14px; }
+  .doc h2 { margin-top: 56px; font-size: 26px; }
+  .rows { grid-template-columns: 1fr; }
+  .rows dt { padding: 16px 0 0; border-bottom: 0; }
+  .rows dd { padding-top: 6px; }
+  .quick { grid-template-columns: 1fr; }
+  .art-nums b { font-size: 22px; }
+}
+/* on a phone, tables fit the screen: fixed columns, and long names may break */
+@media (max-width: 640px) {
+  .tbl { table-layout: fixed; font-size: 13.5px; }
+  .tbl th:first-child, .tbl td:first-child { width: 30%; }
+  .tbl td:first-child, .tbl td:first-child code { white-space: normal; }
+  .tbl code { overflow-wrap: anywhere; }
+  .tbl td, .tbl th { padding-right: 10px; }
+}
+
+/* polish (Nov 24): dark-surface elevation on the pages' cards, as on the homepage */
+.art, .code, .callout { box-shadow: inset 0 1px 0 rgba(244, 239, 230, 0.06), 0 0 0 1px rgba(244, 239, 230, 0.07); }
+
+/* Nov 25 (1.11.0): code in an art card; what is new in prompt mode; a closing pointer under a mode */
+.art-pre { margin: 0; padding: 12px 14px; border-radius: var(--r-s); background: var(--night); font: 500 12px/1.6 var(--mono); color: var(--light); white-space: pre; overflow-x: auto; }
+.new-in { margin-top: 48px; }
+.pg-more { margin: 28px 0 0; max-width: 46em; font-size: 15px; line-height: 1.6; color: var(--muted); }
+.tbl td.tbl-k { padding-top: 18px; font: 500 12px var(--mono); color: var(--muted); }
+.step-row > * { min-width: 0; }   /* a wide code card must not widen the page on a phone */

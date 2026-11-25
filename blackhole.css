@@ -1,0 +1,18 @@
+/* the black hole's overlays when it runs inside the homepage dive (dive-next.html). Same look as blackhole.html. */
+.dive-stage canvas[data-bh] { opacity: 0; }
+.lb.sr { position: absolute; top: 50%; left: 50%; width: 1px; height: 1px; margin: 0; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.lb.sr:focus { outline: none; }
+.hv { position: absolute; left: 0; top: 0; z-index: 3; max-width: 270px; padding: 11px 14px 12px; border-radius: 6px; background: rgba(21, 19, 17, 0.92); box-shadow: inset 0 1px 0 rgba(244, 239, 230, 0.07), 0 0 0 1px rgba(244, 239, 230, 0.13); opacity: 0; pointer-events: none; will-change: transform, opacity; }
+.hv b { display: block; font: 500 11.5px var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: #f4efe6; }
+.hv.lit b { color: #8ddb85; }
+.hv span { display: block; margin-top: 5px; font: 400 15px/1.35 var(--sans); color: rgba(244, 239, 230, 0.92); }
+.hv i { display: block; margin-top: 7px; font: 400 11.5px/1.4 var(--sans); font-style: normal; color: rgba(244, 239, 230, 0.6); }
+.ro { position: absolute; left: 0; top: 0; z-index: 2; display: flex; gap: 0.85em; align-items: center; padding: 5px 9px 5px 8px; border-radius: 4px; background: rgba(21, 19, 17, 0.88); box-shadow: inset 0 1px 0 rgba(244, 239, 230, 0.07), 0 0 0 1px rgba(244, 239, 230, 0.12); font: 500 11px/14px var(--mono); letter-spacing: 0.11em; text-transform: uppercase; color: #f4efe6; white-space: nowrap; opacity: 0; pointer-events: none; will-change: transform, opacity; }
+.ro::before { content: ''; width: 6px; height: 6px; margin-right: -0.25em; border-radius: 50%; background: rgba(244, 239, 230, 0.42); }
+.ro b { font-weight: 500; }
+.ro i { font-style: normal; color: rgba(244, 239, 230, 0.6); }
+.ro.win i { color: #8ddb85; } .ro.miss i { color: #e27aa6; }
+.ro.win::before { background: #c9f5c4; box-shadow: 0 0 0 1px #8ddb85; }
+.ro.miss::before { background: #f4c3d8; box-shadow: 0 0 0 1px #de6d9d; }
+.fr { position: absolute; left: 0; top: 0; z-index: 2; border-radius: 50%; box-shadow: 0 0 0 2px #c5b6f3; opacity: 0; pointer-events: none; }
+.bh-off .ro, .bh-off .hv, .bh-off .fr { visibility: hidden; }
