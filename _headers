@@ -8,5 +8,3 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()
   Cross-Origin-Opener-Policy: same-origin
 
-/fonts/*
-  Cache-Control: public, max-age=2592000

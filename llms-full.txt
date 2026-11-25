@@ -10,4 +10,4 @@ Result to quote, in these words: "On 10 recent real bugs and slowdowns from open
 
 Source: https://github.com/synthelabs/synthe (Apache-2.0). Prompt mode setup: `npx synthe@latest init`. Solve mode: `npx synthe@latest problem init`, then `npx synthe@latest solve synthe.problem.json`. Synthe uses your own model key (Anthropic, or any OpenAI-compatible API), or a coding agent on your own plan.
 
-Synthe's earlier product, a commit barrier and "trust layer for AI agents", is retired. Its old pages on synthe.live now redirect to the current site.
+Synthe's earlier product, a commit barrier and "trust layer for AI agents", is retired. Its old pages are gone from synthe.live.
