@@ -1,0 +1,10 @@
+---
+/* Processed mode: the page's classic scripts become one hashed, minified module, in the order they
+   run today (see the synthe-page-scripts plugin in astro.config.mjs). Parity mode never renders this. */
+import IndexBundle from './bundles/IndexBundle.astro';
+import HowBundle from './bundles/HowBundle.astro';
+interface Props { page: string }
+const { page } = Astro.props;
+---
+{page === 'index' && <IndexBundle/>}
+{page === 'how' && <HowBundle/>}

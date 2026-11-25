@@ -1,0 +1,25 @@
+{
+  "index": [
+    "assets/synthe/promptbox.js",
+    "assets/synthe/nav-fx.js",
+    "assets/synthe/motion.js",
+    "assets/synthe/site.js",
+    "assets/synthe/home.js",
+    "assets/synthe/hero-fx.js",
+    "assets/synthe/v5.js",
+    "assets/synthe/industries.js",
+    "assets/synthe/try.js",
+    "assets/synthe/behavior.js",
+    "assets/synthe/story.js",
+    "assets/synthe/outputs.js",
+    "assets/synthe/kept.js"
+  ],
+  "how": [
+    "assets/synthe/nav-fx.js",
+    "assets/synthe/how-flow.js",
+    "assets/synthe/motion.js",
+    "assets/synthe/site.js",
+    "assets/synthe/pages.js",
+    "assets/synthe/kept.js"
+  ]
+}
