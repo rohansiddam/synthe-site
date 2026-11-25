@@ -4,4 +4,4 @@ Contact: mailto:rohansiddam@synthe.live
 Expires: 2027-10-01T00:00:00.000Z
 Preferred-Languages: en
 Canonical: https://synthe.live/.well-known/security.txt
-Policy: https://synthe.live/status.html#security
+Policy: https://synthe.live/status.html#security-h

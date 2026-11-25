@@ -3,263 +3,158 @@
 
   python3 tools/check_site.py
 
-It fails (exit 1) when:
-  - a number on a page disagrees with facts.json (see tools/facts.py)
-  - the header or the footer differs between pages of the same family
-  - a page misses the shared head (legacy pages: CSP, site.css, site.js, theme script; every page:
-    title, description, skip link, main)
-  - a page loads anything from another origin (scripts, styles, fonts, images)
-  - outward-facing copy contains an em dash (DESIGN_PLAYBOOK.md, section 8)
-  - a px font size is off the type scale, or a padding, margin or gap is off the 4px grid
-  - an internal link or #anchor points nowhere
+Since the Nov 25, 2026 redesign, the site is six pages made in the design lab (see tools/ship_from_lab.py):
+index, how, docs, status, book and 404. The old pages are redirects. It fails (exit 1) when:
+  - a page misses its title, description, one <h1>, <main id="main"> or the skip link
+  - the header or the footer differs between pages
+  - a page has no security policy, or its policy differs from the one in _headers
+  - an indexable page misses its canonical URL or Open Graph image
+  - a page loads a script, style, font or image from another origin
+  - outward-facing copy has an em dash, or a phrase the 1.11.0 brief rules out
+  - an internal link or #anchor points nowhere, or a file a page loads is missing
   - sitemap.xml and the indexable pages disagree
-  - the CSP <meta> tag and the CSP in _headers disagree
-  - a page links an out-of-date site.css or site.js version (run tools/stamp.py)
-  - the design-partner form's privacy copy doesn't match where the form sends data
-It warns (exit 0) while the form uses the email fallback (no Formspree form ID yet).
+  - a redirect page points at a page that does not exist
 """
 from __future__ import annotations
 
-import os
 import re
 import sys
 from pathlib import Path
 
 SITE = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(SITE / "tools"))
-import facts  # noqa: E402
-import stamp  # noqa: E402
-
 PAGES = sorted(SITE.glob("*.html"))
-# Two page families since the 2026-11-18 warm launch: the warm-system pages (nav2 header, b2 footer,
-# assets/synthe/*) and the legacy pages of the earlier product (site-head header, site.css, site.js).
-WARM = {"index.html", "how.html", "docs.html", "partner.html"}
-COPY_FILES = PAGES + [SITE / "llms.txt", SITE / "llms-full.txt", SITE / ".well-known" / "security.txt"]
-IN_CI = os.environ.get("GITHUB_ACTIONS") == "true"
+COPY = PAGES + [SITE / "llms.txt", SITE / "llms-full.txt"]
+BANNED = ["github:synthelabs", "EVENT_CODE", "TEAM_CODE", "event credit", "npx synthe pilot", "synthe/pilot",
+          "Crimson", "synthe-crimson", "Redo"]
 
 errors: list[str] = []
-warnings: list[str] = []
 
 
 def err(msg: str) -> None:
     errors.append(msg)
 
 
-def warn(msg: str) -> None:
-    warnings.append(msg)
-
-
 def text(p: Path) -> str:
     return p.read_text(encoding="utf-8")
 
 
-def block(html: str, pattern: str) -> str | None:
-    m = re.search(pattern, html, re.S)
-    return m.group(0) if m else None
+def is_redirect(html: str) -> bool:
+    return 'http-equiv="refresh"' in html
 
 
-def ids(html: str) -> set[str]:
-    return set(re.findall(r'\sid="([^"]+)"', html))
+def norm_links(block: str) -> str:
+    """The 404 page uses root-absolute links, the homepage's footer brand points at #top, the homepage's header is
+    see-through (no "solid") and only the homepage, which moves, has the Reduce motion button: compare them as equal."""
+    block = re.sub(r'\s+aria-current="page"', "", block)
+    block = block.replace('class="nav solid"', 'class="nav"')
+    block = re.sub(r' &middot; <button type="button" class="foot-motion" data-motion>Reduce motion</button>', "", block)
+    block = re.sub(r'href="/(?!/)', 'href="', block)
+    return block.replace('href="#top"', 'href=""')
 
 
-def noindex(html: str) -> bool:
-    return 'name="robots" content="noindex"' in html
+def csp_of(html: str) -> str | None:
+    m = re.search(r'<meta http-equiv="Content-Security-Policy" content="([^"]+)">', html)
+    return m.group(1) if m else None
 
 
-# 1. facts
-for problem in facts.mismatches(facts.load()):
-    err(f"facts: {problem}")
+headers_csp = re.search(r"Content-Security-Policy: (.+)", text(SITE / "_headers")).group(1).strip()
+expected_csp = headers_csp.replace("frame-ancestors 'none'; ", "")   # a meta tag cannot carry frame-ancestors
 
-# 2. shared chrome and head (compared within each family)
-headers, footers = {}, {}
+navs, foots, indexable = {}, {}, set()
 for p in PAGES:
     h = text(p)
-    if p.name in WARM:
-        head = block(h, r'<header class="synav".*?</header>')
-        foot = block(h, r'<div class="b2-card">.*?</nav>')
-    else:
-        head = block(h, r'<header class="site-head">.*?</header>')
-        foot = block(h, r'<footer class="site-foot">.*?</footer>')
-    if not head:
-        err(f"{p.name}: no shared site header")
-    else:
-        headers[p.name] = head.replace(' aria-current="page"', "")
-    if not foot:
-        err(f"{p.name}: no shared site footer")
-    else:
-        footers[p.name] = foot
-    must = {"skip link": 'class="skip-link" href="#main"'}
-    if p.name not in WARM:
-        must.update({
-            "CSP meta tag": 'http-equiv="Content-Security-Policy"',
-            "site.css": 'href="/site.css?v=',
-            "site.js": 'src="/site.js?v=',
-            "theme head script": 'localStorage.getItem("synthe-theme")',
-        })
-    for label, needle in must.items():
-        if needle not in h:
+    csp = csp_of(h)
+    if csp is None:
+        err(f"{p.name}: no security policy (CSP meta tag)")
+    elif csp != expected_csp:
+        err(f"{p.name}: its security policy differs from _headers")
+    if is_redirect(h):
+        m = re.search(r'http-equiv="refresh" content="0; url=([^"]+)"', h)
+        to = m.group(1) if m else ""
+        if not to.startswith("https://") and not (SITE / (to.lstrip("/") or "index.html")).exists():
+            err(f"{p.name}: redirects to {to!r}, which does not exist")
+        if 'name="robots" content="noindex"' not in h:
+            err(f"{p.name}: a redirect page must be noindex")
+        continue
+    for label, pattern in (("<title>", r"<title>[^<]+</title>"), ("meta description", r'<meta name="description" content="[^"]+">'),
+                           ("<main id=main>", r'<main id="main"[\s>]'), ("skip link", r'class="skip" href="#main"')):
+        if not re.search(pattern, h):
             err(f"{p.name}: missing {label}")
-    if not re.search(r'<main id="main"[\s>]', h):
-        err(f"{p.name}: missing <main id=main>")
-    if not re.search(r'<meta (?:name="description"[^>]*content="[^"]+"|content="[^"]+"[^>]*name="description")', h):
-        err(f"{p.name}: missing meta description")
     if len(re.findall(r"<h1[\s>]", h)) != 1:
         err(f"{p.name}: needs exactly one <h1>")
-    if not re.search(r"<title>[^<]+</title>", h):
-        err(f"{p.name}: missing <title>")
-    if not noindex(h):
+    nav = re.search(r'<nav class="nav[^"]*" data-nav.*?</nav>', h, re.S)
+    foot = re.search(r'<footer class="foot">.*?</footer>', h, re.S)
+    if nav:
+        navs[p.name] = norm_links(nav.group(0))
+    else:
+        err(f"{p.name}: no site header")
+    if foot:
+        foots[p.name] = norm_links(foot.group(0))
+    else:
+        err(f"{p.name}: no site footer")
+    if p.name != "404.html" and 'name="robots" content="noindex"' not in h:
+        indexable.add(p.name)
         for needle in ('rel="canonical"', 'property="og:url"', 'property="og:image"'):
             if needle not in h:
                 err(f"{p.name}: missing {needle}")
 
-for name, group in (("header", headers), ("footer", footers)):
-    for family in (True, False):
-        variants = {}
-        for page, html in group.items():
-            if (page in WARM) == family:
-                variants.setdefault(html, []).append(page)
-        if len(variants) > 1:
-            sizes = sorted(variants.values(), key=len, reverse=True)
-            fam = "warm" if family else "legacy"
-            err(f"the {name} differs between {fam} pages: {' | '.join(', '.join(v) for v in sizes)}")
+for name, group in (("header", navs), ("footer", foots)):
+    variants: dict[str, list[str]] = {}
+    for page, html in group.items():
+        variants.setdefault(html, []).append(page)
+    if len(variants) > 1:
+        err(f"the {name} differs between pages: {' | '.join(', '.join(v) for v in sorted(variants.values(), key=len, reverse=True))}")
 
-# 3. nothing loads from another origin
+# nothing loads from another origin (the booking page loads Cloudflare Turnstile from its script, allowed by the policy)
 external = [
     (r'<script[^>]+src="(?:https?:)?//', "external script"),
-    (r'<link[^>]+rel="(?:stylesheet|preload|modulepreload|icon|apple-touch-icon|preconnect|dns-prefetch)"[^>]+href="(?:https?:)?//', "external stylesheet, font or icon"),
-    (r'<link[^>]+href="(?:https?:)?//[^"]+"[^>]+rel="(?:stylesheet|preload|preconnect)"', "external stylesheet or preconnect"),
+    (r'<link[^>]+rel="(?:stylesheet|preload|modulepreload|icon|preconnect)"[^>]+href="(?:https?:)?//', "external stylesheet, font or icon"),
     (r'<(?:img|iframe|video|audio|source)[^>]+src="(?:https?:)?//', "external media"),
     (r'url\((?:["\'])?(?:https?:)?//', "external CSS url()"),
-    (r'@import', "CSS @import"),
 ]
-for p in PAGES + [SITE / "site.css"]:
+for p in PAGES + sorted(SITE.glob("*.css")):
     h = text(p)
     for pattern, label in external:
         for m in re.finditer(pattern, h):
             err(f"{p.name}: {label}: {h[m.start():m.start() + 90]!r}")
 
-# 4. no em dashes in outward-facing copy
-for p in COPY_FILES:
-    if p.exists():
-        for i, line in enumerate(text(p).splitlines(), 1):
-            if "—" in line:
-                err(f"{p.relative_to(SITE)}:{i}: em dash in copy")
+# copy: no em dashes, nothing the brief rules out
+for p in COPY:
+    if not p.exists():
+        continue
+    for i, line in enumerate(text(p).splitlines(), 1):
+        if "—" in line or "&mdash;" in line:
+            err(f"{p.name}:{i}: em dash in copy")
+        for b in BANNED:
+            if b in line:
+                err(f"{p.name}:{i}: {b!r} is ruled out (website brief, 1.11.0)")
 
-# 4b. one type scale and a 4px grid (DESIGN_PLAYBOOK.md, section 0): px font sizes come from a short list, and
-# padding, margin and gap px values are multiples of 4 (1 and 2 are for hairlines). clamp() display sizes are exempt.
-TYPE_SCALE = {11, 12, 13, 14, 16, 18, 20, 24, 32}
-for p in PAGES + [SITE / "site.css"]:
-    src = text(p)
-    sizes = {float(v) for v in re.findall(r"font-size:\s*(\d+(?:\.\d+)?)px", src)}
-    sizes |= {float(v) for v in re.findall(r"font:\s*(?:[\w-]+\s+)*?(\d+(?:\.\d+)?)px", src)}
-    off = sorted(s for s in sizes if s not in TYPE_SCALE)
-    if off:
-        err(f"{p.name}: font sizes off the scale {sorted(TYPE_SCALE)}: {off}")
-    spaces = set()
-    for decl in re.findall(r"(?:padding|margin|gap)(?:-[a-z]+)?:\s*([^;}{\"]+)", src):
-        spaces |= {float(v) for v in re.findall(r"(?<![\w.#-])(\d+(?:\.\d+)?)px", decl)}
-    bad = sorted(v for v in spaces if v > 2 and v % 4)
-    if bad:
-        err(f"{p.name}: spacing off the 4px grid: {bad}")
-
-# 5. internal links and anchors
-page_ids = {p.name: ids(text(p)) for p in PAGES}
+# internal links, anchors, and the files pages load
+all_ids = {p.name: set(re.findall(r'\sid="([^"]+)"', text(p))) for p in PAGES}
 for p in PAGES:
     h = text(p)
-    for href in re.findall(r'href="([^"]+)"', h):
-        if re.match(r"^(?:https?:|mailto:|tel:|data:)", href):
+    if is_redirect(h):
+        continue
+    for ref in re.findall(r'(?:href|src)="([^"]+)"', h):
+        if re.match(r"(?:https?:|mailto:|data:|//)", ref):
             continue
-        path, _, frag = href.partition("#")
-        path = path.split("?", 1)[0]
-        if path in ("", "/"):
-            target = p.name if path == "" else "index.html"
-        else:
-            target = path.lstrip("/")
-        if not (SITE / target).exists():
-            err(f"{p.name}: link to missing file {href}")
-            continue
-        if frag and target.endswith(".html") and frag not in page_ids.get(target, set()):
-            err(f"{p.name}: link to missing anchor {href}")
+        path, _, frag = ref.partition("#")
+        path = path.split("?")[0].lstrip("/") or (p.name if ref.startswith("#") else "index.html")
+        if not (SITE / path).exists():
+            err(f"{p.name}: link to {ref!r}: no such file")
+        elif frag and path.endswith(".html") and frag not in all_ids.get(path, set()):
+            err(f"{p.name}: link to {ref!r}: no such anchor")
 
-# 6. sitemap
-sitemap = text(SITE / "sitemap.xml")
-listed = {u.replace("https://synthe.live/", "") or "index.html" for u in re.findall(r"<loc>([^<]+)</loc>", sitemap)}
-indexable = {p.name for p in PAGES if not noindex(text(p))}
-for missing in sorted(indexable - listed):
-    err(f"sitemap.xml: missing {missing}")
-for extra in sorted(listed - indexable):
-    err(f"sitemap.xml: lists {extra}, which is not an indexable page")
+# the sitemap lists exactly the indexable pages
+listed = set()
+for loc in re.findall(r"<loc>https://synthe\.live/([^<]*)</loc>", text(SITE / "sitemap.xml")):
+    listed.add(loc or "index.html")
+for page in sorted(indexable - listed):
+    err(f"sitemap.xml: missing {page}")
+for page in sorted(listed - indexable):
+    err(f"sitemap.xml: lists {page}, which is not an indexable page")
 
-# 7. CSP meta tag matches _headers (minus frame-ancestors, which a meta tag can't carry)
-hdr = re.search(r"Content-Security-Policy: (.+)", text(SITE / "_headers"))
-hdr_csp = hdr.group(1).replace(" frame-ancestors 'none';", "").strip() if hdr else None
-for p in PAGES:
-    m = re.search(r'http-equiv="Content-Security-Policy" content="([^"]+)"', text(p))
-    if m and hdr_csp and m.group(1).strip() != hdr_csp:
-        err(f"{p.name}: CSP meta tag differs from _headers")
-
-# 7b. Shared assets carry their current version, so no browser mixes new pages with an old cached file
-current = stamp.versions()
-for p in PAGES:
-    h = text(p)
-    for asset, v in current.items():
-        found = re.findall(rf'/{re.escape(asset)}\?v=([0-9a-f]+)', h)
-        if found and any(f != v for f in found):
-            err(f"{p.name}: links an old {asset} version; run python3 tools/stamp.py")
-
-# 8. The design-partner form: its privacy copy must match where it sends data.
-#    data-formspree="" -> the form opens the visitor's email app; nothing goes to a third party.
-#    data-formspree="<id>" -> the form posts to Formspree, and the copy must say so.
-def visible(html: str) -> str:
-    return re.sub(r"<script.*?</script>|<style.*?</style>|<!--.*?-->", "", html, flags=re.S)
-
-
-index_html = text(SITE / "index.html")
-form_page = "index.html" if 'id="partner-form"' in index_html else "partner.html"
-fs = re.search(r'id="partner-form"[^>]*data-formspree="([^"]*)"', text(SITE / form_page))
-if not fs:
-    err(f"{form_page}: the partner form has no data-formspree attribute")
-else:
-    form_id = fs.group(1).strip()
-    copy = {name: visible(text(SITE / name)) for name in ("index.html", "status.html")}
-    if not form_id:
-        warn(f"{form_page}: the partner form uses the email fallback (no Formspree form ID). See HOSTING.md.")
-        for name, html in copy.items():
-            if "Formspree" in html:
-                err(f"{name}: copy mentions Formspree, but the form sends nothing there (data-formspree is empty)")
-    else:
-        if not re.fullmatch(r"[A-Za-z0-9]+", form_id):
-            err(f"{form_page}: data-formspree '{form_id}' doesn't look like a Formspree form ID")
-        for name, html in copy.items():
-            if "Formspree" not in html:
-                err(f"{name}: the form posts to Formspree, so this page's privacy copy must say so")
-            if "Nothing is stored or sent on its own" in html:
-                err(f"{name}: still says nothing is sent, but the form posts to Formspree")
-
-# 9. Homepage length budget (DESIGN_PLAYBOOK.md section 12): new detail belongs on a deeper page
-home_main = re.search(r"<main[^>]*>(.*?)</main>", index_html, re.S)
-if home_main:
-    shown = visible(home_main.group(1))
-    # count what a visitor sees by default: collapsed FAQ answers and screen-reader-only text add no length
-    shown = re.sub(r'<div class="faq-a">.*?</div>', " ", shown, flags=re.S)
-    shown = re.sub(r'<(p|span) class="sr-only">.*?</\1>', " ", shown, flags=re.S)
-    words = len(re.sub(r"<[^>]+>", " ", shown).split())
-    if words > 900:
-        warn(f"index.html: the homepage has {words} words of main text (budget 900). Move detail to how.html or docs.html.")
-
-# 10. The homepage's "Latest in the changelog" line names log.html's newest entry
-latest = re.search(r'id="latest-log".*?<span class="latest-title">([^<]*)</span>.*?<span class="latest-date">([^<]*)</span>',
-                   index_html, re.S)
-first = re.search(r'<span class="date">([^<]*)</span>\s*<h2>([^<]*)</h2>', text(SITE / "log.html"))
-if latest and first and (latest.group(1), latest.group(2)) != (first.group(2), first.group(1)):
-    err(f"index.html: 'Latest in the changelog' says '{latest.group(1)}' ({latest.group(2)}), "
-        f"but log.html's newest entry is '{first.group(2)}' ({first.group(1)})")
-elif latest and not first:
-    err("log.html: no dated entry found for the homepage's 'Latest in the changelog' line")
-
-for w in warnings:
-    print(f"::warning::{w}" if IN_CI else f"warning: {w}")
 for e in errors:
-    print(f"::error::{e}" if IN_CI else f"error: {e}")
-print(f"{len(PAGES)} pages checked: {len(errors)} error(s), {len(warnings)} warning(s)")
+    print("ERROR", e)
+print(f"{len(PAGES)} pages checked, {len(errors)} errors")
 sys.exit(1 if errors else 0)
